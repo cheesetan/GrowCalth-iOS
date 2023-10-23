@@ -9,6 +9,9 @@ import SwiftUI
 
 @main
 struct Growcalth_iOSApp: App {
+    
+    @ObservedObject var hkManager: HealthKitManager = .shared
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

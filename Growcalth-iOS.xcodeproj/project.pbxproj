@@ -11,6 +11,15 @@
 		F345AB8D2AE62EDE00211FE8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB8C2AE62EDE00211FE8 /* ContentView.swift */; };
 		F345AB8F2AE62EDF00211FE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F345AB8E2AE62EDF00211FE8 /* Assets.xcassets */; };
 		F345AB922AE62EDF00211FE8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F345AB912AE62EDF00211FE8 /* Preview Assets.xcassets */; };
+		F345AB9C2AE62F3E00211FE8 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB9B2AE62F3E00211FE8 /* Home.swift */; };
+		F345AB9E2AE62F4600211FE8 /* Announcements.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB9D2AE62F4600211FE8 /* Announcements.swift */; };
+		F345ABA02AE62F5600211FE8 /* NAPFA.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB9F2AE62F5600211FE8 /* NAPFA.swift */; };
+		F345ABA22AE62F5A00211FE8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABA12AE62F5A00211FE8 /* SettingsView.swift */; };
+		F345ABA72AE641CA00211FE8 /* MultiColumnTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABA62AE641CA00211FE8 /* MultiColumnTable.swift */; };
+		F345ABAB2AE6BEFA00211FE8 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */; };
+		F345ABAD2AE6C9D900211FE8 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABAC2AE6C9D900211FE8 /* Color+Hex.swift */; };
+		F3F6124A2AE6DDA200713E80 /* AboutUs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F612492AE6DDA200713E80 /* AboutUs.swift */; };
+		F3F6124C2AE6DF0400713E80 /* HealthInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +28,16 @@
 		F345AB8C2AE62EDE00211FE8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F345AB8E2AE62EDF00211FE8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F345AB912AE62EDF00211FE8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F345AB9B2AE62F3E00211FE8 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
+		F345AB9D2AE62F4600211FE8 /* Announcements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcements.swift; sourceTree = "<group>"; };
+		F345AB9F2AE62F5600211FE8 /* NAPFA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NAPFA.swift; sourceTree = "<group>"; };
+		F345ABA12AE62F5A00211FE8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		F345ABA62AE641CA00211FE8 /* MultiColumnTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiColumnTable.swift; sourceTree = "<group>"; };
+		F345ABA92AE6B9D000211FE8 /* Growcalth-iOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Growcalth-iOS.entitlements"; sourceTree = "<group>"; };
+		F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
+		F345ABAC2AE6C9D900211FE8 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
+		F3F612492AE6DDA200713E80 /* AboutUs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutUs.swift; sourceTree = "<group>"; };
+		F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,8 +70,9 @@
 		F345AB892AE62EDE00211FE8 /* Growcalth-iOS */ = {
 			isa = PBXGroup;
 			children = (
-				F345AB8A2AE62EDE00211FE8 /* Growcalth_iOSApp.swift */,
-				F345AB8C2AE62EDE00211FE8 /* ContentView.swift */,
+				F345ABA92AE6B9D000211FE8 /* Growcalth-iOS.entitlements */,
+				F345AB982AE62EF700211FE8 /* Application */,
+				F345AB992AE62F0900211FE8 /* Main */,
 				F345AB8E2AE62EDF00211FE8 /* Assets.xcassets */,
 				F345AB902AE62EDF00211FE8 /* Preview Content */,
 			);
@@ -65,6 +85,63 @@
 				F345AB912AE62EDF00211FE8 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F345AB982AE62EF700211FE8 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				F345AB8A2AE62EDE00211FE8 /* Growcalth_iOSApp.swift */,
+				F345AB8C2AE62EDE00211FE8 /* ContentView.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		F345AB992AE62F0900211FE8 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				F345ABA82AE69FB500211FE8 /* Managers */,
+				F345ABA52AE641B900211FE8 /* Components */,
+				F345AB9A2AE62F1000211FE8 /* UI */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		F345AB9A2AE62F1000211FE8 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				F345AB9B2AE62F3E00211FE8 /* Home.swift */,
+				F345AB9D2AE62F4600211FE8 /* Announcements.swift */,
+				F345AB9F2AE62F5600211FE8 /* NAPFA.swift */,
+				F3F612482AE6DD9600713E80 /* Settings */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		F345ABA52AE641B900211FE8 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F345ABA62AE641CA00211FE8 /* MultiColumnTable.swift */,
+				F345ABAC2AE6C9D900211FE8 /* Color+Hex.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		F345ABA82AE69FB500211FE8 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		F3F612482AE6DD9600713E80 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				F345ABA12AE62F5A00211FE8 /* SettingsView.swift */,
+				F3F612492AE6DDA200713E80 /* AboutUs.swift */,
+				F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,8 +214,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F345ABA22AE62F5A00211FE8 /* SettingsView.swift in Sources */,
+				F345ABA02AE62F5600211FE8 /* NAPFA.swift in Sources */,
+				F345ABAB2AE6BEFA00211FE8 /* HealthKitManager.swift in Sources */,
+				F3F6124C2AE6DF0400713E80 /* HealthInfo.swift in Sources */,
+				F345AB9E2AE62F4600211FE8 /* Announcements.swift in Sources */,
+				F345ABA72AE641CA00211FE8 /* MultiColumnTable.swift in Sources */,
+				F345AB9C2AE62F3E00211FE8 /* Home.swift in Sources */,
 				F345AB8D2AE62EDE00211FE8 /* ContentView.swift in Sources */,
+				F3F6124A2AE6DDA200713E80 /* AboutUs.swift in Sources */,
 				F345AB8B2AE62EDE00211FE8 /* Growcalth_iOSApp.swift in Sources */,
+				F345ABAD2AE6C9D900211FE8 /* Color+Hex.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,27 +355,36 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Growcalth-iOS/Growcalth-iOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Growcalth-iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 7K6ZTDFM48;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Growcalth;
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.growcalth.Growcalth-iOS";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kidcodes.growcalth-debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -298,27 +393,36 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Growcalth-iOS/Growcalth-iOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Growcalth-iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 7K6ZTDFM48;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Growcalth;
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.growcalth.Growcalth-iOS";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

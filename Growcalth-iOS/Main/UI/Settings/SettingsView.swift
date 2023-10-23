@@ -23,7 +23,7 @@ struct SettingsView: View {
     var general: some View {
         Section("General") {
             NavigationLink {
-                EmptyView()
+                AboutUs()
             } label: {
                 Label("About us", systemImage: "questionmark.circle.fill")
             }
@@ -39,7 +39,7 @@ struct SettingsView: View {
     var health: some View {
         Section("Health") {
             NavigationLink {
-                EmptyView()
+                HealthInfo()
             } label: {
                 Label("Health information", systemImage: "heart.text.square.fill")
             }
