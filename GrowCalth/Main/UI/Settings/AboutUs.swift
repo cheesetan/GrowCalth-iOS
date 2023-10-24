@@ -1,6 +1,6 @@
 //
 //  AboutUs.swift
-//  Growcalth-iOS
+//  GrowCalth-iOS
 //
 //  Created by Tristan Chay on 24/10/23.
 //

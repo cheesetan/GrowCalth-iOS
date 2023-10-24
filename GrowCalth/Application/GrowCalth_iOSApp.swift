@@ -1,6 +1,6 @@
 //
-//  Growcalth_iOSApp.swift
-//  Growcalth-iOS
+//  GrowCalth_iOSApp.swift
+//  GrowCalth-iOS
 //
 //  Created by Tristan Chay on 23/10/23.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct Growcalth_iOSApp: App {
+struct GrowCalth_iOSApp: App {
     
     @ObservedObject var hkManager: HealthKitManager = .shared
     

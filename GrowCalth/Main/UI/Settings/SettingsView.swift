@@ -1,6 +1,6 @@
 //
 //  SettingsView.swift
-//  Growcalth-iOS
+//  GrowCalth-iOS
 //
 //  Created by Tristan Chay on 23/10/23.
 //
@@ -55,7 +55,7 @@ struct SettingsView: View {
             }
             
             NavigationLink {
-                EmptyView()
+                HouseInfo()
             } label: {
                 Label("House", systemImage: "house.fill")
             }

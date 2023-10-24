@@ -1,6 +1,6 @@
 //
 //  Home.swift
-//  Growcalth-iOS
+//  GrowCalth-iOS
 //
 //  Created by Tristan Chay on 23/10/23.
 //
@@ -166,7 +166,7 @@ struct Home: View {
     }
     
     @ViewBuilder
-    func rectangleHeader(text: String, font: Font = Font.headline) -> some View {
+    func rectangleHeader(text: String, font: Font = Font.subheadline) -> some View {
         VStack {
             HStack {
                 Text(text)

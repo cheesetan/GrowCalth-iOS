@@ -1,6 +1,6 @@
 //
 //  HealthInfo.swift
-//  Growcalth-iOS
+//  GrowCalth-iOS
 //
 //  Created by Tristan Chay on 24/10/23.
 //
@@ -15,35 +15,54 @@ struct HealthInfo: View {
     
     var body: some View {
         VStack {
-            List {
-                ForEach(healthInfoManager.healthinfos, id: \.id) { item in
-                    VStack(alignment: .leading) {
-                        HStack {
+            if !healthInfoManager.healthinfos.isEmpty {
+                List {
+                    ForEach(healthInfoManager.healthinfos, id: \.id) { item in
+                        VStack(alignment: .leading) {
                             Text(item.text)
                                 .lineLimit(2)
-                            Spacer()
                         }
                     }
+                    .onDelete { indexSet in
+                        healthInfoManager.healthinfos.remove(atOffsets: indexSet)
+                    }
+                    .onMove { from, to in
+                        healthInfoManager.healthinfos.move(fromOffsets: from, toOffset: to)
+                    }
                 }
+            } else {
+                Spacer()
+                Text(LocalizedStringKey("Add and keep track of your health information here. To start, enter something in the text field and click the \(Image(systemName: "plus.circle.fill")) button below. \(Image(systemName: "arrow.turn.right.down"))"))
+                    .padding(.horizontal)
+                    .multilineTextAlignment(.center)
             }
             Spacer()
-            HStack {
+            HStack(spacing: 10) {
                 VStack {
                     TextField("Enter something", text: $text)
                         .textFieldStyle(.roundedBorder)
                 }
                 Button {
-                    healthInfoManager.healthinfos.append(HealthInfoItem(text: text))
+                    if !text.isEmpty {
+                        healthInfoManager.healthinfos.append(HealthInfoItem(text: text))
+                        text = ""
+                    }
                 } label: {
                     Image(systemName: "plus.circle.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 40)
+                        .frame(width: 30)
                 }
+                .disabled(text.isEmpty)
             }
-            .padding(.horizontal)
+            .padding(.horizontal, 10)
         }
         .navigationTitle("Health information")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                EditButton()
+            }
+        }
     }
 }
 

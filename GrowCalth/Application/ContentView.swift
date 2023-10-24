@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  Growcalth-iOS
+//  GrowCalth-iOS
 //
 //  Created by Tristan Chay on 23/10/23.
 //
