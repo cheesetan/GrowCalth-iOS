@@ -26,7 +26,13 @@ struct Home: View {
                         .frame(maxWidth: .infinity)
                         
                         VStack(spacing: 15) {
-                            leaderboards
+                            NavigationLink {
+                                LeaderboardView()
+                            } label: {
+                                leaderboards
+                            }
+                            .buttonStyle(.plain)
+                            
                             daysinappprogress
                         }
                         .frame(maxWidth: .infinity)
