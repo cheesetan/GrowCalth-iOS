@@ -33,11 +33,16 @@ class HealthKitManager: ObservableObject {
         healthStore.requestAuthorization(toShare: nil, read: toReads) {
             success, error in
             if success {
-//                self.fetchAllDatas()
+                self.fetchAllDatas()
             } else {
                 print("\(String(describing: error))")
             }
         }
+    }
+    
+    private func fetchAllDatas() {
+        readSteps()
+        readDistance()
     }
     
     func readSteps() {

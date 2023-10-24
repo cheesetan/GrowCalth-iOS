@@ -1,5 +1,5 @@
 //
-//  HealhInfoManager.swift
+//  HealthInfoManager.swift
 //  Growcalth-iOS
 //
 //  Created by Tristan Chay on 24/10/23.

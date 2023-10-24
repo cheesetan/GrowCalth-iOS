@@ -58,15 +58,9 @@ struct Home: View {
                 ZStack {
                     circularBackground(frame1: halfUIWidth - 55, frame2: halfUIWidth - 70)
                     VStack {
-                        if let steps = hkManager.steps {
-                            Text("\(steps)")
-                                .fontWeight(.black)
-                                .font(.title)
-                        } else {
-                            Text("0")
-                                .fontWeight(.black)
-                                .font(.title)
-                        }
+                        Text("\(hkManager.steps ?? 0)")
+                            .fontWeight(.black)
+                            .font(.title)
                         Text("steps")
                             .foregroundColor(.gray)
                             .font(.subheadline)
@@ -105,15 +99,9 @@ struct Home: View {
                 ZStack {
                     circularBackground(frame1: halfUIWidth - 65, frame2: halfUIWidth - 80)
                     VStack {
-                        if let distance = hkManager.distance {
-                            Text("\(distance, specifier: "%.2f")")
-                                .fontWeight(.black)
-                                .font(.title)
-                        } else {
-                            Text("0.00")
-                                .fontWeight(.black)
-                                .font(.title)
-                        }
+                        Text("\(hkManager.distance ?? 0.00, specifier: "%.2f")")
+                            .fontWeight(.black)
+                            .font(.title)
                         Text("km")
                             .foregroundColor(.gray)
                             .font(.subheadline)
