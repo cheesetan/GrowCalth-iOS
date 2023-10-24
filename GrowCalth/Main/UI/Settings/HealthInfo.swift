@@ -55,6 +55,7 @@ struct HealthInfo: View {
                 }
                 .disabled(text.isEmpty)
             }
+            .padding(.bottom, 5)
             .padding(.horizontal, 10)
         }
         .navigationTitle("Health information")

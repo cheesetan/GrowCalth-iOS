@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct SettingsView: View {
+    
+    @State var showingSignOutAlert = false
+    @ObservedObject var authManager: AuthenticationManager = .shared
+    
     var body: some View {
         NavigationStack {
             List {
@@ -65,11 +69,20 @@ struct SettingsView: View {
     var signOutButton: some View {
         Section {
             Button {
-                
+                showingSignOutAlert = true
             } label: {
                 Text("Sign out")
             }
             .tint(.red)
+            .alert("Sign out", isPresented: $showingSignOutAlert) {
+                Button(role: .destructive) {
+                    authManager.signOut()
+                } label: {
+                    Text("Sign out")
+                }
+            } message: {
+                Text("Are you sure you want to sign out? You can always sign back in with your email and password.")
+            }
         }
     }
 }
