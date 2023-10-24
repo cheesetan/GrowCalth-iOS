@@ -40,7 +40,7 @@ class HealthKitManager: ObservableObject {
         }
     }
     
-    private func fetchAllDatas() {
+    func fetchAllDatas() {
         readSteps()
         readDistance()
     }

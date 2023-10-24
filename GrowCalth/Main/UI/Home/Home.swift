@@ -48,10 +48,12 @@ struct Home: View {
                 .padding(.vertical, 20)
             }
             .navigationTitle("Home")
+            .refreshable {
+                hkManager.fetchAllDatas()
+            }
         }
         .onAppear {
-            hkManager.readSteps()
-            hkManager.readDistance()
+            hkManager.fetchAllDatas()
         }
     }
     
