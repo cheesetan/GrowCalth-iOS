@@ -20,10 +20,11 @@ struct SignInView: View {
     @ObservedObject var authManager: AuthenticationManager = .shared
     
     var body: some View {
-        VStack {
-            Text("The House You Need.")
+        VStack(alignment: .leading) {
+            Text("The House You\nNeed.")
                 .fontWeight(.black)
                 .font(.system(size: 35))
+                .padding(.horizontal)
             
             VStack {
                 infoFields

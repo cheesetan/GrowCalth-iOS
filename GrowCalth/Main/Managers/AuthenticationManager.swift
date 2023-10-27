@@ -14,9 +14,11 @@ class AuthenticationManager: ObservableObject {
     static let shared: AuthenticationManager = .init()
     
     @Published var isLoggedIn: Bool = false
+    @Published var email: String?
     
     init() {
         verifyAuthenticationState()
+        email = Auth.auth().currentUser?.email
     }
     
     private func verifyAuthenticationState() {
@@ -73,6 +75,32 @@ class AuthenticationManager: ObservableObject {
             }
             
             self.verifyAuthenticationState()
+        }
+    }
+    
+    func updatePassword(to newPassword: String) {
+        Auth.auth().currentUser?.updatePassword(to: newPassword) { error in
+            guard error == nil else { return }
+            
+            Firestore.firestore().collection("users").whereField("email", isEqualTo: Auth.auth().currentUser?.email ?? "NOEMAIL").getDocuments() { (querySnapshot, err) in
+                    if let err = err {
+                        print("Error getting documents: \(err)")
+                    } else {
+                        for document in querySnapshot!.documents {
+                            print("\(document.documentID) => \(document.data())")
+                            
+                            Firestore.firestore().collection("users").document("\(document.documentID)").updateData([
+                                "password": newPassword
+                            ]) { err in
+                                if let err = err {
+                                    print("Error updating document: \(err)")
+                                } else {
+                                    print("Document successfully updated")
+                                }
+                            }
+                        }
+                    }
+            }
         }
     }
 }

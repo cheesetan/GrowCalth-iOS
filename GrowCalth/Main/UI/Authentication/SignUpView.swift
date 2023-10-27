@@ -27,10 +27,11 @@ struct SignUpView: View {
     @ObservedObject var authManager: AuthenticationManager = .shared
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             Text("Join The House Today.")
                 .fontWeight(.black)
                 .font(.system(size: 35))
+                .padding(.horizontal)
             
             VStack {
                 infoFields
@@ -49,7 +50,7 @@ struct SignUpView: View {
                 .cornerRadius(16)
                 .keyboardType(.emailAddress)
             
-            TextField("Password", text: $password)
+            SecureField("Password", text: $password)
                 .padding()
                 .background(.ultraThickMaterial)
                 .cornerRadius(16)

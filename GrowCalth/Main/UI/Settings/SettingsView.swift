@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
+import FirebaseAuth
 
 struct SettingsView: View {
     
@@ -53,7 +55,7 @@ struct SettingsView: View {
     var preferences: some View {
         Section("Preferences") {
             NavigationLink {
-                EmptyView()
+                AccountInfo()
             } label: {
                 Label("Account info", systemImage: "person.fill")
             }
