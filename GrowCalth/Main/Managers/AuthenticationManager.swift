@@ -78,13 +78,17 @@ class AuthenticationManager: ObservableObject {
         }
     }
     
-    func updatePassword(to newPassword: String) {
+    func updatePassword(to newPassword: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
         Auth.auth().currentUser?.updatePassword(to: newPassword) { error in
-            guard error == nil else { return }
-            
-            Firestore.firestore().collection("users").whereField("email", isEqualTo: Auth.auth().currentUser?.email ?? "NOEMAIL").getDocuments() { (querySnapshot, err) in
+            if let failedError = error {
+                completion(.failure(failedError))
+                return
+            } else {
+                print("changed")
+                Firestore.firestore().collection("users").whereField("email", isEqualTo: Auth.auth().currentUser?.email ?? "NOEMAIL").getDocuments() { (querySnapshot, err) in
                     if let err = err {
-                        print("Error getting documents: \(err)")
+                        completion(.failure(err))
+                        return
                     } else {
                         for document in querySnapshot!.documents {
                             print("\(document.documentID) => \(document.data())")
@@ -93,13 +97,15 @@ class AuthenticationManager: ObservableObject {
                                 "password": newPassword
                             ]) { err in
                                 if let err = err {
-                                    print("Error updating document: \(err)")
+                                    completion(.failure(err))
+                                    return
                                 } else {
-                                    print("Document successfully updated")
+                                    completion(.success(true))
                                 }
                             }
                         }
                     }
+                }
             }
         }
     }

@@ -9,8 +9,11 @@ import SwiftUI
 
 struct AccountInfo: View {
     
+    @State var errorMessage = String()
+    
     @State var newPassword = ""
     @State var currentPassword = ""
+    @State var passwordChangeFailed = false
     @State var passwordSuccessfullyChanged = false
     
     @ObservedObject var authManager: AuthenticationManager = .shared
@@ -28,10 +31,18 @@ struct AccountInfo: View {
             Section("Change Password") {
                 SecureField("New Password", text: $newPassword)
                 Button {
-                    authManager.updatePassword(to: newPassword)
-                    currentPassword = ""
-                    newPassword = ""
-                    passwordSuccessfullyChanged = true
+                    authManager.updatePassword(to: newPassword) { result in
+                        switch result {
+                        case .success(_):
+                            currentPassword = ""
+                            newPassword = ""
+                            passwordSuccessfullyChanged = true
+                        case .failure(let failure):
+                            errorMessage = "An error has occurred while attempting to change your password. Error: \(failure.localizedDescription)"
+                            passwordChangeFailed = true
+                            print(failure)
+                        }
+                    }
                 } label: {
                     Text("Change Password")
                 }
@@ -42,6 +53,11 @@ struct AccountInfo: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text("Your password has been successfully changed.")
+        }
+        .alert("Error", isPresented: $passwordSuccessfullyChanged) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage)
         }
     }
 }
