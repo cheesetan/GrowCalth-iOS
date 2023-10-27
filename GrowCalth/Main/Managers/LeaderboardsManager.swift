@@ -18,10 +18,10 @@ class LeaderboardsManager: ObservableObject {
     @Published var yellow: Int?
     
     init() {
-        retrievePoints()
+        retrievePoints { _ in }
     }
     
-    func retrievePoints() {
+    func retrievePoints(_ completion: @escaping ((Bool) -> Void)) {
         Firestore.firestore().collection("HousePoints").getDocuments { (query: QuerySnapshot?, err) in
             if let err {
                 print("Error getting documents: \(err)")
@@ -50,6 +50,7 @@ class LeaderboardsManager: ObservableObject {
                         print("error")
                     }
                 }
+                completion(true)
             }
         }
     }
