@@ -37,6 +37,7 @@
 		F3E9FBC72AEBA59000801A1C /* AnnouncementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */; };
 		F3E9FBC92AEBBCF200801A1C /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBC82AEBBCF200801A1C /* EventDetailView.swift */; };
 		F3E9FBCB2AEBC28600801A1C /* LeaderboardsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBCA2AEBC28600801A1C /* LeaderboardsManager.swift */; };
+		F3E9FBCD2AEBFC0400801A1C /* DaysManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBCC2AEBFC0400801A1C /* DaysManager.swift */; };
 		F3F6124A2AE6DDA200713E80 /* AboutUs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F612492AE6DDA200713E80 /* AboutUs.swift */; };
 		F3F6124C2AE6DF0400713E80 /* HealthInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */; };
 /* End PBXBuildFile section */
@@ -69,6 +70,7 @@
 		F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementManager.swift; sourceTree = "<group>"; };
 		F3E9FBC82AEBBCF200801A1C /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
 		F3E9FBCA2AEBC28600801A1C /* LeaderboardsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardsManager.swift; sourceTree = "<group>"; };
+		F3E9FBCC2AEBFC0400801A1C /* DaysManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysManager.swift; sourceTree = "<group>"; };
 		F3F612492AE6DDA200713E80 /* AboutUs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutUs.swift; sourceTree = "<group>"; };
 		F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -172,6 +174,7 @@
 			isa = PBXGroup;
 			children = (
 				F383E2652AE8162D00C517C2 /* AuthenticationManager.swift */,
+				F3E9FBCC2AEBFC0400801A1C /* DaysManager.swift */,
 				F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */,
 				F3E9FBCA2AEBC28600801A1C /* LeaderboardsManager.swift */,
 				F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */,
@@ -311,6 +314,7 @@
 				F383E2662AE8162D00C517C2 /* AuthenticationManager.swift in Sources */,
 				F3F6124C2AE6DF0400713E80 /* HealthInfo.swift in Sources */,
 				F345AB9E2AE62F4600211FE8 /* Announcements.swift in Sources */,
+				F3E9FBCD2AEBFC0400801A1C /* DaysManager.swift in Sources */,
 				F383E24C2AE7C1C200C517C2 /* AnnouncementDetailView.swift in Sources */,
 				F345ABA72AE641CA00211FE8 /* MultiColumnTable.swift in Sources */,
 				F36CEFBF2AE73B4400C7CE36 /* HealthInfoManager.swift in Sources */,

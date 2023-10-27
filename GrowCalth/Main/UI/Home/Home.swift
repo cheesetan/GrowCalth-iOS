@@ -12,6 +12,7 @@ struct Home: View {
     
     let halfUIWidth = (UIScreen.main.bounds.width / 2) - 20
     
+    @ObservedObject var daysManager: DaysManager = .shared
     @ObservedObject var hkManager: HealthKitManager = .shared
     
     var body: some View {
@@ -54,6 +55,7 @@ struct Home: View {
         }
         .onAppear {
             hkManager.fetchAllDatas()
+            daysManager.refreshNumberOfDaysInApp()
         }
     }
     
@@ -128,12 +130,22 @@ struct Home: View {
             .shadow(color: .black, radius: 4, x: -1, y: 5)
             .overlay {
                 VStack {
-                    Text("0")
-                        .font(.system(size: 50))
-                        .fontWeight(.bold)
-                    Text("days in this app")
+                    if let daysInApp = daysManager.daysInApp {
+                        Text("\(daysInApp)")
+                            .font(.system(size: 50))
+                            .fontWeight(.bold)
+                        VStack {
+                            if daysInApp == 1 {
+                                Text("day in this app")
+                            } else {
+                                Text("days in this app")
+                            }
+                        }
                         .font(.title3)
                         .fontWeight(.medium)
+                    } else {
+                        ProgressView()
+                    }
                 }
             }
             .overlay {
