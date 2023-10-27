@@ -29,16 +29,17 @@ struct AccountInfo: View {
             }
             
             Section("Change Password") {
+                SecureField("Current Password", text: $currentPassword)
                 SecureField("New Password", text: $newPassword)
                 Button {
-                    authManager.updatePassword(to: newPassword) { result in
+                    authManager.updatePassword(from: currentPassword, to: newPassword) { result in
                         switch result {
                         case .success(_):
                             currentPassword = ""
                             newPassword = ""
                             passwordSuccessfullyChanged = true
                         case .failure(let failure):
-                            errorMessage = "An error has occurred while attempting to change your password. Error: \(failure.localizedDescription)"
+                            errorMessage = failure.localizedDescription
                             passwordChangeFailed = true
                             print(failure)
                         }
@@ -54,7 +55,7 @@ struct AccountInfo: View {
         } message: {
             Text("Your password has been successfully changed.")
         }
-        .alert("Error", isPresented: $passwordSuccessfullyChanged) {
+        .alert("Error", isPresented: $passwordChangeFailed) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage)

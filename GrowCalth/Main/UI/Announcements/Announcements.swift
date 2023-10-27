@@ -9,62 +9,91 @@ import SwiftUI
 
 struct Announcements: View {
     
-    enum AnnouncementType {
-        case none, announcements, events
-    }
+    @State var selection: AnnouncementType = .announcements
     
-    @State var selection: AnnouncementType = .none
+    @ObservedObject var announcementManager: AnnouncementManager = .shared
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(1...7, id: \.self) { _ in
-                    announcementItem
+            VStack {
+                List {
+                    picker
+                        .listRowBackground(Color.clear)
+                    switch selection {
+                    case .announcements:
+                        ForEach(announcementManager.announcements, id: \.id) { item in
+                            NavigationLink {
+                                AnnouncementDetailView(announcement: item)
+                            } label: {
+                                announcementItem(title: item.title, description: item.description)
+                            }
+                        }
+                    case .events:
+                        ForEach(announcementManager.events, id: \.id) { item in
+                            NavigationLink {
+                                EventDetailView(event: item)
+                            } label: {
+                                eventItem(title: item.title, description: item.description, date: item.date, venue: item.venue)
+                            }
+                        }
+
+                    }
                 }
             }
             .listStyle(.grouped)
-            .navigationTitle("Announcements")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    picker
-                }
-            }
+            .navigationTitle(selection == .announcements ? "Announcements" : "Events")
         }
     }
     
     var picker: some View {
-        Menu {
-            Picker(selection: $selection) {
-                Text("None")
-                    .tag(AnnouncementType.none)
-                Divider()
-                Text("Announcements")
-                    .tag(AnnouncementType.announcements)
-                Text("Events")
-                    .tag(AnnouncementType.events)
-            } label: {
-                Text("Filters")
-            }
-        } label: {
-            Image(systemName: "line.3.horizontal.decrease.circle")
-                .overlay {
-                    if selection != .none {
-                        Image(systemName: "circle.fill")
-                            .resizable()
-                            .frame(width: 10, height: 10)
-                            .offset(x: 5, y: 6)
-                    }
+        VStack {
+            Picker("Filters", selection: $selection) {
+                ForEach(AnnouncementType.allCases, id: \.hashValue) { type in
+                    Text(type.rawValue)
+                        .tag(type)
                 }
+            }
+            .pickerStyle(.segmented)
         }
+        .padding(.horizontal)
     }
     
-    var announcementItem: some View {
+    @ViewBuilder
+    func announcementItem(title: String, description: String?) -> some View {
         VStack(alignment: .leading) {
-            Text("Announcement")
+            Text(title)
                 .fontWeight(.bold)
-            Text("Details! Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-                .lineLimit(2)
-                .foregroundColor(.gray)
+            if let description = description {
+                Text(description)
+                    .lineLimit(2)
+                    .foregroundColor(.gray)
+            }
+        }
+        .padding(.vertical, 5)
+    }
+    
+    @ViewBuilder
+    func eventItem(title: String, description: String?, date: String, venue: String) -> some View {
+        VStack(alignment: .leading) {
+            Text(title)
+                .fontWeight(.bold)
+            if let description = description {
+                Text(description)
+                    .lineLimit(2)
+                    .foregroundColor(.gray)
+            }
+            HStack {
+                Image(systemName: "calendar")
+                Text(date)
+            }
+            .foregroundColor(.gray)
+            .font(.subheadline)
+            HStack {
+                Image(systemName: "mappin.and.ellipse")
+                Text(venue)
+            }
+            .foregroundColor(.gray)
+            .font(.subheadline)
         }
         .padding(.vertical, 5)
     }

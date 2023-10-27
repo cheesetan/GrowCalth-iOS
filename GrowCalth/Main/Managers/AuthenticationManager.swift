@@ -78,29 +78,33 @@ class AuthenticationManager: ObservableObject {
         }
     }
     
-    func updatePassword(to newPassword: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
-        Auth.auth().currentUser?.updatePassword(to: newPassword) { error in
-            if let failedError = error {
-                completion(.failure(failedError))
-                return
+    func updatePassword(from oldPassword: String, to newPassword: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
+        
+        let credential = EmailAuthProvider.credential(withEmail: Auth.auth().currentUser?.email ?? "", password: oldPassword)
+        Auth.auth().currentUser?.reauthenticate(with: credential) { result, error in
+            if let error = error {
+                completion(.failure(error))
             } else {
-                print("changed")
-                Firestore.firestore().collection("users").whereField("email", isEqualTo: Auth.auth().currentUser?.email ?? "NOEMAIL").getDocuments() { (querySnapshot, err) in
-                    if let err = err {
-                        completion(.failure(err))
-                        return
+                Auth.auth().currentUser?.updatePassword(to: newPassword) { error in
+                    if let error = error {
+                        completion(.failure(error))
                     } else {
-                        for document in querySnapshot!.documents {
-                            print("\(document.documentID) => \(document.data())")
-                            
-                            Firestore.firestore().collection("users").document("\(document.documentID)").updateData([
-                                "password": newPassword
-                            ]) { err in
-                                if let err = err {
-                                    completion(.failure(err))
-                                    return
-                                } else {
-                                    completion(.success(true))
+                        Firestore.firestore().collection("users").whereField("email", isEqualTo: Auth.auth().currentUser?.email ?? "").getDocuments() { (querySnapshot, err) in
+                            if let err = err {
+                                completion(.failure(err))
+                            } else {
+                                for document in querySnapshot!.documents {
+                                    print("\(document.documentID) => \(document.data())")
+                                    
+                                    Firestore.firestore().collection("users").document("\(document.documentID)").updateData([
+                                        "password": newPassword
+                                    ]) { err in
+                                        if let err = err {
+                                            completion(.failure(err))
+                                        } else {
+                                            completion(.success(true))
+                                        }
+                                    }
                                 }
                             }
                         }
