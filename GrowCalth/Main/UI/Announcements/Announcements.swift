@@ -42,6 +42,12 @@ struct Announcements: View {
             }
             .listStyle(.grouped)
             .navigationTitle(selection == .announcements ? "Announcements" : "Events")
+            .refreshable {
+                announcementManager.retrieveInformations()
+            }
+            .onAppear {
+                announcementManager.retrieveInformations()
+            }
         }
     }
     

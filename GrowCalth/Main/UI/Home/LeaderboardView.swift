@@ -8,20 +8,39 @@
 import SwiftUI
 
 struct LeaderboardView: View {
+    
+    @ObservedObject var lbManager: LeaderboardsManager = .shared
+    
     var body: some View {
         List {
-            houseRow(text: "Black")
-            houseRow(text: "Blue")
-            houseRow(text: "Green")
-            houseRow(text: "Red")
-            houseRow(text: "Yellow")
+            if let points = lbManager.black {
+                houseRow(text: "Black", points: points)
+            }
+            if let points = lbManager.blue {
+                houseRow(text: "Blue", points: points)
+            }
+            if let points = lbManager.green {
+                houseRow(text: "Green", points: points)
+            }
+            if let points = lbManager.red {
+                houseRow(text: "Red", points: points)
+            }
+            if let points = lbManager.yellow {
+                houseRow(text: "Yellow", points: points)
+            }
         }
         .listStyle(.grouped)
         .navigationTitle("Leaderboard")
+        .refreshable {
+            lbManager.retrievePoints()
+        }
+        .onAppear {
+            lbManager.retrievePoints()
+        }
     }
     
     @ViewBuilder
-    func houseRow(text: String) -> some View {
+    func houseRow(text: String, points: Int) -> some View {
         HStack {
             Image(text)
                 .resizable()
@@ -32,7 +51,7 @@ struct LeaderboardView: View {
                 .fontWeight(.bold)
                 .padding(.leading, 10)
             Spacer()
-            Text("0")
+            Text("\(points)")
                 .font(.title)
                 .fontWeight(.black)
                 .multilineTextAlignment(.trailing)

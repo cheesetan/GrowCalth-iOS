@@ -34,6 +34,10 @@ class AnnouncementManager: ObservableObject {
     @Published var announcements: [Announcement] = []
     
     init() {
+        retrieveInformations()
+    }
+    
+    func retrieveInformations() {
         retrieveEvents()
         retrieveAnnouncements()
     }
