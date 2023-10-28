@@ -33,12 +33,6 @@ struct SettingsView: View {
             } label: {
                 Label("About us", systemImage: "questionmark.circle.fill")
             }
-
-            NavigationLink {
-                EmptyView()
-            } label: {
-                Label("More quotes", systemImage: "quote.opening")
-            }
         }
     }
     

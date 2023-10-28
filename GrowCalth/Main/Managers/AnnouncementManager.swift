@@ -47,6 +47,7 @@ class AnnouncementManager: ObservableObject {
             if let err {
                 print("Error getting documents: \(err)")
             } else {
+                self.events = []
                 for document in query!.documents {
                     self.events.append(
                         EventItem(
@@ -67,6 +68,7 @@ class AnnouncementManager: ObservableObject {
             if let err {
                 print("Error getting documents: \(err)")
             } else {
+                self.announcements = []
                 for document in query!.documents {
                     self.announcements.append(
                         Announcement(

@@ -14,6 +14,7 @@ struct Home: View {
     
     @ObservedObject var daysManager: DaysManager = .shared
     @ObservedObject var hkManager: HealthKitManager = .shared
+    @ObservedObject var quotesManager: QuotesManager = .shared
     
     var body: some View {
         NavigationStack {
@@ -40,7 +41,12 @@ struct Home: View {
                     }
                     
                     VStack(spacing: 15) {
-                        quotes
+                        NavigationLink {
+                            QuoteView()
+                        } label: {
+                            quotes
+                        }
+                        .buttonStyle(.plain)
                         goals
                     }
                     .padding(.top, 7.5)
@@ -51,11 +57,14 @@ struct Home: View {
             .navigationTitle("Home")
             .refreshable {
                 hkManager.fetchAllDatas()
+                daysManager.refreshNumberOfDaysInApp()
+                quotesManager.generateNewQuote()
             }
         }
         .onAppear {
             hkManager.fetchAllDatas()
             daysManager.refreshNumberOfDaysInApp()
+            quotesManager.generateNewQuote()
         }
     }
     
@@ -159,6 +168,28 @@ struct Home: View {
             .frame(height: 150)
             .foregroundColor(Color(hex: 0xC2CFDE))
             .shadow(color: .black, radius: 4, x: -1, y: 5)
+            .overlay {
+                VStack {
+                    HStack {
+                        if let content = quotesManager.quote?.content {
+                            Text(content)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                        }
+                        Spacer()
+                    }
+                    Spacer()
+                    if let author = quotesManager.quote?.author {
+                        HStack {
+                            Spacer()
+                            Text(author)
+                                .font(.subheadline)
+                                .fontWeight(.bold)
+                        }
+                    }
+                }
+                .padding()
+            }
     }
     
     var goals: some View {
