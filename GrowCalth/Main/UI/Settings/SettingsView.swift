@@ -12,6 +12,10 @@ import SwiftPersistence
 
 struct SettingsView: View {
     
+    @State var alertHeader = ""
+    @State var alertMessage = ""
+    @State var showingAlert = false
+    
     @State var settingsColorScheme: PreferredColorScheme = .automatic
     @State var showingSignOutAlert = false
     @ObservedObject var authManager: AuthenticationManager = .shared
@@ -33,6 +37,11 @@ struct SettingsView: View {
         }
         .onAppear {
             settingsColorScheme = preferredColorSchemeAppStorage
+        }
+        .alert(alertHeader, isPresented: $showingAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
         }
     }
     
@@ -99,7 +108,16 @@ struct SettingsView: View {
             .tint(.red)
             .alert("Sign out", isPresented: $showingSignOutAlert) {
                 Button(role: .destructive) {
-                    authManager.signOut()
+                    authManager.signOut() { result in
+                        switch result {
+                        case .success(_):
+                            break
+                        case .failure(let failure):
+                            alertHeader = "Error"
+                            alertMessage = "\(failure.localizedDescription)"
+                            showingAlert = true
+                        }
+                    }
                 } label: {
                     Text("Sign out")
                 }

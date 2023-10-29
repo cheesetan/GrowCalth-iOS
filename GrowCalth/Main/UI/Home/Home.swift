@@ -279,6 +279,7 @@ struct Home: View {
                 }
             }
     }
+    
     @ViewBuilder
     func circularBackground(frame1: CGFloat, frame2: CGFloat) -> some View {
         ZStack {

@@ -25,6 +25,10 @@ struct SignUpView: View {
     @State var showingPassword = false
     @State var houseSelection: Houses = .selectHouse
     
+    @State var alertHeader = ""
+    @State var alertMessage = ""
+    @State var showingAlert = false
+    
     @ObservedObject var authManager: AuthenticationManager = .shared
     
     @FocusState var passwordFieldFocused: Bool
@@ -42,6 +46,11 @@ struct SignUpView: View {
                 bottomText
             }
             .padding(.horizontal)
+        }
+        .alert(alertHeader, isPresented: $showingAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
         }
     }
     
@@ -109,7 +118,16 @@ struct SignUpView: View {
     var signUpButton: some View {
         Button {
             if !email.isEmpty && !password.isEmpty && houseSelection != .selectHouse {
-                authManager.createAccount(email: email, password: password, house: houseSelection)
+                authManager.createAccount(email: email, password: password, house: houseSelection) { result in
+                    switch result {
+                    case .success(_):
+                        break
+                    case .failure(let failure):
+                        alertHeader = "Error"
+                        alertMessage = "\(failure.localizedDescription)"
+                        showingAlert = true
+                    }
+                }
             }
         } label: {
             Text("Sign Up")

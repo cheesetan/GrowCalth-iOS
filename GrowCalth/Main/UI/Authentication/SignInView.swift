@@ -16,7 +16,10 @@ struct SignInView: View {
     @State var showingPassword = false
     @State var forgottenPasswordEmail = ""
     @State var showingForgotPassword = false
-    @State var showingEmailSent = false
+    @State var showingAlert = false
+    
+    @State var alertHeader: String = ""
+    @State var alertMessage: String = ""
     
     @FocusState var passwordFieldFocused: Bool
     
@@ -36,6 +39,11 @@ struct SignInView: View {
                 bottomText
             }
             .padding(.horizontal)
+        }
+        .alert(alertHeader, isPresented: $showingAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
         }
     }
     
@@ -99,25 +107,39 @@ struct SignInView: View {
             TextField("Email Address", text: $forgottenPasswordEmail)
                 .keyboardType(.emailAddress)
             Button(role: .destructive) {
-                authManager.forgotPassword(email: email)
-                showingForgotPassword = false
-                showingEmailSent = true
+                authManager.forgotPassword(email: email) { result in
+                    switch result {
+                    case .success(_):
+                        alertHeader = "Email sent"
+                        alertMessage = "Check your inbox for the password reset link."
+                        showingForgotPassword = false
+                        showingAlert = true
+                    case .failure(let failure):
+                        alertHeader = "Error"
+                        alertMessage = "\(failure.localizedDescription)"
+                        showingAlert = true
+                    }
+                }
             } label: {
                 Text("Reset Password")
             }
             .disabled(forgottenPasswordEmail.isEmpty)
-        }
-        .alert("Email sent", isPresented: $showingEmailSent) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text("Check your inbox for the password reset link.")
         }
     }
     
     var loginButton: some View {
         Button {
             if !email.isEmpty && !password.isEmpty {
-                authManager.signIn(email: email, password: password)
+                authManager.signIn(email: email, password: password) { result in
+                    switch result {
+                    case .success(_):
+                        break
+                    case .failure(let failure):
+                        alertHeader = "Error"
+                        alertMessage = "\(failure.localizedDescription)"
+                        showingAlert = true
+                    }
+                }
             }
         } label: {
             Text("Login")

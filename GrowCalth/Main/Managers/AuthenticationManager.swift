@@ -33,53 +33,65 @@ class AuthenticationManager: ObservableObject {
         }
     }
     
-    func signIn(email: String, password: String) {
+    func signIn(email: String, password: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
-            guard error == nil else { return }
-            withAnimation {
-                self.isLoggedIn = true
+            if let err = error {
+                completion(.failure(err))
+            } else {
+                withAnimation {
+                    self.isLoggedIn = true
+                }
+                completion(.success(true))
             }
         }
     }
     
-    func signOut() {
+    func signOut(_ completion: @escaping ((Result<Bool, Error>) -> Void)) {
         do {
             try Auth.auth().signOut()
-        } catch let signOutError as NSError {
-            print("Error signing out: %@", signOutError)
+        } catch let signOutError {
+            print("Error signing out: ", signOutError)
+            completion(.failure(signOutError))
         }
+        
         verifyAuthenticationState()
     }
     
-    func forgotPassword(email: String) {
+    func forgotPassword(email: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
         Auth.auth().sendPasswordReset(withEmail: email) { error in
-            guard error == nil else { return }
+            if let err = error {
+                completion(.failure(err))
+            } else {
+                completion(.success(true))
+            }
         }
     }
     
     
-    func createAccount(email: String, password: String, house: Houses) {
+    func createAccount(email: String, password: String, house: Houses, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            guard error == nil else { return }
-            
-            Firestore.firestore().collection("users").document().setData([
-                "email": email,
-                "house": house.rawValue,
-                "password": password,
-                "points": 0,
-                "steps": 0
-            ]) { err in
-                if let err = err {
-                    print("Error writing document: \(err)")
+            if let err = error {
+                completion(.failure(err))
+            } else {
+                Firestore.firestore().collection("users").document().setData([
+                    "email": email,
+                    "house": house.rawValue,
+                    "password": password,
+                    "points": 0,
+                    "steps": 0
+                ]) { err in
+                    if let err = err {
+                        completion(.failure(err))
+                    } else {
+                        completion(.success(true))
+                    }
                 }
+                self.verifyAuthenticationState()
             }
-            
-            self.verifyAuthenticationState()
         }
     }
     
     func updatePassword(from oldPassword: String, to newPassword: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
-        
         let credential = EmailAuthProvider.credential(withEmail: Auth.auth().currentUser?.email ?? "", password: oldPassword)
         Auth.auth().currentUser?.reauthenticate(with: credential) { result, error in
             if let error = error {
