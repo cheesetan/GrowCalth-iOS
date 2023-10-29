@@ -21,7 +21,7 @@ struct GoalsView: View {
     }
     
     var body: some View {
-        VStack(spacing: 15) {
+        VStack(spacing: 30) {
             Spacer()
             stepsGoalView
             distanceGoalView
@@ -29,7 +29,6 @@ struct GoalsView: View {
         }
         .padding(.horizontal)
         .navigationTitle("Goals")
-        .navigationBarTitleDisplayMode(.inline)
         .refreshable {
             goalsManager.refreshGoals()
         }
@@ -118,6 +117,8 @@ struct GoalsView: View {
             .aspectRatio(contentMode: .fit)
             .frame(width: 48)
             .foregroundColor(color)
+            .background(.white)
+            .mask(Circle())
             .onTapGesture {
                 increment(for: goalType)
             }
@@ -145,6 +146,8 @@ struct GoalsView: View {
             .aspectRatio(contentMode: .fit)
             .frame(width: 48)
             .foregroundColor(decrementButtonColor(for: goalType))
+            .background(.white)
+            .mask(Circle())
             .onTapGesture {
                 decrement(for: goalType)
             }

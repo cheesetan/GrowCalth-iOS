@@ -8,21 +8,31 @@
 import SwiftUI
 import FirebaseFirestore
 import FirebaseAuth
+import SwiftPersistence
 
 struct SettingsView: View {
     
+    @State var settingsColorScheme: PreferredColorScheme = .automatic
     @State var showingSignOutAlert = false
     @ObservedObject var authManager: AuthenticationManager = .shared
     
+    @ObservedObject var csManager: ColorSchemeManager = .shared
+    
+    @Persistent("preferredColorSchemeAppStorage", store: .fileManager) private var preferredColorSchemeAppStorage: PreferredColorScheme = .automatic
+        
     var body: some View {
         NavigationStack {
             List {
                 general
+                appearance
                 health
                 preferences
                 signOutButton
             }
             .navigationTitle("Settings")
+        }
+        .onAppear {
+            settingsColorScheme = preferredColorSchemeAppStorage
         }
     }
     
@@ -32,6 +42,23 @@ struct SettingsView: View {
                 About()
             } label: {
                 Label("About", systemImage: "questionmark.circle.fill")
+            }
+        }
+    }
+    
+    var appearance: some View {
+        Section("Appearance") {
+            Picker("Preferred Color Scheme", selection: $settingsColorScheme) {
+                Text("Light")
+                    .tag(PreferredColorScheme.light)
+                Text("Automatic")
+                    .tag(PreferredColorScheme.automatic)
+                Text("Dark")
+                    .tag(PreferredColorScheme.dark)
+            }
+            .pickerStyle(.segmented)
+            .onChange(of: settingsColorScheme) { newValue in
+                csManager.updatePreferredColorScheme(to: newValue)
             }
         }
     }

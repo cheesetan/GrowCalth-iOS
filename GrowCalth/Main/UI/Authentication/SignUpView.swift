@@ -22,9 +22,12 @@ struct SignUpView: View {
     
     @State var email = ""
     @State var password = ""
+    @State var showingPassword = false
     @State var houseSelection: Houses = .selectHouse
     
     @ObservedObject var authManager: AuthenticationManager = .shared
+    
+    @FocusState var passwordFieldFocused: Bool
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -43,17 +46,15 @@ struct SignUpView: View {
     }
     
     var infoFields: some View {
-        VStack {
+        VStack(spacing: 10) {
             TextField("Email Address", text: $email)
                 .padding()
                 .background(.ultraThickMaterial)
                 .cornerRadius(16)
                 .keyboardType(.emailAddress)
+                .textContentType(.username)
             
-            SecureField("Password", text: $password)
-                .padding()
-                .background(.ultraThickMaterial)
-                .cornerRadius(16)
+                passwordField
             
             Picker("Select your house", selection: $houseSelection) {
                 ForEach(Houses.allCases, id: \.hashValue) { house in
@@ -71,6 +72,37 @@ struct SignUpView: View {
             }
             .pickerStyle(.menu)
             .padding(.vertical, 5)
+        }
+    }
+    
+    var passwordField: some View {
+        ZStack(alignment: .trailing) {
+            if showingPassword {
+                TextField("Password", text: $password)
+                    .padding()
+                    .background(.ultraThickMaterial)
+                    .cornerRadius(16)
+                    .textContentType(.password)
+                    .focused($passwordFieldFocused)
+            } else {
+                SecureField("Password", text: $password)
+                    .padding()
+                    .background(.ultraThickMaterial)
+                    .cornerRadius(16)
+                    .textContentType(.password)
+                    .focused($passwordFieldFocused)
+            }
+            Button {
+                showingPassword.toggle()
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+                    passwordFieldFocused = true
+                }
+            } label: {
+                Image(systemName: showingPassword ? "eye.slash" : "eye")
+                    .foregroundColor(.secondary)
+            }
+            .buttonStyle(.plain)
+            .padding(.trailing, 20)
         }
     }
     

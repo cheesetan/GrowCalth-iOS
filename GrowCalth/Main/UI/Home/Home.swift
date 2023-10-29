@@ -17,6 +17,8 @@ struct Home: View {
     @ObservedObject var quotesManager: QuotesManager = .shared
     @ObservedObject var goalsManager: GoalsManager = .shared
     
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -78,13 +80,14 @@ struct Home: View {
     var steps: some View {
         RoundedRectangle(cornerRadius: 16)
             .frame(width: halfUIWidth, height: halfUIWidth + 30)
-            .foregroundColor(.white)
-            .shadow(color: .black, radius: 4, x: -1, y: 5)
+            .foregroundColor(Color(uiColor: .systemBackground))
+            .shadow(color: .primary, radius: 4, x: -1, y: 5)
             .overlay {
                 ZStack {
                     circularBackground(frame1: halfUIWidth - 55, frame2: halfUIWidth - 70)
                     VStack {
                         Text("\(hkManager.steps ?? 0)")
+                            .foregroundColor(.black)
                             .fontWeight(.black)
                             .font(.title)
                         Text("steps")
@@ -96,15 +99,21 @@ struct Home: View {
             .overlay {
                 rectangleHeader(text: "Steps")
             }
+            .overlay {
+                if colorScheme == .dark {
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(.white, lineWidth: 2)
+                }
+            }
     }
     
     var leaderboards: some View {
         RoundedRectangle(cornerRadius: 16)
             .frame(width: halfUIWidth, height: halfUIWidth - 15)
             .foregroundColor(.black)
-            .shadow(color: .black, radius: 4, x: -1, y: 5)
+            .shadow(color: .primary, radius: 4, x: -1, y: 5)
             .overlay {
-                Image("leaderboard")
+                Image("Leaderboard")
                     .resizable()
                     .scaledToFit()
                     .frame(width: halfUIWidth / 1.75)
@@ -114,18 +123,25 @@ struct Home: View {
                 rectangleHeader(text: "Leaderboards")
                     .foregroundColor(.white)
             }
+            .overlay {
+                if colorScheme == .dark {
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(.white, lineWidth: 2)
+                }
+            }
     }
     
     var distance: some View {
         RoundedRectangle(cornerRadius: 16)
             .frame(width: halfUIWidth, height: halfUIWidth)
-            .foregroundColor(.white)
-            .shadow(color: .black, radius: 4, x: -1, y: 5)
+            .foregroundColor(Color(uiColor: .systemBackground))
+            .shadow(color: .primary, radius: 4, x: -1, y: 5)
             .overlay {
                 ZStack {
                     circularBackground(frame1: halfUIWidth - 65, frame2: halfUIWidth - 80)
                     VStack {
                         Text("\(hkManager.distance ?? 0.00, specifier: "%.2f")")
+                            .foregroundColor(.black)
                             .fontWeight(.black)
                             .font(.title)
                         Text("km")
@@ -137,13 +153,19 @@ struct Home: View {
             .overlay {
                 rectangleHeader(text: "Distance")
             }
+            .overlay {
+                if colorScheme == .dark {
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(.white, lineWidth: 2)
+                }
+            }
     }
     
     var daysinappprogress: some View {
         RoundedRectangle(cornerRadius: 16)
             .frame(width: halfUIWidth, height: halfUIWidth + 45)
-            .foregroundColor(.white)
-            .shadow(color: .black, radius: 4, x: -1, y: 5)
+            .foregroundColor(Color(uiColor: .systemBackground))
+            .shadow(color: .primary, radius: 4, x: -1, y: 5)
             .overlay {
                 VStack {
                     if let daysInApp = daysManager.daysInApp {
@@ -167,6 +189,12 @@ struct Home: View {
             .overlay {
                 rectangleHeader(text: "Progress")
             }
+            .overlay {
+                if colorScheme == .dark {
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(.white, lineWidth: 2)
+                }
+            }
     }
     
     var quotes: some View {
@@ -174,12 +202,13 @@ struct Home: View {
             .frame(maxWidth: .infinity)
             .frame(height: 150)
             .foregroundColor(Color(hex: 0xC2CFDE))
-            .shadow(color: .black, radius: 4, x: -1, y: 5)
+            .shadow(color: .primary, radius: 4, x: -1, y: 5)
             .overlay {
                 VStack {
                     HStack {
                         if let content = quotesManager.quote?.content {
                             Text(content)
+                                .foregroundColor(.black)
                                 .font(.title3)
                                 .fontWeight(.semibold)
                         }
@@ -190,12 +219,19 @@ struct Home: View {
                         HStack {
                             Spacer()
                             Text(author)
+                                .foregroundColor(.black)
                                 .font(.subheadline)
                                 .fontWeight(.bold)
                         }
                     }
                 }
                 .padding()
+            }
+            .overlay {
+                if colorScheme == .dark {
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(.white, lineWidth: 2)
+                }
             }
     }
     
@@ -220,7 +256,7 @@ struct Home: View {
             .frame(maxWidth: .infinity)
             .frame(height: halfUIWidth - 30)
             .foregroundColor(Color(hex: 0x7B5B66))
-            .shadow(color: .black, radius: 4, x: -1, y: 5)
+            .shadow(color: .primary, radius: 4, x: -1, y: 5)
             .overlay {
                 VStack(spacing: 10) {
                     ProgressBar(text: "Steps", color: .red, height: 35, value: stepsGoalFloat)
@@ -236,12 +272,18 @@ struct Home: View {
                     .font(.title)
                     .foregroundColor(.white)
             }
+            .overlay {
+                if colorScheme == .dark {
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(.white, lineWidth: 2)
+                }
+            }
     }
     @ViewBuilder
     func circularBackground(frame1: CGFloat, frame2: CGFloat) -> some View {
         ZStack {
             Circle()
-                .foregroundColor(.black)
+                .foregroundColor(colorScheme == .light ? .black : .secondary)
                 .frame(width: frame1, height: frame1)
             Circle()
                 .foregroundColor(Color(hex: 0xF1EEE9))

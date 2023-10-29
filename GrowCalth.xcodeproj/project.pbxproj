@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F30CBAC72AEE92930017E100 /* SwiftPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = F30CBAC62AEE92930017E100 /* SwiftPersistence */; };
+		F32046C52AEEB8150047F43E /* ColorSchemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */; };
 		F345AB8B2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB8A2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift */; };
 		F345AB8D2AE62EDE00211FE8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB8C2AE62EDE00211FE8 /* ContentView.swift */; };
 		F345AB8F2AE62EDF00211FE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F345AB8E2AE62EDF00211FE8 /* Assets.xcassets */; };
@@ -49,6 +50,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeManager.swift; sourceTree = "<group>"; };
 		F345AB872AE62EDE00211FE8 /* GrowCalth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrowCalth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F345AB8A2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowCalth_iOSApp.swift; sourceTree = "<group>"; };
 		F345AB8C2AE62EDE00211FE8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */,
 				F36CEFBE2AE73B4400C7CE36 /* HealthInfoManager.swift */,
 				F3E9FBD22AECB52600801A1C /* GoalsManager.swift */,
+				F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -337,6 +340,7 @@
 				F3E9FBCD2AEBFC0400801A1C /* DaysManager.swift in Sources */,
 				F383E24C2AE7C1C200C517C2 /* AnnouncementDetailView.swift in Sources */,
 				F3E9FBD52AECB7E400801A1C /* GoalsView.swift in Sources */,
+				F32046C52AEEB8150047F43E /* ColorSchemeManager.swift in Sources */,
 				F345ABA72AE641CA00211FE8 /* MultiColumnTable.swift in Sources */,
 				F36CEFBF2AE73B4400C7CE36 /* HealthInfoManager.swift in Sources */,
 				F383E2682AE825D400C517C2 /* SignInView.swift in Sources */,
@@ -499,7 +503,6 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -537,7 +540,6 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
