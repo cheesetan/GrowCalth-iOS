@@ -49,7 +49,7 @@ struct AccountInfo: View {
                 }
             }
         }
-        .navigationTitle("Account info")
+        .navigationTitle("Account Information")
         .alert("Change Password", isPresented: $passwordSuccessfullyChanged) {
             Button("OK", role: .cancel) {}
         } message: {

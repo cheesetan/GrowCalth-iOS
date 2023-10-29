@@ -22,13 +22,13 @@ struct EventDetailView: View {
                         Image(systemName: "calendar")
                         Text(event.date)
                     }
-                    .font(.subheadline)
+                    .font(.headline)
                     .foregroundColor(.gray)
                     HStack {
                         Image(systemName: "mappin.and.ellipse")
                         Text(event.venue)
                     }
-                    .font(.subheadline)
+                    .font(.headline)
                     .foregroundColor(.gray)
                 }
                 Divider()

@@ -107,6 +107,15 @@
         "revision" : "3c54ab05249f59f2c6641dd2920b8358ea9ed127",
         "version" : "1.24.0"
       }
+    },
+    {
+      "identity" : "swiftpersistence",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cheesetan/SwiftPersistence",
+      "state" : {
+        "revision" : "ad4433dfbdf7b2c00a076cb6ea891b663c29afe6",
+        "version" : "1.1.1"
+      }
     }
   ],
   "version" : 2

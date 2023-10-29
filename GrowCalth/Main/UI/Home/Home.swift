@@ -15,6 +15,7 @@ struct Home: View {
     @ObservedObject var daysManager: DaysManager = .shared
     @ObservedObject var hkManager: HealthKitManager = .shared
     @ObservedObject var quotesManager: QuotesManager = .shared
+    @ObservedObject var goalsManager: GoalsManager = .shared
     
     var body: some View {
         NavigationStack {
@@ -47,7 +48,13 @@ struct Home: View {
                             quotes
                         }
                         .buttonStyle(.plain)
-                        goals
+                        
+                        NavigationLink {
+                            GoalsView()
+                        } label: {
+                            goals
+                        }
+                        .buttonStyle(.plain)
                     }
                     .padding(.top, 7.5)
                 }
@@ -192,6 +199,22 @@ struct Home: View {
             }
     }
     
+    var stepsGoalFloat: Binding<Double> {
+        if let stepsGoal = goalsManager.stepsGoal, let steps = hkManager.steps {
+            return .constant(Double(steps) / Double(stepsGoal))
+        } else {
+            return .constant(0)
+        }
+    }
+    
+    var distanceGoalFloat: Binding<Double> {
+        if let distanceGoal = goalsManager.distanceGoal, let distance = hkManager.distance {
+            return .constant(Double(distance) / Double(distanceGoal))
+        } else {
+            return .constant(0)
+        }
+    }
+    
     var goals: some View {
         RoundedRectangle(cornerRadius: 16)
             .frame(maxWidth: .infinity)
@@ -199,7 +222,17 @@ struct Home: View {
             .foregroundColor(Color(hex: 0x7B5B66))
             .shadow(color: .black, radius: 4, x: -1, y: 5)
             .overlay {
-                rectangleHeader(text: "Set your Goals", font: .title3)
+                VStack(spacing: 10) {
+                    ProgressBar(text: "Steps", color: .red, height: 35, value: stepsGoalFloat)
+                    ProgressBar(text: "Distance", color: .green, height: 35, value: distanceGoalFloat)
+                }
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .padding([.horizontal, .top])
+            }
+            .overlay {
+                rectangleHeader(text: "Goals", font: .title3)
                     .font(.title)
                     .foregroundColor(.white)
             }

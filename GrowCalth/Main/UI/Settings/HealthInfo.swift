@@ -6,28 +6,34 @@
 //
 
 import SwiftUI
+import SwiftPersistence
+
+struct HealthInfoItem: Codable, Identifiable {
+    var id = UUID()
+    var text: String
+}
 
 struct HealthInfo: View {
     
     @State var text = ""
     
-    @ObservedObject var healthInfoManager: HealthInfoManager = .shared
+    @Persistent("healthInfos", store: .fileManager) private var healthInfos: [HealthInfoItem] = []
     
     var body: some View {
         VStack {
-            if !healthInfoManager.healthinfos.isEmpty {
+            if !healthInfos.isEmpty {
                 List {
-                    ForEach(healthInfoManager.healthinfos, id: \.id) { item in
+                    ForEach(healthInfos, id: \.id) { item in
                         VStack(alignment: .leading) {
                             Text(item.text)
                                 .lineLimit(2)
                         }
                     }
                     .onDelete { indexSet in
-                        healthInfoManager.healthinfos.remove(atOffsets: indexSet)
+                        healthInfos.remove(atOffsets: indexSet)
                     }
                     .onMove { from, to in
-                        healthInfoManager.healthinfos.move(fromOffsets: from, toOffset: to)
+                        healthInfos.move(fromOffsets: from, toOffset: to)
                     }
                 }
             } else {
@@ -44,7 +50,7 @@ struct HealthInfo: View {
                 }
                 Button {
                     if !text.isEmpty {
-                        healthInfoManager.healthinfos.append(HealthInfoItem(text: text))
+                        healthInfos.append(HealthInfoItem(text: text))
                         text = ""
                     }
                 } label: {
@@ -58,7 +64,7 @@ struct HealthInfo: View {
             .padding(.bottom, 5)
             .padding(.horizontal, 10)
         }
-        .navigationTitle("Health information")
+        .navigationTitle("Health Information")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 EditButton()

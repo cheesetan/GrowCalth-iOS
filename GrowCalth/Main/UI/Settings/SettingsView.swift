@@ -29,9 +29,9 @@ struct SettingsView: View {
     var general: some View {
         Section("General") {
             NavigationLink {
-                AboutUs()
+                About()
             } label: {
-                Label("About us", systemImage: "questionmark.circle.fill")
+                Label("About", systemImage: "questionmark.circle.fill")
             }
         }
     }
@@ -41,7 +41,7 @@ struct SettingsView: View {
             NavigationLink {
                 HealthInfo()
             } label: {
-                Label("Health information", systemImage: "heart.text.square.fill")
+                Label("Health Information", systemImage: "heart.text.square.fill")
             }
         }
     }
@@ -51,7 +51,7 @@ struct SettingsView: View {
             NavigationLink {
                 AccountInfo()
             } label: {
-                Label("Account info", systemImage: "person.fill")
+                Label("Account Information", systemImage: "person.fill")
             }
             
             NavigationLink {

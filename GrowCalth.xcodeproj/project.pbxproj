@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F30CBAC72AEE92930017E100 /* SwiftPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = F30CBAC62AEE92930017E100 /* SwiftPersistence */; };
 		F345AB8B2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB8A2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift */; };
 		F345AB8D2AE62EDE00211FE8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB8C2AE62EDE00211FE8 /* ContentView.swift */; };
 		F345AB8F2AE62EDF00211FE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F345AB8E2AE62EDF00211FE8 /* Assets.xcassets */; };
@@ -40,7 +41,10 @@
 		F3E9FBCD2AEBFC0400801A1C /* DaysManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBCC2AEBFC0400801A1C /* DaysManager.swift */; };
 		F3E9FBCF2AEC0E8500801A1C /* QuotesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBCE2AEC0E8500801A1C /* QuotesManager.swift */; };
 		F3E9FBD12AEC197400801A1C /* QuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBD02AEC197400801A1C /* QuoteView.swift */; };
-		F3F6124A2AE6DDA200713E80 /* AboutUs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F612492AE6DDA200713E80 /* AboutUs.swift */; };
+		F3E9FBD32AECB52600801A1C /* GoalsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBD22AECB52600801A1C /* GoalsManager.swift */; };
+		F3E9FBD52AECB7E400801A1C /* GoalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBD42AECB7E400801A1C /* GoalsView.swift */; };
+		F3E9FBD72AED62C700801A1C /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBD62AED62C700801A1C /* ProgressBar.swift */; };
+		F3F6124A2AE6DDA200713E80 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F612492AE6DDA200713E80 /* About.swift */; };
 		F3F6124C2AE6DF0400713E80 /* HealthInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */; };
 /* End PBXBuildFile section */
 
@@ -75,7 +79,10 @@
 		F3E9FBCC2AEBFC0400801A1C /* DaysManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysManager.swift; sourceTree = "<group>"; };
 		F3E9FBCE2AEC0E8500801A1C /* QuotesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotesManager.swift; sourceTree = "<group>"; };
 		F3E9FBD02AEC197400801A1C /* QuoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteView.swift; sourceTree = "<group>"; };
-		F3F612492AE6DDA200713E80 /* AboutUs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutUs.swift; sourceTree = "<group>"; };
+		F3E9FBD22AECB52600801A1C /* GoalsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsManager.swift; sourceTree = "<group>"; };
+		F3E9FBD42AECB7E400801A1C /* GoalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsView.swift; sourceTree = "<group>"; };
+		F3E9FBD62AED62C700801A1C /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
+		F3F612492AE6DDA200713E80 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
 		F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -89,6 +96,7 @@
 				F383E25C2AE812FB00C517C2 /* FirebaseAuthCombine-Community in Frameworks */,
 				F383E2602AE812FB00C517C2 /* FirebaseFirestoreCombine-Community in Frameworks */,
 				F383E25A2AE812FB00C517C2 /* FirebaseAuth in Frameworks */,
+				F30CBAC72AEE92930017E100 /* SwiftPersistence in Frameworks */,
 				F383E2622AE812FB00C517C2 /* FirebaseFirestoreSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -170,6 +178,7 @@
 			children = (
 				F345ABA62AE641CA00211FE8 /* MultiColumnTable.swift */,
 				F345ABAC2AE6C9D900211FE8 /* Color+Hex.swift */,
+				F3E9FBD62AED62C700801A1C /* ProgressBar.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -184,6 +193,7 @@
 				F3E9FBCA2AEBC28600801A1C /* LeaderboardsManager.swift */,
 				F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */,
 				F36CEFBE2AE73B4400C7CE36 /* HealthInfoManager.swift */,
+				F3E9FBD22AECB52600801A1C /* GoalsManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -194,6 +204,7 @@
 				F345AB9B2AE62F3E00211FE8 /* Home.swift */,
 				F383E2482AE7BCD300C517C2 /* LeaderboardView.swift */,
 				F3E9FBD02AEC197400801A1C /* QuoteView.swift */,
+				F3E9FBD42AECB7E400801A1C /* GoalsView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -222,7 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				F345ABA12AE62F5A00211FE8 /* SettingsView.swift */,
-				F3F612492AE6DDA200713E80 /* AboutUs.swift */,
+				F3F612492AE6DDA200713E80 /* About.swift */,
 				F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */,
 				F383E2692AE8297700C517C2 /* AccountInfo.swift */,
 				F383E2452AE7A59300C517C2 /* HouseInfo.swift */,
@@ -253,6 +264,7 @@
 				F383E25D2AE812FB00C517C2 /* FirebaseFirestore */,
 				F383E25F2AE812FB00C517C2 /* FirebaseFirestoreCombine-Community */,
 				F383E2612AE812FB00C517C2 /* FirebaseFirestoreSwift */,
+				F30CBAC62AEE92930017E100 /* SwiftPersistence */,
 			);
 			productName = "Growcalth-iOS";
 			productReference = F345AB872AE62EDE00211FE8 /* GrowCalth.app */;
@@ -284,6 +296,7 @@
 			mainGroup = F345AB7E2AE62EDE00211FE8;
 			packageReferences = (
 				F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				F30CBAC52AEE92930017E100 /* XCRemoteSwiftPackageReference "SwiftPersistence" */,
 			);
 			productRefGroup = F345AB882AE62EDE00211FE8 /* Products */;
 			projectDirPath = "";
@@ -323,15 +336,18 @@
 				F345AB9E2AE62F4600211FE8 /* Announcements.swift in Sources */,
 				F3E9FBCD2AEBFC0400801A1C /* DaysManager.swift in Sources */,
 				F383E24C2AE7C1C200C517C2 /* AnnouncementDetailView.swift in Sources */,
+				F3E9FBD52AECB7E400801A1C /* GoalsView.swift in Sources */,
 				F345ABA72AE641CA00211FE8 /* MultiColumnTable.swift in Sources */,
 				F36CEFBF2AE73B4400C7CE36 /* HealthInfoManager.swift in Sources */,
 				F383E2682AE825D400C517C2 /* SignInView.swift in Sources */,
+				F3E9FBD72AED62C700801A1C /* ProgressBar.swift in Sources */,
 				F383E2492AE7BCD300C517C2 /* LeaderboardView.swift in Sources */,
 				F345AB9C2AE62F3E00211FE8 /* Home.swift in Sources */,
+				F3E9FBD32AECB52600801A1C /* GoalsManager.swift in Sources */,
 				F345AB8D2AE62EDE00211FE8 /* ContentView.swift in Sources */,
 				F383E2512AE80A0200C517C2 /* SignUpView.swift in Sources */,
 				F3E9FBCB2AEBC28600801A1C /* LeaderboardsManager.swift in Sources */,
-				F3F6124A2AE6DDA200713E80 /* AboutUs.swift in Sources */,
+				F3F6124A2AE6DDA200713E80 /* About.swift in Sources */,
 				F383E2532AE80A8900C517C2 /* AuthenticationView.swift in Sources */,
 				F3E9FBD12AEC197400801A1C /* QuoteView.swift in Sources */,
 				F383E26A2AE8297700C517C2 /* AccountInfo.swift in Sources */,
@@ -563,6 +579,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		F30CBAC52AEE92930017E100 /* XCRemoteSwiftPackageReference "SwiftPersistence" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/cheesetan/SwiftPersistence";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.1;
+			};
+		};
 		F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -574,6 +598,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		F30CBAC62AEE92930017E100 /* SwiftPersistence */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F30CBAC52AEE92930017E100 /* XCRemoteSwiftPackageReference "SwiftPersistence" */;
+			productName = SwiftPersistence;
+		};
 		F383E2572AE812FB00C517C2 /* FirebaseAnalyticsWithoutAdIdSupport */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
