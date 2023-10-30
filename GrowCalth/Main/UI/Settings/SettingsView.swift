@@ -27,10 +27,10 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
-                general
+                account
                 appearance
                 health
-                preferences
+                acknowledgements
                 signOutButton
             }
             .navigationTitle("Settings")
@@ -45,14 +45,44 @@ struct SettingsView: View {
         }
     }
     
-    var general: some View {
-        Section("General") {
+    var account: some View {
+        Section("Account") {
             NavigationLink {
-                About()
+                AccountInfo()
             } label: {
-                Label("About", systemImage: "questionmark.circle.fill")
+                HStack {
+                    profileImage
+                        .padding(.trailing, 10)
+                    VStack(alignment: .leading) {
+                        if let email = authManager.email {
+                            Text(email)
+                                .font(.body)
+                                .fontWeight(.bold)
+                            Text("Tap to view account information")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .fontWeight(.semibold)
+                        }
+                    }
+                }
+                .padding(.all, 10)
             }
         }
+    }
+    
+    var profileImage: some View {
+        Circle()
+            .foregroundColor(.blue)
+            .frame(width: 52)
+            .overlay {
+                if let email = authManager.email {
+                    let emailArray = Array(email)
+                    Text(emailArray[0].uppercased())
+                        .font(.title)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                }
+            }
     }
     
     var appearance: some View {
@@ -82,18 +112,12 @@ struct SettingsView: View {
         }
     }
     
-    var preferences: some View {
-        Section("Preferences") {
+    var acknowledgements: some View {
+        Section {
             NavigationLink {
-                AccountInfo()
+                Acknowledgements()
             } label: {
-                Label("Account Information", systemImage: "person.fill")
-            }
-            
-            NavigationLink {
-                HouseInfo()
-            } label: {
-                Label("House", systemImage: "house.fill")
+                Text("Acknowledgements")
             }
         }
     }

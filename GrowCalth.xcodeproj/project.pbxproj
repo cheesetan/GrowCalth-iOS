@@ -45,7 +45,7 @@
 		F3E9FBD32AECB52600801A1C /* GoalsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBD22AECB52600801A1C /* GoalsManager.swift */; };
 		F3E9FBD52AECB7E400801A1C /* GoalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBD42AECB7E400801A1C /* GoalsView.swift */; };
 		F3E9FBD72AED62C700801A1C /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBD62AED62C700801A1C /* ProgressBar.swift */; };
-		F3F6124A2AE6DDA200713E80 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F612492AE6DDA200713E80 /* About.swift */; };
+		F3F6124A2AE6DDA200713E80 /* Acknowledgements.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F612492AE6DDA200713E80 /* Acknowledgements.swift */; };
 		F3F6124C2AE6DF0400713E80 /* HealthInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */; };
 /* End PBXBuildFile section */
 
@@ -84,7 +84,7 @@
 		F3E9FBD22AECB52600801A1C /* GoalsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsManager.swift; sourceTree = "<group>"; };
 		F3E9FBD42AECB7E400801A1C /* GoalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsView.swift; sourceTree = "<group>"; };
 		F3E9FBD62AED62C700801A1C /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
-		F3F612492AE6DDA200713E80 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
+		F3F612492AE6DDA200713E80 /* Acknowledgements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Acknowledgements.swift; sourceTree = "<group>"; };
 		F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -236,7 +236,7 @@
 			isa = PBXGroup;
 			children = (
 				F345ABA12AE62F5A00211FE8 /* SettingsView.swift */,
-				F3F612492AE6DDA200713E80 /* About.swift */,
+				F3F612492AE6DDA200713E80 /* Acknowledgements.swift */,
 				F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */,
 				F383E2692AE8297700C517C2 /* AccountInfo.swift */,
 				F383E2452AE7A59300C517C2 /* HouseInfo.swift */,
@@ -351,7 +351,7 @@
 				F345AB8D2AE62EDE00211FE8 /* ContentView.swift in Sources */,
 				F383E2512AE80A0200C517C2 /* SignUpView.swift in Sources */,
 				F3E9FBCB2AEBC28600801A1C /* LeaderboardsManager.swift in Sources */,
-				F3F6124A2AE6DDA200713E80 /* About.swift in Sources */,
+				F3F6124A2AE6DDA200713E80 /* Acknowledgements.swift in Sources */,
 				F383E2532AE80A8900C517C2 /* AuthenticationView.swift in Sources */,
 				F3E9FBD12AEC197400801A1C /* QuoteView.swift in Sources */,
 				F383E26A2AE8297700C517C2 /* AccountInfo.swift in Sources */,

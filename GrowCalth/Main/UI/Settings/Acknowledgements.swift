@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct About: View {
+struct Acknowledgements: View {
     var body: some View {
         List {
             Section {
@@ -61,5 +61,5 @@ struct About: View {
 }
 
 #Preview {
-    About()
+    Acknowledgements()
 }

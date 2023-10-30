@@ -6,21 +6,22 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct AccountInfo: View {
     
-    @State var errorMessage = String()
-    
     @State var newPassword = ""
     @State var currentPassword = ""
-    @State var passwordChangeFailed = false
-    @State var passwordSuccessfullyChanged = false
+    
+    @State var showingAlert = false
+    @State var alertHeader = ""
+    @State var alertMessage = ""
     
     @ObservedObject var authManager: AuthenticationManager = .shared
     
     var body: some View {
         List {
-            Section("Your Email") {
+            Section("Email") {
                 if let email = authManager.email {
                     Text(email)
                 } else {
@@ -28,7 +29,25 @@ struct AccountInfo: View {
                 }
             }
             
-            Section("Change Password") {
+            Section {
+                NavigationLink {
+                    changePassword
+                } label: {
+                    Text("Change Password")
+                }
+            }
+        }
+        .navigationTitle("Account Information")
+        .alert(alertHeader, isPresented: $showingAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
+        }
+    }
+    
+    var changePassword: some View {
+        VStack {
+            List {
                 SecureField("Current Password", text: $currentPassword)
                 SecureField("New Password", text: $newPassword)
                 Button {
@@ -37,28 +56,20 @@ struct AccountInfo: View {
                         case .success(_):
                             currentPassword = ""
                             newPassword = ""
-                            passwordSuccessfullyChanged = true
+                            alertHeader = "Password Changed"
+                            alertMessage = "Your password has been successfully changed."
+                            showingAlert = true
                         case .failure(let failure):
-                            errorMessage = failure.localizedDescription
-                            passwordChangeFailed = true
-                            print(failure)
+                            alertHeader = "Error"
+                            alertMessage = "\(failure.localizedDescription)"
+                            showingAlert = true
                         }
                     }
                 } label: {
                     Text("Change Password")
                 }
             }
-        }
-        .navigationTitle("Account Information")
-        .alert("Change Password", isPresented: $passwordSuccessfullyChanged) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text("Your password has been successfully changed.")
-        }
-        .alert("Error", isPresented: $passwordChangeFailed) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(errorMessage)
+            .navigationTitle("Change Password")
         }
     }
 }
