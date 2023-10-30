@@ -30,10 +30,8 @@ struct GrowCalth_iOSApp: App {
             ContentView()
                 .preferredColorScheme(csManager.colorScheme == .automatic ? .none : csManager.colorScheme == .dark ? .dark : .light)
                 .onAppear {
-                    let dateformatter = DateFormatter()
-                    dateformatter.dateFormat = "dd/MM/yyyy"
                     let cal = Calendar(identifier: Calendar.Identifier.gregorian)
-                    appInstalledDate = cal.startOfDay(for: dateformatter.date(from: "23/10/2023")!)
+                    appInstalledDate = cal.startOfDay(for: appInstalledDate)
                 }
         }
     }
