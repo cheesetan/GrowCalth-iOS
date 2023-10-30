@@ -50,7 +50,7 @@ class HealthKitManager: ObservableObject {
             return
         }
         
-        let date =  Date()
+        let date = Date()
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         let newDate = cal.startOfDay(for: date)
         let predicate = HKQuery.predicateForSamples(withStart: newDate, end: Date(), options: .strictStartDate)
@@ -79,7 +79,7 @@ class HealthKitManager: ObservableObject {
         guard let type = HKSampleType.quantityType(forIdentifier: .distanceWalkingRunning) else {
             fatalError("Something went wrong retrieving quantity type distanceWalkingRunning")
         }
-        let date =  Date()
+        let date = Date()
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         let newDate = cal.startOfDay(for: date)
 
@@ -96,6 +96,35 @@ class HealthKitManager: ObservableObject {
             DispatchQueue.main.async {
                 self.distance = value / 1000
             }
+        }
+        
+        healthStore.execute(query)
+    }
+    
+    func fetchStepsForPointsCalculation(startDate: Date, endDate: Date, _ completion: @escaping ((Result<Int, Error>) -> Void) ) {
+        guard let stepCountType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
+            return
+        }
+        
+        let cal = Calendar(identifier: Calendar.Identifier.gregorian)
+        let newDate = cal.startOfDay(for: startDate)
+        let predicate = HKQuery.predicateForSamples(withStart: newDate, end: endDate, options: .strictStartDate)
+        
+        let query = HKStatisticsQuery(
+            quantityType: stepCountType, // the data type
+            quantitySamplePredicate: predicate, // the predicate using the set startDate and endDate
+            options: [.cumulativeSum] // to get the total steps
+        ) {
+            _, result, error in
+            guard let result = result, let sum = result.sumQuantity() else {
+                print("failed to read step count: \(error?.localizedDescription ?? "UNKNOWN ERROR")")
+                if let error = error {
+                    completion(.failure(error))
+                }
+                return
+            }
+            let steps = Int(sum.doubleValue(for: HKUnit.count()))
+            completion(.success(steps))
         }
         
         healthStore.execute(query)

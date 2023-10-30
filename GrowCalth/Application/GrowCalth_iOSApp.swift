@@ -23,11 +23,18 @@ struct GrowCalth_iOSApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     @ObservedObject var csManager: ColorSchemeManager = .shared
+    @Persistent("appInstalledDate") var appInstalledDate: Date = Date()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .preferredColorScheme(csManager.colorScheme == .automatic ? .none : csManager.colorScheme == .dark ? .dark : .light)
+                .onAppear {
+                    let dateformatter = DateFormatter()
+                    dateformatter.dateFormat = "dd/MM/yyyy"
+                    let cal = Calendar(identifier: Calendar.Identifier.gregorian)
+                    appInstalledDate = cal.startOfDay(for: dateformatter.date(from: "23/10/2023")!)
+                }
         }
     }
 }

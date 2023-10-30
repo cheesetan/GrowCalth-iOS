@@ -48,6 +48,7 @@
 		F3E9FBD72AED62C700801A1C /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBD62AED62C700801A1C /* ProgressBar.swift */; };
 		F3F6124A2AE6DDA200713E80 /* Acknowledgements.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F612492AE6DDA200713E80 /* Acknowledgements.swift */; };
 		F3F6124C2AE6DF0400713E80 /* HealthInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */; };
+		F3F955112AEFF96700BD5376 /* PointsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F955102AEFF96700BD5376 /* PointsManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -88,6 +89,7 @@
 		F3E9FBD62AED62C700801A1C /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
 		F3F612492AE6DDA200713E80 /* Acknowledgements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Acknowledgements.swift; sourceTree = "<group>"; };
 		F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthInfo.swift; sourceTree = "<group>"; };
+		F3F955102AEFF96700BD5376 /* PointsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointsManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +199,7 @@
 				F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */,
 				F3E9FBCA2AEBC28600801A1C /* LeaderboardsManager.swift */,
 				F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */,
+				F3F955102AEFF96700BD5376 /* PointsManager.swift */,
 				F36CEFBE2AE73B4400C7CE36 /* HealthInfoManager.swift */,
 				F3E9FBD22AECB52600801A1C /* GoalsManager.swift */,
 				F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */,
@@ -337,6 +340,7 @@
 				F345ABA02AE62F5600211FE8 /* NAPFA.swift in Sources */,
 				F383E2462AE7A59300C517C2 /* HouseInfo.swift in Sources */,
 				F345ABAB2AE6BEFA00211FE8 /* HealthKitManager.swift in Sources */,
+				F3F955112AEFF96700BD5376 /* PointsManager.swift in Sources */,
 				F383E2662AE8162D00C517C2 /* AuthenticationManager.swift in Sources */,
 				F3F6124C2AE6DF0400713E80 /* HealthInfo.swift in Sources */,
 				F345AB9E2AE62F4600211FE8 /* Announcements.swift in Sources */,
@@ -494,7 +498,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GrowCalth/GrowCalth.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 7K6ZTDFM48;
 				ENABLE_PREVIEWS = YES;
@@ -502,6 +506,7 @@
 				INFOPLIST_FILE = GrowCalth/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GrowCalth;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -511,7 +516,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kidcodes.growcalth-debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -531,7 +536,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GrowCalth/GrowCalth.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 7K6ZTDFM48;
 				ENABLE_PREVIEWS = YES;
@@ -539,6 +544,7 @@
 				INFOPLIST_FILE = GrowCalth/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GrowCalth;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -548,7 +554,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

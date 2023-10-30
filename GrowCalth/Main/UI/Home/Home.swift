@@ -16,6 +16,7 @@ struct Home: View {
     @ObservedObject var hkManager: HealthKitManager = .shared
     @ObservedObject var quotesManager: QuotesManager = .shared
     @ObservedObject var goalsManager: GoalsManager = .shared
+    @ObservedObject var pointsManager: PointsManager = .shared
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -74,6 +75,7 @@ struct Home: View {
             hkManager.fetchAllDatas()
             daysManager.refreshNumberOfDaysInApp()
             quotesManager.generateNewQuote()
+            pointsManager.checkAndAddPoints()
         }
     }
     

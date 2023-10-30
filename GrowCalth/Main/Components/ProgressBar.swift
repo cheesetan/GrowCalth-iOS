@@ -39,7 +39,7 @@ struct ProgressBar: View {
                     
                     Capsule()
                         .frame(width: width, height: height)
-                        .foregroundColor((value - Double(i)) >= 1 ? color.opacity(0.8) : color)
+                        .foregroundColor(color)
                         .shadow(color: .black, radius: 4)
                 }
                 
