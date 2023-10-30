@@ -9,30 +9,35 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @AppStorage("onboardingView", store: .standard) var onboardingView = true
     @ObservedObject var authManager: AuthenticationManager = .shared
 
     var body: some View {
-        if authManager.isLoggedIn {
-            TabView {
-                Home()
-                    .tabItem {
-                        Label("Home", systemImage: "house.fill")
-                    }
-                Announcements()
-                    .tabItem {
-                        Label("Announcements", systemImage: "megaphone")
-                    }
-                NAPFA()
-                    .tabItem {
-                        Label("NAPFA", systemImage: "figure.run")
-                    }
-                SettingsView()
-                    .tabItem {
-                        Label("Settings", systemImage: "gearshape")
-                    }
+        if !onboardingView {
+            if authManager.isLoggedIn {
+                TabView {
+                    Home()
+                        .tabItem {
+                            Label("Home", systemImage: "house.fill")
+                        }
+                    Announcements()
+                        .tabItem {
+                            Label("Announcements", systemImage: "megaphone")
+                        }
+                    NAPFA()
+                        .tabItem {
+                            Label("NAPFA", systemImage: "figure.run")
+                        }
+                    SettingsView()
+                        .tabItem {
+                            Label("Settings", systemImage: "gearshape")
+                        }
+                }
+            } else {
+                AuthenticationView()
             }
         } else {
-            AuthenticationView()
+            OnboardingView(onboardingView: $onboardingView)
         }
     }
 }

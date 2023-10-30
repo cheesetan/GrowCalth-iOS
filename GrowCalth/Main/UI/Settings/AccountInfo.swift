@@ -37,7 +37,7 @@ struct AccountInfo: View {
                 }
             }
         }
-        .navigationTitle("Account Information")
+        .navigationTitle("Account")
         .alert(alertHeader, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}
         } message: {

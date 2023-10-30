@@ -29,7 +29,7 @@ struct SettingsView: View {
             List {
                 account
                 appearance
-                health
+//                health
                 acknowledgements
                 signOutButton
             }
@@ -86,7 +86,7 @@ struct SettingsView: View {
     }
     
     var appearance: some View {
-        Section("Appearance") {
+        Section("Preferences") {
             Picker("Preferred Color Scheme", selection: $settingsColorScheme) {
                 Text("Light")
                     .tag(PreferredColorScheme.light)

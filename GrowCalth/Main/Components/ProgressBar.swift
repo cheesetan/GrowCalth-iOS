@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProgressBar: View {
     
-    @State var text: String?
+    @State var text: String
     @State var color: Color
     @State var height: CGFloat
     @Binding var value: Double
@@ -28,28 +28,29 @@ struct ProgressBar: View {
                         if (value - Double(i)) >= 1 { // if bar is completely filled
                             return CGFloat(
                                 geometry.size.width -
-                                (Double(i) * (geometry.size.width / 70)) // minuses a bit of width for layering effect
+                                (Double(i) * (geometry.size.width / 60)) // minuses a bit of width for layering effect
                             )
                         } else { // if bar is not completely filled
                             return CGFloat(
-                                (value - Double(i)) * CGFloat(geometry.size.width - ((Double(i) - 1) * (geometry.size.width / 70))) // minuses a bit of width due to layering effect, making total progressbar length smaller
+                                (value - Double(i)) * CGFloat(geometry.size.width - ((Double(i) - 1) * (geometry.size.width / 60))) // minuses a bit of width due to layering effect, making total progressbar length smaller
                             )
                         }
                     }
                     
                     Capsule()
                         .frame(width: width, height: height)
-                        .foregroundColor(color)
+                        .foregroundColor((value - Double(i)) >= 1 ? color.opacity(0.8) : color)
                         .shadow(color: .black, radius: 4)
                 }
                 
-                if let text = text {
-                    Text(text)
-                        .font(.subheadline)
-                        .fontWeight(.bold)
-                        .lineLimit(1)
+                HStack {
+//                    Text("\(text) - \(value.truncatingRemainder(dividingBy: 1) * 100, specifier: "%.1f")%")
+                    Text("\(text) - \(value * 100, specifier: "%.1f")%")
                         .padding(.leading, 10)
                 }
+                .font(.subheadline)
+                .fontWeight(.bold)
+                .lineLimit(1)
             }
             .mask(Capsule())
         }
