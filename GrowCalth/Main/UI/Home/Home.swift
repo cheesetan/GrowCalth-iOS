@@ -83,7 +83,7 @@ struct Home: View {
         RoundedRectangle(cornerRadius: 16)
             .frame(width: halfUIWidth, height: halfUIWidth + 30)
             .foregroundColor(Color(uiColor: .systemBackground))
-            .shadow(color: .primary, radius: 4, x: -1, y: 5)
+            .shadow(color: .black, radius: 4, x: -1, y: 5)
             .overlay {
                 ZStack {
                     circularBackground(frame1: halfUIWidth - 55, frame2: halfUIWidth - 70)
@@ -113,7 +113,7 @@ struct Home: View {
         RoundedRectangle(cornerRadius: 16)
             .frame(width: halfUIWidth, height: halfUIWidth - 15)
             .foregroundColor(.black)
-            .shadow(color: .primary, radius: 4, x: -1, y: 5)
+            .shadow(color: .black, radius: 4, x: -1, y: 5)
             .overlay {
                 Image("Leaderboard")
                     .resizable()
@@ -137,7 +137,7 @@ struct Home: View {
         RoundedRectangle(cornerRadius: 16)
             .frame(width: halfUIWidth, height: halfUIWidth)
             .foregroundColor(Color(uiColor: .systemBackground))
-            .shadow(color: .primary, radius: 4, x: -1, y: 5)
+            .shadow(color: .black, radius: 4, x: -1, y: 5)
             .overlay {
                 ZStack {
                     circularBackground(frame1: halfUIWidth - 65, frame2: halfUIWidth - 80)
@@ -167,7 +167,7 @@ struct Home: View {
         RoundedRectangle(cornerRadius: 16)
             .frame(width: halfUIWidth, height: halfUIWidth + 45)
             .foregroundColor(Color(uiColor: .systemBackground))
-            .shadow(color: .primary, radius: 4, x: -1, y: 5)
+            .shadow(color: .black, radius: 4, x: -1, y: 5)
             .overlay {
                 VStack {
                     if let daysInApp = daysManager.daysInApp {
@@ -204,7 +204,7 @@ struct Home: View {
             .frame(maxWidth: .infinity)
             .frame(height: 150)
             .foregroundColor(Color(hex: 0xC2CFDE))
-            .shadow(color: .primary, radius: 4, x: -1, y: 5)
+            .shadow(color: .black, radius: 4, x: -1, y: 5)
             .overlay {
                 VStack {
                     HStack {
@@ -258,7 +258,7 @@ struct Home: View {
             .frame(maxWidth: .infinity)
             .frame(height: halfUIWidth - 30)
             .foregroundColor(Color(hex: 0x7B5B66))
-            .shadow(color: .primary, radius: 4, x: -1, y: 5)
+            .shadow(color: .black, radius: 4, x: -1, y: 5)
             .overlay {
                 VStack(spacing: 10) {
                     ProgressBar(text: "Steps", color: .red, height: 35, value: stepsGoalFloat)
