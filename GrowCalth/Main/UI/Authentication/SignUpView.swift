@@ -69,6 +69,7 @@ struct SignUpView: View {
                 ForEach(Houses.allCases, id: \.hashValue) { house in
                     if house != .selectHouse {
                         Text(house.rawValue)
+                            .minimumScaleFactor(0.1)
                             .tag(house)
                     } else {
                         if houseSelection == .selectHouse {
@@ -79,6 +80,7 @@ struct SignUpView: View {
                     }
                 }
             }
+            .minimumScaleFactor(0.1)
             .pickerStyle(.menu)
             .padding(.vertical, 5)
         }
@@ -145,6 +147,7 @@ struct SignUpView: View {
     var bottomText: some View {
         HStack {
             Text("Already have an account?")
+                .minimumScaleFactor(0.1)
             Button {
                 withAnimation {
                     signInView.toggle()
@@ -155,6 +158,7 @@ struct SignUpView: View {
                     .underline()
                     .fontWeight(.semibold)
             }
+            .minimumScaleFactor(0.1)
             .buttonStyle(.plain)
         }
         .font(.subheadline)

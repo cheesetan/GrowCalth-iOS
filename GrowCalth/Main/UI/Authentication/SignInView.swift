@@ -86,6 +86,7 @@ struct SignInView: View {
                 Image(systemName: showingPassword ? "eye.slash" : "eye")
                     .foregroundColor(.secondary)
             }
+            .minimumScaleFactor(0.1)
             .buttonStyle(.plain)
             .padding(.trailing, 20)
         }
@@ -100,7 +101,7 @@ struct SignInView: View {
                 .underline()
         }
         .foregroundColor(.gray)
-        .font(.subheadline)
+        .minimumScaleFactor(0.1)
         .buttonStyle(.plain)
         .padding(.bottom, 5)
         .alert("Forgot Password", isPresented: $showingForgotPassword) {
@@ -158,6 +159,7 @@ struct SignInView: View {
         VStack {
             HStack {
                 Text("Dont have an account yet?")
+                    .minimumScaleFactor(0.1)
                 Button {
                     withAnimation {
                         signInView.toggle()
@@ -170,10 +172,11 @@ struct SignInView: View {
                 }
                 .buttonStyle(.plain)
             }
-            .font(.subheadline)
+            .minimumScaleFactor(0.1)
             .padding(.top, 5)
             
             Text("Your house is waiting for ya!")
+                .minimumScaleFactor(0.1)
                 .font(.subheadline)
         }
     }
