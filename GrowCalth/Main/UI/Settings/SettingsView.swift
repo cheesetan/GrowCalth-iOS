@@ -75,13 +75,17 @@ struct SettingsView: View {
             .foregroundColor(.blue)
             .frame(width: 60)
             .overlay {
-                if let email = authManager.email {
-                    let emailArray = Array(email)
-                    Text(emailArray[0].uppercased())
-                        .font(.system(size: 30.0))
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
+                VStack {
+                    if let email = authManager.email {
+                        let emailArray = Array(email)
+                        Text(emailArray[0].uppercased())
+                    } else {
+                        Text("?")
+                    }
                 }
+                .font(.system(size: 30.0))
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
             }
     }
     
