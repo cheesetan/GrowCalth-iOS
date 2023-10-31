@@ -43,14 +43,12 @@ class PointsManager: ObservableObject {
     }
     
     private func isDueForPointsAwarding() -> Bool {
-        let cal = Calendar(identifier: Calendar.Identifier.gregorian)
-        
         if let lastPointsAwardedDate = lastPointsAwardedDate {
-            if lastPointsAwardedDate.addingTimeInterval(86400) < cal.startOfDay(for: Date()) {
+            if lastPointsAwardedDate.addingTimeInterval(86400) <= Date() {
                 return true
             }
         } else {
-            if appInstalledDate.addingTimeInterval(86400) < cal.startOfDay(for: Date()) {
+            if appInstalledDate.addingTimeInterval(86400) <= Date() {
                 return true
             }
         }
