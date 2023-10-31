@@ -21,7 +21,7 @@ struct LeaderboardView: View {
         List {
             if loaded {
                 ForEach(sortDictionary(for: leaderboardPoints), id: \.key) { house in
-                    houseRow(text: house.key, points: house.value ?? 0)
+                    houseRow(text: house.key, points: house.value)
                 }
             } else {
                 ForEach(sortDictionary(for: cachedLBPoints), id: \.key) { house in

@@ -27,7 +27,7 @@ class PointsManager: ObservableObject {
                     print("pointsToAdd: \(pointsToAdd)")
                     self.addPointsToFirebase(pointsToAdd: pointsToAdd) { result in
                         switch result {
-                        case .success(let success):
+                        case .success(_):
                             self.updateVariables()
                         case .failure(let failure):
                             print(failure.localizedDescription)
@@ -96,7 +96,6 @@ class PointsManager: ObservableObject {
             case .success(let house):
                 Firestore.firestore().collection("HousePoints").document(house).getDocument { (document, error) in
                     if let document = document, document.exists {
-                        let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
                         if let documentData = document.data() {
                             let pointsString = "\(documentData["points"] as! Int)"
                             completion(.success([house, pointsString]))

@@ -46,8 +46,9 @@ struct ProgressBar: View {
                 HStack {
 //                    Text("\(text) - \(value.truncatingRemainder(dividingBy: 1) * 100, specifier: "%.1f")%")
                     Text("\(text) - \(value * 100, specifier: "%.1f")%")
-                        .padding(.leading, 10)
                 }
+                .minimumScaleFactor(0.1)
+                .padding(10)
                 .font(.subheadline)
                 .fontWeight(.bold)
                 .lineLimit(1)

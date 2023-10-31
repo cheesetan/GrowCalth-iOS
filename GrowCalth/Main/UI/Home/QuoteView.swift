@@ -17,12 +17,14 @@ struct QuoteView: View {
             VStack(spacing: 15) {
                 if let content = quotesManager.quote?.content {
                     Text(content)
+                        .minimumScaleFactor(0.1)
                         .fontWeight(.semibold)
                         .font(.title2)
                         .multilineTextAlignment(.center)
                 }
                 if let author = quotesManager.quote?.author {
                     Text(author)
+                        .minimumScaleFactor(0.1)
                         .fontWeight(.bold)
                         .font(.subheadline)
                         .multilineTextAlignment(.center)
@@ -33,6 +35,7 @@ struct QuoteView: View {
                 quotesManager.generateNewQuote()
             } label: {
                 Text("Generate new quote")
+                    .minimumScaleFactor(0.1)
                     .padding()
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)

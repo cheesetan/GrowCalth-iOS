@@ -73,12 +73,12 @@ struct SettingsView: View {
     var profileImage: some View {
         Circle()
             .foregroundColor(.blue)
-            .frame(width: 52)
+            .frame(width: 60)
             .overlay {
                 if let email = authManager.email {
                     let emailArray = Array(email)
                     Text(emailArray[0].uppercased())
-                        .font(.title)
+                        .font(.system(size: 30.0))
                         .fontWeight(.semibold)
                         .foregroundColor(.white)
                 }

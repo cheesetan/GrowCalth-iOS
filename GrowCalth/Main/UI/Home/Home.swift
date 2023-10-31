@@ -89,14 +89,12 @@ struct Home: View {
                     .overlay {
                         VStack {
                             Text("\(hkManager.steps ?? 0)")
-                                .minimumScaleFactor(0.1)
                                 .foregroundColor(.black)
                                 .fontWeight(.black)
-                                .font(.title)
+                                .font(.system(size: 28.0))
                             Text("steps")
-                                .minimumScaleFactor(0.1)
                                 .foregroundColor(.gray)
-                                .font(.subheadline)
+                                .font(.system(size: 15.0))
                         }
                         .padding()
                     }
@@ -149,11 +147,11 @@ struct Home: View {
                                 .minimumScaleFactor(0.1)
                                 .foregroundColor(.black)
                                 .fontWeight(.black)
-                                .font(.title)
+                                .font(.system(size: 28.0))
                             Text("km")
                                 .minimumScaleFactor(0.1)
                                 .foregroundColor(.gray)
-                                .font(.subheadline)
+                                .font(.system(size: 15.0))
                         }
                         .padding()
                     }
@@ -184,9 +182,11 @@ struct Home: View {
                             if daysInApp == 1 {
                                 Text("day in this app")
                                     .minimumScaleFactor(0.1)
+                                    .lineLimit(1)
                             } else {
                                 Text("days in this app")
                                     .minimumScaleFactor(0.1)
+                                    .lineLimit(1)
                             }
                         }
                         .font(.title3)
@@ -195,6 +195,7 @@ struct Home: View {
                         ProgressView()
                     }
                 }
+                .padding()
             }
             .overlay {
                 rectangleHeader(text: "Progress")
@@ -278,7 +279,7 @@ struct Home: View {
                 .padding([.horizontal, .top])
             }
             .overlay {
-                rectangleHeader(text: "Goals", font: .title3)
+                rectangleHeader(text: "Goals", font: .large)
                     .font(.title)
                     .foregroundColor(.white)
             }
@@ -302,13 +303,17 @@ struct Home: View {
         }
     }
     
+    enum FontSize {
+        case small, large
+    }
+    
     @ViewBuilder
-    func rectangleHeader(text: String, font: Font = Font.subheadline) -> some View {
+    func rectangleHeader(text: String, font: FontSize = .small) -> some View {
         VStack {
             HStack {
                 Text(text)
                     .minimumScaleFactor(0.1)
-                    .font(font)
+                    .font(.system(size: font == .small ? 15.0 : 20.0))
                     .fontWeight(.bold)
                     .lineLimit(1)
                 Spacer()

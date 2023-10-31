@@ -14,13 +14,13 @@
 		F345AB8D2AE62EDE00211FE8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB8C2AE62EDE00211FE8 /* ContentView.swift */; };
 		F345AB8F2AE62EDF00211FE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F345AB8E2AE62EDF00211FE8 /* Assets.xcassets */; };
 		F345AB922AE62EDF00211FE8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F345AB912AE62EDF00211FE8 /* Preview Assets.xcassets */; };
-		F345AB9C2AE62F3E00211FE8 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB9B2AE62F3E00211FE8 /* Home.swift */; };
 		F345AB9E2AE62F4600211FE8 /* Announcements.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB9D2AE62F4600211FE8 /* Announcements.swift */; };
 		F345ABA02AE62F5600211FE8 /* NAPFA.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB9F2AE62F5600211FE8 /* NAPFA.swift */; };
 		F345ABA22AE62F5A00211FE8 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABA12AE62F5A00211FE8 /* SettingsView.swift */; };
 		F345ABA72AE641CA00211FE8 /* MultiColumnTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABA62AE641CA00211FE8 /* MultiColumnTable.swift */; };
 		F345ABAB2AE6BEFA00211FE8 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */; };
 		F345ABAD2AE6C9D900211FE8 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABAC2AE6C9D900211FE8 /* Color+Hex.swift */; };
+		F34791BC2AF0BD03002F357F /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34791BB2AF0BD03002F357F /* Home.swift */; };
 		F36CEFBF2AE73B4400C7CE36 /* HealthInfoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36CEFBE2AE73B4400C7CE36 /* HealthInfoManager.swift */; };
 		F383E2462AE7A59300C517C2 /* HouseInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2452AE7A59300C517C2 /* HouseInfo.swift */; };
 		F383E2492AE7BCD300C517C2 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2482AE7BCD300C517C2 /* LeaderboardView.swift */; };
@@ -59,7 +59,6 @@
 		F345AB8C2AE62EDE00211FE8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F345AB8E2AE62EDF00211FE8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F345AB912AE62EDF00211FE8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		F345AB9B2AE62F3E00211FE8 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		F345AB9D2AE62F4600211FE8 /* Announcements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Announcements.swift; sourceTree = "<group>"; };
 		F345AB9F2AE62F5600211FE8 /* NAPFA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NAPFA.swift; sourceTree = "<group>"; };
 		F345ABA12AE62F5A00211FE8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -67,6 +66,7 @@
 		F345ABA92AE6B9D000211FE8 /* GrowCalth.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GrowCalth.entitlements; sourceTree = "<group>"; };
 		F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		F345ABAC2AE6C9D900211FE8 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
+		F34791BB2AF0BD03002F357F /* Home.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		F36CEFBE2AE73B4400C7CE36 /* HealthInfoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthInfoManager.swift; sourceTree = "<group>"; };
 		F383E2452AE7A59300C517C2 /* HouseInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseInfo.swift; sourceTree = "<group>"; };
 		F383E2482AE7BCD300C517C2 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
@@ -210,7 +210,7 @@
 		F383E2472AE7BCC000C517C2 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				F345AB9B2AE62F3E00211FE8 /* Home.swift */,
+				F34791BB2AF0BD03002F357F /* Home.swift */,
 				F383E2482AE7BCD300C517C2 /* LeaderboardView.swift */,
 				F3E9FBD02AEC197400801A1C /* QuoteView.swift */,
 				F3E9FBD42AECB7E400801A1C /* GoalsView.swift */,
@@ -348,12 +348,12 @@
 				F383E24C2AE7C1C200C517C2 /* AnnouncementDetailView.swift in Sources */,
 				F3E9FBD52AECB7E400801A1C /* GoalsView.swift in Sources */,
 				F32046C52AEEB8150047F43E /* ColorSchemeManager.swift in Sources */,
+				F34791BC2AF0BD03002F357F /* Home.swift in Sources */,
 				F345ABA72AE641CA00211FE8 /* MultiColumnTable.swift in Sources */,
 				F36CEFBF2AE73B4400C7CE36 /* HealthInfoManager.swift in Sources */,
 				F383E2682AE825D400C517C2 /* SignInView.swift in Sources */,
 				F3E9FBD72AED62C700801A1C /* ProgressBar.swift in Sources */,
 				F383E2492AE7BCD300C517C2 /* LeaderboardView.swift in Sources */,
-				F345AB9C2AE62F3E00211FE8 /* Home.swift in Sources */,
 				F3E9FBD32AECB52600801A1C /* GoalsManager.swift in Sources */,
 				F30C5C1C2AEF3A6E00474469 /* OnboardingView.swift in Sources */,
 				F345AB8D2AE62EDE00211FE8 /* ContentView.swift in Sources */,
