@@ -86,8 +86,8 @@ struct SettingsView: View {
     }
     
     var appearance: some View {
-        Section("Preferences") {
-            Picker("Preferred Color Scheme", selection: $settingsColorScheme) {
+        Section {
+            Picker("Preferred Appearance", selection: $settingsColorScheme) {
                 Text("Light")
                     .tag(PreferredColorScheme.light)
                 Text("Automatic")
@@ -99,6 +99,10 @@ struct SettingsView: View {
             .onChange(of: settingsColorScheme) { newValue in
                 csManager.updatePreferredColorScheme(to: newValue)
             }
+        } header: {
+            Text("Appearance")
+        } footer: {
+            Text("Automatic sets GrowCalth's appearance based on your device's appearance.")
         }
     }
     

@@ -85,18 +85,21 @@ struct Home: View {
             .foregroundColor(Color(uiColor: .systemBackground))
             .shadow(color: .black, radius: 4, x: -1, y: 5)
             .overlay {
-                ZStack {
-                    circularBackground(frame1: halfUIWidth - 55, frame2: halfUIWidth - 70)
-                    VStack {
-                        Text("\(hkManager.steps ?? 0)")
-                            .foregroundColor(.black)
-                            .fontWeight(.black)
-                            .font(.title)
-                        Text("steps")
-                            .foregroundColor(.gray)
-                            .font(.subheadline)
+                circularBackground(frame1: halfUIWidth - 55, frame2: halfUIWidth - 70)
+                    .overlay {
+                        VStack {
+                            Text("\(hkManager.steps ?? 0)")
+                                .minimumScaleFactor(0.1)
+                                .foregroundColor(.black)
+                                .fontWeight(.black)
+                                .font(.title)
+                            Text("steps")
+                                .minimumScaleFactor(0.1)
+                                .foregroundColor(.gray)
+                                .font(.subheadline)
+                        }
+                        .padding()
                     }
-                }
             }
             .overlay {
                 rectangleHeader(text: "Steps")
@@ -139,18 +142,21 @@ struct Home: View {
             .foregroundColor(Color(uiColor: .systemBackground))
             .shadow(color: .black, radius: 4, x: -1, y: 5)
             .overlay {
-                ZStack {
-                    circularBackground(frame1: halfUIWidth - 65, frame2: halfUIWidth - 80)
-                    VStack {
-                        Text("\(hkManager.distance ?? 0.00, specifier: "%.2f")")
-                            .foregroundColor(.black)
-                            .fontWeight(.black)
-                            .font(.title)
-                        Text("km")
-                            .foregroundColor(.gray)
-                            .font(.subheadline)
+                circularBackground(frame1: halfUIWidth - 65, frame2: halfUIWidth - 80)
+                    .overlay {
+                        VStack {
+                            Text("\(hkManager.distance ?? 0.00, specifier: "%.2f")")
+                                .minimumScaleFactor(0.1)
+                                .foregroundColor(.black)
+                                .fontWeight(.black)
+                                .font(.title)
+                            Text("km")
+                                .minimumScaleFactor(0.1)
+                                .foregroundColor(.gray)
+                                .font(.subheadline)
+                        }
+                        .padding()
                     }
-                }
             }
             .overlay {
                 rectangleHeader(text: "Distance")
@@ -177,8 +183,10 @@ struct Home: View {
                         VStack {
                             if daysInApp == 1 {
                                 Text("day in this app")
+                                    .minimumScaleFactor(0.1)
                             } else {
                                 Text("days in this app")
+                                    .minimumScaleFactor(0.1)
                             }
                         }
                         .font(.title3)
@@ -299,8 +307,10 @@ struct Home: View {
         VStack {
             HStack {
                 Text(text)
+                    .minimumScaleFactor(0.1)
                     .font(font)
                     .fontWeight(.bold)
+                    .lineLimit(1)
                 Spacer()
             }
             Spacer()

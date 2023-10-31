@@ -6,14 +6,16 @@
 //
 
 import SwiftUI
+import SwiftPersistence
 
 struct LeaderboardView: View {
     
-    @State var sampleLBPoints: [String : Int?] = ["Black" : nil, "Blue" : nil, "Green" : nil, "Red" : nil, "Yellow" : nil]
     
     @State var loaded = false
-    @State var leaderboardPoints = [String : Int?]()
+    @State var leaderboardPoints = [String : Int]()
     @ObservedObject var lbManager: LeaderboardsManager = .shared
+    
+    @Persistent("cachedLBPoints") var cachedLBPoints: [String : Int] = ["Black" : 0, "Blue" : 0, "Green" : 0, "Red" : 0, "Yellow" : 0]
     
     var body: some View {
         List {
@@ -22,8 +24,8 @@ struct LeaderboardView: View {
                     houseRow(text: house.key, points: house.value ?? 0)
                 }
             } else {
-                ForEach(sortDictionary(for: sampleLBPoints), id: \.key) { house in
-                    houseRow(text: house.key, points: nil)
+                ForEach(sortDictionary(for: cachedLBPoints), id: \.key) { house in
+                    houseRow(text: house.key, points: house.value)
                 }
             }
         }
@@ -34,24 +36,31 @@ struct LeaderboardView: View {
             
         }
         .onAppear {
+            print("cachedLBPoints before: \(cachedLBPoints)")
             retrieveInformation()
+            print("cachedLBPoints after: \(cachedLBPoints)")
         }
     }
     
     func retrieveInformation() {
         lbManager.retrievePoints { _ in
             leaderboardPoints["Black"] = lbManager.black
+            cachedLBPoints["Black"] = lbManager.black
             leaderboardPoints["Blue"] = lbManager.blue
+            cachedLBPoints["Blue"] = lbManager.blue
             leaderboardPoints["Green"] = lbManager.green
+            cachedLBPoints["Green"] = lbManager.green
             leaderboardPoints["Red"] = lbManager.red
+            cachedLBPoints["Red"] = lbManager.red
             leaderboardPoints["Yellow"] = lbManager.yellow
+            cachedLBPoints["Yellow"] = lbManager.yellow
             loaded = true
         }
     }
     
-    private func sortDictionary(for dictionary: [String : Int?]) -> Array<(key: String, value: Optional<Int>)> {
-        return dictionary.sorted { $0.value ?? 0 > $1.value ?? 0 }.sorted { first, second in
-            if first.value ?? 0 == second.value ?? 0 {
+    private func sortDictionary(for dictionary: [String : Int]) -> Array<(key: String, value: Int)> {
+        return dictionary.sorted { $0.value > $1.value }.sorted { first, second in
+            if first.value == second.value {
                 first.key < second.key
             } else {
                 first.key == second.key
@@ -60,7 +69,7 @@ struct LeaderboardView: View {
     }
     
     @ViewBuilder
-    func houseRow(text: String, points: Int?) -> some View {
+    func houseRow(text: String, points: Int) -> some View {
         HStack {
             Image(text)
                 .resizable()
@@ -75,17 +84,11 @@ struct LeaderboardView: View {
                 .fontWeight(.bold)
                 .padding(.leading, 10)
             Spacer()
-            if let points = points {
-                Text("\(points)")
-                    .font(.title)
-                    .fontWeight(.black)
-                    .multilineTextAlignment(.trailing)
-                    .padding(.trailing)
-            } else {
-                ProgressView()
-                    .font(.title)
-                    .padding(.trailing)
-            }
+            Text("\(points)")
+                .font(.title)
+                .fontWeight(.black)
+                .multilineTextAlignment(.trailing)
+                .padding(.trailing)
         }
     }
 }
