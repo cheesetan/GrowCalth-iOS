@@ -93,10 +93,12 @@ struct OnboardingView: View {
             }
             VStack(spacing: 5) {
                 Text(text)
+                    .minimumScaleFactor(0.1)
                     .font(.title)
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
                 Text(description)
+                    .minimumScaleFactor(0.1)
                     .font(.subheadline)
                     .fontWeight(.none)
                     .multilineTextAlignment(.center)
