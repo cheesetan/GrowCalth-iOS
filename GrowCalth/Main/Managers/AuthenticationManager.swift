@@ -18,7 +18,7 @@ class AuthenticationManager: ObservableObject {
     
     init() {
         verifyAuthenticationState()
-        email = Auth.auth().currentUser?.email
+        updatePublishedVariables()
     }
     
     private func verifyAuthenticationState() {
@@ -33,6 +33,10 @@ class AuthenticationManager: ObservableObject {
         }
     }
     
+    private func updatePublishedVariables() {
+        email = Auth.auth().currentUser?.email
+    }
+    
     func signIn(email: String, password: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if let err = error {
@@ -41,6 +45,7 @@ class AuthenticationManager: ObservableObject {
                 withAnimation {
                     self.isLoggedIn = true
                 }
+                self.updatePublishedVariables()
                 completion(.success(true))
             }
         }
@@ -54,6 +59,7 @@ class AuthenticationManager: ObservableObject {
             completion(.failure(signOutError))
         }
         
+        updatePublishedVariables()
         verifyAuthenticationState()
     }
     
@@ -86,6 +92,7 @@ class AuthenticationManager: ObservableObject {
                         completion(.success(true))
                     }
                 }
+                self.updatePublishedVariables()
                 self.verifyAuthenticationState()
             }
         }

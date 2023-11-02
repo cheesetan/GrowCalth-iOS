@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AuthenticationView: View {
     
-    @AppStorage("signInView", store: .standard) var signInView = false
+    @AppStorage("signInView", store: .standard) var signInView = true
     
     var body: some View {
         VStack {
