@@ -11,7 +11,7 @@ struct Acknowledgements: View {
     var body: some View {
         List {
             Section {
-                Text(LocalizedStringKey("We are a group of students from School of Science and Technology, Singapore. We built this app together with a team of 4. We did this with the aim of wanting to benefit the community throught fitness. We hope that you have enjoyed our app while you used it and if you have any enquiries or feedback, please email us at growcalth.main@gmail.com."))
+                Text(LocalizedStringKey("We are a group of students from School of Science and Technology, Singapore. We built this app together with a team of 5. We did this with the aim of wanting to benefit the community throught fitness. We hope that you have enjoyed our app while you used it and if you have any enquiries or feedback, please email us at growcalth.main@gmail.com."))
             } header: {
                 Label("About GrowCalth", systemImage: "questionmark.circle.fill")
             }
