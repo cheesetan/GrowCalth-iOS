@@ -68,13 +68,13 @@ struct Home: View {
             .refreshable {
                 hkManager.fetchAllDatas()
                 daysManager.refreshNumberOfDaysInApp()
-                quotesManager.generateNewQuote()
+                quotesManager.generateNewQuote() { _ in }
             }
         }
         .onAppear {
             hkManager.fetchAllDatas()
             daysManager.refreshNumberOfDaysInApp()
-            quotesManager.generateNewQuote()
+            quotesManager.generateNewQuote() { _ in }
             pointsManager.checkAndAddPoints()
         }
     }

@@ -9,6 +9,12 @@ import SwiftUI
 
 struct QuoteView: View {
     
+    @State var isLoading = false
+    
+    @State var alertTitle = ""
+    @State var alertDescription = ""
+    @State var showingAlert = false
+    
     @ObservedObject var quotesManager: QuotesManager = .shared
     
     var body: some View {
@@ -32,7 +38,7 @@ struct QuoteView: View {
             }
             Spacer()
             Button {
-                quotesManager.generateNewQuote()
+                generateNewQuote()
             } label: {
                 Text("Generate new quote")
                     .minimumScaleFactor(0.1)
@@ -40,17 +46,41 @@ struct QuoteView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
                     .background(.blue)
-                    .foregroundColor(.white)
+                    .foregroundColor(isLoading ? .clear : .white)
                     .fontWeight(.bold)
                     .cornerRadius(16)
+                    .overlay {
+                        if isLoading {
+                            ProgressView()
+                        }
+                    }
             }
             .buttonStyle(.plain)
+            .disabled(isLoading)
         }
         .padding()
         .navigationTitle("Quotes")
         .navigationBarTitleDisplayMode(.inline)
-        .refreshable {
-            quotesManager.generateNewQuote()
+        .alert(alertTitle, isPresented: $showingAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertDescription)
+        }
+
+    }
+    
+    func generateNewQuote() {
+        isLoading = true
+        quotesManager.generateNewQuote() { result in
+            switch result {
+            case .success(_):
+                isLoading = false
+            case .failure(let failure):
+                isLoading = false
+                alertTitle = "Error"
+                alertDescription = failure.localizedDescription
+                showingAlert = true
+            }
         }
     }
 }

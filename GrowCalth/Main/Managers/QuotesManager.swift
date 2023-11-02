@@ -18,14 +18,21 @@ class QuotesManager: ObservableObject {
     @Published var quote: Quote?
     
     init() {
-        generateNewQuote()
+        generateNewQuote() { _ in }
     }
     
-    func generateNewQuote() {
+    enum QuoteGenerationError: LocalizedError {
+        case errorOccurredWhileFetchingQuote
+        var errorDescription: String? { return "An error has occurred while attempting to generate a new quote." }
+    }
+    
+    func generateNewQuote(_ completion: @escaping ((Result<Bool, Error>) -> Void)) {
         do {
             try fetchQuote()
+            completion(.success(true))
         } catch {
             print("error")
+            completion(.failure(QuoteGenerationError.errorOccurredWhileFetchingQuote))
         }
     }
     
