@@ -47,7 +47,7 @@ class QuotesManager: ObservableObject {
     
     private func setQuote(newQuote: Quote) {
         DispatchQueue.main.async {
-            withAnimation(.easeInOut) {
+            withAnimation(.default) {
                 self.quote = newQuote
             }
         }
