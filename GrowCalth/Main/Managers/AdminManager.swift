@@ -19,6 +19,7 @@ class AdminManager: ObservableObject {
         _ completion: @escaping ((Result<Bool, Error>) -> Void)
     ) {
         Firestore.firestore().collection("Announcements").document().setData([
+            "dateAdded": Date(),
             "header": title,
             "text": description
         ]) { err in
@@ -38,6 +39,7 @@ class AdminManager: ObservableObject {
         _ completion: @escaping ((Result<Bool, Error>) -> Void)
     ) {
         Firestore.firestore().collection("houseevents").document().setData([
+            "dateAdded": Date(),
             "header": title,
             "desc": description,
             "venue": eventVenues,
