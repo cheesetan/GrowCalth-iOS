@@ -43,7 +43,7 @@ class AnnouncementManager: ObservableObject {
     }
     
     func retrieveEvents() {
-        Firestore.firestore().collection("houseevents").getDocuments { (query: QuerySnapshot?, err) in
+        Firestore.firestore().collection("houseevents").order(by: "dateAdded", descending: true).getDocuments { (query: QuerySnapshot?, err) in
             if let err {
                 print("Error getting documents: \(err)")
             } else {
@@ -64,7 +64,7 @@ class AnnouncementManager: ObservableObject {
     }
     
     func retrieveAnnouncements() {
-        Firestore.firestore().collection("Announcements").getDocuments { (query: QuerySnapshot?, err) in
+        Firestore.firestore().collection("Announcements").order(by: "dateAdded", descending: true).getDocuments { (query: QuerySnapshot?, err) in
             if let err {
                 print("Error getting documents: \(err)")
             } else {

@@ -9,9 +9,12 @@ import SwiftUI
 
 struct Announcements: View {
     
+    @State var showingNewAnnouncementView = false
     @State var selection: AnnouncementType = .announcements
     
+    @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var announcementManager: AnnouncementManager = .shared
+    @ObservedObject var adminManager: AdminManager = .shared
     
     var body: some View {
         NavigationStack {
@@ -48,6 +51,24 @@ struct Announcements: View {
             .onAppear {
                 announcementManager.retrieveInformations()
             }
+            .toolbar {
+                if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        createPostButton
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showingNewAnnouncementView) {
+            NewAnnouncementView()
+        }
+    }
+    
+    var createPostButton: some View {
+        Button {
+            showingNewAnnouncementView.toggle()
+        } label: {
+            Label("Create a Post", systemImage: "square.and.pencil")
         }
     }
     

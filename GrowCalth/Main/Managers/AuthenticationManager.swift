@@ -87,7 +87,7 @@ class AuthenticationManager: ObservableObject {
                     Firestore.firestore().collection("users").document().setData([
                         "email": email,
                         "house": house.rawValue,
-                        "password": password,
+//                        "password": password,
                         "points": 0,
                         "steps": 0
                     ]) { err in
@@ -133,25 +133,25 @@ class AuthenticationManager: ObservableObject {
                     if let error = error {
                         completion(.failure(error))
                     } else {
-                        Firestore.firestore().collection("users").whereField("email", isEqualTo: Auth.auth().currentUser?.email ?? "").getDocuments() { (querySnapshot, err) in
-                            if let err = err {
-                                completion(.failure(err))
-                            } else {
-                                for document in querySnapshot!.documents {
-                                    print("\(document.documentID) => \(document.data())")
-                                    
-                                    Firestore.firestore().collection("users").document("\(document.documentID)").updateData([
-                                        "password": newPassword
-                                    ]) { err in
-                                        if let err = err {
-                                            completion(.failure(err))
-                                        } else {
-                                            completion(.success(true))
-                                        }
-                                    }
-                                }
-                            }
-                        }
+//                        Firestore.firestore().collection("users").whereField("email", isEqualTo: Auth.auth().currentUser?.email ?? "").getDocuments() { (querySnapshot, err) in
+//                            if let err = err {
+//                                completion(.failure(err))
+//                            } else {
+//                                for document in querySnapshot!.documents {
+//                                    print("\(document.documentID) => \(document.data())")
+//                                    
+//                                    Firestore.firestore().collection("users").document("\(document.documentID)").updateData([
+//                                        "password": newPassword
+//                                    ]) { err in
+//                                        if let err = err {
+//                                            completion(.failure(err))
+//                                        } else {
+//                                            completion(.success(true))
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
                     }
                 }
             }
