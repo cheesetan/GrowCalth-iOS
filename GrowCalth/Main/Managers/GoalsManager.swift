@@ -29,7 +29,10 @@ class GoalsManager: ObservableObject {
         distanceGoal = distanceGoalAppStorage
     }
     
-    func updateGoal(for typeToUpdate: GoalTypes, to newValue: Double) {
+    func updateGoal(
+        for typeToUpdate: GoalTypes, 
+        to newValue: Double
+    ) {
         switch typeToUpdate {
         case .steps:
             stepsGoalAppStorage = Int(newValue)

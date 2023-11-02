@@ -21,7 +21,6 @@
 		F345ABAB2AE6BEFA00211FE8 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */; };
 		F345ABAD2AE6C9D900211FE8 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABAC2AE6C9D900211FE8 /* Color+Hex.swift */; };
 		F34791BC2AF0BD03002F357F /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34791BB2AF0BD03002F357F /* Home.swift */; };
-		F36CEFBF2AE73B4400C7CE36 /* HealthInfoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F36CEFBE2AE73B4400C7CE36 /* HealthInfoManager.swift */; };
 		F383E2462AE7A59300C517C2 /* HouseInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2452AE7A59300C517C2 /* HouseInfo.swift */; };
 		F383E2492AE7BCD300C517C2 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2482AE7BCD300C517C2 /* LeaderboardView.swift */; };
 		F383E24C2AE7C1C200C517C2 /* AnnouncementDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E24B2AE7C1C200C517C2 /* AnnouncementDetailView.swift */; };
@@ -69,7 +68,6 @@
 		F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		F345ABAC2AE6C9D900211FE8 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		F34791BB2AF0BD03002F357F /* Home.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
-		F36CEFBE2AE73B4400C7CE36 /* HealthInfoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthInfoManager.swift; sourceTree = "<group>"; };
 		F383E2452AE7A59300C517C2 /* HouseInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseInfo.swift; sourceTree = "<group>"; };
 		F383E2482AE7BCD300C517C2 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		F383E24B2AE7C1C200C517C2 /* AnnouncementDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementDetailView.swift; sourceTree = "<group>"; };
@@ -204,7 +202,6 @@
 				F3E9FBCA2AEBC28600801A1C /* LeaderboardsManager.swift */,
 				F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */,
 				F3F955102AEFF96700BD5376 /* PointsManager.swift */,
-				F36CEFBE2AE73B4400C7CE36 /* HealthInfoManager.swift */,
 				F3E9FBD22AECB52600801A1C /* GoalsManager.swift */,
 				F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */,
 				F3A2E6972AF3E63000B34392 /* AdminManager.swift */,
@@ -358,7 +355,6 @@
 				F32046C52AEEB8150047F43E /* ColorSchemeManager.swift in Sources */,
 				F34791BC2AF0BD03002F357F /* Home.swift in Sources */,
 				F345ABA72AE641CA00211FE8 /* MultiColumnTable.swift in Sources */,
-				F36CEFBF2AE73B4400C7CE36 /* HealthInfoManager.swift in Sources */,
 				F383E2682AE825D400C517C2 /* SignInView.swift in Sources */,
 				F3E9FBD72AED62C700801A1C /* ProgressBar.swift in Sources */,
 				F383E2492AE7BCD300C517C2 /* LeaderboardView.swift in Sources */,

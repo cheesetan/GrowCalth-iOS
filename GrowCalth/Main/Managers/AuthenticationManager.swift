@@ -68,7 +68,10 @@ class AuthenticationManager: ObservableObject {
         verifyAuthenticationState()
     }
     
-    func forgotPassword(email: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
+    func forgotPassword(
+        email: String,
+        _ completion: @escaping ((Result<Bool, Error>) -> Void)
+    ) {
         Auth.auth().sendPasswordReset(withEmail: email) { error in
             if let err = error {
                 completion(.failure(err))
@@ -78,7 +81,12 @@ class AuthenticationManager: ObservableObject {
         }
     }
     
-    func createAccount(email: String, password: String, house: Houses, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
+    func createAccount(
+        email: String,
+        password: String,
+        house: Houses,
+        _ completion: @escaping ((Result<Bool, Error>) -> Void)
+    ) {
         if emailProvidedIsSSTEmail(email: email) {
             Auth.auth().createUser(withEmail: email, password: password) { result, error in
                 if let err = error {
@@ -123,7 +131,11 @@ class AuthenticationManager: ObservableObject {
         return returnResult
     }
     
-    func updatePassword(from oldPassword: String, to newPassword: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
+    func updatePassword(
+        from oldPassword: String, 
+        to newPassword: String, 
+        _ completion: @escaping ((Result<Bool, Error>) -> Void)
+    ) {
         let credential = EmailAuthProvider.credential(withEmail: Auth.auth().currentUser?.email ?? "", password: oldPassword)
         Auth.auth().currentUser?.reauthenticate(with: credential) { result, error in
             if let error = error {

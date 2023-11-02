@@ -101,7 +101,11 @@ class HealthKitManager: ObservableObject {
         healthStore.execute(query)
     }
     
-    func fetchStepsForPointsCalculation(startDate: Date, endDate: Date, _ completion: @escaping ((Result<Int, Error>) -> Void) ) {
+    func fetchStepsForPointsCalculation(
+        startDate: Date,
+        endDate: Date,
+        _ completion: @escaping ((Result<Int, Error>) -> Void)
+    ) {
         guard let stepCountType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
             return
         }

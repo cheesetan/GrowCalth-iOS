@@ -69,7 +69,10 @@ class PointsManager: ObservableObject {
         }
     }
     
-    private func addPointsToFirebase(pointsToAdd: Int, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
+    private func addPointsToFirebase(
+        pointsToAdd: Int, 
+        _ completion: @escaping ((Result<Bool, Error>) -> Void)
+    ) {
         fetchCurrentPoints { result in
             switch result {
             case .success(let success):
