@@ -44,7 +44,7 @@ struct Acknowledgements: View {
     }
     
     @ViewBuilder
-    func acknowledgement(title: String, description: String, image: String) -> some View {
+    func acknowledgement(title: LocalizedStringKey, description: String, image: String) -> some View {
         HStack {
             Image(systemName: image)
                 .resizable()
