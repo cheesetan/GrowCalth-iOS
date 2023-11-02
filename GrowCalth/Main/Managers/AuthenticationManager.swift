@@ -10,6 +10,11 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 
+enum AccountCreationError: LocalizedError {
+    case emailIsNotSSTEmail
+    var errorDescription: String? { return "Please sign up with a valid SST Email account." }
+}
+
 class AuthenticationManager: ObservableObject {
     static let shared: AuthenticationManager = .init()
     
@@ -73,29 +78,49 @@ class AuthenticationManager: ObservableObject {
         }
     }
     
-    
     func createAccount(email: String, password: String, house: Houses, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            if let err = error {
-                completion(.failure(err))
-            } else {
-                Firestore.firestore().collection("users").document().setData([
-                    "email": email,
-                    "house": house.rawValue,
-                    "password": password,
-                    "points": 0,
-                    "steps": 0
-                ]) { err in
-                    if let err = err {
-                        completion(.failure(err))
-                    } else {
-                        completion(.success(true))
+        if emailProvidedIsSSTEmail(email: email) {
+            Auth.auth().createUser(withEmail: email, password: password) { result, error in
+                if let err = error {
+                    completion(.failure(err))
+                } else {
+                    Firestore.firestore().collection("users").document().setData([
+                        "email": email,
+                        "house": house.rawValue,
+                        "password": password,
+                        "points": 0,
+                        "steps": 0
+                    ]) { err in
+                        if let err = err {
+                            completion(.failure(err))
+                        } else {
+                            completion(.success(true))
+                        }
                     }
+                    self.updatePublishedVariables()
+                    self.verifyAuthenticationState()
                 }
-                self.updatePublishedVariables()
-                self.verifyAuthenticationState()
             }
+        } else {
+            completion(.failure(AccountCreationError.emailIsNotSSTEmail))
         }
+    }
+    
+    private func emailProvidedIsSSTEmail(email: String) -> Bool {
+        var returnResult = false
+        
+        let regexPatternSSTudent = "(.+)@s20\\d\\d.ssts.edu.sg"
+        let predicateSSTudent = NSPredicate(format: "SELF MATCHES %@", regexPatternSSTudent)
+        returnResult = predicateSSTudent.evaluate(with: email)
+        
+        if returnResult {
+            return returnResult
+        }
+        
+        let regexPatternSSTaff = "(.+)@sst.edu.sg"
+        let predicateSSTaff = NSPredicate(format: "SELF MATCHES %@", regexPatternSSTaff)
+        returnResult = predicateSSTaff.evaluate(with: email)
+        return returnResult
     }
     
     func updatePassword(from oldPassword: String, to newPassword: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
