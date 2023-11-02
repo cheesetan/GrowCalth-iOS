@@ -32,7 +32,7 @@ struct NewAnnouncementView: View {
             VStack {
                 picker
                     .padding(.top, -15)
-                    .padding(.bottom)
+                    .padding([.bottom, .horizontal])
                 
                 TextField("\(postType == .announcements ? "Announcement" : "Event") Title", text: $title)
                     .font(.largeTitle)
