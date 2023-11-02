@@ -8,7 +8,13 @@
 import SwiftUI
 
 struct AnnouncementDetailView: View {
+    
     @State var announcement: Announcement
+    
+    @ObservedObject var authManager: AuthenticationManager = .shared
+    @ObservedObject var announcementManager: AnnouncementManager = .shared
+    @ObservedObject var adminManager: AdminManager = .shared
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -25,5 +31,28 @@ struct AnnouncementDetailView: View {
         }
         .navigationTitle("Announcement")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button {
+                            adminManager.editAnnouncement()
+                        } label: {
+                            Label("Edit Announcement", systemImage: "pencil")
+                        }
+                        
+                        Divider()
+                        
+                        Button(role: .destructive) {
+                            adminManager.deleteAnnouncement()
+                        } label: {
+                            Label("Delete Announcement", systemImage: "trash")
+                        }
+                    } label: {
+                        Label("Post Options", systemImage: "ellipsis.circle")
+                    }
+                }
+            }
+        }
     }
 }

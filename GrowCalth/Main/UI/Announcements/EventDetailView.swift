@@ -11,6 +11,10 @@ struct EventDetailView: View {
     
     @State var event: EventItem
     
+    @ObservedObject var authManager: AuthenticationManager = .shared
+    @ObservedObject var announcementManager: AnnouncementManager = .shared
+    @ObservedObject var adminManager: AdminManager = .shared
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -41,6 +45,29 @@ struct EventDetailView: View {
         }
         .navigationTitle("Event")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button {
+                            adminManager.editEvent()
+                        } label: {
+                            Label("Edit Event", systemImage: "pencil")
+                        }
+                        
+                        Divider()
+                        
+                        Button(role: .destructive) {
+                            adminManager.deleteEvent()
+                        } label: {
+                            Label("Delete Event", systemImage: "trash")
+                        }
+                    } label: {
+                        Label("Post Options", systemImage: "ellipsis.circle")
+                    }
+                }
+            }
+        }
     }
 }
 //
