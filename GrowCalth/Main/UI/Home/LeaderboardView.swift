@@ -20,12 +20,20 @@ struct LeaderboardView: View {
     var body: some View {
         List {
             if loaded {
-                ForEach(sortDictionary(for: leaderboardPoints), id: \.key) { house in
-                    houseRow(text: house.key, points: house.value)
+                Section {
+                    ForEach(sortDictionary(for: leaderboardPoints), id: \.key) { house in
+                        houseRow(text: house.key, points: house.value)
+                    }
+                } footer: {
+                    Text("GrowCalth calculates and updates the leaderboards at 12 midnight every day. 1000 steps = 1 point.")
                 }
             } else {
-                ForEach(sortDictionary(for: cachedLBPoints), id: \.key) { house in
-                    houseRow(text: house.key, points: house.value)
+                Section {
+                    ForEach(sortDictionary(for: cachedLBPoints), id: \.key) { house in
+                        houseRow(text: house.key, points: house.value)
+                    }
+                } footer: {
+                    Text("GrowCalth calculates and updates the leaderboards at 12 midnight every day. 1000 steps = 1 point.")
                 }
             }
         }
