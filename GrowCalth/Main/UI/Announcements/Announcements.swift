@@ -42,6 +42,7 @@ struct Announcements: View {
 
                     }
                 }
+                .animation(.default, value: selection)
             }
             .listStyle(.grouped)
             .navigationTitle(selection == .announcements ? "Announcements" : "Events")
