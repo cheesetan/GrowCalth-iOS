@@ -11,6 +11,8 @@ struct SignInView: View {
     
     @Binding var signInView: Bool
     
+    @State var isLoading = false
+    
     @State var email = ""
     @State var password = ""
     @State var showingPassword = false
@@ -131,11 +133,13 @@ struct SignInView: View {
     var loginButton: some View {
         Button {
             if !email.isEmpty && !password.isEmpty {
+                isLoading = true
                 authManager.signIn(email: email, password: password) { result in
                     switch result {
                     case .success(_):
-                        break
+                        isLoading = false
                     case .failure(let failure):
+                        isLoading = false
                         alertHeader = "Error"
                         alertMessage = "\(failure.localizedDescription)"
                         showingAlert = true
@@ -146,13 +150,18 @@ struct SignInView: View {
             Text("Login")
                 .padding()
                 .frame(maxWidth: 300)
-                .foregroundColor(.white)
+                .foregroundColor(isLoading ? .clear : .white)
                 .fontWeight(.semibold)
                 .background(Color(hex: 0xDB5461))
                 .cornerRadius(16)
+                .overlay {
+                    if isLoading {
+                        ProgressView()
+                    }
+                }
         }
         .buttonStyle(.plain)
-        .disabled(email.isEmpty || password.isEmpty)
+        .disabled(email.isEmpty || password.isEmpty || isLoading)
     }
     
     var bottomText: some View {

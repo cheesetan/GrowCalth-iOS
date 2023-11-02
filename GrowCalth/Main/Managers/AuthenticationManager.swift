@@ -92,17 +92,19 @@ class AuthenticationManager: ObservableObject {
                 if let err = error {
                     completion(.failure(err))
                 } else {
-                    Firestore.firestore().collection("users").document().setData([
-                        "email": email,
-                        "house": house.rawValue,
-//                        "password": password,
-                        "points": 0,
-                        "steps": 0
-                    ]) { err in
-                        if let err = err {
-                            completion(.failure(err))
-                        } else {
-                            completion(.success(true))
+                    if let currentUserUID = Auth.auth().currentUser?.uid {
+                        Firestore.firestore().collection("users").document(currentUserUID).setData([
+                            "email": email,
+                            "house": house.rawValue,
+//                            "password": password,
+                            "points": 0,
+                            "steps": 0
+                        ]) { err in
+                            if let err = err {
+                                completion(.failure(err))
+                            } else {
+                                completion(.success(true))
+                            }
                         }
                     }
                     self.updatePublishedVariables()
@@ -158,7 +160,7 @@ class AuthenticationManager: ObservableObject {
 //                                        if let err = err {
 //                                            completion(.failure(err))
 //                                        } else {
-//                                            completion(.success(true))
+                                            completion(.success(true))
 //                                        }
 //                                    }
 //                                }

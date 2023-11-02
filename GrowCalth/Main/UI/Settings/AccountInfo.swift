@@ -10,12 +10,21 @@ import FirebaseAuth
 
 struct AccountInfo: View {
     
+    @State var isLoading = false
+    
     @State var newPassword = ""
     @State var currentPassword = ""
     
+    @State var showingNewPassword = false
+    @State var showingCurrentPassword = false
+    
     @State var showingAlert = false
+    @State var showingAlertWithConfirmation = false
     @State var alertHeader = ""
     @State var alertMessage = ""
+    
+    @FocusState var newPasswordFocused: Bool
+    @FocusState var currentPasswordFocused: Bool
     
     @ObservedObject var authManager: AuthenticationManager = .shared
     
@@ -43,34 +52,103 @@ struct AccountInfo: View {
         } message: {
             Text(alertMessage)
         }
+        .alert(alertHeader, isPresented: $showingAlertWithConfirmation) {
+            Button("Change Password", role: .destructive) {
+                isLoading = true
+                authManager.updatePassword(from: currentPassword, to: newPassword) { result in
+                    switch result {
+                    case .success(_):
+                        isLoading = false
+                        currentPassword = ""
+                        newPassword = ""
+                        alertHeader = "Password Changed"
+                        alertMessage = "Your password has been successfully changed."
+                        showingAlert = true
+                    case .failure(let failure):
+                        isLoading = false
+                        alertHeader = "Error"
+                        alertMessage = "\(failure.localizedDescription)"
+                        showingAlert = true
+                    }
+                }
+            }
+        } message: {
+            Text(alertMessage)
+        }
     }
     
     var changePassword: some View {
         VStack {
             List {
-                SecureField("Current Password", text: $currentPassword)
-                SecureField("New Password", text: $newPassword)
-                Button {
-                    authManager.updatePassword(from: currentPassword, to: newPassword) { result in
-                        switch result {
-                        case .success(_):
-                            currentPassword = ""
-                            newPassword = ""
-                            alertHeader = "Password Changed"
-                            alertMessage = "Your password has been successfully changed."
-                            showingAlert = true
-                        case .failure(let failure):
-                            alertHeader = "Error"
-                            alertMessage = "\(failure.localizedDescription)"
-                            showingAlert = true
-                        }
+                if showingCurrentPassword {
+                    HStack {
+                        TextField("Current Password", text: $currentPassword)
+                            .focused($currentPasswordFocused)
+                        toggleCurrentPassword
                     }
-                } label: {
-                    Text("Change Password")
+                } else {
+                    HStack {
+                        SecureField("Current Password", text: $currentPassword)
+                            .focused($currentPasswordFocused)
+                        toggleCurrentPassword
+                    }
+                }
+                
+                if showingNewPassword {
+                    HStack {
+                        TextField("New Password", text: $newPassword)
+                            .focused($newPasswordFocused)
+                        toggleNewPassword
+                    }
+                } else {
+                    HStack {
+                        SecureField("New Password", text: $newPassword)
+                            .focused($newPasswordFocused)
+                        toggleNewPassword
+                    }
+                }
+                
+                if isLoading {
+                    ProgressView()
+                } else {
+                    Button {
+                        alertHeader = "Change Password"
+                        alertMessage = "Are you sure you want to change your password?"
+                        showingAlertWithConfirmation = true
+                    } label: {
+                        Text("Change Password")
+                    }
+                    .disabled(isLoading)
                 }
             }
             .navigationTitle("Change Password")
         }
+    }
+    
+    var toggleNewPassword: some View {
+        Button {
+            showingNewPassword.toggle()
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                newPasswordFocused = true
+            }
+        } label: {
+            Image(systemName: showingNewPassword ? "eye.slash" : "eye")
+                .foregroundColor(.secondary)
+        }
+        .buttonStyle(.plain)
+    }
+    
+    var toggleCurrentPassword: some View {
+        Button {
+            showingCurrentPassword.toggle()
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
+                currentPasswordFocused = true
+            }
+        } label: {
+            Image(systemName: showingCurrentPassword ? "eye.slash" : "eye")
+                .foregroundColor(.secondary)
+        }
+        .buttonStyle(.plain)
     }
 }
 
