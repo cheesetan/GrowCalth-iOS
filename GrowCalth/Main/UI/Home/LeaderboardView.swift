@@ -25,7 +25,7 @@ struct LeaderboardView: View {
                         houseRow(text: house.key, points: house.value)
                     }
                 } footer: {
-                    Text("GrowCalth calculates and updates the leaderboards at 12 midnight every day. 1000 steps = 1 point.")
+                    Text("GrowCalth calculates and updates the Leaderboard at 12 midnight every day. 1000 steps = 1 point.\n\nThe GrowCalth App needs to be opened to calculate and add your points, unclaimed points will accumulate and be added to the Leaderboard the next time you open the app.")
                 }
             } else {
                 Section {
@@ -33,7 +33,7 @@ struct LeaderboardView: View {
                         houseRow(text: house.key, points: house.value)
                     }
                 } footer: {
-                    Text("GrowCalth calculates and updates the leaderboards at 12 midnight every day. 1000 steps = 1 point.")
+                    Text("GrowCalth calculates and updates the Leaderboard at 12 midnight every day. 1000 steps = 1 point.\n\nThe GrowCalth App needs to be opened to calculate and add your points, unclaimed points will accumulate and be added to the Leaderboard the next time you open the app.")
                 }
             }
         }
