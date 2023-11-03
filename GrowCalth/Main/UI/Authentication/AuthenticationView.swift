@@ -19,6 +19,7 @@ struct AuthenticationView: View {
                 SignUpView(signInView: $signInView)
             }
         }
+        .animation(.default, value: signInView)
     }
 }
 
