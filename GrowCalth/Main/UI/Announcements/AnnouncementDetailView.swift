@@ -114,7 +114,7 @@ struct AnnouncementDetailView: View {
             
             Button(role: .destructive) {
                 alertHeader = "Delete Announcement"
-                alertMessage = "Are you sure you want to delete this announcement?"
+                alertMessage = "Are you sure you want to delete this announcement? This action cannot be undone."
                 showingDeleteAlert = true
             } label: {
                 Label("Delete Announcement", systemImage: "trash")

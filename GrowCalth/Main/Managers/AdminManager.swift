@@ -71,8 +71,26 @@ class AdminManager: ObservableObject {
         }
     }
     
-    func editEvent() {
-        
+    func editEvent(
+        eventUUID: String,
+        title: String,
+        description: String,
+        eventDate: Date,
+        eventVenues: String,
+        _ completion: @escaping ((Result<Bool, Error>) -> Void)
+    ) {
+        Firestore.firestore().collection("houseevents").document(eventUUID).updateData([
+            "header": title,
+            "desc": description,
+            "venue": eventVenues,
+            "date": eventDate.formatted(date: .long, time: .omitted)
+        ]) { err in
+            if let err = err {
+                completion(.failure(err))
+            } else {
+                completion(.success(true))
+            }
+        }
     }
     
     func deleteAnnouncement(
@@ -80,15 +98,24 @@ class AdminManager: ObservableObject {
         _ completion: @escaping ((Result<Bool, Error>) -> Void)
     ) {
         Firestore.firestore().collection("Announcements").document(announcementUUID).delete() { err in
-          if let err = err {
-              completion(.failure(err))
-          } else {
-              completion(.success(true))
-          }
+            if let err = err {
+                completion(.failure(err))
+            } else {
+                completion(.success(true))
+            }
         }
     }
     
-    func deleteEvent() {
-        
+    func deleteEvent(
+        eventUUID: String,
+        _ completion: @escaping ((Result<Bool, Error>) -> Void)
+    ) {
+        Firestore.firestore().collection("houseevents").document(eventUUID).delete() { err in
+            if let err = err {
+                completion(.failure(err))
+            } else {
+                completion(.success(true))
+            }
+        }
     }
 }

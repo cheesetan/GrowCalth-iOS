@@ -19,7 +19,7 @@ struct NewAnnouncementView: View {
     @State var alertTitle = ""
     @State var alertDescription = ""
     
-    @State var postType = AnnouncementType.announcements
+    @State var postType: AnnouncementType
     
     @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var announcementManager: AnnouncementManager = .shared
@@ -96,12 +96,12 @@ struct NewAnnouncementView: View {
     
     var eventItems: some View {
         VStack {
-            TextField(LocalizedStringKey("\(Image(systemName: "mappin.and.ellipse")) Event Venue(s)"), text: $eventVenue)
-            
             DatePicker(selection: $eventDate, in: Date()..., displayedComponents: .date) {
                 Label("Event Date", systemImage: "calendar")
                     .foregroundColor(.secondary)
             }
+            
+            TextField(LocalizedStringKey("\(Image(systemName: "mappin.and.ellipse")) Event Venue(s)"), text: $eventVenue)
         }
     }
     
@@ -168,6 +168,6 @@ struct NewAnnouncementView: View {
     }
 }
 
-#Preview {
-    NewAnnouncementView()
-}
+//#Preview {
+//    NewAnnouncementView()
+//}

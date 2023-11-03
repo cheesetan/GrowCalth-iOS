@@ -12,6 +12,13 @@ struct Announcements: View {
     @State var showingNewAnnouncementView = false
     @State var selection: AnnouncementType = .announcements
     
+    @State var showingAlert = false
+    @State var showingDeleteAlert = false
+    @State var alertHeader: String = ""
+    @State var alertMessage: String = ""
+    
+    @State var stateUUID = ""
+    
     @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var announcementManager: AnnouncementManager = .shared
     @ObservedObject var adminManager: AdminManager = .shared
@@ -28,18 +35,51 @@ struct Announcements: View {
                             NavigationLink {
                                 AnnouncementDetailView(announcement: item)
                             } label: {
-                                announcementItem(title: item.title.wrappedValue, description: item.description.wrappedValue)
+                                announcementItem(
+                                    title: item.title.wrappedValue,
+                                    description: item.description.wrappedValue
+                                )
+                            }
+                            .swipeActions {
+                                if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                                    Button(role: .destructive) {
+                                        stateUUID = item.id
+                                        alertHeader = "Delete Announcement"
+                                        alertMessage = "Are you sure you want to delete this announcement? This action cannot be undone."
+                                        showingDeleteAlert = true
+                                    } label: {
+                                        Image(systemName: "trash")
+                                            .tint(.red)
+                                    }
+                                }
                             }
                         }
                     case .events:
-                        ForEach(announcementManager.events, id: \.id) { item in
+                        ForEach($announcementManager.events, id: \.id) { item in
                             NavigationLink {
                                 EventDetailView(event: item)
                             } label: {
-                                eventItem(title: item.title, description: item.description, date: item.date, venue: item.venue)
+                                eventItem(
+                                    title: item.title.wrappedValue,
+                                    description: item.description.wrappedValue,
+                                    date: item.date.wrappedValue,
+                                    venue: item.venue.wrappedValue
+                                )
+                            }
+                            .swipeActions {
+                                if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                                    Button(role: .destructive) {
+                                        stateUUID = item.id
+                                        alertHeader = "Delete Event"
+                                        alertMessage = "Are you sure you want to delete this event? This action cannot be undone."
+                                        showingDeleteAlert = true
+                                    } label: {
+                                        Image(systemName: "trash")
+                                            .tint(.red)
+                                    }
+                                }
                             }
                         }
-
                     }
                 }
                 .animation(.default, value: selection)
@@ -61,9 +101,21 @@ struct Announcements: View {
                     }
                 }
             }
+            .alert(alertHeader, isPresented: $showingAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(alertMessage)
+            }
+            .alert(alertHeader, isPresented: $showingDeleteAlert) {
+                Button("Delete", role: .destructive) {
+                    confirmDelete(uuid: stateUUID)
+                }
+            } message: {
+                Text(alertMessage)
+            }
         }
         .sheet(isPresented: $showingNewAnnouncementView) {
-            NewAnnouncementView()
+            NewAnnouncementView(postType: selection)
         }
     }
     
@@ -126,6 +178,33 @@ struct Announcements: View {
             .font(.subheadline)
         }
         .padding(.vertical, 5)
+    }
+    
+    func confirmDelete(uuid: String) {
+        switch selection {
+        case .announcements:
+            adminManager.deleteAnnouncement(announcementUUID: uuid) { result in
+                switch result {
+                case .success(_):
+                    announcementManager.retrieveAllPosts()
+                case .failure(let failure):
+                    alertHeader = "Error"
+                    alertMessage = failure.localizedDescription
+                    showingAlert = true
+                }
+            }
+        case .events:
+            adminManager.deleteEvent(eventUUID: uuid) { result in
+                switch result {
+                case .success(_):
+                    announcementManager.retrieveAllPosts()
+                case .failure(let failure):
+                    alertHeader = "Error"
+                    alertMessage = failure.localizedDescription
+                    showingAlert = true
+                }
+            }
+        }
     }
 }
 
