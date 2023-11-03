@@ -47,6 +47,7 @@ struct EventDetailView: View {
             .padding()
             .animation(.default, value: isEditing)
         }
+        .scrollDismissesKeyboard(.interactively)
         .navigationTitle("Event")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
@@ -190,26 +191,30 @@ struct EventDetailView: View {
     
     func confirmEdits() {
         if !editableTitle.isEmpty && !editableDescription.isEmpty && !editableVenue.isEmpty {
-            saveIsLoading = true
-            adminManager.editEvent(
-                eventUUID: event.id,
-                title: editableTitle,
-                description: editableDescription,
-                eventDate: editableDate,
-                eventVenues: editableVenue
-            ) { result in
-                switch result {
-                case .success(_):
-                    saveIsLoading = false
-                    isEditing = false
-                    announcementManager.retrieveAllPosts()
-                case .failure(let failure):
-                    saveIsLoading = false
-                    isEditing = false
-                    alertHeader = "Error"
-                    alertMessage = failure.localizedDescription
-                    showingAlert = true
+            if editableTitle != event.title || editableDate.formatted(date: .long, time: .omitted) != event.date || editableVenue != event.venue || editableDescription != event.description {
+                saveIsLoading = true
+                adminManager.editEvent(
+                    eventUUID: event.id,
+                    title: editableTitle,
+                    description: editableDescription,
+                    eventDate: editableDate,
+                    eventVenues: editableVenue
+                ) { result in
+                    switch result {
+                    case .success(_):
+                        saveIsLoading = false
+                        isEditing = false
+                        announcementManager.retrieveAllPosts()
+                    case .failure(let failure):
+                        saveIsLoading = false
+                        isEditing = false
+                        alertHeader = "Error"
+                        alertMessage = failure.localizedDescription
+                        showingAlert = true
+                    }
                 }
+            } else {
+                isEditing = false
             }
         }
     }

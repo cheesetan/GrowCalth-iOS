@@ -141,20 +141,24 @@ struct AnnouncementDetailView: View {
     
     func confirmEdits() {
         if !editableTitle.isEmpty && !editableDescription.isEmpty {
-            saveIsLoading = true
-            adminManager.editAnnouncement(announcementUUID: announcement.id, title: editableTitle, description: editableDescription) { result in
-                switch result {
-                case .success(_):
-                    saveIsLoading = false
-                    isEditing = false
-                case .failure(let failure):
-                    saveIsLoading = false
-                    isEditing = false
-                    alertHeader = "Error"
-                    alertMessage = failure.localizedDescription
-                    showingAlert = true
+            if editableTitle != announcement.title || editableDescription != announcement.description {
+                saveIsLoading = true
+                adminManager.editAnnouncement(announcementUUID: announcement.id, title: editableTitle, description: editableDescription) { result in
+                    switch result {
+                    case .success(_):
+                        saveIsLoading = false
+                        isEditing = false
+                    case .failure(let failure):
+                        saveIsLoading = false
+                        isEditing = false
+                        alertHeader = "Error"
+                        alertMessage = failure.localizedDescription
+                        showingAlert = true
+                    }
+                    announcementManager.retrieveAllPosts()
                 }
-                announcementManager.retrieveAllPosts()
+            } else {
+                isEditing = false
             }
         }
     }

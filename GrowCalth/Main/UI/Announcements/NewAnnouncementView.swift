@@ -79,7 +79,6 @@ struct NewAnnouncementView: View {
             let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
             eventDate = calendar.startOfDay(for: eventDate)
         }
-
     }
     
     var picker: some View {
