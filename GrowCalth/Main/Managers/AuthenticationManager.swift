@@ -173,20 +173,10 @@ class AuthenticationManager: ObservableObject {
     }
     
     func fetchUsersHouse(_ completion: @escaping ((Result<String, Error>) -> Void)) {
-        Firestore.firestore().collection("users").whereField("email", isEqualTo: Auth.auth().currentUser?.email ?? "").getDocuments() { (querySnapshot, err) in
-            if let err = err {
-                completion(.failure(err))
-            } else {
-                for document in querySnapshot!.documents {
-                    print("\(document.documentID) => \(document.data())")
-                    
-                    Firestore.firestore().collection("users").document("\(document.documentID)").getDocument { (document, error) in
-                        if let document = document, document.exists {
-                            if let documentData = document.data() {
-                                completion(.success(documentData["house"] as! String))
-                            }
-                        }
-                    }
+        Firestore.firestore().collection("users").document(Auth.auth().currentUser?.uid ?? "").getDocument { (document, error) in
+            if let document = document, document.exists {
+                if let documentData = document.data() {
+                    completion(.success(documentData["house"] as! String))
                 }
             }
         }
