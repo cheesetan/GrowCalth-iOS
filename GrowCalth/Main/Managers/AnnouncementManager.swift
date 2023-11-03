@@ -6,15 +6,16 @@
 //
 
 import SwiftUI
+import SwiftPersistence
 import FirebaseFirestore
 
-struct Announcement: Identifiable, Equatable {
+struct Announcement: Identifiable, Equatable, Codable {
     var id: String
     var title: String
     var description: String?
 }
 
-struct EventItem: Identifiable, Equatable {
+struct EventItem: Identifiable, Equatable, Codable {
     var id: String
     var title: String
     var description: String?
@@ -33,19 +34,22 @@ class AnnouncementManager: ObservableObject {
     @Published var events: [EventItem] = []
     @Published var announcements: [Announcement] = []
     
+    @Persistent("cachedEvents", store: .fileManager) private var cachedEvents: [EventItem] = []
+    @Persistent("cachedAnnouncements", store: .fileManager) private var cachedAnnouncements: [Announcement] = []
+    
     init() {
         retrieveAllPosts()
     }
     
     func retrieveAllPosts() {
-        retrieveEvents()
-        retrieveAnnouncements()
+        retrieveEvents() { _ in }
+        retrieveAnnouncements() { _ in }
     }
     
-    func retrieveEvents() {
+    func retrieveEvents(_ completion: @escaping ((Result<Bool, Error>) -> Void)) {
         Firestore.firestore().collection("houseevents").order(by: "dateAdded", descending: true).getDocuments { (query: QuerySnapshot?, err) in
             if let err {
-                print("Error getting documents: \(err)")
+                completion(.failure(err))
             } else {
                 self.events = []
                 for document in query!.documents {
@@ -59,14 +63,15 @@ class AnnouncementManager: ObservableObject {
                         )
                     )
                 }
+                completion(.success(true))
             }
         }
     }
     
-    func retrieveAnnouncements() {
+    func retrieveAnnouncements(_ completion: @escaping ((Result<Bool, Error>) -> Void)) {
         Firestore.firestore().collection("Announcements").order(by: "dateAdded", descending: true).getDocuments { (query: QuerySnapshot?, err) in
             if let err {
-                print("Error getting documents: \(err)")
+                completion(.failure(err))
             } else {
                 self.announcements = []
                 for document in query!.documents {
@@ -78,7 +83,22 @@ class AnnouncementManager: ObservableObject {
                         )
                     )
                 }
+                completion(.success(true))
             }
         }
+    }
+    
+    
+    func updateCacheForAllPosts() {
+        updateCacheForEvents()
+        updateCacheForAnnouncements()
+    }
+    
+    func updateCacheForEvents() {
+        self.cachedEvents = self.events
+    }
+    
+    func updateCacheForAnnouncements() {
+        self.cachedAnnouncements = self.announcements
     }
 }

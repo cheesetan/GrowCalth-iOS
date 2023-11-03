@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftPersistence
 
 struct Announcements: View {
     
@@ -23,6 +24,9 @@ struct Announcements: View {
     @ObservedObject var announcementManager: AnnouncementManager = .shared
     @ObservedObject var adminManager: AdminManager = .shared
     
+    @Persistent("cachedEvents", store: .fileManager) private var cachedEvents: [EventItem] = []
+    @Persistent("cachedAnnouncements", store: .fileManager) private var cachedAnnouncements: [Announcement] = []
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -31,7 +35,7 @@ struct Announcements: View {
                         .listRowBackground(Color.clear)
                     switch selection {
                     case .announcements:
-                        ForEach($announcementManager.announcements, id: \.id) { item in
+                        ForEach(announcementManager.announcements.isEmpty ? $cachedAnnouncements : $announcementManager.announcements, id: \.id) { item in
                             NavigationLink {
                                 AnnouncementDetailView(announcement: item)
                             } label: {
@@ -55,7 +59,7 @@ struct Announcements: View {
                             }
                         }
                     case .events:
-                        ForEach($announcementManager.events, id: \.id) { item in
+                        ForEach(announcementManager.events.isEmpty ? $cachedEvents : $announcementManager.events, id: \.id) { item in
                             NavigationLink {
                                 EventDetailView(event: item)
                             } label: {
@@ -93,6 +97,12 @@ struct Announcements: View {
             }
             .onAppear {
                 announcementManager.retrieveAllPosts()
+            }
+            .onChange(of: announcementManager.announcements) { _ in
+                announcementManager.updateCacheForAllPosts()
+            }
+            .onChange(of: announcementManager.events) { _ in
+                announcementManager.updateCacheForAllPosts()
             }
             .toolbar {
                 if let email = authManager.email, adminManager.approvedEmails.contains(email) {
