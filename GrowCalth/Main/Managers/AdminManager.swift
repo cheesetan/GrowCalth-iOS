@@ -53,8 +53,22 @@ class AdminManager: ObservableObject {
         }
     }
     
-    func editAnnouncement() {
-        
+    func editAnnouncement(
+        announcementUUID: String,
+        title: String,
+        description: String,
+        _ completion: @escaping ((Result<Bool, Error>) -> Void)
+    ) {
+        Firestore.firestore().collection("Announcements").document(announcementUUID).updateData([
+            "header": title,
+            "text": description
+        ]) { err in
+            if let err = err {
+                completion(.failure(err))
+            } else {
+                completion(.success(true))
+            }
+        }
     }
     
     func editEvent() {

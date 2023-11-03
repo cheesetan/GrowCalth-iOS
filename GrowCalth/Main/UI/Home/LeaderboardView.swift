@@ -40,17 +40,17 @@ struct LeaderboardView: View {
         .listStyle(.grouped)
         .navigationTitle("Leaderboard")
         .refreshable {
-            retrieveInformation()
+            retrievePointsInformation()
             
         }
         .onAppear {
             print("cachedLBPoints before: \(cachedLBPoints)")
-            retrieveInformation()
+            retrievePointsInformation()
             print("cachedLBPoints after: \(cachedLBPoints)")
         }
     }
     
-    func retrieveInformation() {
+    func retrievePointsInformation() {
         lbManager.retrievePoints { _ in
             leaderboardPoints["Black"] = lbManager.black
             cachedLBPoints["Black"] = lbManager.black

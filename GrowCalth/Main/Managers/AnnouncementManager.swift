@@ -8,13 +8,13 @@
 import SwiftUI
 import FirebaseFirestore
 
-struct Announcement: Identifiable {
+struct Announcement: Identifiable, Equatable {
     var id: String
     var title: String
     var description: String?
 }
 
-struct EventItem: Identifiable {
+struct EventItem: Identifiable, Equatable {
     var id: String
     var title: String
     var description: String?
@@ -34,10 +34,10 @@ class AnnouncementManager: ObservableObject {
     @Published var announcements: [Announcement] = []
     
     init() {
-        retrieveInformations()
+        retrieveAllPosts()
     }
     
-    func retrieveInformations() {
+    func retrieveAllPosts() {
         retrieveEvents()
         retrieveAnnouncements()
     }

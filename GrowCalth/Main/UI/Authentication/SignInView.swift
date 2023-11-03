@@ -18,8 +18,8 @@ struct SignInView: View {
     @State var showingPassword = false
     @State var forgottenPasswordEmail = ""
     @State var showingForgotPassword = false
-    @State var showingAlert = false
     
+    @State var showingAlert = false
     @State var alertHeader: String = ""
     @State var alertMessage: String = ""
     

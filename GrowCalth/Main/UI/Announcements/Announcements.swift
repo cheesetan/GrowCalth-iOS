@@ -24,11 +24,11 @@ struct Announcements: View {
                         .listRowBackground(Color.clear)
                     switch selection {
                     case .announcements:
-                        ForEach(announcementManager.announcements, id: \.id) { item in
+                        ForEach($announcementManager.announcements, id: \.id) { item in
                             NavigationLink {
                                 AnnouncementDetailView(announcement: item)
                             } label: {
-                                announcementItem(title: item.title, description: item.description)
+                                announcementItem(title: item.title.wrappedValue, description: item.description.wrappedValue)
                             }
                         }
                     case .events:
@@ -43,14 +43,16 @@ struct Announcements: View {
                     }
                 }
                 .animation(.default, value: selection)
+                .animation(.default, value: announcementManager.announcements)
+                .animation(.default, value: announcementManager.events)
             }
             .listStyle(.grouped)
             .navigationTitle(selection == .announcements ? "Announcements" : "Events")
             .refreshable {
-                announcementManager.retrieveInformations()
+                announcementManager.retrieveAllPosts()
             }
             .onAppear {
-                announcementManager.retrieveInformations()
+                announcementManager.retrieveAllPosts()
             }
             .toolbar {
                 if let email = authManager.email, adminManager.approvedEmails.contains(email) {
@@ -91,8 +93,8 @@ struct Announcements: View {
         VStack(alignment: .leading) {
             Text(title)
                 .fontWeight(.bold)
-            if let description = description {
-                Text(description)
+            if let description = description, !description.isEmpty {
+                Text(description.replacingOccurrences(of: "\n", with: " "))
                     .lineLimit(2)
                     .foregroundColor(.gray)
             }
@@ -105,8 +107,8 @@ struct Announcements: View {
         VStack(alignment: .leading) {
             Text(title)
                 .fontWeight(.bold)
-            if let description = description {
-                Text(description)
+            if let description = description, !description.isEmpty {
+                Text(description.replacingOccurrences(of: "\n", with: " "))
                     .lineLimit(2)
                     .foregroundColor(.gray)
             }

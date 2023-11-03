@@ -22,7 +22,7 @@ struct Home: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
+            ScrollView(axes: .vertical, showsIndicators: false) {
                 VStack {
                     HStack(alignment: .top, spacing: 15) {
                         VStack(spacing: 15) {
