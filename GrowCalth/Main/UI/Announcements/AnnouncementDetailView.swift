@@ -18,12 +18,15 @@ struct AnnouncementDetailView: View {
     @State var saveIsLoading = false
     
     @State var showingAlert = false
+    @State var showingDeleteAlert = false
     @State var alertHeader: String = ""
     @State var alertMessage: String = ""
     
     @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var announcementManager: AnnouncementManager = .shared
     @ObservedObject var adminManager: AdminManager = .shared
+    
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         ScrollView {
@@ -36,6 +39,7 @@ struct AnnouncementDetailView: View {
             .padding()
             .animation(.default, value: isEditing)
         }
+        .scrollDismissesKeyboard(.interactively)
         .navigationTitle("Announcement")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
@@ -60,6 +64,13 @@ struct AnnouncementDetailView: View {
         }
         .alert(alertHeader, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
+        }
+        .alert(alertHeader, isPresented: $showingDeleteAlert) {
+            Button("Delete", role: .destructive) {
+                confirmDelete()
+            }
         } message: {
             Text(alertMessage)
         }
@@ -102,7 +113,9 @@ struct AnnouncementDetailView: View {
             Divider()
             
             Button(role: .destructive) {
-                adminManager.deleteAnnouncement()
+                alertHeader = "Delete Announcement"
+                alertMessage = "Are you sure you want to delete this announcement?"
+                showingDeleteAlert = true
             } label: {
                 Label("Delete Announcement", systemImage: "trash")
             }
@@ -115,20 +128,7 @@ struct AnnouncementDetailView: View {
         VStack {
             if !saveIsLoading {
                 Button {
-                    if !editableTitle.isEmpty && !editableDescription.isEmpty {
-                        adminManager.editAnnouncement(announcementUUID: announcement.id, title: editableTitle, description: editableDescription) { result in
-                            switch result {
-                            case .success(_):
-                                isEditing = false
-                            case .failure(let failure):
-                                isEditing = false
-                                alertHeader = "Error"
-                                alertMessage = failure.localizedDescription
-                                showingAlert = true
-                            }
-                            announcementManager.retrieveAllPosts()
-                        }
-                    }
+                    confirmEdits()
                 } label: {
                     Text("Save")
                 }
@@ -137,6 +137,39 @@ struct AnnouncementDetailView: View {
                 ProgressView()
             }
         }
-        .animation(.default, value: saveIsLoading)
+    }
+    
+    func confirmEdits() {
+        if !editableTitle.isEmpty && !editableDescription.isEmpty {
+            saveIsLoading = true
+            adminManager.editAnnouncement(announcementUUID: announcement.id, title: editableTitle, description: editableDescription) { result in
+                switch result {
+                case .success(_):
+                    saveIsLoading = false
+                    isEditing = false
+                case .failure(let failure):
+                    saveIsLoading = false
+                    isEditing = false
+                    alertHeader = "Error"
+                    alertMessage = failure.localizedDescription
+                    showingAlert = true
+                }
+                announcementManager.retrieveAllPosts()
+            }
+        }
+    }
+    
+    func confirmDelete() {
+        adminManager.deleteAnnouncement(announcementUUID: announcement.id) { result in
+            switch result {
+            case .success(_):
+                dismiss.callAsFunction()
+                announcementManager.retrieveAllPosts()
+            case .failure(let failure):
+                alertHeader = "Error"
+                alertMessage = failure.localizedDescription
+                showingAlert = true
+            }
+        }
     }
 }

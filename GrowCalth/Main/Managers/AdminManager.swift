@@ -75,8 +75,17 @@ class AdminManager: ObservableObject {
         
     }
     
-    func deleteAnnouncement() {
-        
+    func deleteAnnouncement(
+        announcementUUID: String,
+        _ completion: @escaping ((Result<Bool, Error>) -> Void)
+    ) {
+        Firestore.firestore().collection("Announcements").document(announcementUUID).delete() { err in
+          if let err = err {
+              completion(.failure(err))
+          } else {
+              completion(.success(true))
+          }
+        }
     }
     
     func deleteEvent() {
