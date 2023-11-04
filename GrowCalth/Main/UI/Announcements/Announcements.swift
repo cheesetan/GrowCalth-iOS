@@ -169,7 +169,7 @@ struct Announcements: View {
         VStack(alignment: .leading) {
             Text(title)
                 .fontWeight(.bold)
-            if let description = description, !description.isEmpty {
+            if let description = description, !description.isEmpty, description != " " {
                 Text(description.replacingOccurrences(of: "\n", with: " "))
                     .lineLimit(2)
                     .foregroundColor(.gray)
