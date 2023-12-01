@@ -23,15 +23,26 @@ struct MultiColumnTable: View {
             }
             Divider()
             ForEach(data, id: \.id) { data in
-                HStack {
-                    Text(data.name)
-                        .frame(maxWidth: .infinity)
-                    Text(data.className)
-                        .frame(maxWidth: .infinity)
-                    Text("\(data.result)")
-                        .frame(maxWidth: .infinity)
+                if data.header != "" {
+                    HStack {
+                        Text(data.header)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .padding(.vertical, 10)
+                    .background(.ultraThickMaterial)
+                } else {
+                    HStack {
+                        Text("\(data.rank)")
+                            .frame(maxWidth: .infinity, alignment: .center)
+                        Text(data.name)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(data.className)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                        Text(data.result)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .padding(.vertical, 5)
                 }
-                .padding(.vertical, 5)
                 Divider()
             }
         }
@@ -41,7 +52,7 @@ struct MultiColumnTable: View {
 #Preview {
     MultiColumnTable(headers: ["Name", "Class", "Result"],
                      data: [
-                        NAPFAResults(name: "Caleb Han", className: "S3-01", result: 100),
-                        NAPFAResults(name: "Tristan Chay", className: "S3-04", result: 100)
+                        NAPFAResults(name: "Caleb Han", className: "S3-01", result: "100"),
+                        NAPFAResults(name: "Tristan Chay", className: "S3-04", result: "100")
                      ])
 }
