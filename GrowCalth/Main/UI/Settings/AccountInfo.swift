@@ -23,6 +23,10 @@ struct AccountInfo: View {
     @State var alertHeader = ""
     @State var alertMessage = ""
     
+    @State var showingDeleteAccountAlert = false
+    @State var deleteAccountPassword = ""
+    @State var isDeletingAccount = false
+    
     @FocusState var newPasswordFocused: Bool
     @FocusState var currentPasswordFocused: Bool
     
@@ -45,8 +49,42 @@ struct AccountInfo: View {
                     Text("Change Password")
                 }
             }
+            
+            Section {
+                Button {
+                    showingDeleteAccountAlert.toggle()
+                } label: {
+                    if isDeletingAccount {
+                        ProgressView()
+                    } else {
+                        Text("Delete account")
+                    }
+                }
+                .tint(.red)
+                .disabled(isDeletingAccount)
+            }
         }
         .navigationTitle("Account")
+        .alert("Delete account", isPresented: $showingDeleteAccountAlert) {
+            SecureField("Current Password", text: $deleteAccountPassword)
+            Button("Delete", role: .destructive) {
+                isDeletingAccount = true
+                authManager.deleteAccount(password: deleteAccountPassword) { result in
+                    isDeletingAccount = false
+                    switch result {
+                    case .success(_):
+                        break
+                    case .failure(let failure):
+                        alertHeader = "Error"
+                        alertMessage = failure.localizedDescription
+                        showingAlert.toggle()
+                    }
+                }
+                deleteAccountPassword = ""
+            }
+        } message: {
+            Text("Are you sure you want to delete your account? All your coins will be lost. This action cannot be undone.")
+        }
         .alert(alertHeader, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}
         } message: {

@@ -181,4 +181,57 @@ class AuthenticationManager: ObservableObject {
             }
         }
     }
+    
+    public enum DeleteAccountError: Error {
+            case wrongPasswordToReauth
+            case failedToDeleteFromFirestore
+            case failedToDeleteAccount
+            case failedToSignOut
+            
+            var localizedDescription: String {
+                switch self {
+                case .wrongPasswordToReauth:
+                    return NSLocalizedString("The password you have entered to delete your account is incorrect.", comment: "Wrong password")
+                case .failedToDeleteFromFirestore:
+                    return NSLocalizedString("An error has occurred while attempting to delete your account.", comment: "Firestore error")
+                case .failedToDeleteAccount:
+                    return NSLocalizedString("An error has occurred while attempting to delete your account.", comment: "Account error")
+                case .failedToSignOut:
+                    return NSLocalizedString("An error has occurred while attempting to sign out of deleted account. Please sign out manually.", comment: "Sign out error")
+                }
+            }
+        }
+        
+        func deleteAccount(password: String, _ completion: @escaping ((Result<Bool, DeleteAccountError>) -> Void)) {
+            let credential = EmailAuthProvider.credential(withEmail: Auth.auth().currentUser?.email ?? "", password: password)
+            Auth.auth().currentUser?.reauthenticate(with: credential) { result, error in
+                if let error = error {
+                    completion(.failure(DeleteAccountError.wrongPasswordToReauth))
+                } else {
+                    if let uid = Auth.auth().currentUser?.uid {
+                        Firestore.firestore().collection("users").document(uid).delete() { err in
+                            if let err = err {
+                                completion(.failure(DeleteAccountError.failedToDeleteFromFirestore))
+                            } else {
+                                let user = Auth.auth().currentUser
+                                user?.delete { error in
+                                    if let error = error {
+                                        completion(.failure(DeleteAccountError.failedToDeleteAccount))
+                                    } else {
+                                        self.signOut { result in
+                                            switch result {
+                                            case .success(_):
+                                                break
+                                            case .failure(let failure):
+                                                completion(.failure(DeleteAccountError.failedToSignOut))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 }
