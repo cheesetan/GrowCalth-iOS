@@ -205,24 +205,24 @@ class AuthenticationManager: ObservableObject {
         func deleteAccount(password: String, _ completion: @escaping ((Result<Bool, DeleteAccountError>) -> Void)) {
             let credential = EmailAuthProvider.credential(withEmail: Auth.auth().currentUser?.email ?? "", password: password)
             Auth.auth().currentUser?.reauthenticate(with: credential) { result, error in
-                if let error = error {
+                if error != nil {
                     completion(.failure(DeleteAccountError.wrongPasswordToReauth))
                 } else {
                     if let uid = Auth.auth().currentUser?.uid {
                         Firestore.firestore().collection("users").document(uid).delete() { err in
-                            if let err = err {
+                            if err != nil {
                                 completion(.failure(DeleteAccountError.failedToDeleteFromFirestore))
                             } else {
                                 let user = Auth.auth().currentUser
                                 user?.delete { error in
-                                    if let error = error {
+                                    if error != nil {
                                         completion(.failure(DeleteAccountError.failedToDeleteAccount))
                                     } else {
                                         self.signOut { result in
                                             switch result {
                                             case .success(_):
                                                 break
-                                            case .failure(let failure):
+                                            case .failure(_):
                                                 completion(.failure(DeleteAccountError.failedToSignOut))
                                             }
                                         }
