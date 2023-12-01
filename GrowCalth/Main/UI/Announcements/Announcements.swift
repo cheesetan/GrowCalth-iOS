@@ -35,54 +35,62 @@ struct Announcements: View {
                         .listRowBackground(Color.clear)
                     switch selection {
                     case .announcements:
-                        ForEach(announcementManager.announcements.isEmpty ? $cachedAnnouncements : $announcementManager.announcements, id: \.id) { item in
-                            NavigationLink {
-                                AnnouncementDetailView(announcement: item)
-                            } label: {
-                                announcementItem(
-                                    title: item.title.wrappedValue,
-                                    description: item.description.wrappedValue
-                                )
-                            }
-                            .swipeActions {
-                                if let email = authManager.email, adminManager.approvedEmails.contains(email) {
-                                    Button(role: .destructive) {
-                                        stateUUID = item.id
-                                        alertHeader = "Delete Announcement"
-                                        alertMessage = "Are you sure you want to delete this announcement? This action cannot be undone."
-                                        showingDeleteAlert = true
-                                    } label: {
-                                        Image(systemName: "trash")
-                                            .tint(.red)
+                        if !cachedAnnouncements.isEmpty || !announcementManager.announcements.isEmpty {
+                            ForEach(announcementManager.announcements.isEmpty ? $cachedAnnouncements : $announcementManager.announcements, id: \.id) { item in
+                                NavigationLink {
+                                    AnnouncementDetailView(announcement: item)
+                                } label: {
+                                    announcementItem(
+                                        title: item.title.wrappedValue,
+                                        description: item.description.wrappedValue
+                                    )
+                                }
+                                .swipeActions {
+                                    if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                                        Button(role: .destructive) {
+                                            stateUUID = item.id
+                                            alertHeader = "Delete Announcement"
+                                            alertMessage = "Are you sure you want to delete this announcement? This action cannot be undone."
+                                            showingDeleteAlert = true
+                                        } label: {
+                                            Image(systemName: "trash")
+                                                .tint(.red)
+                                        }
                                     }
                                 }
                             }
+                        } else {
+                            Text("There are no Announcements.")
                         }
                     case .events:
-                        ForEach(announcementManager.events.isEmpty ? $cachedEvents : $announcementManager.events, id: \.id) { item in
-                            NavigationLink {
-                                EventDetailView(event: item)
-                            } label: {
-                                eventItem(
-                                    title: item.title.wrappedValue,
-                                    description: item.description.wrappedValue,
-                                    date: item.date.wrappedValue,
-                                    venue: item.venue.wrappedValue
-                                )
-                            }
-                            .swipeActions {
-                                if let email = authManager.email, adminManager.approvedEmails.contains(email) {
-                                    Button(role: .destructive) {
-                                        stateUUID = item.id
-                                        alertHeader = "Delete Event"
-                                        alertMessage = "Are you sure you want to delete this event? This action cannot be undone."
-                                        showingDeleteAlert = true
-                                    } label: {
-                                        Image(systemName: "trash")
-                                            .tint(.red)
+                        if !cachedEvents.isEmpty || !announcementManager.events.isEmpty {
+                            ForEach(announcementManager.events.isEmpty ? $cachedEvents : $announcementManager.events, id: \.id) { item in
+                                NavigationLink {
+                                    EventDetailView(event: item)
+                                } label: {
+                                    eventItem(
+                                        title: item.title.wrappedValue,
+                                        description: item.description.wrappedValue,
+                                        date: item.date.wrappedValue,
+                                        venue: item.venue.wrappedValue
+                                    )
+                                }
+                                .swipeActions {
+                                    if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                                        Button(role: .destructive) {
+                                            stateUUID = item.id
+                                            alertHeader = "Delete Event"
+                                            alertMessage = "Are you sure you want to delete this event? This action cannot be undone."
+                                            showingDeleteAlert = true
+                                        } label: {
+                                            Image(systemName: "trash")
+                                                .tint(.red)
+                                        }
                                     }
                                 }
                             }
+                        } else {
+                            Text("There are no Events.")
                         }
                     }
                 }
