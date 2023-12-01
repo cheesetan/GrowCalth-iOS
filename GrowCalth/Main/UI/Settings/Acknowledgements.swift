@@ -20,7 +20,7 @@ struct Acknowledgements: View {
                 acknowledgement(title: "Han Jeong Seu, **Caleb** - CEO of GrowCalth", description: "Class of 2024", image: "person.bust.fill")
                 acknowledgement(title: "Chay Yu Hung **Tristan** - Lead Developer of GrowCalth (iOS)", description: "Class of 2024", image: "hammer.fill")
                 acknowledgement(title: "**Felix** Forbes Dimjati - Developer of GrowCalth (Android)", description: "Class of 2024", image: "hammer.fill")
-                acknowledgement(title: "Bellam Nandakumar **Aravind** - GrowCalth's Marketing and Communications IC", description: "Class of 2024", image: "bubble.left.and.text.bubble.right.fill")
+                acknowledgement(title: "Bellam Nandakumar **Aravind** - GrowCalth's Marketing and Communications IC", description: "Class of 2024", image: "text.bubble.fill")
                 acknowledgement(title: "**Darryan** Lim Yuan Sheng - GrowCalth's Designer", description: "Class of 2024", image: "paintbrush.pointed.fill")
             } header: {
                 Label("Development Team", systemImage: "person.3.fill")
