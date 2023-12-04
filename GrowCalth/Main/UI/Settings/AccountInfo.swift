@@ -83,7 +83,7 @@ struct AccountInfo: View {
                 deleteAccountPassword = ""
             }
         } message: {
-            Text("Are you sure you want to delete your account? All your coins will be lost. This action cannot be undone.")
+            Text("Are you sure you want to delete your account? This action cannot be undone.")
         }
         .alert(alertHeader, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}

@@ -148,6 +148,7 @@ struct SignInView: View {
                     case .failure(let failure):
                         alertHeader = "Error"
                         alertMessage = "\(failure.localizedDescription)"
+                        showingForgotPassword = false
                         showingAlert = true
                     }
                 }
@@ -208,8 +209,13 @@ struct SignInView: View {
             isLoading = true
             authManager.signIn(email: email, password: password) { result in
                 switch result {
-                case .success(_):
+                case .success(let success):
                     isLoading = false
+                    if success == false {
+                        alertHeader = "Verify account"
+                        alertMessage = "A verification email has been sent to your account's email address. Verify your email then try logging in again."
+                        showingAlert = true
+                    }
                 case .failure(let failure):
                     isLoading = false
                     alertHeader = "Error"

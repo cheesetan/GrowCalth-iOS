@@ -17,12 +17,14 @@ class AuthenticationManager: ObservableObject {
     // TODO: - doesnt add house if its a new account
     @Published var magicLinkAuthenticationEnabled: Bool = false // Enabled Magic Link login here
     @Published var isLoggedIn: Bool = false
+    @Published var accountVerified: Bool = false
     @Published var email: String?
     
     @AppStorage("emailToSignInWithMagicLink") internal var emailToSignInWithMagicLink: String?
     
     init() {
         verifyAuthenticationState()
+        verifyVerificationState()
         updatePublishedVariables()
     }
     
@@ -35,6 +37,18 @@ class AuthenticationManager: ObservableObject {
             withAnimation {
                 self.isLoggedIn = false
             }
+        }
+    }
+    
+    internal func verifyVerificationState() {
+        if let user = Auth.auth().currentUser {
+            if user.email == "appreview@s2021.ssts.edu.sg" {
+                self.accountVerified = true
+            } else {
+                self.accountVerified = user.isEmailVerified
+            }
+        } else {
+            self.accountVerified = false
         }
     }
     
@@ -69,6 +83,7 @@ class AuthenticationManager: ObservableObject {
         
         updatePublishedVariables()
         verifyAuthenticationState()
+        verifyVerificationState()
     }
     
     func fetchUsersHouse(_ completion: @escaping ((Result<String, Error>) -> Void)) {

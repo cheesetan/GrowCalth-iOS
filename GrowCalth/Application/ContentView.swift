@@ -14,7 +14,7 @@ struct ContentView: View {
 
     var body: some View {
         if !onboardingView {
-            if authManager.isLoggedIn {
+            if authManager.isLoggedIn && authManager.accountVerified {
                 TabView {
                     Home()
                         .tabItem {

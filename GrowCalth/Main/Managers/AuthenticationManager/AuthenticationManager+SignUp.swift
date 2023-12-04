@@ -31,12 +31,17 @@ extension AuthenticationManager {
                             if let err = err {
                                 completion(.failure(err))
                             } else {
-                                completion(.success(true))
+                                self.verifyEmail { result in
+                                    switch result {
+                                    case .success(_):
+                                        completion(.success(true))
+                                    case .failure(let failure):
+                                        completion(.failure(failure))
+                                    }
+                                }
                             }
                         }
                     }
-                    self.updatePublishedVariables()
-                    self.verifyAuthenticationState()
                 }
             }
         } else {

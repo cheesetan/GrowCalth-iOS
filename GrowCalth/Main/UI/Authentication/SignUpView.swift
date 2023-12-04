@@ -64,6 +64,8 @@ struct SignUpView: View {
                 .cornerRadius(16)
                 .keyboardType(.emailAddress)
                 .textContentType(.username)
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
             
                 passwordField
             
@@ -127,6 +129,9 @@ struct SignUpView: View {
                     switch result {
                     case .success(_):
                         isLoading = false
+                        alertHeader = "Verify account"
+                        alertMessage = "A verification email has been sent to your account's email address. Verify your email then try logging in again."
+                        showingAlert = true
                     case .failure(let failure):
                         isLoading = false
                         alertHeader = "Error"
