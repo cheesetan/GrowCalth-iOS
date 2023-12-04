@@ -21,6 +21,12 @@
 		F345ABAB2AE6BEFA00211FE8 /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */; };
 		F345ABAD2AE6C9D900211FE8 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABAC2AE6C9D900211FE8 /* Color+Hex.swift */; };
 		F34791BC2AF0BD03002F357F /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34791BB2AF0BD03002F357F /* Home.swift */; };
+		F3582CF82B1E5C1D006A2FC0 /* AuthenticationManager+Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3582CF72B1E5C1D006A2FC0 /* AuthenticationManager+Error.swift */; };
+		F3582CFB2B1E5C6E006A2FC0 /* AuthenticationManager+PasswordSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3582CFA2B1E5C6E006A2FC0 /* AuthenticationManager+PasswordSignIn.swift */; };
+		F3582CFD2B1E5C87006A2FC0 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3582CFC2B1E5C87006A2FC0 /* AuthenticationManager.swift */; };
+		F3582CFF2B1E5CA3006A2FC0 /* AuthenticationManager+MagicLinkSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3582CFE2B1E5CA3006A2FC0 /* AuthenticationManager+MagicLinkSignIn.swift */; };
+		F3582D012B1E5D51006A2FC0 /* AuthenticationManager+SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3582D002B1E5D51006A2FC0 /* AuthenticationManager+SignUp.swift */; };
+		F3582D032B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3582D022B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift */; };
 		F383E2462AE7A59300C517C2 /* HouseInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2452AE7A59300C517C2 /* HouseInfo.swift */; };
 		F383E2492AE7BCD300C517C2 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2482AE7BCD300C517C2 /* LeaderboardView.swift */; };
 		F383E24C2AE7C1C200C517C2 /* AnnouncementDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E24B2AE7C1C200C517C2 /* AnnouncementDetailView.swift */; };
@@ -33,7 +39,6 @@
 		F383E2602AE812FB00C517C2 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = F383E25F2AE812FB00C517C2 /* FirebaseFirestoreCombine-Community */; };
 		F383E2622AE812FB00C517C2 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F383E2612AE812FB00C517C2 /* FirebaseFirestoreSwift */; };
 		F383E2642AE813C700C517C2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F383E2632AE813C700C517C2 /* GoogleService-Info.plist */; };
-		F383E2662AE8162D00C517C2 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2652AE8162D00C517C2 /* AuthenticationManager.swift */; };
 		F383E2682AE825D400C517C2 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2672AE825D400C517C2 /* SignInView.swift */; };
 		F383E26A2AE8297700C517C2 /* AccountInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2692AE8297700C517C2 /* AccountInfo.swift */; };
 		F3A2E6982AF3E63000B34392 /* AdminManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2E6972AF3E63000B34392 /* AdminManager.swift */; };
@@ -68,6 +73,12 @@
 		F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		F345ABAC2AE6C9D900211FE8 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
 		F34791BB2AF0BD03002F357F /* Home.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
+		F3582CF72B1E5C1D006A2FC0 /* AuthenticationManager+Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthenticationManager+Error.swift"; sourceTree = "<group>"; };
+		F3582CFA2B1E5C6E006A2FC0 /* AuthenticationManager+PasswordSignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthenticationManager+PasswordSignIn.swift"; sourceTree = "<group>"; };
+		F3582CFC2B1E5C87006A2FC0 /* AuthenticationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
+		F3582CFE2B1E5CA3006A2FC0 /* AuthenticationManager+MagicLinkSignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthenticationManager+MagicLinkSignIn.swift"; sourceTree = "<group>"; };
+		F3582D002B1E5D51006A2FC0 /* AuthenticationManager+SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthenticationManager+SignUp.swift"; sourceTree = "<group>"; };
+		F3582D022B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthenticationManager+AccountChanges.swift"; sourceTree = "<group>"; };
 		F383E2452AE7A59300C517C2 /* HouseInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseInfo.swift; sourceTree = "<group>"; };
 		F383E2482AE7BCD300C517C2 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		F383E24B2AE7C1C200C517C2 /* AnnouncementDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementDetailView.swift; sourceTree = "<group>"; };
@@ -75,7 +86,6 @@
 		F383E2522AE80A8900C517C2 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		F383E2552AE810B700C517C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F383E2632AE813C700C517C2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		F383E2652AE8162D00C517C2 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		F383E2672AE825D400C517C2 /* SignInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		F383E2692AE8297700C517C2 /* AccountInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountInfo.swift; sourceTree = "<group>"; };
 		F3A2E6972AF3E63000B34392 /* AdminManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminManager.swift; sourceTree = "<group>"; };
@@ -195,7 +205,7 @@
 		F345ABA82AE69FB500211FE8 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				F383E2652AE8162D00C517C2 /* AuthenticationManager.swift */,
+				F3582CF92B1E5C2F006A2FC0 /* AuthenticationManager */,
 				F3E9FBCE2AEC0E8500801A1C /* QuotesManager.swift */,
 				F3E9FBCC2AEBFC0400801A1C /* DaysManager.swift */,
 				F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */,
@@ -207,6 +217,19 @@
 				F3A2E6972AF3E63000B34392 /* AdminManager.swift */,
 			);
 			path = Managers;
+			sourceTree = "<group>";
+		};
+		F3582CF92B1E5C2F006A2FC0 /* AuthenticationManager */ = {
+			isa = PBXGroup;
+			children = (
+				F3582CFC2B1E5C87006A2FC0 /* AuthenticationManager.swift */,
+				F3582CF72B1E5C1D006A2FC0 /* AuthenticationManager+Error.swift */,
+				F3582D002B1E5D51006A2FC0 /* AuthenticationManager+SignUp.swift */,
+				F3582CFA2B1E5C6E006A2FC0 /* AuthenticationManager+PasswordSignIn.swift */,
+				F3582CFE2B1E5CA3006A2FC0 /* AuthenticationManager+MagicLinkSignIn.swift */,
+				F3582D022B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift */,
+			);
+			path = AuthenticationManager;
 			sourceTree = "<group>";
 		};
 		F383E2472AE7BCC000C517C2 /* Home */ = {
@@ -344,10 +367,11 @@
 				F3A2E69A2AF3E90D00B34392 /* NewAnnouncementView.swift in Sources */,
 				F345ABA02AE62F5600211FE8 /* NAPFA.swift in Sources */,
 				F383E2462AE7A59300C517C2 /* HouseInfo.swift in Sources */,
+				F3582CFF2B1E5CA3006A2FC0 /* AuthenticationManager+MagicLinkSignIn.swift in Sources */,
 				F345ABAB2AE6BEFA00211FE8 /* HealthKitManager.swift in Sources */,
 				F3F955112AEFF96700BD5376 /* PointsManager.swift in Sources */,
-				F383E2662AE8162D00C517C2 /* AuthenticationManager.swift in Sources */,
 				F3F6124C2AE6DF0400713E80 /* HealthInfo.swift in Sources */,
+				F3582CFB2B1E5C6E006A2FC0 /* AuthenticationManager+PasswordSignIn.swift in Sources */,
 				F345AB9E2AE62F4600211FE8 /* Announcements.swift in Sources */,
 				F3E9FBCD2AEBFC0400801A1C /* DaysManager.swift in Sources */,
 				F383E24C2AE7C1C200C517C2 /* AnnouncementDetailView.swift in Sources */,
@@ -359,12 +383,16 @@
 				F3E9FBD72AED62C700801A1C /* ProgressBar.swift in Sources */,
 				F383E2492AE7BCD300C517C2 /* LeaderboardView.swift in Sources */,
 				F3E9FBD32AECB52600801A1C /* GoalsManager.swift in Sources */,
+				F3582D032B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift in Sources */,
+				F3582CF82B1E5C1D006A2FC0 /* AuthenticationManager+Error.swift in Sources */,
+				F3582CFD2B1E5C87006A2FC0 /* AuthenticationManager.swift in Sources */,
 				F30C5C1C2AEF3A6E00474469 /* OnboardingView.swift in Sources */,
 				F345AB8D2AE62EDE00211FE8 /* ContentView.swift in Sources */,
 				F383E2512AE80A0200C517C2 /* SignUpView.swift in Sources */,
 				F3E9FBCB2AEBC28600801A1C /* LeaderboardsManager.swift in Sources */,
 				F3F6124A2AE6DDA200713E80 /* Acknowledgements.swift in Sources */,
 				F383E2532AE80A8900C517C2 /* AuthenticationView.swift in Sources */,
+				F3582D012B1E5D51006A2FC0 /* AuthenticationManager+SignUp.swift in Sources */,
 				F3E9FBD12AEC197400801A1C /* QuoteView.swift in Sources */,
 				F383E26A2AE8297700C517C2 /* AccountInfo.swift in Sources */,
 				F345AB8B2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift in Sources */,
@@ -522,7 +550,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.kidcodes.growcalth-debug";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

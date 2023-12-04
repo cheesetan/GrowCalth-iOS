@@ -5,20 +5,21 @@
 //  Created by Tristan Chay on 5/12/23.
 //
 
-import Foundation
+import SwiftUI
+import FirebaseAuth
 
 extension AuthenticationManager {
-    enum AccountCreationError: LocalizedError {
+    internal enum AccountCreationError: LocalizedError {
         case emailIsNotSSTEmail
         var errorDescription: String? { return "Please use a valid SST Email address." }
     }
 
-    enum MagicLinkHandlerError: LocalizedError {
+    internal enum MagicLinkHandlerError: LocalizedError {
         case noPersistedEmailInSignInFlow
         var errorDescription: String? { return "Invalid email address. The Magic Link you have used has most likely expired. Try signing in with a new Magic Link" }
     }
 
-    enum DeleteAccountError: Error {
+    internal enum DeleteAccountError: Error {
         case wrongPasswordToReauth
         case failedToDeleteFromFirestore
         case failedToDeleteAccount

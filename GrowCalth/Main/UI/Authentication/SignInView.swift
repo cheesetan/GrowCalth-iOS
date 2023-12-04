@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SignInView: View {
     
+    @State var magicLinkAuthenticationEnabled = false
+    
     @Binding var signInView: Bool
     
     @State var isLoading = false
@@ -47,6 +49,23 @@ struct SignInView: View {
         } message: {
             Text(alertMessage)
         }
+        .onOpenURL { url in
+            handleMagicLink(url: url)
+        }
+    }
+    
+    private func handleMagicLink(url: URL) {
+        Task {
+            await authManager.handleMagicLink(url: url) { result in
+                switch result {
+                case .success(_): break
+                case .failure(let failure):
+                    alertHeader = "Error"
+                    alertMessage = failure.localizedDescription
+                    showingAlert = true
+                }
+            }
+        }
     }
     
     var infoFields: some View {
@@ -57,6 +76,8 @@ struct SignInView: View {
                 .cornerRadius(16)
                 .keyboardType(.emailAddress)
                 .textContentType(.username)
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
             
             passwordField
         }
@@ -71,6 +92,9 @@ struct SignInView: View {
                     .cornerRadius(16)
                     .textContentType(.password)
                     .focused($passwordFieldFocused)
+                    .onSubmit {
+                        signInWithPassword()
+                    }
             } else {
                 SecureField("Password", text: $password)
                     .padding()
@@ -78,6 +102,9 @@ struct SignInView: View {
                     .cornerRadius(16)
                     .textContentType(.password)
                     .focused($passwordFieldFocused)
+                    .onSubmit {
+                        signInWithPassword()
+                    }
             }
             Button {
                 showingPassword.toggle()
@@ -132,22 +159,13 @@ struct SignInView: View {
     
     var loginButton: some View {
         Button {
-            if !email.isEmpty && !password.isEmpty {
-                isLoading = true
-                authManager.signIn(email: email, password: password) { result in
-                    switch result {
-                    case .success(_):
-                        isLoading = false
-                    case .failure(let failure):
-                        isLoading = false
-                        alertHeader = "Error"
-                        alertMessage = "\(failure.localizedDescription)"
-                        showingAlert = true
-                    }
-                }
+            if !email.isEmpty && password.isEmpty {
+                sendMagicLink()
+            } else {
+                signInWithPassword()
             }
         } label: {
-            Text("Login")
+            Text(!email.isEmpty && password.isEmpty ? "Login via Magic Link" : "Login")
                 .padding()
                 .frame(maxWidth: 300)
                 .foregroundColor(isLoading ? .clear : .white)
@@ -161,7 +179,46 @@ struct SignInView: View {
                 }
         }
         .buttonStyle(.plain)
-        .disabled(email.isEmpty || password.isEmpty || isLoading)
+        .disabled(email.isEmpty || isLoading)
+    }
+    
+    func signInWithPassword() {
+        if !email.isEmpty && !password.isEmpty {
+            isLoading = true
+            authManager.signIn(email: email, password: password) { result in
+                switch result {
+                case .success(_):
+                    isLoading = false
+                case .failure(let failure):
+                    isLoading = false
+                    alertHeader = "Error"
+                    alertMessage = "\(failure.localizedDescription)"
+                    showingAlert = true
+                }
+            }
+        }
+    }
+    
+    func sendMagicLink() {
+        if !email.isEmpty && password.isEmpty {
+            isLoading = true
+            Task {
+                await authManager.sendMagicLink(email: email) { result in
+                    switch result {
+                    case .success(_):
+                        isLoading = false
+                        alertHeader = "Magic Link sent"
+                        alertMessage = "Check your email to continue with login."
+                        showingAlert = true
+                    case .failure(let failure):
+                        isLoading = false
+                        alertHeader = "Error"
+                        alertMessage = failure.localizedDescription
+                        showingAlert = true
+                    }
+                }
+            }
+        }
     }
     
     var bottomText: some View {
