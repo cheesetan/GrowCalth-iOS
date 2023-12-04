@@ -10,16 +10,14 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 
-enum AccountCreationError: LocalizedError {
-    case emailIsNotSSTEmail
-    var errorDescription: String? { return "Please sign up with a valid SST Email account." }
-}
 
 class AuthenticationManager: ObservableObject {
     static let shared: AuthenticationManager = .init()
     
     @Published var isLoggedIn: Bool = false
     @Published var email: String?
+    
+    @AppStorage("emailToSignInWithMagicLink") private var emailToSignInWithMagicLink: String?
     
     init() {
         verifyAuthenticationState()
@@ -52,6 +50,48 @@ class AuthenticationManager: ObservableObject {
                 }
                 self.updatePublishedVariables()
                 completion(.success(true))
+            }
+        }
+    }
+    
+    func sendMagicLink(email: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) async {
+        if emailProvidedIsSSTEmail(email: email) {
+            let actionCodeSettings = ActionCodeSettings()
+            actionCodeSettings.handleCodeInApp = true
+            actionCodeSettings.url = URL(string: "https://growcalth.page.link/magic-link-login")
+            do {
+                try await Auth.auth().sendSignInLink(toEmail: email, actionCodeSettings: actionCodeSettings)
+                DispatchQueue.main.sync {
+                    emailToSignInWithMagicLink = email
+                }
+                completion(.success(true))
+            } catch {
+                completion(.failure(error))
+            }
+        } else {
+            completion(.failure(AccountCreationError.emailIsNotSSTEmail))
+        }
+    }
+    
+    func handleMagicLink(url: URL, _ completion: @escaping ((Result<Bool, Error>) -> Void)) async {
+        guard let email = emailToSignInWithMagicLink else {
+            completion(.failure(MagicLinkHandlerError.noPersistedEmailInSignInFlow))
+            return
+        }
+        
+        let link = url.absoluteString
+        if Auth.auth().isSignIn(withEmailLink: link) {
+            do {
+                try await Auth.auth().signIn(withEmail: email, link: link)
+                DispatchQueue.main.sync {
+                    emailToSignInWithMagicLink = nil
+                    withAnimation {
+                        self.isLoggedIn = true
+                    }
+                    updatePublishedVariables()
+                }
+            } catch {
+                completion(.failure(error))
             }
         }
     }
@@ -182,49 +222,28 @@ class AuthenticationManager: ObservableObject {
         }
     }
     
-    public enum DeleteAccountError: Error {
-            case wrongPasswordToReauth
-            case failedToDeleteFromFirestore
-            case failedToDeleteAccount
-            case failedToSignOut
-            
-            var localizedDescription: String {
-                switch self {
-                case .wrongPasswordToReauth:
-                    return NSLocalizedString("The password you have entered to delete your account is incorrect.", comment: "Wrong password")
-                case .failedToDeleteFromFirestore:
-                    return NSLocalizedString("An error has occurred while attempting to delete your account.", comment: "Firestore error")
-                case .failedToDeleteAccount:
-                    return NSLocalizedString("An error has occurred while attempting to delete your account.", comment: "Account error")
-                case .failedToSignOut:
-                    return NSLocalizedString("An error has occurred while attempting to sign out of deleted account. Please sign out manually.", comment: "Sign out error")
-                }
-            }
-        }
-        
-        func deleteAccount(password: String, _ completion: @escaping ((Result<Bool, DeleteAccountError>) -> Void)) {
-            let credential = EmailAuthProvider.credential(withEmail: Auth.auth().currentUser?.email ?? "", password: password)
-            Auth.auth().currentUser?.reauthenticate(with: credential) { result, error in
-                if error != nil {
-                    completion(.failure(DeleteAccountError.wrongPasswordToReauth))
-                } else {
-                    if let uid = Auth.auth().currentUser?.uid {
-                        Firestore.firestore().collection("users").document(uid).delete() { err in
-                            if err != nil {
-                                completion(.failure(DeleteAccountError.failedToDeleteFromFirestore))
-                            } else {
-                                let user = Auth.auth().currentUser
-                                user?.delete { error in
-                                    if error != nil {
-                                        completion(.failure(DeleteAccountError.failedToDeleteAccount))
-                                    } else {
-                                        self.signOut { result in
-                                            switch result {
-                                            case .success(_):
-                                                break
-                                            case .failure(_):
-                                                completion(.failure(DeleteAccountError.failedToSignOut))
-                                            }
+    func deleteAccount(password: String, _ completion: @escaping ((Result<Bool, DeleteAccountError>) -> Void)) {
+        let credential = EmailAuthProvider.credential(withEmail: Auth.auth().currentUser?.email ?? "", password: password)
+        Auth.auth().currentUser?.reauthenticate(with: credential) { result, error in
+            if error != nil {
+                completion(.failure(DeleteAccountError.wrongPasswordToReauth))
+            } else {
+                if let uid = Auth.auth().currentUser?.uid {
+                    Firestore.firestore().collection("users").document(uid).delete() { err in
+                        if err != nil {
+                            completion(.failure(DeleteAccountError.failedToDeleteFromFirestore))
+                        } else {
+                            let user = Auth.auth().currentUser
+                            user?.delete { error in
+                                if error != nil {
+                                    completion(.failure(DeleteAccountError.failedToDeleteAccount))
+                                } else {
+                                    self.signOut { result in
+                                        switch result {
+                                        case .success(_):
+                                            break
+                                        case .failure(_):
+                                            completion(.failure(DeleteAccountError.failedToSignOut))
                                         }
                                     }
                                 }
@@ -234,4 +253,5 @@ class AuthenticationManager: ObservableObject {
                 }
             }
         }
+    }
 }
