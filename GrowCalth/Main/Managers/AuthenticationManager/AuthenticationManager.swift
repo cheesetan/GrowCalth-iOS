@@ -42,7 +42,7 @@ class AuthenticationManager: ObservableObject {
     
     internal func verifyVerificationState() {
         if let user = Auth.auth().currentUser {
-            if user.email == "appreview@s2021.ssts.edu.sg" || user.email == "admin@growcalth.com" {
+            if user.email == "appreview@s2021.ssts.edu.sg" || user.email == "admin@growcalth.com" || user.email == "growcalth@sst.edu.sg" {
                 self.accountVerified = true
             } else {
                 self.accountVerified = user.isEmailVerified

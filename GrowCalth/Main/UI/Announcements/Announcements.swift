@@ -46,7 +46,7 @@ struct Announcements: View {
                                     )
                                 }
                                 .swipeActions {
-                                    if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                                    if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
                                         Button(role: .destructive) {
                                             stateUUID = item.id
                                             alertHeader = "Delete Announcement"
@@ -76,7 +76,7 @@ struct Announcements: View {
                                     )
                                 }
                                 .swipeActions {
-                                    if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                                    if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
                                         Button(role: .destructive) {
                                             stateUUID = item.id
                                             alertHeader = "Delete Event"
@@ -113,7 +113,7 @@ struct Announcements: View {
                 announcementManager.updateCacheForAllPosts()
             }
             .toolbar {
-                if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         createPostButton
                     }

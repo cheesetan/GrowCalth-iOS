@@ -106,7 +106,7 @@ struct NewAnnouncementView: View {
     
     var createButton: some View {
         Button {
-            if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+            if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
                 switch postType {
                 case .announcements:
                     createAnnouncement()

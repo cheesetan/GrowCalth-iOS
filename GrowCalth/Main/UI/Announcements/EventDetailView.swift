@@ -65,7 +65,7 @@ struct EventDetailView: View {
             }
         }
         .toolbar {
-            if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+            if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     VStack {
                         if isEditing {
