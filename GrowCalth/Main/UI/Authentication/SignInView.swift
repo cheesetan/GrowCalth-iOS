@@ -9,8 +9,6 @@ import SwiftUI
 
 struct SignInView: View {
     
-    @State var magicLinkAuthenticationEnabled = false
-    
     @Binding var signInView: Bool
     
     @State var isLoading = false
@@ -55,11 +53,14 @@ struct SignInView: View {
     }
     
     private func handleMagicLink(url: URL) {
+        isLoading = true
         Task {
             await authManager.handleMagicLink(url: url) { result in
                 switch result {
-                case .success(_): break
+                case .success(_):
+                    isLoading = false
                 case .failure(let failure):
+                    isLoading = false
                     alertHeader = "Error"
                     alertMessage = failure.localizedDescription
                     showingAlert = true
@@ -159,13 +160,17 @@ struct SignInView: View {
     
     var loginButton: some View {
         Button {
-            if !email.isEmpty && password.isEmpty {
-                sendMagicLink()
+            if authManager.magicLinkAuthenticationEnabled {
+                if !email.isEmpty && password.isEmpty {
+                    sendMagicLink()
+                } else {
+                    signInWithPassword()
+                }
             } else {
                 signInWithPassword()
             }
         } label: {
-            Text(!email.isEmpty && password.isEmpty ? "Login via Magic Link" : "Login")
+            Text(!email.isEmpty && password.isEmpty ? authManager.magicLinkAuthenticationEnabled ? "Login via Magic Link" : "Login" : "Login")
                 .padding()
                 .frame(maxWidth: 300)
                 .foregroundColor(isLoading ? .clear : .white)
@@ -179,7 +184,23 @@ struct SignInView: View {
                 }
         }
         .buttonStyle(.plain)
-        .disabled(email.isEmpty || isLoading)
+        .disabled(loginButtonDisabled)
+    }
+    
+    var loginButtonDisabled: Bool {
+        if authManager.magicLinkAuthenticationEnabled {
+            if email.isEmpty || isLoading {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            if email.isEmpty || password.isEmpty || isLoading {
+                return true
+            } else {
+                return false
+            }
+        }
     }
     
     func signInWithPassword() {
