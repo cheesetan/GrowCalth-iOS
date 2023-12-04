@@ -18,7 +18,7 @@ extension AuthenticationManager {
             if let err = error {
                 completion(.failure(err))
             } else {
-                if let user = Auth.auth().currentUser, user.isEmailVerified || email == "appreview@s2021.ssts.edu.sg" {
+                if let user = Auth.auth().currentUser, user.isEmailVerified || email == "appreview@s2021.ssts.edu.sg" || email == "admin@growcalth.com" {
                     withAnimation {
                         self.isLoggedIn = true
                         self.accountVerified = true
