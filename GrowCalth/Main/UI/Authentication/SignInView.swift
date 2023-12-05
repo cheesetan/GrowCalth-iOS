@@ -23,7 +23,11 @@ struct SignInView: View {
     @State var alertHeader: String = ""
     @State var alertMessage: String = ""
     
-    @FocusState var passwordFieldFocused: Bool
+    @FocusState var isFieldFocus: FieldToFocus?
+    
+    internal enum FieldToFocus {
+        case secureField, textField
+    }
     
     @ObservedObject var authManager: AuthenticationManager = .shared
     
@@ -86,36 +90,29 @@ struct SignInView: View {
     
     var passwordField: some View {
         ZStack(alignment: .trailing) {
-            if showingPassword {
-                TextField("Password", text: $password)
-                    .padding()
-                    .background(.ultraThickMaterial)
-                    .cornerRadius(16)
-                    .textContentType(.password)
-                    .focused($passwordFieldFocused)
-                    .onSubmit {
-                        if !email.isEmpty && !password.isEmpty && !isLoading {
-                            signInWithPassword()
-                        }
-                    }
-            } else {
-                SecureField("Password", text: $password)
-                    .padding()
-                    .background(.ultraThickMaterial)
-                    .cornerRadius(16)
-                    .textContentType(.password)
-                    .focused($passwordFieldFocused)
-                    .onSubmit {
-                        if !email.isEmpty && !password.isEmpty && !isLoading {
-                            signInWithPassword()
-                        }
-                    }
+            VStack {
+                if showingPassword {
+                    TextField("Password", text: $password)
+                        .focused($isFieldFocus, equals: .textField)
+                } else {
+                    SecureField("Password", text: $password)
+                        .focused($isFieldFocus, equals: .secureField)
+                }
+            }
+            .padding()
+            .background(.ultraThickMaterial)
+            .cornerRadius(16)
+            .textContentType(.password)
+            .keyboardType(.alphabet)
+            .autocorrectionDisabled(true)
+            .autocapitalization(.none)
+            .onSubmit {
+                if !email.isEmpty && !password.isEmpty && !isLoading {
+                    signInWithPassword()
+                }
             }
             Button {
                 showingPassword.toggle()
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
-                    passwordFieldFocused = true
-                }
             } label: {
                 Image(systemName: showingPassword ? "eye.slash" : "eye")
                     .font(.title3)
@@ -124,6 +121,9 @@ struct SignInView: View {
             .minimumScaleFactor(0.1)
             .buttonStyle(.plain)
             .padding(.trailing, 20)
+            .onChange(of: showingPassword) { result in
+                isFieldFocus = showingPassword ? .textField : .secureField
+            }
         }
     }
     

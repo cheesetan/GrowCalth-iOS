@@ -33,7 +33,11 @@ struct SignUpView: View {
     
     @ObservedObject var authManager: AuthenticationManager = .shared
     
-    @FocusState var passwordFieldFocused: Bool
+    @FocusState var isFieldFocus: FieldToFocus?
+    
+    internal enum FieldToFocus {
+        case secureField, textField
+    }
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -92,33 +96,36 @@ struct SignUpView: View {
     
     var passwordField: some View {
         ZStack(alignment: .trailing) {
-            if showingPassword {
-                TextField("Password", text: $password)
-                    .padding()
-                    .background(.ultraThickMaterial)
-                    .cornerRadius(16)
-                    .textContentType(.password)
-                    .focused($passwordFieldFocused)
-            } else {
-                SecureField("Password", text: $password)
-                    .padding()
-                    .background(.ultraThickMaterial)
-                    .cornerRadius(16)
-                    .textContentType(.password)
-                    .focused($passwordFieldFocused)
+            VStack {
+                if showingPassword {
+                    TextField("Password", text: $password)
+                        .focused($isFieldFocus, equals: .textField)
+                } else {
+                    SecureField("Password", text: $password)
+                        .focused($isFieldFocus, equals: .secureField)
+                }
             }
+            .padding()
+            .background(.ultraThickMaterial)
+            .cornerRadius(16)
+            .textContentType(.password)
+            .keyboardType(.alphabet)
+            .autocorrectionDisabled(true)
+            .autocapitalization(.none)
+            
             Button {
                 showingPassword.toggle()
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
-                    passwordFieldFocused = true
-                }
             } label: {
                 Image(systemName: showingPassword ? "eye.slash" : "eye")
                     .font(.title3)
                     .foregroundColor(.secondary)
             }
+            .minimumScaleFactor(0.1)
             .buttonStyle(.plain)
             .padding(.trailing, 20)
+            .onChange(of: showingPassword) { result in
+                isFieldFocus = showingPassword ? .textField : .secureField
+            }
         }
     }
     

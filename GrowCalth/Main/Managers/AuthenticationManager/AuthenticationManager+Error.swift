@@ -97,7 +97,7 @@ extension AuthenticationManager {
             case .failedToSendPasswordChangeRequestLinkToEmail:
                 return "An error has occurred while attempting to send password change request to the requested email address."
             case .failedToChangePassword:
-                return "An error has occurred while attempting to change your password."
+                return "An error has occurred while attempting to change your password. Your new password has to be at least 6 characters long."
             }
         }
     }

@@ -27,8 +27,11 @@ struct AccountInfo: View {
     @State var deleteAccountPassword = ""
     @State var isDeletingAccount = false
     
-    @FocusState var newPasswordFocused: Bool
-    @FocusState var currentPasswordFocused: Bool
+    @FocusState var isFieldFocus: FieldToFocus?
+    
+    internal enum FieldToFocus {
+        case currentSecureField, currentTextField, newSecureField, newTextField
+    }
     
     @ObservedObject var authManager: AuthenticationManager = .shared
     
@@ -118,45 +121,59 @@ struct AccountInfo: View {
     var changePassword: some View {
         VStack {
             List {
-                if showingCurrentPassword {
-                    HStack {
-                        TextField("Current Password", text: $currentPassword)
-                            .focused($currentPasswordFocused)
-                        toggleCurrentPassword
-                    }
-                } else {
-                    HStack {
-                        SecureField("Current Password", text: $currentPassword)
-                            .focused($currentPasswordFocused)
-                        toggleCurrentPassword
+                VStack {
+                    if showingCurrentPassword {
+                        HStack {
+                            TextField("Current Password", text: $currentPassword)
+                                .focused($isFieldFocus, equals: .currentTextField)
+                            toggleCurrentPassword
+                        }
+                    } else {
+                        HStack {
+                            SecureField("Current Password", text: $currentPassword)
+                                .focused($isFieldFocus, equals: .currentSecureField)
+                            toggleCurrentPassword
+                        }
                     }
                 }
+                .textContentType(.password)
+                .keyboardType(.alphabet)
+                .autocorrectionDisabled(true)
+                .autocapitalization(.none)
                 
-                if showingNewPassword {
-                    HStack {
-                        TextField("New Password", text: $newPassword)
-                            .focused($newPasswordFocused)
-                        toggleNewPassword
-                    }
-                } else {
-                    HStack {
-                        SecureField("New Password", text: $newPassword)
-                            .focused($newPasswordFocused)
-                        toggleNewPassword
+                VStack {
+                    if showingNewPassword {
+                        HStack {
+                            TextField("New Password", text: $newPassword)
+                                .focused($isFieldFocus, equals: .newTextField)
+                            toggleNewPassword
+                        }
+                    } else {
+                        HStack {
+                            SecureField("New Password", text: $newPassword)
+                                .focused($isFieldFocus, equals: .newSecureField)
+                            toggleNewPassword
+                        }
                     }
                 }
+                .textContentType(.password)
+                .keyboardType(.alphabet)
+                .autocorrectionDisabled(true)
+                .autocapitalization(.none)
                 
                 if isLoading {
                     ProgressView()
                 } else {
                     Button {
-                        alertHeader = "Change Password"
-                        alertMessage = "Are you sure you want to change your password?"
-                        showingAlertWithConfirmation = true
+                        if !isLoading && !currentPassword.isEmpty && !newPassword.isEmpty {
+                            alertHeader = "Change Password"
+                            alertMessage = "Are you sure you want to change your password?"
+                            showingAlertWithConfirmation = true
+                        }
                     } label: {
                         Text("Change Password")
                     }
-                    .disabled(isLoading)
+                    .disabled(isLoading || currentPassword.isEmpty || newPassword.isEmpty)
                 }
             }
             .navigationTitle("Change Password")
@@ -166,29 +183,37 @@ struct AccountInfo: View {
     var toggleNewPassword: some View {
         Button {
             showingNewPassword.toggle()
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-                newPasswordFocused = true
-            }
         } label: {
             Image(systemName: showingNewPassword ? "eye.slash" : "eye")
                 .font(.title3)
                 .foregroundColor(.secondary)
         }
         .buttonStyle(.plain)
+        .onChange(of: showingNewPassword) { newValue in
+            if newValue == true {
+                isFieldFocus = .newTextField
+            } else {
+                isFieldFocus = .newSecureField
+            }
+        }
     }
     
     var toggleCurrentPassword: some View {
         Button {
             showingCurrentPassword.toggle()
-            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {
-                currentPasswordFocused = true
-            }
         } label: {
             Image(systemName: showingCurrentPassword ? "eye.slash" : "eye")
                 .font(.title3)
                 .foregroundColor(.secondary)
         }
         .buttonStyle(.plain)
+        .onChange(of: showingCurrentPassword) { newValue in
+            if newValue == true {
+                isFieldFocus = .currentTextField
+            } else {
+                isFieldFocus = .currentSecureField
+            }
+        }
     }
 }
 
