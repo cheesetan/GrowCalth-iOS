@@ -12,6 +12,10 @@ struct MultiColumnTable: View {
     @State var headers: [String]
     @State var data: [NAPFAResults]
     
+    @ObservedObject var csManager: ColorSchemeManager = .shared
+    
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
         ScrollView {
             ForEach(data, id: \.id) { data in
@@ -51,7 +55,7 @@ struct MultiColumnTable: View {
             }
             .padding(.vertical, 5)
             .frame(maxWidth: .infinity)
-            .background(Color(uiColor: .systemGroupedBackground))
+            .background(csManager.colorScheme == .dark ? .black : csManager.colorScheme == .automatic ? colorScheme == .dark ? .black : .white : .white)
         }
     }
 }
