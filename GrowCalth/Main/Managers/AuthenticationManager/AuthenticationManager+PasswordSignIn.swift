@@ -15,8 +15,8 @@ extension AuthenticationManager {
         _ completion: @escaping ((Result<Bool, Error>) -> Void)
     ) {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
-            if let err = error {
-                completion(.failure(err))
+            if error != nil {
+                completion(.failure(SignInError.failedToSignIn))
             } else {
                 if let user = Auth.auth().currentUser, user.isEmailVerified || email == "appreview@s2021.ssts.edu.sg" || email == "admin@growcalth.com" || email == "growcalth@sst.edu.sg" {
                     withAnimation {
@@ -30,13 +30,14 @@ extension AuthenticationManager {
                         switch result {
                         case .success(_):
                             completion(.success(false))
-                        case .failure(let failure):
-                            completion(.failure(failure))
+                        case .failure(_):
+                            completion(.failure(VerificationError.failedToSendVerificationEmail))
                         }
                         self.signOut { result in
                             switch result {
                             case .success(_): break
-                            case .failure(_): break
+                            case .failure(_):
+                                completion(.failure(SignOutError.failedToSignOut))
                             }
                         }
                     }

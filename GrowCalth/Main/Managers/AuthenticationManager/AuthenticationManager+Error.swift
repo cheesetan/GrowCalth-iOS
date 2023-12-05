@@ -9,32 +9,106 @@ import SwiftUI
 import FirebaseAuth
 
 extension AuthenticationManager {
-    internal enum AccountCreationError: LocalizedError {
+    internal enum EmailError: LocalizedError {
         case emailIsNotSSTEmail
-        var errorDescription: String? { return "Please use a valid SST Email address." }
+        var errorDescription: String? {
+            switch self {
+            case .emailIsNotSSTEmail:
+                return "Enter a valid SST Email address."
+            }
+        }
     }
-
+    
     internal enum MagicLinkHandlerError: LocalizedError {
         case noPersistedEmailInSignInFlow
-        var errorDescription: String? { return "Invalid email address. The Magic Link you have used has most likely expired. Try signing in with a new Magic Link" }
+        var errorDescription: String? { 
+            switch self {
+            case .noPersistedEmailInSignInFlow:
+                return "The Magic Link you have used has most likely expired. Try requesting and signing in with a new Magic Link."
+            }
+        }
     }
-
-    internal enum DeleteAccountError: Error {
-        case wrongPasswordToReauth
+    
+    internal enum DeleteAccountError: LocalizedError {
         case failedToDeleteFromFirestore
         case failedToDeleteAccount
+        
+        var errorDescription: String? {
+            switch self {
+            case .failedToDeleteFromFirestore, .failedToDeleteAccount:
+                return "An error has occurred while attempting to delete your account. Please try again."
+            }
+        }
+    }
+    
+    internal enum VerificationError: LocalizedError {
+        case failedToSendVerificationEmail
+        
+        var errorDescription: String? {
+            switch self {
+            case .failedToSendVerificationEmail:
+                return "An error has occurred while attempting to send verification link to your account's email address. Please try again."
+            }
+        }
+    }
+    
+    internal enum CreateAccountError: LocalizedError {
+        case failedToCreateAccount
+        case failedToCreateFirestoreForNewAccount
+        
+        var errorDescription: String? {
+            switch self {
+            case .failedToCreateAccount:
+                return "Failed to create account. This email address may already be in use or your password is less than 6 characters long."
+            case .failedToCreateFirestoreForNewAccount:
+                return "An error has occurred while attempting to create your account."
+            }
+        }
+    }
+    
+    internal enum SignInError: LocalizedError {
+        case failedToSignIn
+        
+        var errorDescription: String? {
+            switch self {
+            case .failedToSignIn:
+                return "Invalid email address or incorrect password entered."
+            }
+        }
+    }
+    
+    internal enum SignOutError: LocalizedError {
         case failedToSignOut
         
-        var localizedDescription: String {
+        var errorDescription: String? {
             switch self {
-            case .wrongPasswordToReauth:
-                return NSLocalizedString("The password you have entered to delete your account is incorrect.", comment: "Wrong password")
-            case .failedToDeleteFromFirestore:
-                return NSLocalizedString("An error has occurred while attempting to delete your account.", comment: "Firestore error")
-            case .failedToDeleteAccount:
-                return NSLocalizedString("An error has occurred while attempting to delete your account.", comment: "Account error")
             case .failedToSignOut:
-                return NSLocalizedString("An error has occurred while attempting to sign out of deleted account. Please sign out manually.", comment: "Sign out error")
+                return "An error has occurred while attempting to sign out of your account. Please try again."
+            }
+        }
+    }
+    
+    internal enum PasswordChangeError: LocalizedError {
+        case failedToSendPasswordChangeRequestLinkToEmail
+        case failedToChangePassword
+        
+        var errorDescription: String? {
+            switch self {
+            case .failedToSendPasswordChangeRequestLinkToEmail:
+                return "An error has occurred while attempting to send password change request to the requested email address."
+            case .failedToChangePassword:
+                return "An error has occurred while attempting to change your password."
+            }
+        }
+    }
+    
+    internal enum ReauthenticationError: LocalizedError {
+        case failedToReauthenticate
+        
+        var errorDescription: String? {
+            switch self {
+            case .failedToReauthenticate:
+                return "Failed to reauthenticate account. The password entered may be incorrect."
             }
         }
     }

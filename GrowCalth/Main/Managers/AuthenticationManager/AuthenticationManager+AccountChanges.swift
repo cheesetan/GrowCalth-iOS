@@ -15,8 +15,8 @@ extension AuthenticationManager {
         _ completion: @escaping ((Result<Bool, Error>) -> Void)
     ) {
         Auth.auth().sendPasswordReset(withEmail: email) { error in
-            if let err = error {
-                completion(.failure(err))
+            if error != nil {
+                completion(.failure(PasswordChangeError.failedToSendPasswordChangeRequestLinkToEmail))
             } else {
                 completion(.success(true))
             }
@@ -30,12 +30,12 @@ extension AuthenticationManager {
     ) {
         let credential = EmailAuthProvider.credential(withEmail: Auth.auth().currentUser?.email ?? "", password: oldPassword)
         Auth.auth().currentUser?.reauthenticate(with: credential) { result, error in
-            if let error = error {
-                completion(.failure(error))
+            if error != nil {
+                completion(.failure(ReauthenticationError.failedToReauthenticate))
             } else {
                 Auth.auth().currentUser?.updatePassword(to: newPassword) { error in
-                    if let error = error {
-                        completion(.failure(error))
+                    if error != nil {
+                        completion(.failure(PasswordChangeError.failedToChangePassword))
                     } else {
                         completion(.success(true))
                     }
@@ -44,11 +44,11 @@ extension AuthenticationManager {
         }
     }
     
-    func deleteAccount(password: String, _ completion: @escaping ((Result<Bool, DeleteAccountError>) -> Void)) {
+    func deleteAccount(password: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
         let credential = EmailAuthProvider.credential(withEmail: Auth.auth().currentUser?.email ?? "", password: password)
         Auth.auth().currentUser?.reauthenticate(with: credential) { result, error in
             if error != nil {
-                completion(.failure(DeleteAccountError.wrongPasswordToReauth))
+                completion(.failure(ReauthenticationError.failedToReauthenticate))
             } else {
                 if let uid = Auth.auth().currentUser?.uid {
                     Firestore.firestore().collection("users").document(uid).delete() { err in
@@ -65,7 +65,7 @@ extension AuthenticationManager {
                                         case .success(_):
                                             break
                                         case .failure(_):
-                                            completion(.failure(DeleteAccountError.failedToSignOut))
+                                            completion(.failure(SignOutError.failedToSignOut))
                                         }
                                     }
                                 }

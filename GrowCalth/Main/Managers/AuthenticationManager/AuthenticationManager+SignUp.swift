@@ -18,8 +18,8 @@ extension AuthenticationManager {
     ) {
         if emailProvidedIsSSTEmail(email: email) {
             Auth.auth().createUser(withEmail: email, password: password) { result, error in
-                if let err = error {
-                    completion(.failure(err))
+                if error != nil {
+                    completion(.failure(CreateAccountError.failedToCreateAccount))
                 } else {
                     if let currentUserUID = Auth.auth().currentUser?.uid {
                         Firestore.firestore().collection("users").document(currentUserUID).setData([
@@ -28,15 +28,15 @@ extension AuthenticationManager {
                             "points": 0,
                             "steps": 0
                         ]) { err in
-                            if let err = err {
-                                completion(.failure(err))
+                            if err != nil {
+                                completion(.failure(CreateAccountError.failedToCreateFirestoreForNewAccount))
                             } else {
                                 self.verifyEmail { result in
                                     switch result {
                                     case .success(_):
                                         completion(.success(true))
-                                    case .failure(let failure):
-                                        completion(.failure(failure))
+                                    case .failure(_):
+                                        completion(.failure(VerificationError.failedToSendVerificationEmail))
                                     }
                                 }
                             }
@@ -45,7 +45,7 @@ extension AuthenticationManager {
                 }
             }
         } else {
-            completion(.failure(AccountCreationError.emailIsNotSSTEmail))
+            completion(.failure(EmailError.emailIsNotSSTEmail))
         }
     }
 }

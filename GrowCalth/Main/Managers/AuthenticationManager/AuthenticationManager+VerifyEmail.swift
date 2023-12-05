@@ -28,8 +28,8 @@ extension AuthenticationManager {
                 switch result {
                 case .success(_):
                     completion(.success(true))
-                case .failure(let failure):
-                    completion(.failure(failure))
+                case .failure(_):
+                    completion(.failure(VerificationError.failedToSendVerificationEmail))
                 }
             }
         }

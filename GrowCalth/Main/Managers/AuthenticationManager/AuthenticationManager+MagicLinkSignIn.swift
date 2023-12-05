@@ -27,7 +27,7 @@ extension AuthenticationManager {
                 completion(.failure(error))
             }
         } else {
-            completion(.failure(AccountCreationError.emailIsNotSSTEmail))
+            completion(.failure(EmailError.emailIsNotSSTEmail))
         }
     }
     
