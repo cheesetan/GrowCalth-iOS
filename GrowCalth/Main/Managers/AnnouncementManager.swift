@@ -38,7 +38,9 @@ class AnnouncementManager: ObservableObject {
     @Persistent("cachedAnnouncements", store: .fileManager) private var cachedAnnouncements: [Announcement] = []
     
     init() {
-        retrieveAllPosts() { }
+        retrieveAllPosts() {
+            self.updateCacheForAllPosts()
+        }
     }
     
     func retrieveAllPosts(_ completion: @escaping (() -> Void)) {
@@ -90,7 +92,6 @@ class AnnouncementManager: ObservableObject {
             }
         }
     }
-    
     
     func updateCacheForAllPosts() {
         updateCacheForEvents()

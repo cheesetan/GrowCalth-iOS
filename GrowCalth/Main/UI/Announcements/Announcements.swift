@@ -52,13 +52,19 @@ struct Announcements: View {
             .animation(.default, value: selection)
             .animation(.default, value: announcementManager.announcements)
             .animation(.default, value: announcementManager.events)
+            .animation(.default, value: cachedAnnouncements)
+            .animation(.default, value: cachedEvents)
             .listStyle(.grouped)
             .navigationTitle(selection == .announcements ? "Announcements" : "Events")
             .refreshable {
-                announcementManager.retrieveAllPosts() {}
+                announcementManager.retrieveAllPosts() {
+                    announcementManager.updateCacheForAllPosts()
+                }
             }
             .onAppear {
-                announcementManager.retrieveAllPosts() {}
+                announcementManager.retrieveAllPosts() {
+                    announcementManager.updateCacheForAllPosts()
+                }
             }
             .onChange(of: announcementManager.announcements) { _ in
                 announcementManager.updateCacheForAllPosts()
@@ -266,7 +272,9 @@ struct Announcements: View {
             adminManager.deleteAnnouncement(announcementUUID: uuid) { result in
                 switch result {
                 case .success(_):
-                    announcementManager.retrieveAllPosts() {}
+                    announcementManager.retrieveAllPosts() {
+                        cachedAnnouncements = announcementManager.announcements
+                    }
                 case .failure(let failure):
                     alertHeader = "Error"
                     alertMessage = failure.localizedDescription
@@ -277,7 +285,9 @@ struct Announcements: View {
             adminManager.deleteEvent(eventUUID: uuid) { result in
                 switch result {
                 case .success(_):
-                    announcementManager.retrieveAllPosts() {}
+                    announcementManager.retrieveAllPosts() {
+                        cachedEvents = announcementManager.events
+                    }
                 case .failure(let failure):
                     alertHeader = "Error"
                     alertMessage = failure.localizedDescription
