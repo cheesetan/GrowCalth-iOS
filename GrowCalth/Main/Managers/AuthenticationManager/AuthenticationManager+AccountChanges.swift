@@ -14,12 +14,16 @@ extension AuthenticationManager {
         email: String,
         _ completion: @escaping ((Result<Bool, Error>) -> Void)
     ) {
-        Auth.auth().sendPasswordReset(withEmail: email) { error in
-            if error != nil {
-                completion(.failure(PasswordChangeError.failedToSendPasswordChangeRequestLinkToEmail))
-            } else {
-                completion(.success(true))
+        if emailProvidedIsSSTEmail(email: email) {
+            Auth.auth().sendPasswordReset(withEmail: email) { error in
+                if error != nil {
+                    completion(.failure(PasswordChangeError.failedToSendPasswordChangeRequestLinkToEmail))
+                } else {
+                    completion(.success(true))
+                }
             }
+        } else {
+            completion(.failure(EmailError.emailIsNotSSTEmail))
         }
     }
     

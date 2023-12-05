@@ -94,7 +94,9 @@ struct SignInView: View {
                     .textContentType(.password)
                     .focused($passwordFieldFocused)
                     .onSubmit {
-                        signInWithPassword()
+                        if !email.isEmpty && !password.isEmpty && !isLoading {
+                            signInWithPassword()
+                        }
                     }
             } else {
                 SecureField("Password", text: $password)
@@ -104,7 +106,9 @@ struct SignInView: View {
                     .textContentType(.password)
                     .focused($passwordFieldFocused)
                     .onSubmit {
-                        signInWithPassword()
+                        if !email.isEmpty && !password.isEmpty && !isLoading {
+                            signInWithPassword()
+                        }
                     }
             }
             Button {
@@ -127,35 +131,18 @@ struct SignInView: View {
             forgottenPasswordEmail = email
             showingForgotPassword.toggle()
         } label: {
-            Text("Forgot Password?")
-                .underline()
+            HStack {
+                Text("Forgot Password?")
+                    .underline()
+            }
         }
         .foregroundColor(.gray)
         .minimumScaleFactor(0.1)
         .buttonStyle(.plain)
         .padding(.bottom, 5)
-        .alert("Forgot Password", isPresented: $showingForgotPassword) {
-            TextField("Email Address", text: $forgottenPasswordEmail)
-                .keyboardType(.emailAddress)
-            Button(role: .destructive) {
-                authManager.forgotPassword(email: email) { result in
-                    switch result {
-                    case .success(_):
-                        alertHeader = "Email sent"
-                        alertMessage = "Check your inbox for the password reset link."
-                        showingForgotPassword = false
-                        showingAlert = true
-                    case .failure(let failure):
-                        alertHeader = "Error"
-                        alertMessage = "\(failure.localizedDescription)"
-                        showingForgotPassword = false
-                        showingAlert = true
-                    }
-                }
-            } label: {
-                Text("Reset Password")
-            }
-            .disabled(forgottenPasswordEmail.isEmpty)
+        .sheet(isPresented: $showingForgotPassword) {
+            ForgotPasswordView(email: email, showingForgotPassword: $showingForgotPassword)
+            .presentationDetents([.height(300)])
         }
     }
     
