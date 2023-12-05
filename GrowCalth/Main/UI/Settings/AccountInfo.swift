@@ -171,6 +171,7 @@ struct AccountInfo: View {
             }
         } label: {
             Image(systemName: showingNewPassword ? "eye.slash" : "eye")
+                .font(.title3)
                 .foregroundColor(.secondary)
         }
         .buttonStyle(.plain)
@@ -184,6 +185,7 @@ struct AccountInfo: View {
             }
         } label: {
             Image(systemName: showingCurrentPassword ? "eye.slash" : "eye")
+                .font(.title3)
                 .foregroundColor(.secondary)
         }
         .buttonStyle(.plain)

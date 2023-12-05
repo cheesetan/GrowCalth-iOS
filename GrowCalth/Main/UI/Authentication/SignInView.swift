@@ -118,6 +118,7 @@ struct SignInView: View {
                 }
             } label: {
                 Image(systemName: showingPassword ? "eye.slash" : "eye")
+                    .font(.title3)
                     .foregroundColor(.secondary)
             }
             .minimumScaleFactor(0.1)

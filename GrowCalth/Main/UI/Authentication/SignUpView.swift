@@ -114,6 +114,7 @@ struct SignUpView: View {
                 }
             } label: {
                 Image(systemName: showingPassword ? "eye.slash" : "eye")
+                    .font(.title3)
                     .foregroundColor(.secondary)
             }
             .buttonStyle(.plain)
