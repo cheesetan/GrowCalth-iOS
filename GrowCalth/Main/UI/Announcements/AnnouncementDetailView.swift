@@ -155,7 +155,7 @@ struct AnnouncementDetailView: View {
                         alertMessage = failure.localizedDescription
                         showingAlert = true
                     }
-                    announcementManager.retrieveAllPosts()
+                    announcementManager.retrieveAllPosts() {}
                 }
             } else {
                 isEditing = false
@@ -168,7 +168,7 @@ struct AnnouncementDetailView: View {
             switch result {
             case .success(_):
                 dismiss.callAsFunction()
-                announcementManager.retrieveAllPosts()
+                announcementManager.retrieveAllPosts() {}
             case .failure(let failure):
                 alertHeader = "Error"
                 alertMessage = failure.localizedDescription

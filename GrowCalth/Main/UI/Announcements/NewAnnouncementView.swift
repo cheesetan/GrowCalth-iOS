@@ -163,7 +163,7 @@ struct NewAnnouncementView: View {
         eventDate = Date()
         eventVenue = ""
         dismiss.callAsFunction()
-        announcementManager.retrieveAllPosts()
+        announcementManager.retrieveAllPosts() {}
     }
 }
 

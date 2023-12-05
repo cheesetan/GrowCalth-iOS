@@ -87,14 +87,30 @@ struct NAPFA: View {
                     MultiColumnTable(headers: ["Rank", "Name", "Class", "Result"], data: data2023)
                         .padding(.top)
                 case .twenty24:
-                    VStack {
-                        Spacer()
-                        Text("No available data.")
-                        Spacer()
-                    }
+                    twenty24
                 }
             }
             .navigationTitle("NAPFA")
+        }
+    }
+    
+    var twenty24: some View {
+        VStack {
+            if #available(iOS 17, *) {
+                ContentUnavailableView {
+                    Label("No Data", systemImage: "questionmark.square.dashed")
+                } description: {
+                    Text("There is no data available for NAPFA 2024 yet.")
+                }
+            } else {
+                VStack(spacing: 15) {
+                    Image(systemName: "questionmark.square.dashed")
+                        .font(.system(size: 70))
+                        .foregroundColor(.secondary)
+                    Text("There is no data available for NAPFA 2024 yet.")
+                        .multilineTextAlignment(.center)
+                }
+            }
         }
     }
 }

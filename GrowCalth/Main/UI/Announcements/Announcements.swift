@@ -19,6 +19,7 @@ struct Announcements: View {
     @State var alertMessage: String = ""
     
     @State var stateUUID = ""
+    @State var isLoading = false
     
     @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var announcementManager: AnnouncementManager = .shared
@@ -29,82 +30,35 @@ struct Announcements: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                List {
-                    picker
-                        .listRowBackground(Color.clear)
-                    switch selection {
-                    case .announcements:
-                        if !cachedAnnouncements.isEmpty || !announcementManager.announcements.isEmpty {
-                            ForEach(announcementManager.announcements.isEmpty ? $cachedAnnouncements : $announcementManager.announcements, id: \.id) { item in
-                                NavigationLink {
-                                    AnnouncementDetailView(announcement: item)
-                                } label: {
-                                    announcementItem(
-                                        title: item.title.wrappedValue,
-                                        description: item.description.wrappedValue
-                                    )
-                                }
-                                .swipeActions {
-                                    if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
-                                        Button(role: .destructive) {
-                                            stateUUID = item.id
-                                            alertHeader = "Delete Announcement"
-                                            alertMessage = "Are you sure you want to delete this announcement? This action cannot be undone."
-                                            showingDeleteAlert = true
-                                        } label: {
-                                            Image(systemName: "trash")
-                                                .tint(.red)
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            Text("There are no Announcements.")
-                        }
-                    case .events:
-                        if !cachedEvents.isEmpty || !announcementManager.events.isEmpty {
-                            ForEach(announcementManager.events.isEmpty ? $cachedEvents : $announcementManager.events, id: \.id) { item in
-                                NavigationLink {
-                                    EventDetailView(event: item)
-                                } label: {
-                                    eventItem(
-                                        title: item.title.wrappedValue,
-                                        description: item.description.wrappedValue,
-                                        date: item.date.wrappedValue,
-                                        venue: item.venue.wrappedValue
-                                    )
-                                }
-                                .swipeActions {
-                                    if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
-                                        Button(role: .destructive) {
-                                            stateUUID = item.id
-                                            alertHeader = "Delete Event"
-                                            alertMessage = "Are you sure you want to delete this event? This action cannot be undone."
-                                            showingDeleteAlert = true
-                                        } label: {
-                                            Image(systemName: "trash")
-                                                .tint(.red)
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            Text("There are no Events.")
-                        }
+            VStack(spacing: 0) {
+                picker
+                Spacer()
+                switch selection {
+                case .announcements:
+                    if !cachedAnnouncements.isEmpty || !announcementManager.announcements.isEmpty {
+                        announcementsList
+                    } else {
+                        noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
+                    }
+                case .events:
+                    if !cachedEvents.isEmpty || !announcementManager.events.isEmpty {
+                        eventsList
+                    } else {
+                        noContentView(keyword: "Events", systemImage: "calendar")
                     }
                 }
-                .animation(.default, value: selection)
-                .animation(.default, value: announcementManager.announcements)
-                .animation(.default, value: announcementManager.events)
+                Spacer()
             }
+            .animation(.default, value: selection)
+            .animation(.default, value: announcementManager.announcements)
+            .animation(.default, value: announcementManager.events)
             .listStyle(.grouped)
             .navigationTitle(selection == .announcements ? "Announcements" : "Events")
             .refreshable {
-                announcementManager.retrieveAllPosts()
+                announcementManager.retrieveAllPosts() {}
             }
             .onAppear {
-                announcementManager.retrieveAllPosts()
+                announcementManager.retrieveAllPosts() {}
             }
             .onChange(of: announcementManager.announcements) { _ in
                 announcementManager.updateCacheForAllPosts()
@@ -134,6 +88,114 @@ struct Announcements: View {
         }
         .sheet(isPresented: $showingNewAnnouncementView) {
             NewAnnouncementView(postType: selection)
+        }
+    }
+    
+    var announcementsList: some View {
+        List {
+            ForEach(announcementManager.announcements.isEmpty ? $cachedAnnouncements : $announcementManager.announcements, id: \.id) { item in
+                NavigationLink {
+                    AnnouncementDetailView(announcement: item)
+                } label: {
+                    announcementItem(
+                        title: item.title.wrappedValue,
+                        description: item.description.wrappedValue
+                    )
+                }
+                .swipeActions {
+                    if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
+                        Button(role: .destructive) {
+                            stateUUID = item.id
+                            alertHeader = "Delete Announcement"
+                            alertMessage = "Are you sure you want to delete this announcement? This action cannot be undone."
+                            showingDeleteAlert = true
+                        } label: {
+                            Image(systemName: "trash")
+                                .tint(.red)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    var eventsList: some View {
+        List {
+            ForEach(announcementManager.events.isEmpty ? $cachedEvents : $announcementManager.events, id: \.id) { item in
+                NavigationLink {
+                    EventDetailView(event: item)
+                } label: {
+                    eventItem(
+                        title: item.title.wrappedValue,
+                        description: item.description.wrappedValue,
+                        date: item.date.wrappedValue,
+                        venue: item.venue.wrappedValue
+                    )
+                }
+                .swipeActions {
+                    if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
+                        Button(role: .destructive) {
+                            stateUUID = item.id
+                            alertHeader = "Delete Event"
+                            alertMessage = "Are you sure you want to delete this event? This action cannot be undone."
+                            showingDeleteAlert = true
+                        } label: {
+                            Image(systemName: "trash")
+                                .tint(.red)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    func noContentView(keyword: String, systemImage: String) -> some View {
+        VStack {
+            if #available(iOS 17, *) {
+                ContentUnavailableView {
+                    Label("No \(keyword)", systemImage: systemImage)
+                } description: {
+                    Text("There are no \(keyword) available at the moment.")
+                } actions: {
+                    Button {
+                        isLoading = true
+                        announcementManager.retrieveAllPosts() {
+                            isLoading = false
+                        }
+                    } label: {
+                        if isLoading {
+                            ProgressView()
+                        } else {
+                            Label("Refresh", systemImage: "arrow.clockwise")
+                                .fontWeight(.bold)
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            } else {
+                VStack(spacing: 15) {
+                    Image(systemName: systemImage)
+                        .font(.system(size: 70))
+                        .foregroundColor(.secondary)
+                    Text("There are no \(keyword) available at the moment.")
+                        .multilineTextAlignment(.center)
+                    Button {
+                        isLoading = true
+                        announcementManager.retrieveAllPosts() {
+                            isLoading = false
+                        }
+                    } label: {
+                        if isLoading {
+                            ProgressView()
+                        } else {
+                            Label("Refresh", systemImage: "arrow.clockwise")
+                                .fontWeight(.bold)
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
         }
     }
     
@@ -204,7 +266,7 @@ struct Announcements: View {
             adminManager.deleteAnnouncement(announcementUUID: uuid) { result in
                 switch result {
                 case .success(_):
-                    announcementManager.retrieveAllPosts()
+                    announcementManager.retrieveAllPosts() {}
                 case .failure(let failure):
                     alertHeader = "Error"
                     alertMessage = failure.localizedDescription
@@ -215,7 +277,7 @@ struct Announcements: View {
             adminManager.deleteEvent(eventUUID: uuid) { result in
                 switch result {
                 case .success(_):
-                    announcementManager.retrieveAllPosts()
+                    announcementManager.retrieveAllPosts() {}
                 case .failure(let failure):
                     alertHeader = "Error"
                     alertMessage = failure.localizedDescription

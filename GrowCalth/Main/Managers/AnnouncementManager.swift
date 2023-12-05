@@ -38,12 +38,15 @@ class AnnouncementManager: ObservableObject {
     @Persistent("cachedAnnouncements", store: .fileManager) private var cachedAnnouncements: [Announcement] = []
     
     init() {
-        retrieveAllPosts()
+        retrieveAllPosts() { }
     }
     
-    func retrieveAllPosts() {
-        retrieveEvents() { _ in }
-        retrieveAnnouncements() { _ in }
+    func retrieveAllPosts(_ completion: @escaping (() -> Void)) {
+        self.retrieveEvents() { _ in
+            self.retrieveAnnouncements() { _ in
+                completion()
+            }
+        }
     }
     
     func retrieveEvents(_ completion: @escaping ((Result<Bool, Error>) -> Void)) {

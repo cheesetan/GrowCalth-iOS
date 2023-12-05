@@ -204,7 +204,7 @@ struct EventDetailView: View {
                     case .success(_):
                         saveIsLoading = false
                         isEditing = false
-                        announcementManager.retrieveAllPosts()
+                        announcementManager.retrieveAllPosts() {}
                     case .failure(let failure):
                         saveIsLoading = false
                         isEditing = false
@@ -224,7 +224,7 @@ struct EventDetailView: View {
             switch result {
             case .success(_):
                 dismiss.callAsFunction()
-                announcementManager.retrieveAllPosts()
+                announcementManager.retrieveAllPosts() {}
             case .failure(let failure):
                 alertHeader = "Error"
                 alertMessage = failure.localizedDescription
