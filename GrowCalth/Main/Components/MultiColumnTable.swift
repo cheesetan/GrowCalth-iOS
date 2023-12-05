@@ -14,14 +14,6 @@ struct MultiColumnTable: View {
     
     var body: some View {
         ScrollView {
-            HStack {
-                ForEach(headers, id: \.self) { header in
-                    Text(header)
-                        .fontWeight(.bold)
-                        .frame(maxWidth: .infinity)
-                }
-            }
-            Divider()
             ForEach(data, id: \.id) { data in
                 if data.header != "" {
                     HStack {
@@ -45,6 +37,21 @@ struct MultiColumnTable: View {
                 }
                 Divider()
             }
+        }
+        .safeAreaInset(edge: .top) {
+            VStack {
+                HStack {
+                    ForEach(headers, id: \.self) { header in
+                        Text(header)
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                Divider()
+            }
+            .padding(.vertical, 5)
+            .frame(maxWidth: .infinity)
+            .background(Color(uiColor: .systemGroupedBackground))
         }
     }
 }

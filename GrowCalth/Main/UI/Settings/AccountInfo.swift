@@ -121,59 +121,63 @@ struct AccountInfo: View {
     var changePassword: some View {
         VStack {
             List {
-                VStack {
-                    if showingCurrentPassword {
-                        HStack {
-                            TextField("Current Password", text: $currentPassword)
-                                .focused($isFieldFocus, equals: .currentTextField)
-                            toggleCurrentPassword
-                        }
-                    } else {
-                        HStack {
-                            SecureField("Current Password", text: $currentPassword)
-                                .focused($isFieldFocus, equals: .currentSecureField)
-                            toggleCurrentPassword
+                Section("Password") {
+                    VStack {
+                        if showingCurrentPassword {
+                            HStack {
+                                TextField("Current Password", text: $currentPassword)
+                                    .focused($isFieldFocus, equals: .currentTextField)
+                                toggleCurrentPassword
+                            }
+                        } else {
+                            HStack {
+                                SecureField("Current Password", text: $currentPassword)
+                                    .focused($isFieldFocus, equals: .currentSecureField)
+                                toggleCurrentPassword
+                            }
                         }
                     }
+                    .textContentType(.password)
+                    .keyboardType(.alphabet)
+                    .autocorrectionDisabled(true)
+                    .autocapitalization(.none)
+                    
+                    VStack {
+                        if showingNewPassword {
+                            HStack {
+                                TextField("New Password", text: $newPassword)
+                                    .focused($isFieldFocus, equals: .newTextField)
+                                toggleNewPassword
+                            }
+                        } else {
+                            HStack {
+                                SecureField("New Password", text: $newPassword)
+                                    .focused($isFieldFocus, equals: .newSecureField)
+                                toggleNewPassword
+                            }
+                        }
+                    }
+                    .textContentType(.newPassword)
+                    .keyboardType(.alphabet)
+                    .autocorrectionDisabled(true)
+                    .autocapitalization(.none)
                 }
-                .textContentType(.password)
-                .keyboardType(.alphabet)
-                .autocorrectionDisabled(true)
-                .autocapitalization(.none)
                 
-                VStack {
-                    if showingNewPassword {
-                        HStack {
-                            TextField("New Password", text: $newPassword)
-                                .focused($isFieldFocus, equals: .newTextField)
-                            toggleNewPassword
-                        }
+                Section {
+                    if isLoading {
+                        ProgressView()
                     } else {
-                        HStack {
-                            SecureField("New Password", text: $newPassword)
-                                .focused($isFieldFocus, equals: .newSecureField)
-                            toggleNewPassword
+                        Button {
+                            if !isLoading && !currentPassword.isEmpty && !newPassword.isEmpty {
+                                alertHeader = "Change Password"
+                                alertMessage = "Are you sure you want to change your password?"
+                                showingAlertWithConfirmation = true
+                            }
+                        } label: {
+                            Text("Change Password")
                         }
+                        .disabled(isLoading || currentPassword.isEmpty || newPassword.isEmpty)
                     }
-                }
-                .textContentType(.newPassword)
-                .keyboardType(.alphabet)
-                .autocorrectionDisabled(true)
-                .autocapitalization(.none)
-                
-                if isLoading {
-                    ProgressView()
-                } else {
-                    Button {
-                        if !isLoading && !currentPassword.isEmpty && !newPassword.isEmpty {
-                            alertHeader = "Change Password"
-                            alertMessage = "Are you sure you want to change your password?"
-                            showingAlertWithConfirmation = true
-                        }
-                    } label: {
-                        Text("Change Password")
-                    }
-                    .disabled(isLoading || currentPassword.isEmpty || newPassword.isEmpty)
                 }
             }
             .navigationTitle("Change Password")

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import KeychainAccess
 
 struct SignInView: View {
     
@@ -54,10 +53,6 @@ struct SignInView: View {
         }
         .onOpenURL { url in
             handleMagicLink(url: url)
-        }
-        .onAppear {
-            let keychain = Keychain(service: "com.kidcodes.growcalth")
-            keychain["kishikawakatsumi"] = "01234567-89ab-cdef-0123-456789abcdef"
         }
     }
     
