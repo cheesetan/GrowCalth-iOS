@@ -108,7 +108,7 @@ struct SignUpView: View {
             .padding()
             .background(.ultraThickMaterial)
             .cornerRadius(16)
-            .textContentType(.password)
+            .textContentType(.newPassword)
             .keyboardType(.alphabet)
             .autocorrectionDisabled(true)
             .autocapitalization(.none)

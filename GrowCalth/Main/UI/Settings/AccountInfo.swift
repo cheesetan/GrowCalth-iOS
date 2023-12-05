@@ -156,7 +156,7 @@ struct AccountInfo: View {
                         }
                     }
                 }
-                .textContentType(.password)
+                .textContentType(.newPassword)
                 .keyboardType(.alphabet)
                 .autocorrectionDisabled(true)
                 .autocapitalization(.none)

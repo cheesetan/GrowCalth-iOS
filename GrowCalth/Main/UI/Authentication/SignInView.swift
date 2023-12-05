@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import KeychainAccess
 
 struct SignInView: View {
     
@@ -54,6 +55,10 @@ struct SignInView: View {
         .onOpenURL { url in
             handleMagicLink(url: url)
         }
+        .onAppear {
+            let keychain = Keychain(service: "com.kidcodes.growcalth")
+            keychain["kishikawakatsumi"] = "01234567-89ab-cdef-0123-456789abcdef"
+        }
     }
     
     private func handleMagicLink(url: URL) {
@@ -83,6 +88,7 @@ struct SignInView: View {
                 .textContentType(.username)
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
+                .submitLabel(.next)
             
             passwordField
         }
@@ -106,6 +112,7 @@ struct SignInView: View {
             .keyboardType(.alphabet)
             .autocorrectionDisabled(true)
             .autocapitalization(.none)
+            .submitLabel(.done)
             .onSubmit {
                 if !email.isEmpty && !password.isEmpty && !isLoading {
                     signInWithPassword()
