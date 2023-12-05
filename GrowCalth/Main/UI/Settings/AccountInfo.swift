@@ -121,7 +121,7 @@ struct AccountInfo: View {
     var changePassword: some View {
         VStack {
             List {
-                Section("Password") {
+                Section {
                     VStack {
                         if showingCurrentPassword {
                             HStack {
@@ -161,6 +161,10 @@ struct AccountInfo: View {
                     .keyboardType(.alphabet)
                     .autocorrectionDisabled(true)
                     .autocapitalization(.none)
+                } header: {
+                    Text("Password")
+                } footer: {
+                    Text("Your new password must be at least 6 characters long.")
                 }
                 
                 Section {
