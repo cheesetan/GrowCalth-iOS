@@ -39,7 +39,7 @@ struct Home: View {
                             }
                             .buttonStyle(.plain)
                             
-                            daysinappprogress
+                            housePointsProgress
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -194,6 +194,51 @@ struct Home: View {
                     } else {
                         ProgressView()
                     }
+                }
+                .padding()
+            }
+            .overlay {
+                rectangleHeader(text: "Progress")
+            }
+            .overlay {
+                if colorScheme == .dark {
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(.white, lineWidth: 2)
+                }
+            }
+    }
+    
+    var housePointsProgress: some View {
+        RoundedRectangle(cornerRadius: 16)
+            .frame(width: halfUIWidth, height: halfUIWidth + 45)
+            .foregroundColor(Color(uiColor: .systemBackground))
+            .shadow(color: .black, radius: 4, x: -1, y: 5)
+            .overlay {
+                let housePointsEarnedToday = Int(floor(Double((hkManager.steps ?? 0) / 1000)))
+                VStack {
+                    Spacer()
+                    Text("\(housePointsEarnedToday)")
+                        .font(.system(size: 50))
+                        .fontWeight(.bold)
+                    VStack {
+                        if housePointsEarnedToday == 1 {
+                            Text("house point earned today")
+                        } else {
+                            Text("house points earned today")
+                        }
+                    }
+                    .font(.title3)
+                    .fontWeight(.medium)
+                    .multilineTextAlignment(.center)
+                    .minimumScaleFactor(0.1)
+                    .lineLimit(2)
+                    Spacer()
+                    Text("\(1000 - ((hkManager.steps ?? 0) - (housePointsEarnedToday * 1000))) more steps to another point!")
+                        .font(.title3)
+                        .fontWeight(.medium)
+                        .multilineTextAlignment(.center)
+                        .minimumScaleFactor(0.1)
+                        .lineLimit(1)
                 }
                 .padding()
             }
