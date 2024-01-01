@@ -18,12 +18,8 @@ struct NAPFAResults: Identifiable {
 
 struct NAPFA: View {
     
-    enum NAPFAResultYear: String, CaseIterable {
-        case twenty23 = "NAPFA 2023"
-        case twenty24 = "NAPFA 2024"
-    }
+    @AppStorage("yearSelection", store: .standard) private var yearSelection: Int = Calendar.current.component(.year, from: Date())
     
-    @State var yearSelection: NAPFAResultYear = .twenty23
     @State var data2023 = [
         NAPFAResults(header: "Sit Ups"),
         NAPFAResults(rank: 1, name: "RISHAV GANGULY", className: "S2-04", result: "58"),
@@ -71,43 +67,58 @@ struct NAPFA: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Picker(selection: $yearSelection) {
-                    ForEach(NAPFAResultYear.allCases, id: \.rawValue) { year in
-                        Text(year.rawValue)
-                            .tag(year)
-                    }
-                } label: {
-                    Text("NAPFA Year")
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
-                
                 switch yearSelection {
-                case .twenty23:
+                case 2023:
                     MultiColumnTable(headers: ["Rank", "Name", "Class", "Result"], data: data2023)
                         .padding(.top)
-                case .twenty24:
-                    twenty24
+                default:
+                    noDataAvailable(year: yearSelection)
                 }
             }
-            .navigationTitle("NAPFA")
+            .animation(.default, value: yearSelection)
+            .navigationTitle("NAPFA \(String(yearSelection))")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        if yearSelection > 2023 {
+                            yearSelection -= 1
+                        }
+                    } label: {
+                        Label("Previous year", systemImage: "chevron.left.circle.fill")
+                    }
+                    .disabled(yearSelection <= 2023)
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        if yearSelection < Calendar.current.component(.year, from: Date()) {
+                            yearSelection += 1
+                        }
+                    } label: {
+                        Label("Next year", systemImage: "chevron.right.circle.fill")
+                    }
+                    .disabled(yearSelection >= Calendar.current.component(.year, from: Date()))
+                }
+            }
         }
     }
     
-    var twenty24: some View {
+    @ViewBuilder
+    func noDataAvailable(year: Int) -> some View {
         VStack {
             if #available(iOS 17, *) {
                 ContentUnavailableView {
                     Label("No Data", systemImage: "questionmark.square.dashed")
                 } description: {
-                    Text("There is no data available for NAPFA 2024 yet.")
+                    Text("There is no data available for NAPFA \(String(year)) yet.")
                 }
             } else {
                 VStack(spacing: 15) {
                     Image(systemName: "questionmark.square.dashed")
                         .font(.system(size: 70))
                         .foregroundColor(.secondary)
-                    Text("There is no data available for NAPFA 2024 yet.")
+                    Text("There is no data available for NAPFA \(String(year)) yet.")
                         .multilineTextAlignment(.center)
                 }
             }
