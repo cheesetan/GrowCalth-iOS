@@ -19,14 +19,14 @@ struct OnboardingView: View {
         NavigationStack {
             TabView(selection: $tabSelection) {
                 onboardingPage(text: "HealthKit Integration", 
-                               description: "GrowCalth iOS integrates with Apple's Health App, allowing you to track steps and gains points on your iPhone or Apple Watch even when the app is not opened.",
+                               description: "GrowCalth iOS integrates with Apple's Health App, allowing you to track your steps using your iPhone or Apple Watch even when the app is not opened.",
                                imageString: "heart.text.square.fill",
                                renderingMode: .palette,
                                primaryColor: .red,
                                secondaryColor: .white)
                     .tag(0)
                 onboardingPage(text: "Motivational Quotes", 
-                               description: "Having a positive mindset will help with your daily mental health!",
+                               description: "Having a positive mindset will help with your daily mental health and physical health!",
                                imageString: "quote.opening",
                                primaryColor: .gray)
                     .tag(1)
