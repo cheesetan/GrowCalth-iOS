@@ -64,6 +64,10 @@ struct NAPFA: View {
         NAPFAResults(rank: 5, name: "VIJAY GANESH LATHISH", className: "S2-07", result: "235"),
     ]
     
+    @State var showingNAPFAEditing = false
+    @ObservedObject var adminManager: AdminManager = .shared
+    @ObservedObject var authManager: AuthenticationManager = .shared
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -76,32 +80,66 @@ struct NAPFA: View {
                 }
             }
             .animation(.default, value: yearSelection)
-            .navigationTitle("NAPFA \(String(yearSelection))")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(isPresented: $showingNAPFAEditing) {
+                Text("Editing NAPFA")
+            }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        if yearSelection > 2023 {
-                            yearSelection -= 1
-                        }
-                    } label: {
-                        Label("Previous year", systemImage: "chevron.left.circle.fill")
-                    }
-                    .disabled(yearSelection <= 2023)
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        if yearSelection < Calendar.current.component(.year, from: Date()) {
-                            yearSelection += 1
-                        }
-                    } label: {
-                        Label("Next year", systemImage: "chevron.right.circle.fill")
-                    }
-                    .disabled(yearSelection >= Calendar.current.component(.year, from: Date()))
-                }
+                ToolbarItem(placement: .navigationBarLeading) { previousButton }
+                ToolbarItem(placement: .principal) { title }
+                ToolbarItem(placement: .navigationBarTrailing) { nextButton }
             }
         }
+    }
+    
+    var previousButton: some View {
+        Button {
+            if yearSelection > 2023 {
+                yearSelection -= 1
+            }
+        } label: {
+            Label("Previous year", systemImage: "chevron.left.circle.fill")
+                .fontWeight(.bold)
+        }
+        .disabled(yearSelection <= 2023)
+    }
+    
+    var title: some View {
+        VStack {
+            if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
+                Button {
+                    showingNAPFAEditing.toggle()
+                } label: {
+                    HStack {
+                        Text("NAPFA \(String(yearSelection))")
+                            .font(.headline)
+                        Image(systemName: "chevron.right")
+                            .font(.caption2)
+                            .fontWeight(.bold)
+                            .symbolRenderingMode(.hierarchical)
+                            .padding(.leading, -3)
+                    }
+                }
+                .foregroundColor(.primary)
+                .buttonStyle(.bordered)
+                .mask(Capsule())
+            } else {
+                Text("NAPFA \(String(yearSelection))")
+                    .font(.headline)
+            }
+        }
+    }
+    
+    var nextButton: some View {
+        Button {
+            if yearSelection < Calendar.current.component(.year, from: Date()) {
+                yearSelection += 1
+            }
+        } label: {
+            Label("Next year", systemImage: "chevron.right.circle.fill")
+                .fontWeight(.bold)
+        }
+        .disabled(yearSelection >= Calendar.current.component(.year, from: Date()))
     }
     
     @ViewBuilder
