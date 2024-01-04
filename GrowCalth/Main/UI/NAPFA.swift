@@ -6,10 +6,14 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 import SwiftPersistence
 
 struct NAPFA: View {
     
+    @State var isLoading = false
+    
+    @AppStorage("levelSelection", store: .standard) private var levelSelection: String = NAPFALevel.secondary2.rawValue
     @AppStorage("yearSelection", store: .standard) private var yearSelection: Int = Calendar.current.component(.year, from: Date())
     
     @State var showingNAPFAEditing = false
@@ -17,19 +21,16 @@ struct NAPFA: View {
     @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var napfaManager: NAPFAManager = .shared
     
-    @Persistent("cachedNAPFAData", store: .fileManager) private var cachedData: [Int : [NAPFAResults]] = [:]
+    @Persistent("cachedNAPFAData", store: .fileManager) private var cachedData: [String : [NAPFAResults]] = [:]
     
     var body: some View {
         NavigationStack {
             VStack {
-               if let cachedDataForYear = cachedData[yearSelection], !cachedDataForYear.isEmpty {
-                    MultiColumnTable(headers: ["Rank", "Name", "Class", "Result"], data: .constant(cachedDataForYear))
-                        .padding(.top)
-                } else {
-                    noDataAvailable(year: yearSelection)
-                }
+                picker
+                table
             }
             .animation(.default, value: yearSelection)
+            .animation(.default, value: levelSelection)
             .animation(.default, value: cachedData)
             .animation(.default, value: napfaManager.data)
             .navigationBarTitleDisplayMode(.inline)
@@ -42,13 +43,24 @@ struct NAPFA: View {
                 ToolbarItem(placement: .navigationBarTrailing) { nextButton }
             }
             .onAppear {
-                napfaManager.fetchAllData(for: yearSelection)
+                napfaManager.fetchAllData(for: yearSelection) {
+                    isLoading = false
+                }
             }
             .refreshable {
-                napfaManager.fetchAllData(for: yearSelection)
+                napfaManager.fetchAllData(for: yearSelection) {
+                    isLoading = false
+                }
             }
             .onChange(of: yearSelection) { newYear in
-                napfaManager.fetchAllData(for: newYear)
+                napfaManager.fetchAllData(for: newYear) {
+                    isLoading = false
+                }
+            }
+            .onChange(of: levelSelection) { _ in
+                napfaManager.fetchAllData(for: yearSelection) {
+                    isLoading = false
+                }
             }
         }
     }
@@ -103,6 +115,32 @@ struct NAPFA: View {
         .disabled(yearSelection >= Calendar.current.component(.year, from: Date()))
     }
     
+    var picker: some View {
+        VStack {
+            Picker(selection: $levelSelection) {
+                ForEach(NAPFALevel.allCases, id: \.rawValue) { level in
+                    Text(level.rawValue)
+                        .tag(level.rawValue)
+                }
+            } label: {
+                Text("NAPFA Secondary Level")
+            }
+            .pickerStyle(.segmented)
+            .padding([.horizontal, .top])
+        }
+    }
+    
+    var table: some View {
+        VStack {
+            if let cachedDataForYear = cachedData["\(NAPFALevel(rawValue: levelSelection)!.firebaseCode)-\(String(yearSelection))"], !cachedDataForYear.isEmpty {
+                MultiColumnTable(headers: ["Rank", "Name", "Class", "Result"], data: .constant(cachedDataForYear))
+                    .padding(.top)
+            } else {
+                noDataAvailable(year: yearSelection)
+            }
+        }
+    }
+    
     @ViewBuilder
     func noDataAvailable(year: Int) -> some View {
         VStack {
@@ -110,15 +148,44 @@ struct NAPFA: View {
                 ContentUnavailableView {
                     Label("No Data", systemImage: "questionmark.square.dashed")
                 } description: {
-                    Text("There is no data available for NAPFA \(String(year)) yet.")
+                    Text("There is no data available for \(String(year)) \(levelSelection) NAPFA at the moment.")
+                } actions: {
+                    Button {
+                        isLoading = true
+                        napfaManager.fetchAllData(for: yearSelection) {
+                            isLoading = false
+                        }
+                    } label: {
+                        if isLoading {
+                            ProgressView()
+                        } else {
+                            Label("Refresh", systemImage: "arrow.clockwise")
+                                .fontWeight(.bold)
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
             } else {
                 VStack(spacing: 15) {
                     Image(systemName: "questionmark.square.dashed")
                         .font(.system(size: 70))
                         .foregroundColor(.secondary)
-                    Text("There is no data available for NAPFA \(String(year)) yet.")
+                    Text("There is no data available for \(String(year)) \(levelSelection) NAPFA at the moment.")
                         .multilineTextAlignment(.center)
+                    Button {
+                        isLoading = true
+                        napfaManager.fetchAllData(for: yearSelection) {
+                            isLoading = false
+                        }
+                    } label: {
+                        if isLoading {
+                            ProgressView()
+                        } else {
+                            Label("Refresh", systemImage: "arrow.clockwise")
+                                .fontWeight(.bold)
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
             }
         }
