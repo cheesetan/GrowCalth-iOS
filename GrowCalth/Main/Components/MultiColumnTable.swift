@@ -10,7 +10,7 @@ import SwiftUI
 struct MultiColumnTable: View {
     
     @State var headers: [String]
-    @State var data: [NAPFAResults]
+    @Binding var data: [NAPFAResults]
     
     @ObservedObject var csManager: ColorSchemeManager = .shared
     
@@ -38,6 +38,7 @@ struct MultiColumnTable: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                     }
                     .padding(.vertical, 5)
+                    .padding(.horizontal)
                 }
                 Divider()
             }
@@ -62,8 +63,8 @@ struct MultiColumnTable: View {
 
 #Preview {
     MultiColumnTable(headers: ["Name", "Class", "Result"],
-                     data: [
+                     data: .constant([
                         NAPFAResults(name: "Caleb Han", className: "S3-01", result: "100"),
                         NAPFAResults(name: "Tristan Chay", className: "S3-04", result: "100")
-                     ])
+                     ]))
 }

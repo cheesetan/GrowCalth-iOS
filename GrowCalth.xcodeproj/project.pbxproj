@@ -43,6 +43,7 @@
 		F383E2642AE813C700C517C2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F383E2632AE813C700C517C2 /* GoogleService-Info.plist */; };
 		F383E2682AE825D400C517C2 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2672AE825D400C517C2 /* SignInView.swift */; };
 		F383E26A2AE8297700C517C2 /* AccountInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2692AE8297700C517C2 /* AccountInfo.swift */; };
+		F39B2DFA2B452A7E006807D8 /* NAPFAManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39B2DF92B452A7E006807D8 /* NAPFAManager.swift */; };
 		F3A2E6982AF3E63000B34392 /* AdminManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2E6972AF3E63000B34392 /* AdminManager.swift */; };
 		F3A2E69A2AF3E90D00B34392 /* NewAnnouncementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2E6992AF3E90D00B34392 /* NewAnnouncementView.swift */; };
 		F3E9FBC72AEBA59000801A1C /* AnnouncementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */; };
@@ -92,6 +93,7 @@
 		F383E2632AE813C700C517C2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F383E2672AE825D400C517C2 /* SignInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		F383E2692AE8297700C517C2 /* AccountInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountInfo.swift; sourceTree = "<group>"; };
+		F39B2DF92B452A7E006807D8 /* NAPFAManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NAPFAManager.swift; sourceTree = "<group>"; };
 		F3A2E6972AF3E63000B34392 /* AdminManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminManager.swift; sourceTree = "<group>"; };
 		F3A2E6992AF3E90D00B34392 /* NewAnnouncementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAnnouncementView.swift; sourceTree = "<group>"; };
 		F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementManager.swift; sourceTree = "<group>"; };
@@ -219,6 +221,7 @@
 				F3E9FBD22AECB52600801A1C /* GoalsManager.swift */,
 				F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */,
 				F3A2E6972AF3E63000B34392 /* AdminManager.swift */,
+				F39B2DF92B452A7E006807D8 /* NAPFAManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -385,6 +388,7 @@
 				F3E9FBD52AECB7E400801A1C /* GoalsView.swift in Sources */,
 				F32046C52AEEB8150047F43E /* ColorSchemeManager.swift in Sources */,
 				F37778482B1F14710079ACD4 /* ForgotPasswordView.swift in Sources */,
+				F39B2DFA2B452A7E006807D8 /* NAPFAManager.swift in Sources */,
 				F34791BC2AF0BD03002F357F /* Home.swift in Sources */,
 				F345ABA72AE641CA00211FE8 /* MultiColumnTable.swift in Sources */,
 				F383E2682AE825D400C517C2 /* SignInView.swift in Sources */,
