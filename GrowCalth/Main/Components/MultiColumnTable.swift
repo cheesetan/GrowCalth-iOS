@@ -26,7 +26,8 @@ struct MultiColumnTable: View {
                     }
                     .padding(.vertical, 10)
                     .background(.ultraThickMaterial)
-                } else {
+                    Divider()
+                } else if data.rank != -1 && !data.className.isEmpty && !data.name.isEmpty && !data.result.isEmpty {
                     HStack {
                         Text("\(data.rank)")
                             .frame(maxWidth: .infinity, alignment: .center)
@@ -39,8 +40,8 @@ struct MultiColumnTable: View {
                     }
                     .padding(.vertical, 5)
                     .padding(.horizontal)
+                    Divider()
                 }
-                Divider()
             }
         }
         .safeAreaInset(edge: .top) {

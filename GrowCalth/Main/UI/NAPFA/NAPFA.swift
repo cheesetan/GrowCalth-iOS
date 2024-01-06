@@ -34,8 +34,17 @@ struct NAPFA: View {
             .animation(.default, value: cachedData)
             .animation(.default, value: napfaManager.data)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(isPresented: $showingNAPFAEditing) {
-                Text("Editing NAPFA")
+            .sheet(isPresented: $showingNAPFAEditing) {
+                EditingNAPFA(
+                    yearSelection: yearSelection,
+                    twoPointFourKm: napfaManager.twoPointFourKm,
+                    inclinedPullUps: napfaManager.inclinedPullUps,
+                    pullUps: napfaManager.pullUps,
+                    shuttleRun: napfaManager.shuttleRun,
+                    sitAndReach: napfaManager.sitAndReach,
+                    sitUps: napfaManager.sitUps,
+                    sbj: napfaManager.sbj
+                )
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) { previousButton }
@@ -48,8 +57,10 @@ struct NAPFA: View {
                 }
             }
             .refreshable {
-                napfaManager.fetchAllData(for: yearSelection) {
-                    isLoading = false
+                if !showingNAPFAEditing {
+                    napfaManager.fetchAllData(for: yearSelection) {
+                        isLoading = false
+                    }
                 }
             }
             .onChange(of: yearSelection) { newYear in
@@ -86,7 +97,7 @@ struct NAPFA: View {
                     HStack {
                         Text("NAPFA \(String(yearSelection))")
                             .font(.headline)
-                        Image(systemName: "chevron.right")
+                        Image(systemName: "chevron.down")
                             .font(.caption2)
                             .fontWeight(.bold)
                             .symbolRenderingMode(.hierarchical)

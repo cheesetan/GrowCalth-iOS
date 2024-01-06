@@ -43,6 +43,8 @@
 		F383E2642AE813C700C517C2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F383E2632AE813C700C517C2 /* GoogleService-Info.plist */; };
 		F383E2682AE825D400C517C2 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2672AE825D400C517C2 /* SignInView.swift */; };
 		F383E26A2AE8297700C517C2 /* AccountInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2692AE8297700C517C2 /* AccountInfo.swift */; };
+		F397F71B2B4797660015828A /* EditingNAPFA.swift in Sources */ = {isa = PBXBuildFile; fileRef = F397F71A2B4797660015828A /* EditingNAPFA.swift */; };
+		F397F71D2B499A310015828A /* EditingNAPFARow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F397F71C2B499A310015828A /* EditingNAPFARow.swift */; };
 		F39B2DFA2B452A7E006807D8 /* NAPFAManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39B2DF92B452A7E006807D8 /* NAPFAManager.swift */; };
 		F3A2E6982AF3E63000B34392 /* AdminManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2E6972AF3E63000B34392 /* AdminManager.swift */; };
 		F3A2E69A2AF3E90D00B34392 /* NewAnnouncementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2E6992AF3E90D00B34392 /* NewAnnouncementView.swift */; };
@@ -93,6 +95,8 @@
 		F383E2632AE813C700C517C2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F383E2672AE825D400C517C2 /* SignInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		F383E2692AE8297700C517C2 /* AccountInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountInfo.swift; sourceTree = "<group>"; };
+		F397F71A2B4797660015828A /* EditingNAPFA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditingNAPFA.swift; sourceTree = "<group>"; };
+		F397F71C2B499A310015828A /* EditingNAPFARow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditingNAPFARow.swift; sourceTree = "<group>"; };
 		F39B2DF92B452A7E006807D8 /* NAPFAManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NAPFAManager.swift; sourceTree = "<group>"; };
 		F3A2E6972AF3E63000B34392 /* AdminManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminManager.swift; sourceTree = "<group>"; };
 		F3A2E6992AF3E90D00B34392 /* NewAnnouncementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAnnouncementView.swift; sourceTree = "<group>"; };
@@ -191,7 +195,7 @@
 				F30C5C1B2AEF3A6E00474469 /* OnboardingView.swift */,
 				F383E2472AE7BCC000C517C2 /* Home */,
 				F383E24A2AE7C19E00C517C2 /* Announcements */,
-				F345AB9F2AE62F5600211FE8 /* NAPFA.swift */,
+				F397F7192B4797590015828A /* NAPFA */,
 				F3F612482AE6DD9600713E80 /* Settings */,
 				F383E24F2AE7FD3E00C517C2 /* Authentication */,
 			);
@@ -271,6 +275,16 @@
 				F383E2502AE80A0200C517C2 /* SignUpView.swift */,
 			);
 			path = Authentication;
+			sourceTree = "<group>";
+		};
+		F397F7192B4797590015828A /* NAPFA */ = {
+			isa = PBXGroup;
+			children = (
+				F345AB9F2AE62F5600211FE8 /* NAPFA.swift */,
+				F397F71A2B4797660015828A /* EditingNAPFA.swift */,
+				F397F71C2B499A310015828A /* EditingNAPFARow.swift */,
+			);
+			path = NAPFA;
 			sourceTree = "<group>";
 		};
 		F3F612482AE6DD9600713E80 /* Settings */ = {
@@ -403,6 +417,7 @@
 				F383E2512AE80A0200C517C2 /* SignUpView.swift in Sources */,
 				F3E9FBCB2AEBC28600801A1C /* LeaderboardsManager.swift in Sources */,
 				F3F6124A2AE6DDA200713E80 /* Acknowledgements.swift in Sources */,
+				F397F71D2B499A310015828A /* EditingNAPFARow.swift in Sources */,
 				F383E2532AE80A8900C517C2 /* AuthenticationView.swift in Sources */,
 				F3582D012B1E5D51006A2FC0 /* AuthenticationManager+SignUp.swift in Sources */,
 				F3E9FBD12AEC197400801A1C /* QuoteView.swift in Sources */,
@@ -410,6 +425,7 @@
 				F345AB8B2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift in Sources */,
 				F3E9FBC92AEBBCF200801A1C /* EventDetailView.swift in Sources */,
 				F345ABAD2AE6C9D900211FE8 /* Color+Hex.swift in Sources */,
+				F397F71B2B4797660015828A /* EditingNAPFA.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

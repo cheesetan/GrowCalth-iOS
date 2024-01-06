@@ -60,14 +60,15 @@ class NAPFAManager: ObservableObject {
                         self.fetchInclinedPullUps(for: year) {
                             self.fetchTwoPointFourKm(for: year) {
                                 if NAPFALevel(rawValue: self.levelSelection)! == .secondary2 {
-                                    self.sortData() {
+                                    self.pullUps = []
+                                    self.sortAndAddToData() {
                                         self.updateCache(for: year) {
                                             completion()
                                         }
                                     }
                                 } else if NAPFALevel(rawValue: self.levelSelection)! == .secondary4 {
                                     self.fetchPullUps(for: year) {
-                                        self.sortData() {
+                                        self.sortAndAddToData() {
                                             self.updateCache(for: year) {
                                                 completion()
                                             }
@@ -82,12 +83,58 @@ class NAPFAManager: ObservableObject {
         }
     }
     
+    func updateValues(
+        sitUps: [NAPFAResults],
+        sitAndReach: [NAPFAResults],
+        sbj: [NAPFAResults],
+        shuttleRun: [NAPFAResults],
+        inclinedPullUps: [NAPFAResults],
+        pullUps: [NAPFAResults],
+        twoPointFourKm: [NAPFAResults]
+    ) {
+        self.sitUps = sitUps.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
+        self.sitAndReach = sitAndReach.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
+        self.sbj = sbj.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
+        self.shuttleRun = shuttleRun.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
+        self.inclinedPullUps = inclinedPullUps.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
+        self.pullUps = pullUps.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
+        self.twoPointFourKm = twoPointFourKm.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
+    }
+    
+    func updateValuesInFirebase(_ completion: @escaping ((Result<Bool, Error>) -> Void)) {
+        Firestore.firestore().collection("napfa").document("\(NAPFALevel(rawValue: levelSelection)!.firebaseCode)-\(String(year))").setData([
+            "2.4km": stringifyNAPFAResultArray(self.twoPointFourKm),
+            "inclinedpullups": stringifyNAPFAResultArray(self.inclinedPullUps),
+            "pullups": stringifyNAPFAResultArray(self.pullUps),
+            "sbj": stringifyNAPFAResultArray(self.sbj),
+            "shuttle": stringifyNAPFAResultArray(self.shuttleRun),
+            "sitandreach": stringifyNAPFAResultArray(self.sitAndReach),
+            "situps": stringifyNAPFAResultArray(self.sitUps)
+        ]) { err in
+            if let err = err {
+                completion(.failure(err))
+            } else {
+                completion(.success(true))
+            }
+        }
+    }
+    
+    internal func stringifyNAPFAResultArray(_ data: [NAPFAResults]) -> [String] {
+        var dataStrings: [String] = []
+        data.forEach { value in
+            if value.header.isEmpty {
+                dataStrings.append("\(value.rank)___\(value.name)___\(value.className)___\(value.result)")
+            }
+        }
+        return dataStrings
+    }
+    
     func updateCache(for year: Int, _ completion: @escaping (() -> Void)) {
         cachedData["\(NAPFALevel(rawValue: levelSelection)!.firebaseCode)-\(String(year))"] = data
         completion()
     }
     
-    internal func sortData(_ completion: @escaping (() -> Void)) {
+    func sortAndAddToData(_ completion: @escaping (() -> Void)) {
         self.data = []
         twoPointFourKm.forEach { data in
             self.data.append(data)
