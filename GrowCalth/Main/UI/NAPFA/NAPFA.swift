@@ -178,6 +178,7 @@ struct NAPFA: View {
                 }
             } else {
                 VStack(spacing: 15) {
+                    Spacer()
                     Image(systemName: "questionmark.square.dashed")
                         .font(.system(size: 70))
                         .foregroundColor(.secondary)
@@ -197,6 +198,7 @@ struct NAPFA: View {
                         }
                     }
                     .buttonStyle(.borderedProminent)
+                    Spacer()
                 }
             }
         }
