@@ -171,7 +171,16 @@ class NAPFAManager: ObservableObject {
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
                         let parts = value.split(separator: "___")
-                        internalData.append(NAPFAResults(rank: Int(parts[0]) ?? 0, name: String(parts[1]), className: String(parts[2]), result: String(parts[3])))
+                        if parts.count == 4 {
+                            internalData.append(
+                                NAPFAResults(
+                                    rank: Int(parts[0]) ?? 0,
+                                    name: String(parts[1]),
+                                    className: String(parts[2]),
+                                    result: String(parts[3])
+                                )
+                            )
+                        }
                     }
                     self.sitUps = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
                     if !self.sitUps.isEmpty {
@@ -196,7 +205,16 @@ class NAPFAManager: ObservableObject {
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
                         let parts = value.split(separator: "___")
-                        internalData.append(NAPFAResults(rank: Int(parts[0]) ?? 0, name: String(parts[1]), className: String(parts[2]), result: String(parts[3])))
+                        if parts.count == 4 {
+                            internalData.append(
+                                NAPFAResults(
+                                    rank: Int(parts[0]) ?? 0,
+                                    name: String(parts[1]),
+                                    className: String(parts[2]),
+                                    result: String(parts[3])
+                                )
+                            )
+                        }
                     }
                     self.sitAndReach = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
                     if !self.sitAndReach.isEmpty {
@@ -221,7 +239,16 @@ class NAPFAManager: ObservableObject {
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
                         let parts = value.split(separator: "___")
-                        internalData.append(NAPFAResults(rank: Int(parts[0]) ?? 0, name: String(parts[1]), className: String(parts[2]), result: String(parts[3])))
+                        if parts.count == 4 {
+                            internalData.append(
+                                NAPFAResults(
+                                    rank: Int(parts[0]) ?? 0,
+                                    name: String(parts[1]),
+                                    className: String(parts[2]),
+                                    result: String(parts[3])
+                                )
+                            )
+                        }
                     }
                     self.sbj = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
                     if !self.sbj.isEmpty {
@@ -246,7 +273,16 @@ class NAPFAManager: ObservableObject {
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
                         let parts = value.split(separator: "___")
-                        internalData.append(NAPFAResults(rank: Int(parts[0]) ?? 0, name: String(parts[1]), className: String(parts[2]), result: String(parts[3])))
+                        if parts.count == 4 {
+                            internalData.append(
+                                NAPFAResults(
+                                    rank: Int(parts[0]) ?? 0,
+                                    name: String(parts[1]),
+                                    className: String(parts[2]),
+                                    result: String(parts[3])
+                                )
+                            )
+                        }
                     }
                     self.shuttleRun = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
                     if !self.shuttleRun.isEmpty {
@@ -271,7 +307,16 @@ class NAPFAManager: ObservableObject {
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
                         let parts = value.split(separator: "___")
-                        internalData.append(NAPFAResults(rank: Int(parts[0]) ?? 0, name: String(parts[1]), className: String(parts[2]), result: String(parts[3])))
+                        if parts.count == 4 {
+                            internalData.append(
+                                NAPFAResults(
+                                    rank: Int(parts[0]) ?? 0,
+                                    name: String(parts[1]),
+                                    className: String(parts[2]),
+                                    result: String(parts[3])
+                                )
+                            )
+                        }
                     }
                     self.inclinedPullUps = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
                     if !self.inclinedPullUps.isEmpty {
@@ -300,7 +345,16 @@ class NAPFAManager: ObservableObject {
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
                         let parts = value.split(separator: "___")
-                        internalData.append(NAPFAResults(rank: Int(parts[0]) ?? 0, name: String(parts[1]), className: String(parts[2]), result: String(parts[3])))
+                        if parts.count == 4 {
+                            internalData.append(
+                                NAPFAResults(
+                                    rank: Int(parts[0]) ?? 0,
+                                    name: String(parts[1]),
+                                    className: String(parts[2]),
+                                    result: String(parts[3])
+                                )
+                            )
+                        }
                     }
                     self.pullUps = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
                     if !self.pullUps.isEmpty {
@@ -325,7 +379,16 @@ class NAPFAManager: ObservableObject {
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
                         let parts = value.split(separator: "___")
-                        internalData.append(NAPFAResults(rank: Int(parts[0]) ?? 0, name: String(parts[1]), className: String(parts[2]), result: String(parts[3])))
+                        if parts.count == 4 {
+                            internalData.append(
+                                NAPFAResults(
+                                    rank: Int(parts[0]) ?? 0,
+                                    name: String(parts[1]),
+                                    className: String(parts[2]),
+                                    result: String(parts[3])
+                                )
+                            )
+                        }
                     }
                     self.twoPointFourKm = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
                     if !self.twoPointFourKm.isEmpty {
