@@ -10,10 +10,16 @@ import SwiftPersistence
 
 struct LeaderboardView: View {
     
-    
     @State var loaded = false
     @State var leaderboardPoints = [String : Int]()
+    
+    @State var showingAlert = false
+    @State var alertTitle = ""
+    @State var alertMessage = ""
+    
     @ObservedObject var lbManager: LeaderboardsManager = .shared
+    @ObservedObject var adminManager: AdminManager = .shared
+    @ObservedObject var authManager: AuthenticationManager = .shared
     
     @Persistent("cachedLBPoints") var cachedLBPoints: [String : Int] = ["Black" : 0, "Blue" : 0, "Green" : 0, "Red" : 0, "Yellow" : 0]
     
@@ -39,9 +45,78 @@ struct LeaderboardView: View {
         }
         .listStyle(.grouped)
         .navigationTitle("Leaderboard")
+        .toolbar {
+            if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(role: .destructive) {
+                        showingAlert = true
+                        alertTitle = "Reset house points"
+                        alertMessage = "Are you sure you want to reset all house points? This action cannot be undone."
+                    } label: {
+                        Label("Reset house points", systemImage: "arrow.clockwise.circle")
+                    }
+                    .tint(.red)
+                }
+            }
+        }
+        .alert(alertTitle, isPresented: $showingAlert) {
+            Button("Reset", role: .destructive) {
+                lbManager.resetLeaderboards(forHouse: "Black") { result in
+                    switch result {
+                    case .success(_):
+                        retrievePointsInformation()
+                    case .failure(_):
+                        showingAlert = true
+                        alertTitle = "Error"
+                        alertTitle = "An error has occurred while attempting to reset house points for Black house. Please try again."
+                    }
+                }
+                lbManager.resetLeaderboards(forHouse: "Blue") { result in
+                    switch result {
+                    case .success(_):
+                        retrievePointsInformation()
+                    case .failure(_):
+                        showingAlert = true
+                        alertTitle = "Error"
+                        alertTitle = "An error has occurred while attempting to reset house points for Blue house. Please try again."
+                    }
+                }
+                lbManager.resetLeaderboards(forHouse: "Green") { result in
+                    switch result {
+                    case .success(_):
+                        retrievePointsInformation()
+                    case .failure(_):
+                        showingAlert = true
+                        alertTitle = "Error"
+                        alertTitle = "An error has occurred while attempting to reset house points for Green house. Please try again."
+                    }
+                }
+                lbManager.resetLeaderboards(forHouse: "Red") { result in
+                    switch result {
+                    case .success(_):
+                        retrievePointsInformation()
+                    case .failure(_):
+                        showingAlert = true
+                        alertTitle = "Error"
+                        alertTitle = "An error has occurred while attempting to reset house points for Red house. Please try again."
+                    }
+                }
+                lbManager.resetLeaderboards(forHouse: "Yellow") { result in
+                    switch result {
+                    case .success(_):
+                        retrievePointsInformation()
+                    case .failure(_):
+                        showingAlert = true
+                        alertTitle = "Error"
+                        alertTitle = "An error has occurred while attempting to reset house points for Yellow house. Please try again."
+                    }
+                }
+            }
+        } message: {
+            Text(alertMessage)
+        }
         .refreshable {
             retrievePointsInformation()
-            
         }
         .onAppear {
             print("cachedLBPoints before: \(cachedLBPoints)")

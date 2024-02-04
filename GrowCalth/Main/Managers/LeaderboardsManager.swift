@@ -54,4 +54,16 @@ class LeaderboardsManager: ObservableObject {
             }
         }
     }
+    
+    func resetLeaderboards(forHouse house: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
+        Firestore.firestore().collection("HousePoints").document(house).updateData([
+            "points": 0
+        ]) { err in
+            if let err = err {
+                completion(.failure(err))
+            } else {
+                completion(.success(true))
+            }
+        }
+    }
 }

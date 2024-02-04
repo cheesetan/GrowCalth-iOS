@@ -116,9 +116,9 @@ struct Announcements: View {
                             alertMessage = "Are you sure you want to delete this announcement? This action cannot be undone."
                             showingDeleteAlert = true
                         } label: {
-                            Image(systemName: "trash")
-                                .tint(.red)
+                            Label("Delete Announcement", systemImage: "trash")
                         }
+                        .tint(.red)
                     }
                 }
             }
@@ -146,9 +146,9 @@ struct Announcements: View {
                             alertMessage = "Are you sure you want to delete this event? This action cannot be undone."
                             showingDeleteAlert = true
                         } label: {
-                            Image(systemName: "trash")
-                                .tint(.red)
+                            Label("Delete Event", systemImage: "trash")
                         }
+                        .tint(.red)
                     }
                 }
             }
