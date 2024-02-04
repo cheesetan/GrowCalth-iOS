@@ -62,7 +62,7 @@ struct EditingNAPFARow: View {
     
     var classView: some View {
         Picker("Class", selection: $className) {
-            if rank == -1 {
+            if className == "" {
                 Text("Select a Class").tag("")
                 Divider()
             }
