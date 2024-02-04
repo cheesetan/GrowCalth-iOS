@@ -53,7 +53,11 @@ class HealthKitManager: ObservableObject {
         let date = Date()
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         let newDate = cal.startOfDay(for: date)
-        let predicate = HKQuery.predicateForSamples(withStart: newDate, end: Date(), options: .strictStartDate)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+            NSPredicate(format: "metadata.%K != true", HKMetadataKeyWasUserEntered),
+            NSPredicate(format: "%K >= %@", HKPredicateKeyPathStartDate, newDate as NSDate),
+            NSPredicate(format: "%K <= %@", HKPredicateKeyPathStartDate, Date() as NSDate)
+        ])
         
         let query = HKStatisticsQuery(
             quantityType: stepCountType, // the data type
@@ -82,8 +86,13 @@ class HealthKitManager: ObservableObject {
         let date = Date()
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         let newDate = cal.startOfDay(for: date)
-
-        let predicate = HKQuery.predicateForSamples(withStart: newDate, end: Date(), options: .strictStartDate)
+        
+        let notUserEnteredPredicate = NSPredicate(format: "%K != true", HKMetadataKeyWasUserEntered)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+            NSPredicate(format: "metadata.%K != true", HKMetadataKeyWasUserEntered),
+            NSPredicate(format: "%K >= %@", HKPredicateKeyPathStartDate, newDate as NSDate),
+            NSPredicate(format: "%K <= %@", HKPredicateKeyPathStartDate, Date() as NSDate)
+        ])
 
         let query = HKStatisticsQuery(quantityType: type, quantitySamplePredicate: predicate, options: [.cumulativeSum]) { (query, statistics, error) in
             var value: Double = 0
@@ -112,7 +121,11 @@ class HealthKitManager: ObservableObject {
         
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         let newDate = cal.startOfDay(for: startDate)
-        let predicate = HKQuery.predicateForSamples(withStart: newDate, end: endDate, options: .strictStartDate)
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+            NSPredicate(format: "metadata.%K != true", HKMetadataKeyWasUserEntered),
+            NSPredicate(format: "%K >= %@", HKPredicateKeyPathStartDate, newDate as NSDate),
+            NSPredicate(format: "%K <= %@", HKPredicateKeyPathStartDate, Date() as NSDate)
+        ])
         
         let query = HKStatisticsQuery(
             quantityType: stepCountType, // the data type

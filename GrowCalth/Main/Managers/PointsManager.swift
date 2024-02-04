@@ -38,7 +38,7 @@ class PointsManager: ObservableObject {
                 }
             }
         } else {
-            print("not due for adding")
+            print("not due for adding \(lastPointsAwardedDate)")
         }
     }
     
