@@ -123,12 +123,13 @@ struct EditingNAPFA: View {
                 napfaManager.updateValuesInFirebase { result in
                     saveLoading = false
                     switch result {
-                        case .success(_):
-                            dismiss.callAsFunction()
-                        case .failure(let failure):
-                            alertHeader = "Error"
-                            alertMessage = failure.localizedDescription
-                            showingAlert = true
+                    case .success(_):
+//                        napfaManager.fetchAllData(for: self.yearSelection) {}
+                        dismiss.callAsFunction()
+                    case .failure(let failure):
+                        alertHeader = "Error"
+                        alertMessage = failure.localizedDescription
+                        showingAlert = true
                     }
                 }
             }

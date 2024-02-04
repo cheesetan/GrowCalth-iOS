@@ -99,6 +99,32 @@ class NAPFAManager: ObservableObject {
         self.inclinedPullUps = inclinedPullUps.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
         self.pullUps = pullUps.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
         self.twoPointFourKm = twoPointFourKm.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
+        
+        if !self.sitUps.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
+            self.sitUps.insert(NAPFAResults(header: "Sit Ups"), at: 0)
+        }
+        if !self.sitAndReach.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
+            self.sitAndReach.insert(NAPFAResults(header: "Sit And Reach"), at: 0)
+        }
+        if !self.sbj.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
+            self.sbj.insert(NAPFAResults(header: "Standing Broad Jump"), at: 0)
+        }
+        if !self.shuttleRun.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
+            self.shuttleRun.insert(NAPFAResults(header: "Shuttle Run"), at: 0)
+        }
+        if !self.inclinedPullUps.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
+            if NAPFALevel(rawValue: self.levelSelection)! == .secondary2 {
+                self.inclinedPullUps.insert(NAPFAResults(header: "Inclined Pull Ups"), at: 0)
+            } else if NAPFALevel(rawValue: self.levelSelection)! == .secondary4 {
+                self.inclinedPullUps.insert(NAPFAResults(header: "Inclined Pull Ups (Female)"), at: 0)
+            }
+        }
+        if !self.pullUps.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
+            self.pullUps.insert(NAPFAResults(header: "Pull Ups (Male)"), at: 0)
+        }
+        if !self.twoPointFourKm.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
+            self.twoPointFourKm.insert(NAPFAResults(header: "2.4km Run"), at: 0)
+        }
     }
     
     func updateValuesInFirebase(_ completion: @escaping ((Result<Bool, Error>) -> Void)) {
@@ -170,20 +196,18 @@ class NAPFAManager: ObservableObject {
                     let fieldArray = documentData["situps"] as? [String] ?? []
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
-                        let parts = value.split(separator: "___")
-                        if parts.count == 4 {
-                            internalData.append(
-                                NAPFAResults(
-                                    rank: Int(parts[0]) ?? 0,
-                                    name: String(parts[1]),
-                                    className: String(parts[2]),
-                                    result: String(parts[3])
-                                )
+                        let parts = value.components(separatedBy: "___")
+                        internalData.append(
+                            NAPFAResults(
+                                rank: Int(parts[0]) ?? 0,
+                                name: String(parts[1]),
+                                className: String(parts[2]),
+                                result: String(parts[3])
                             )
-                        }
+                        )
                     }
                     self.sitUps = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
-                    if !self.sitUps.isEmpty {
+                    if !self.sitUps.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
                         self.sitUps.insert(NAPFAResults(header: "Sit Ups"), at: 0)
                     }
                     completion()
@@ -204,20 +228,18 @@ class NAPFAManager: ObservableObject {
                     let fieldArray = documentData["sitandreach"] as? [String] ?? []
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
-                        let parts = value.split(separator: "___")
-                        if parts.count == 4 {
-                            internalData.append(
-                                NAPFAResults(
-                                    rank: Int(parts[0]) ?? 0,
-                                    name: String(parts[1]),
-                                    className: String(parts[2]),
-                                    result: String(parts[3])
-                                )
+                        let parts = value.components(separatedBy: "___")
+                        internalData.append(
+                            NAPFAResults(
+                                rank: Int(parts[0]) ?? 0,
+                                name: String(parts[1]),
+                                className: String(parts[2]),
+                                result: String(parts[3])
                             )
-                        }
+                        )
                     }
                     self.sitAndReach = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
-                    if !self.sitAndReach.isEmpty {
+                    if !self.sitAndReach.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
                         self.sitAndReach.insert(NAPFAResults(header: "Sit And Reach"), at: 0)
                     }
                     completion()
@@ -238,20 +260,18 @@ class NAPFAManager: ObservableObject {
                     let fieldArray = documentData["sbj"] as? [String] ?? []
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
-                        let parts = value.split(separator: "___")
-                        if parts.count == 4 {
-                            internalData.append(
-                                NAPFAResults(
-                                    rank: Int(parts[0]) ?? 0,
-                                    name: String(parts[1]),
-                                    className: String(parts[2]),
-                                    result: String(parts[3])
-                                )
+                        let parts = value.components(separatedBy: "___")
+                        internalData.append(
+                            NAPFAResults(
+                                rank: Int(parts[0]) ?? 0,
+                                name: String(parts[1]),
+                                className: String(parts[2]),
+                                result: String(parts[3])
                             )
-                        }
+                        )
                     }
                     self.sbj = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
-                    if !self.sbj.isEmpty {
+                    if !self.sbj.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
                         self.sbj.insert(NAPFAResults(header: "Standing Broad Jump"), at: 0)
                     }
                     completion()
@@ -272,20 +292,18 @@ class NAPFAManager: ObservableObject {
                     let fieldArray = documentData["shuttle"] as? [String] ?? []
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
-                        let parts = value.split(separator: "___")
-                        if parts.count == 4 {
-                            internalData.append(
-                                NAPFAResults(
-                                    rank: Int(parts[0]) ?? 0,
-                                    name: String(parts[1]),
-                                    className: String(parts[2]),
-                                    result: String(parts[3])
-                                )
+                        let parts = value.components(separatedBy: "___")
+                        internalData.append(
+                            NAPFAResults(
+                                rank: Int(parts[0]) ?? 0,
+                                name: String(parts[1]),
+                                className: String(parts[2]),
+                                result: String(parts[3])
                             )
-                        }
+                        )
                     }
                     self.shuttleRun = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
-                    if !self.shuttleRun.isEmpty {
+                    if !self.shuttleRun.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
                         self.shuttleRun.insert(NAPFAResults(header: "Shuttle Run"), at: 0)
                     }
                     completion()
@@ -306,20 +324,18 @@ class NAPFAManager: ObservableObject {
                     let fieldArray = documentData["inclinedpullups"] as? [String] ?? []
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
-                        let parts = value.split(separator: "___")
-                        if parts.count == 4 {
-                            internalData.append(
-                                NAPFAResults(
-                                    rank: Int(parts[0]) ?? 0,
-                                    name: String(parts[1]),
-                                    className: String(parts[2]),
-                                    result: String(parts[3])
-                                )
+                        let parts = value.components(separatedBy: "___")
+                        internalData.append(
+                            NAPFAResults(
+                                rank: Int(parts[0]) ?? 0,
+                                name: String(parts[1]),
+                                className: String(parts[2]),
+                                result: String(parts[3])
                             )
-                        }
+                        )
                     }
                     self.inclinedPullUps = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
-                    if !self.inclinedPullUps.isEmpty {
+                    if !self.inclinedPullUps.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
                         if NAPFALevel(rawValue: self.levelSelection)! == .secondary2 {
                             self.inclinedPullUps.insert(NAPFAResults(header: "Inclined Pull Ups"), at: 0)
                         } else if NAPFALevel(rawValue: self.levelSelection)! == .secondary4 {
@@ -344,20 +360,18 @@ class NAPFAManager: ObservableObject {
                     let fieldArray = documentData["pullups"] as? [String] ?? []
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
-                        let parts = value.split(separator: "___")
-                        if parts.count == 4 {
-                            internalData.append(
-                                NAPFAResults(
-                                    rank: Int(parts[0]) ?? 0,
-                                    name: String(parts[1]),
-                                    className: String(parts[2]),
-                                    result: String(parts[3])
-                                )
+                        let parts = value.components(separatedBy: "___")
+                        internalData.append(
+                            NAPFAResults(
+                                rank: Int(parts[0]) ?? 0,
+                                name: String(parts[1]),
+                                className: String(parts[2]),
+                                result: String(parts[3])
                             )
-                        }
+                        )
                     }
                     self.pullUps = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
-                    if !self.pullUps.isEmpty {
+                    if !self.pullUps.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
                         self.pullUps.insert(NAPFAResults(header: "Pull Ups (Male)"), at: 0)
                     }
                     completion()
@@ -378,20 +392,18 @@ class NAPFAManager: ObservableObject {
                     let fieldArray = documentData["2.4km"] as? [String] ?? []
                     var internalData: [NAPFAResults] = []
                     fieldArray.forEach { value in
-                        let parts = value.split(separator: "___")
-                        if parts.count == 4 {
-                            internalData.append(
-                                NAPFAResults(
-                                    rank: Int(parts[0]) ?? 0,
-                                    name: String(parts[1]),
-                                    className: String(parts[2]),
-                                    result: String(parts[3])
-                                )
+                        let parts = value.components(separatedBy: "___")
+                        internalData.append(
+                            NAPFAResults(
+                                rank: Int(parts[0]) ?? 0,
+                                name: String(parts[1]),
+                                className: String(parts[2]),
+                                result: String(parts[3])
                             )
-                        }
+                        )
                     }
                     self.twoPointFourKm = internalData.sorted(by: { $0.name < $1.name }).sorted(by: { $0.rank < $1.rank })
-                    if !self.twoPointFourKm.isEmpty {
+                    if !self.twoPointFourKm.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
                         self.twoPointFourKm.insert(NAPFAResults(header: "2.4km Run"), at: 0)
                     }
                     completion()

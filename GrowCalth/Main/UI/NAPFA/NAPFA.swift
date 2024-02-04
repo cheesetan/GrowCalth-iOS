@@ -143,7 +143,7 @@ struct NAPFA: View {
     
     var table: some View {
         VStack {
-            if let cachedDataForYear = cachedData["\(NAPFALevel(rawValue: levelSelection)!.firebaseCode)-\(String(yearSelection))"], !cachedDataForYear.isEmpty {
+            if let cachedDataForYear = cachedData["\(NAPFALevel(rawValue: levelSelection)!.firebaseCode)-\(String(yearSelection))"], !cachedDataForYear.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
                 MultiColumnTable(headers: ["Rank", "Name", "Class", "Result"], data: .constant(cachedDataForYear))
                     .padding(.top)
             } else {
