@@ -14,9 +14,7 @@ struct OnboardingView: View {
     @State var tabSelection = 0
     @State var bounceEffect = 0
     @State var doneButtonShowing = false
-    
-    @ObservedObject var hkManager: HealthKitManager = .shared
-    
+        
     var body: some View {
         NavigationStack {
             TabView(selection: $tabSelection) {
@@ -37,12 +35,6 @@ struct OnboardingView: View {
                                imageString: "chart.bar.fill",
                                primaryColor: .red)
                     .tag(2)
-                VStack {
-                    Button("rq") {
-                        hkManager.requestAuthorization()
-                    }
-                }
-                .tag(3)
             }
             .tabViewStyle(.page(indexDisplayMode: .always))
             .toolbar {
@@ -64,7 +56,7 @@ struct OnboardingView: View {
             }
             .onChange(of: tabSelection) { _ in
                 bounceEffect += 1
-                if tabSelection == 3 {
+                if tabSelection == 2 {
                     withAnimation {
                         doneButtonShowing = true
                     }
@@ -144,7 +136,7 @@ struct OnboardingView: View {
             Image(systemName: "arrowshape.right.fill")
         }
         .buttonStyle(.plain)
-        .disabled(tabSelection > 2)
+        .disabled(tabSelection > 1)
         .animation(.default, value: tabSelection)
     }
     
@@ -157,7 +149,7 @@ struct OnboardingView: View {
             Text("Done")
         }
         .buttonStyle(.plain)
-        .disabled(tabSelection != 3)
+        .disabled(tabSelection != 2)
         .animation(.default, value: tabSelection)
         .animation(.default, value: doneButtonShowing)
     }
