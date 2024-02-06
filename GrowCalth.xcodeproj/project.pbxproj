@@ -581,6 +581,7 @@
 				INFOPLIST_FILE = GrowCalth/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GrowCalth;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -620,6 +621,7 @@
 				INFOPLIST_FILE = GrowCalth/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GrowCalth;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
