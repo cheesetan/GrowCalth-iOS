@@ -2,30 +2,72 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	</array>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.626848273230-mkrdthhiq1v6dcab0nhrj3duitkv6br8</string>
-			</array>
-		</dict>
-	</array>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>NSUserNotificationsUsageDescription</key>
-	<string>GrowCalth requires notifications permission to notify you when a new Announcement or Event has been posted.</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>processing</string>
-		<string>remote-notification</string>
-	</array>
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+    <key>NSUserNotificationsUsageDescription</key>
+    <string>GrowCalth requires notifications permission to notify you when a new Announcement or Event has been posted.</string>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>$(DEVELOPMENT_LANGUAGE)</string>
+    <key>CFBundleVersion</key>
+    <string>$(CURRENT_PROJECT_VERSION)</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>processing</string>
+        <string>remote-notification</string>
+    </array>
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>GrowCalth needs to access your steps and distance information from the Health app.</string>
+    <key>NSHealthClinicalHealthRecordsShareUsageDescription</key>
+    <string>GrowCalth needs to access your steps and distance information from the Health app.</string>
+    <key>UIApplicationSupportsIndirectInputEvents</key>
+    <true/>
+    <key>CFBundlePackageType</key>
+    <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(MARKETING_VERSION)</string>
+    <key>UILaunchScreen</key>
+    <dict>
+        <key>UILaunchScreen</key>
+        <dict/>
+    </dict>
+    <key>NSHealthShareUsageDescription</key>
+    <string>GrowCalth needs to access your steps and distance information from the Health app.</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+    </array>
+    <key>CFBundleIdentifier</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.healthcare-fitness</string>
+    <key>UIApplicationSceneManifest</key>
+    <dict>
+        <key>UIApplicationSupportsMultipleScenes</key>
+        <true/>
+        <key>UISceneConfigurations</key>
+        <dict/>
+    </dict>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+    <key>CFBundleDisplayName</key>
+    <string>GrowCalth</string>
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    </array>
 </dict>
 </plist>
