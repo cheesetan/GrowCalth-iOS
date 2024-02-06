@@ -5,13 +5,18 @@
 //  Created by Tristan Chay on 2/11/23.
 //
 
-import Foundation
+import SwiftUI
 import FirebaseFirestore
 
 class AdminManager: ObservableObject {
     static let shared: AdminManager = .init()
     
+    @Published var isUnderMaintenance: Bool?
     @Published var approvedEmails = ["admin@growcalth.com", "chay_yu_hung@s2021.ssts.edu.sg", "han_jeong_seu_caleb@s2021.ssts.edu.sg"]
+    
+    init() {
+        checkIfUnderMaintenance() { }
+    }
     
     func postAnnouncement(
         title: String,
@@ -115,6 +120,22 @@ class AdminManager: ObservableObject {
                 completion(.failure(err))
             } else {
                 completion(.success(true))
+            }
+        }
+    }
+    
+    func checkIfUnderMaintenance(_ completion: @escaping (() -> Void)) {
+        Firestore.firestore().collection("settings").document("maintenance").getDocument { (document, error) in
+            if let document = document, document.exists {
+                if let documentData = document.data() {
+                    withAnimation {
+                        self.isUnderMaintenance = documentData["status"] as? Bool
+                        completion()
+                    }
+                }
+            } else {
+                print("Document does not exist")
+                completion()
             }
         }
     }

@@ -18,9 +18,10 @@ struct SettingsView: View {
     
     @State var settingsColorScheme: PreferredColorScheme = .automatic
     @State var showingSignOutAlert = false
-    @ObservedObject var authManager: AuthenticationManager = .shared
     
+    @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var csManager: ColorSchemeManager = .shared
+    @ObservedObject var adminManager: AdminManager = .shared
     
     @Persistent("preferredColorSchemeAppStorage", store: .fileManager) private var preferredColorSchemeAppStorage: PreferredColorScheme = .automatic
         
@@ -37,6 +38,7 @@ struct SettingsView: View {
             .navigationTitle("Settings")
         }
         .onAppear {
+            adminManager.checkIfUnderMaintenance() { }
             settingsColorScheme = preferredColorSchemeAppStorage
         }
         .alert(alertHeader, isPresented: $showingAlert) {

@@ -52,6 +52,7 @@ struct NAPFA: View {
                 ToolbarItem(placement: .navigationBarTrailing) { nextButton }
             }
             .onAppear {
+                adminManager.checkIfUnderMaintenance() { }
                 napfaManager.fetchAllData(for: yearSelection) {
                     isLoading = false
                 }

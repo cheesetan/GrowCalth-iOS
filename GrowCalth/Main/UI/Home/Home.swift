@@ -17,6 +17,7 @@ struct Home: View {
     @ObservedObject var quotesManager: QuotesManager = .shared
     @ObservedObject var goalsManager: GoalsManager = .shared
     @ObservedObject var pointsManager: PointsManager = .shared
+    @ObservedObject var adminManager: AdminManager = .shared
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -72,6 +73,7 @@ struct Home: View {
             }
         }
         .onAppear {
+            adminManager.checkIfUnderMaintenance() { }
             hkManager.fetchAllDatas()
             daysManager.refreshNumberOfDaysInApp()
             quotesManager.generateNewQuote() { _ in }

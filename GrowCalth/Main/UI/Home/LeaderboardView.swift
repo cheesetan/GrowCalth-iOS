@@ -119,6 +119,7 @@ struct LeaderboardView: View {
             retrievePointsInformation()
         }
         .onAppear {
+            adminManager.checkIfUnderMaintenance() { }
             print("cachedLBPoints before: \(cachedLBPoints)")
             retrievePointsInformation()
             print("cachedLBPoints after: \(cachedLBPoints)")
