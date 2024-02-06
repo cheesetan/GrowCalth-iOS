@@ -13,7 +13,7 @@ class HealthKitManager: ObservableObject {
     
     private var healthStore = HKHealthStore()
     @Published var steps: Int? = nil
-    @Published var distance: Double? = nil
+    @Published var distance: Double? = nil 
     
     init() {
         requestAuthorization()

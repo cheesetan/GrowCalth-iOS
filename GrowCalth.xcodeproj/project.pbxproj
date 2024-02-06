@@ -49,6 +49,7 @@
 		F3A2E69A2AF3E90D00B34392 /* NewAnnouncementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2E6992AF3E90D00B34392 /* NewAnnouncementView.swift */; };
 		F3C1885C2B7127F100FD9E2E /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = F3C1885B2B7127F100FD9E2E /* FirebaseMessaging */; };
 		F3C1885E2B712A1200FD9E2E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F3C1885D2B712A1200FD9E2E /* GoogleService-Info.plist */; };
+		F3C188622B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C188612B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift */; };
 		F3E9FBC72AEBA59000801A1C /* AnnouncementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */; };
 		F3E9FBC92AEBBCF200801A1C /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBC82AEBBCF200801A1C /* EventDetailView.swift */; };
 		F3E9FBCB2AEBC28600801A1C /* LeaderboardsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBCA2AEBC28600801A1C /* LeaderboardsManager.swift */; };
@@ -101,6 +102,7 @@
 		F3A2E6972AF3E63000B34392 /* AdminManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminManager.swift; sourceTree = "<group>"; };
 		F3A2E6992AF3E90D00B34392 /* NewAnnouncementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAnnouncementView.swift; sourceTree = "<group>"; };
 		F3C1885D2B712A1200FD9E2E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F3C188612B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPushNotificationsManager.swift; sourceTree = "<group>"; };
 		F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementManager.swift; sourceTree = "<group>"; };
 		F3E9FBC82AEBBCF200801A1C /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
 		F3E9FBCA2AEBC28600801A1C /* LeaderboardsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardsManager.swift; sourceTree = "<group>"; };
@@ -219,6 +221,7 @@
 			isa = PBXGroup;
 			children = (
 				F3582CF92B1E5C2F006A2FC0 /* AuthenticationManager */,
+				F3C188612B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift */,
 				F3E9FBCE2AEC0E8500801A1C /* QuotesManager.swift */,
 				F3E9FBCC2AEBFC0400801A1C /* DaysManager.swift */,
 				F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */,
@@ -431,6 +434,7 @@
 				F397F71D2B499A310015828A /* EditingNAPFARow.swift in Sources */,
 				F383E2532AE80A8900C517C2 /* AuthenticationView.swift in Sources */,
 				F3582D012B1E5D51006A2FC0 /* AuthenticationManager+SignUp.swift in Sources */,
+				F3C188622B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift in Sources */,
 				F3E9FBD12AEC197400801A1C /* QuoteView.swift in Sources */,
 				F383E26A2AE8297700C517C2 /* AccountInfo.swift in Sources */,
 				F345AB8B2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift in Sources */,

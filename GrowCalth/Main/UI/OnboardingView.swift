@@ -15,6 +15,8 @@ struct OnboardingView: View {
     @State var bounceEffect = 0
     @State var doneButtonShowing = false
     
+    @ObservedObject var hkManager: HealthKitManager = .shared
+    
     var body: some View {
         NavigationStack {
             TabView(selection: $tabSelection) {
@@ -35,11 +37,22 @@ struct OnboardingView: View {
                                imageString: "chart.bar.fill",
                                primaryColor: .red)
                     .tag(2)
+                VStack {
+                    Button("rq") {
+                        hkManager.requestAuthorization()
+                    }
+                }
+                .tag(3)
             }
             .tabViewStyle(.page(indexDisplayMode: .always))
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
                     previousButton
+                }
+                ToolbarItem(placement: .status) {
+                    HStack {
+                        Spacer()
+                    }
                 }
                 ToolbarItem(placement: .bottomBar) {
                     if doneButtonShowing {
@@ -51,7 +64,7 @@ struct OnboardingView: View {
             }
             .onChange(of: tabSelection) { _ in
                 bounceEffect += 1
-                if tabSelection == 2 {
+                if tabSelection == 3 {
                     withAnimation {
                         doneButtonShowing = true
                     }
@@ -131,7 +144,7 @@ struct OnboardingView: View {
             Image(systemName: "arrowshape.right.fill")
         }
         .buttonStyle(.plain)
-        .disabled(tabSelection > 1)
+        .disabled(tabSelection > 2)
         .animation(.default, value: tabSelection)
     }
     
@@ -144,7 +157,7 @@ struct OnboardingView: View {
             Text("Done")
         }
         .buttonStyle(.plain)
-        .disabled(tabSelection != 2)
+        .disabled(tabSelection != 3)
         .animation(.default, value: tabSelection)
         .animation(.default, value: doneButtonShowing)
     }

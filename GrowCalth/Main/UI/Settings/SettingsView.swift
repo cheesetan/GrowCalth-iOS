@@ -30,6 +30,7 @@ struct SettingsView: View {
                 account
                 appearance
 //                health
+                permissions
                 acknowledgements
                 signOutButton
             }
@@ -116,6 +117,18 @@ struct SettingsView: View {
                 HealthInfo()
             } label: {
                 Label("Health Information", systemImage: "heart.text.square.fill")
+            }
+        }
+    }
+    
+    var permissions: some View {
+        Section("Permissions") {
+            Button {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            } label: {
+                Text("Open GrowCalth in Settings")
             }
         }
     }
