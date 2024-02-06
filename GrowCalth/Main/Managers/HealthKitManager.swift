@@ -87,7 +87,6 @@ class HealthKitManager: ObservableObject {
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         let newDate = cal.startOfDay(for: date)
         
-        let notUserEnteredPredicate = NSPredicate(format: "%K != true", HKMetadataKeyWasUserEntered)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
             NSPredicate(format: "metadata.%K != true", HKMetadataKeyWasUserEntered),
             NSPredicate(format: "%K >= %@", HKPredicateKeyPathStartDate, newDate as NSDate),
