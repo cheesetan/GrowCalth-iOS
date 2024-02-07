@@ -52,12 +52,15 @@ struct NAPFA: View {
                 ToolbarItem(placement: .navigationBarTrailing) { nextButton }
             }
             .onAppear {
+                adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
                 napfaManager.fetchAllData(for: yearSelection) {
                     isLoading = false
                 }
             }
             .refreshable {
+                adminManager.checkIfAppForcesUpdates()
+                adminManager.checkIfUnderMaintenance() { }
                 if !showingNAPFAEditing {
                     napfaManager.fetchAllData(for: yearSelection) {
                         isLoading = false
@@ -65,11 +68,15 @@ struct NAPFA: View {
                 }
             }
             .onChange(of: yearSelection) { newYear in
+                adminManager.checkIfAppForcesUpdates()
+                adminManager.checkIfUnderMaintenance() { }
                 napfaManager.fetchAllData(for: newYear) {
                     isLoading = false
                 }
             }
             .onChange(of: levelSelection) { _ in
+                adminManager.checkIfAppForcesUpdates()
+                adminManager.checkIfUnderMaintenance() { }
                 napfaManager.fetchAllData(for: yearSelection) {
                     isLoading = false
                 }

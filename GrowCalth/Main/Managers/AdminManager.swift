@@ -12,10 +12,12 @@ class AdminManager: ObservableObject {
     static let shared: AdminManager = .init()
     
     @Published var isUnderMaintenance: Bool?
+    @Published var appForcesUpdates: Bool?
     @Published var approvedEmails = ["admin@growcalth.com", "chay_yu_hung@s2021.ssts.edu.sg", "han_jeong_seu_caleb@s2021.ssts.edu.sg"]
     
     init() {
         checkIfUnderMaintenance() { }
+        checkIfAppForcesUpdates()
     }
     
     func postAnnouncement(
@@ -136,6 +138,20 @@ class AdminManager: ObservableObject {
             } else {
                 print("Document does not exist")
                 completion()
+            }
+        }
+    }
+    
+    func checkIfAppForcesUpdates() {
+        Firestore.firestore().collection("settings").document("force-updates").getDocument { (document, error) in
+            if let document = document, document.exists {
+                if let documentData = document.data() {
+                    withAnimation {
+                        self.appForcesUpdates = documentData["status"] as? Bool
+                    }
+                }
+            } else {
+                print("Document does not exist")
             }
         }
     }

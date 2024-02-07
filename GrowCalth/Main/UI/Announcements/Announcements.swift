@@ -57,22 +57,26 @@ struct Announcements: View {
             .listStyle(.grouped)
             .navigationTitle(selection == .announcements ? "Announcements" : "Events")
             .refreshable {
+                adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
                 announcementManager.retrieveAllPosts() {
                     announcementManager.updateCacheForAllPosts()
                 }
             }
             .onAppear {
+                adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
                 announcementManager.retrieveAllPosts() {
                     announcementManager.updateCacheForAllPosts()
                 }
             }
             .onChange(of: announcementManager.announcements) { _ in
+                adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
                 announcementManager.updateCacheForAllPosts()
             }
             .onChange(of: announcementManager.events) { _ in
+                adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
                 announcementManager.updateCacheForAllPosts()
             }

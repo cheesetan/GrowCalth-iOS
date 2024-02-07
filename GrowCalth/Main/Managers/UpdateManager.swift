@@ -6,7 +6,7 @@
 //
 
 
-import Foundation
+import SwiftUI
 
 enum UpdateError: Error {
     case invalidResponse, invalidBundleInfo
@@ -42,10 +42,14 @@ class UpdateManager: ObservableObject {
                     throw UpdateError.invalidResponse
                 }
                 DispatchQueue.main.async {   
-                    self.updateAvailable = version != currentVersion
+                    withAnimation {
+                        self.updateAvailable = version != currentVersion
+                    }
                 }
             } catch {
-                self.updateAvailable = nil
+                withAnimation {
+                    self.updateAvailable = nil
+                }
             }
         }
         task.resume()

@@ -74,6 +74,7 @@ struct Home: View {
         }
         .onAppear {
             adminManager.checkIfUnderMaintenance() { }
+            adminManager.checkIfAppForcesUpdates()
             hkManager.fetchAllDatas()
             daysManager.refreshNumberOfDaysInApp()
             quotesManager.generateNewQuote() { _ in }

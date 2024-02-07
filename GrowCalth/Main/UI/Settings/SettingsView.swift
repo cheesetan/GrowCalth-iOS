@@ -38,6 +38,7 @@ struct SettingsView: View {
             .navigationTitle("Settings")
         }
         .onAppear {
+            adminManager.checkIfAppForcesUpdates()
             adminManager.checkIfUnderMaintenance() { }
             settingsColorScheme = preferredColorSchemeAppStorage
         }

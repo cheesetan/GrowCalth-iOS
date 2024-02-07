@@ -20,8 +20,10 @@ struct ContentView: View {
     var body: some View {
         if !onboardingView {
             if authManager.isLoggedIn && authManager.accountVerified {
-                if adminManager.isUnderMaintenance != nil && updateManager.updateAvailable != nil {
-                    if updateManager.updateAvailable == false {
+                if adminManager.isUnderMaintenance != nil && updateManager.updateAvailable != nil && adminManager.appForcesUpdates != nil {
+                    if updateManager.updateAvailable == true && adminManager.appForcesUpdates == true {
+                        unavailableView(title: "New Update Available", systemImage: "app.dashed", description: "There's a new update available on the App Store! Install the latest update to continue using GrowCalth.")
+                    } else {
                         if adminManager.isUnderMaintenance == false {
                             TabView {
                                 Home()
@@ -44,8 +46,6 @@ struct ContentView: View {
                         } else {
                             unavailableView(title: "Under Maintenance", systemImage: "hammer.fill", description: "GrowCalth is currently undergoing maintenance, please check back again later.", isMaintenance: true)
                         }
-                    } else {
-                        unavailableView(title: "New Update Available", systemImage: "app.dashed", description: "There's a new update available on the App Store! Install the latest update to continue using GrowCalth.")
                     }
                 } else {
                     ProgressView()
