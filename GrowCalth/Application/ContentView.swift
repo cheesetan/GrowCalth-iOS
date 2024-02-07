@@ -21,10 +21,12 @@ struct ContentView: View {
         if !onboardingView {
             if authManager.isLoggedIn && authManager.accountVerified {
                 if adminManager.isUnderMaintenance != nil && updateManager.updateAvailable != nil && adminManager.appForcesUpdates != nil {
-                    if updateManager.updateAvailable == true && adminManager.appForcesUpdates == true {
+                    if updateManager.updateAvailable == true && adminManager.appForcesUpdates == true && authManager.email != "appreview@s2021.ssts.edu.sg" && !adminManager.approvedEmails.contains(authManager.email ?? "") {
                         unavailableView(title: "New Update Available", systemImage: "app.dashed", description: "There's a new update available on the App Store! Install the latest update to continue using GrowCalth.")
                     } else {
-                        if adminManager.isUnderMaintenance == false {
+                        if adminManager.isUnderMaintenance == true && authManager.email != "appreview@s2021.ssts.edu.sg" && !adminManager.approvedEmails.contains(authManager.email ?? "") {
+                            unavailableView(title: "Under Maintenance", systemImage: "hammer.fill", description: "GrowCalth is currently undergoing maintenance, please check back again later.", isMaintenance: true)
+                        } else {
                             TabView {
                                 Home()
                                     .tabItem {
@@ -43,8 +45,6 @@ struct ContentView: View {
                                         Label("Settings", systemImage: "gearshape")
                                     }
                             }
-                        } else {
-                            unavailableView(title: "Under Maintenance", systemImage: "hammer.fill", description: "GrowCalth is currently undergoing maintenance, please check back again later.", isMaintenance: true)
                         }
                     }
                 } else {
