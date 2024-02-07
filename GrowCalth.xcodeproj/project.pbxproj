@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F30C5C1C2AEF3A6E00474469 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30C5C1B2AEF3A6E00474469 /* OnboardingView.swift */; };
 		F30CBAC72AEE92930017E100 /* SwiftPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = F30CBAC62AEE92930017E100 /* SwiftPersistence */; };
+		F31A7C062B736C550012A6A9 /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F31A7C052B736C550012A6A9 /* UpdateManager.swift */; };
 		F32046C52AEEB8150047F43E /* ColorSchemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */; };
 		F345AB8B2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB8A2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift */; };
 		F345AB8D2AE62EDE00211FE8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB8C2AE62EDE00211FE8 /* ContentView.swift */; };
@@ -66,6 +67,7 @@
 
 /* Begin PBXFileReference section */
 		F30C5C1B2AEF3A6E00474469 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		F31A7C052B736C550012A6A9 /* UpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateManager.swift; sourceTree = "<group>"; };
 		F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeManager.swift; sourceTree = "<group>"; };
 		F345AB872AE62EDE00211FE8 /* GrowCalth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrowCalth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F345AB8A2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowCalth_iOSApp.swift; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 				F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */,
 				F3A2E6972AF3E63000B34392 /* AdminManager.swift */,
 				F39B2DF92B452A7E006807D8 /* NAPFAManager.swift */,
+				F31A7C052B736C550012A6A9 /* UpdateManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -413,6 +416,7 @@
 				F345AB9E2AE62F4600211FE8 /* Announcements.swift in Sources */,
 				F3E9FBCD2AEBFC0400801A1C /* DaysManager.swift in Sources */,
 				F383E24C2AE7C1C200C517C2 /* AnnouncementDetailView.swift in Sources */,
+				F31A7C062B736C550012A6A9 /* UpdateManager.swift in Sources */,
 				F3E9FBD52AECB7E400801A1C /* GoalsView.swift in Sources */,
 				F32046C52AEEB8150047F43E /* ColorSchemeManager.swift in Sources */,
 				F37778482B1F14710079ACD4 /* ForgotPasswordView.swift in Sources */,
@@ -593,7 +597,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -633,7 +637,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

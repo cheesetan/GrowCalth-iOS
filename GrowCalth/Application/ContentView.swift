@@ -15,35 +15,41 @@ struct ContentView: View {
     
     @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var adminManager: AdminManager = .shared
+    @ObservedObject var updateManager: UpdateManager = .shared
 
     var body: some View {
         if !onboardingView {
             if authManager.isLoggedIn && authManager.accountVerified {
-                if adminManager.isUnderMaintenance != nil {
-                    if adminManager.isUnderMaintenance == false {
-                        TabView {
-                            Home()
-                                .tabItem {
-                                    Label("Home", systemImage: "house.fill")
-                                }
-                            Announcements()
-                                .tabItem {
-                                    Label("Announcements", systemImage: "megaphone")
-                                }
-                            NAPFA()
-                                .tabItem {
-                                    Label("NAPFA", systemImage: "figure.run")
-                                }
-                            SettingsView()
-                                .tabItem {
-                                    Label("Settings", systemImage: "gearshape")
-                                }
+                if adminManager.isUnderMaintenance != nil && updateManager.updateAvailable != nil {
+                    if updateManager.updateAvailable == false {
+                        if adminManager.isUnderMaintenance == false {
+                            TabView {
+                                Home()
+                                    .tabItem {
+                                        Label("Home", systemImage: "house.fill")
+                                    }
+                                Announcements()
+                                    .tabItem {
+                                        Label("Announcements", systemImage: "megaphone")
+                                    }
+                                NAPFA()
+                                    .tabItem {
+                                        Label("NAPFA", systemImage: "figure.run")
+                                    }
+                                SettingsView()
+                                    .tabItem {
+                                        Label("Settings", systemImage: "gearshape")
+                                    }
+                            }
+                        } else {
+                            unavailableView(title: "Under Maintenance", systemImage: "hammer.fill", description: "GrowCalth is currently undergoing maintenance, please check back again later.", isMaintenance: true)
                         }
                     } else {
-                        maintenanceView
+                        unavailableView(title: "New Update Available", systemImage: "app.dashed", description: "There's a new update available on the App Store! Install the latest update to continue using GrowCalth.")
                     }
                 } else {
                     ProgressView()
+                        .controlSize(.large)
                 }
             } else {
                 AuthenticationView()
@@ -53,51 +59,68 @@ struct ContentView: View {
         }
     }
     
-    var maintenanceView: some View {
+    @ViewBuilder
+    func unavailableView(title: String, systemImage: String, description: String, isMaintenance: Bool = false) -> some View {
         VStack {
             if #available(iOS 17.0, *) {
                 ContentUnavailableView {
-                    Label("Under Maintenance", systemImage: "hammer.fill")
+                    Label(title, systemImage: systemImage)
                 } description: {
-                    Text("GrowCalth is currently undergoing maintenance, please check back again later.")
+                    Text(description)
                 } actions: {
-                    Button {
-                        isLoading = true
-                        adminManager.checkIfUnderMaintenance() {
-                            isLoading = false
+                    if isMaintenance {
+                        Button {
+                            isLoading = true
+                            adminManager.checkIfUnderMaintenance() {
+                                isLoading = false
+                            }
+                        } label: {
+                            if isLoading {
+                                ProgressView()
+                            } else {
+                                Label("Check Status", systemImage: "arrow.clockwise")
+                                    .fontWeight(.bold)
+                            }
                         }
-                    } label: {
-                        if isLoading {
-                            ProgressView()
-                        } else {
-                            Label("Check Status", systemImage: "arrow.clockwise")
+                        .buttonStyle(.borderedProminent)
+                    } else {
+                        Link(destination: URL(string: "https://apps.apple.com/sg/app/growcalth/id6456388202")!) {
+                            Label("Open App Store", systemImage: "arrow.up.forward.app.fill")
                                 .fontWeight(.bold)
                         }
+                        .buttonStyle(.borderedProminent)
                     }
-                    .buttonStyle(.borderedProminent)
                 }
             } else {
                 VStack(spacing: 15) {
                     Spacer()
-                    Image(systemName: "hammer.fill")
+                    Image(systemName: systemImage)
                         .font(.system(size: 70))
                         .foregroundColor(.secondary)
-                    Text("GrowCalth is currently undergoing maintenance, please check back again later.")
+                    Text(description)
                         .multilineTextAlignment(.center)
-                    Button {
-                        isLoading = true
-                        adminManager.checkIfUnderMaintenance() {
-                            isLoading = false
+                    if isMaintenance {
+                        Button {
+                            isLoading = true
+                            adminManager.checkIfUnderMaintenance() {
+                                isLoading = false
+                            }
+                        } label: {
+                            if isLoading {
+                                ProgressView()
+                            } else {
+                                Label("Check Status", systemImage: "arrow.clockwise")
+                                    .fontWeight(.bold)
+                            }
                         }
-                    } label: {
-                        if isLoading {
-                            ProgressView()
-                        } else {
-                            Label("Check Status", systemImage: "arrow.clockwise")
+                        .buttonStyle(.borderedProminent)
+                    } else {
+                        Link(destination: URL(string: "https://apps.apple.com/sg/app/growcalth/id6456388202")!) {
+                            Label("Open App Store", systemImage: "arrow.up.forward.app.fill")
                                 .fontWeight(.bold)
                         }
+                        .buttonStyle(.borderedProminent)
                     }
-                    .buttonStyle(.borderedProminent)
                     Spacer()
                 }
             }

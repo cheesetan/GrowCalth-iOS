@@ -73,7 +73,7 @@ class HealthKitManager: ObservableObject {
             var steps = 0
             if let resultSources = hkResult.sources {
                 resultSources.forEach { source in
-                    if source.bundleIdentifier != "com.apple.shortcuts" {
+                    if source.bundleIdentifier.contains("com.apple.health") {
                         if let subSum = hkResult.sumQuantity(for: source) {
                             steps = Int(subSum.doubleValue(for: HKUnit.count()))
                         }
@@ -116,7 +116,7 @@ class HealthKitManager: ObservableObject {
             var distance: Double = 0
             if let resultSources = hkResult.sources {
                 resultSources.forEach { source in
-                    if source.bundleIdentifier != "com.apple.shortcuts" {
+                    if source.bundleIdentifier.contains("com.apple.health") {
                         if let subSum = hkResult.sumQuantity(for: source) {
                             distance = subSum.doubleValue(for: HKUnit.meter())
                         }
@@ -166,7 +166,7 @@ class HealthKitManager: ObservableObject {
             var steps = 0
             if let resultSources = hkResult.sources {
                 resultSources.forEach { source in
-                    if source.bundleIdentifier != "com.apple.shortcuts" {
+                    if source.bundleIdentifier.contains("com.apple.health") {
                         if let subSum = hkResult.sumQuantity(for: source) {
                             steps = Int(subSum.doubleValue(for: HKUnit.count()))
                         }
