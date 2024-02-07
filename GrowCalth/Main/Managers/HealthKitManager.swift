@@ -62,27 +62,27 @@ class HealthKitManager: ObservableObject {
         let query = HKStatisticsQuery(
             quantityType: stepCountType, // the data type
             quantitySamplePredicate: predicate, // the predicate using the set startDate and endDate
-            options: [.separateBySource] // to get the total steps
+            options: [.cumulativeSum, .separateBySource] // to get the total steps
         ) {
             _, hkResult, error in
-            guard let hkResult = hkResult, let _ = hkResult.sumQuantity() else {
+            guard let hkResult = hkResult, let totalStepSumQuantity = hkResult.sumQuantity() else {
                 print("failed to read step count: \(error?.localizedDescription ?? "UNKNOWN ERROR")")
                 return
             }
             
-            var steps = 0
+            var stepsToFilterOut = 0
             if let resultSources = hkResult.sources {
                 resultSources.forEach { source in
-                    if source.bundleIdentifier.contains("com.apple.health") {
-                        if let subSum = hkResult.sumQuantity(for: source) {
-                            steps = Int(subSum.doubleValue(for: HKUnit.count()))
+                    if !source.bundleIdentifier.contains("com.apple.health") {
+                        if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
+                            stepsToFilterOut += Int(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.count()))
                         }
                     }
                 }
             }
             
             DispatchQueue.main.async {
-                self.steps = steps
+                self.steps = Int(totalStepSumQuantity.doubleValue(for: HKUnit.count())) - stepsToFilterOut
             }
         }
         
@@ -106,26 +106,27 @@ class HealthKitManager: ObservableObject {
         let query = HKStatisticsQuery(
             quantityType: type,
             quantitySamplePredicate: predicate,
-            options: [.separateBySource]
+            options: [.cumulativeSum, .separateBySource]
         ) { (_, hkResult, error) in
-            guard let hkResult = hkResult, let _ = hkResult.sumQuantity() else {
+            guard let hkResult = hkResult, let totalDistanceSumQuantity = hkResult.sumQuantity() else {
                 print("failed to read step count: \(error?.localizedDescription ?? "UNKNOWN ERROR")")
                 return
             }
             
-            var distance: Double = 0
+            var distanceToBeFilteredOut: Double = 0
             if let resultSources = hkResult.sources {
                 resultSources.forEach { source in
-                    if source.bundleIdentifier.contains("com.apple.health") {
-                        if let subSum = hkResult.sumQuantity(for: source) {
-                            distance = subSum.doubleValue(for: HKUnit.meter())
+                    if !source.bundleIdentifier.contains("com.apple.health") {
+                        if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
+                            distanceToBeFilteredOut += sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter())
+                            print(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter()))
                         }
                     }
                 }
             }
             
             DispatchQueue.main.async {
-                self.distance = distance / 1000
+                self.distance = (totalDistanceSumQuantity.doubleValue(for: HKUnit.meter()) - distanceToBeFilteredOut) / 1000
             }
         }
         
@@ -152,10 +153,10 @@ class HealthKitManager: ObservableObject {
         let query = HKStatisticsQuery(
             quantityType: stepCountType, // the data type
             quantitySamplePredicate: predicate, // the predicate using the set startDate and endDate
-            options: [.separateBySource] // to get the total steps
+            options: [.cumulativeSum, .separateBySource] // to get the total steps
         ) {
             _, hkResult, error in
-            guard let hkResult = hkResult, let _ = hkResult.sumQuantity() else {
+            guard let hkResult = hkResult, let totalStepSumQuantity = hkResult.sumQuantity() else {
                 print("failed to read step count: \(error?.localizedDescription ?? "UNKNOWN ERROR")")
                 if let error = error {
                     completion(.failure(error))
@@ -163,18 +164,18 @@ class HealthKitManager: ObservableObject {
                 return
             }
             
-            var steps = 0
+            var stepsToFilterOut = 0
             if let resultSources = hkResult.sources {
                 resultSources.forEach { source in
-                    if source.bundleIdentifier.contains("com.apple.health") {
-                        if let subSum = hkResult.sumQuantity(for: source) {
-                            steps = Int(subSum.doubleValue(for: HKUnit.count()))
+                    if !source.bundleIdentifier.contains("com.apple.health") {
+                        if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
+                            stepsToFilterOut += Int(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.count()))
                         }
                     }
                 }
             }
             
-            completion(.success(steps))
+            completion(.success(Int(totalStepSumQuantity.doubleValue(for: HKUnit.count())) - stepsToFilterOut))
         }
         
         healthStore.execute(query)
