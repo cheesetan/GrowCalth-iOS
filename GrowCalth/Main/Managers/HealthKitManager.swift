@@ -56,21 +56,31 @@ class HealthKitManager: ObservableObject {
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
             NSPredicate(format: "metadata.%K != true", HKMetadataKeyWasUserEntered),
             NSPredicate(format: "%K >= %@", HKPredicateKeyPathStartDate, newDate as NSDate),
-            NSPredicate(format: "%K <= %@", HKPredicateKeyPathStartDate, Date() as NSDate)
+            NSPredicate(format: "%K <= %@", HKPredicateKeyPathEndDate, Date() as NSDate)
         ])
         
         let query = HKStatisticsQuery(
             quantityType: stepCountType, // the data type
             quantitySamplePredicate: predicate, // the predicate using the set startDate and endDate
-            options: [.cumulativeSum] // to get the total steps
+            options: [.separateBySource] // to get the total steps
         ) {
-            _, result, error in
-            guard let result = result, let sum = result.sumQuantity() else {
+            _, hkResult, error in
+            guard let hkResult = hkResult, let _ = hkResult.sumQuantity() else {
                 print("failed to read step count: \(error?.localizedDescription ?? "UNKNOWN ERROR")")
                 return
             }
             
-            let steps = Int(sum.doubleValue(for: HKUnit.count()))
+            var steps = 0
+            if let resultSources = hkResult.sources {
+                resultSources.forEach { source in
+                    if source.bundleIdentifier != "com.apple.shortcuts" {
+                        if let subSum = hkResult.sumQuantity(for: source) {
+                            steps = Int(subSum.doubleValue(for: HKUnit.count()))
+                        }
+                    }
+                }
+            }
+            
             DispatchQueue.main.async {
                 self.steps = steps
             }
@@ -90,19 +100,32 @@ class HealthKitManager: ObservableObject {
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
             NSPredicate(format: "metadata.%K != true", HKMetadataKeyWasUserEntered),
             NSPredicate(format: "%K >= %@", HKPredicateKeyPathStartDate, newDate as NSDate),
-            NSPredicate(format: "%K <= %@", HKPredicateKeyPathStartDate, Date() as NSDate)
+            NSPredicate(format: "%K <= %@", HKPredicateKeyPathEndDate, Date() as NSDate)
         ])
 
-        let query = HKStatisticsQuery(quantityType: type, quantitySamplePredicate: predicate, options: [.cumulativeSum]) { (query, statistics, error) in
-            var value: Double = 0
-
-            if error != nil {
-                print("something went wrong")
-            } else if let quantity = statistics?.sumQuantity() {
-                value = quantity.doubleValue(for: HKUnit.meter())
+        let query = HKStatisticsQuery(
+            quantityType: type,
+            quantitySamplePredicate: predicate,
+            options: [.separateBySource]
+        ) { (_, hkResult, error) in
+            guard let hkResult = hkResult, let _ = hkResult.sumQuantity() else {
+                print("failed to read step count: \(error?.localizedDescription ?? "UNKNOWN ERROR")")
+                return
             }
+            
+            var distance: Double = 0
+            if let resultSources = hkResult.sources {
+                resultSources.forEach { source in
+                    if source.bundleIdentifier != "com.apple.shortcuts" {
+                        if let subSum = hkResult.sumQuantity(for: source) {
+                            distance = subSum.doubleValue(for: HKUnit.meter())
+                        }
+                    }
+                }
+            }
+            
             DispatchQueue.main.async {
-                self.distance = value / 1000
+                self.distance = distance / 1000
             }
         }
         
@@ -123,23 +146,34 @@ class HealthKitManager: ObservableObject {
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
             NSPredicate(format: "metadata.%K != true", HKMetadataKeyWasUserEntered),
             NSPredicate(format: "%K >= %@", HKPredicateKeyPathStartDate, newDate as NSDate),
-            NSPredicate(format: "%K <= %@", HKPredicateKeyPathStartDate, Date() as NSDate)
+            NSPredicate(format: "%K <= %@", HKPredicateKeyPathEndDate, endDate as NSDate)
         ])
         
         let query = HKStatisticsQuery(
             quantityType: stepCountType, // the data type
             quantitySamplePredicate: predicate, // the predicate using the set startDate and endDate
-            options: [.cumulativeSum] // to get the total steps
+            options: [.separateBySource] // to get the total steps
         ) {
-            _, result, error in
-            guard let result = result, let sum = result.sumQuantity() else {
+            _, hkResult, error in
+            guard let hkResult = hkResult, let _ = hkResult.sumQuantity() else {
                 print("failed to read step count: \(error?.localizedDescription ?? "UNKNOWN ERROR")")
                 if let error = error {
                     completion(.failure(error))
                 }
                 return
             }
-            let steps = Int(sum.doubleValue(for: HKUnit.count()))
+            
+            var steps = 0
+            if let resultSources = hkResult.sources {
+                resultSources.forEach { source in
+                    if source.bundleIdentifier != "com.apple.shortcuts" {
+                        if let subSum = hkResult.sumQuantity(for: source) {
+                            steps = Int(subSum.doubleValue(for: HKUnit.count()))
+                        }
+                    }
+                }
+            }
+            
             completion(.success(steps))
         }
         
