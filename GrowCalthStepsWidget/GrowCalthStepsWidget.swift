@@ -22,8 +22,10 @@ struct Provider: TimelineProvider {
         hkManager.fetchAllDatas()
         goalsManager.refreshGoals()
         var entry = StepsEntry(date: Date(), steps: hkManager.steps, progress: CGFloat(0))
-        if let steps = hkManager.steps, let stepsGoals = goalsManager.stepsGoal {
-            entry = StepsEntry(date: Date(), steps: steps, progress: CGFloat(steps / stepsGoals))
+        withAnimation {
+            if let steps = hkManager.steps, let stepsGoals = goalsManager.stepsGoal {
+                entry = StepsEntry(date: Date(), steps: steps, progress: CGFloat(Double(steps) / Double(stepsGoals)))
+            }
         }
 
         completion(entry)
@@ -36,8 +38,10 @@ struct Provider: TimelineProvider {
         hkManager.fetchAllDatas()
         goalsManager.refreshGoals()
         var entry = StepsEntry(date: Date(), steps: hkManager.steps, progress: CGFloat(0))
-        if let steps = hkManager.steps, let stepsGoals = goalsManager.stepsGoal {
-            entry = StepsEntry(date: Date(), steps: steps, progress: CGFloat(steps / stepsGoals))
+        withAnimation {
+            if let steps = hkManager.steps, let stepsGoals = goalsManager.stepsGoal {
+                entry = StepsEntry(date: Date(), steps: steps, progress: CGFloat(Double(steps) / Double(stepsGoals)))
+            }
         }
         
         let timeline = Timeline(entries: [entry], policy: .after(refreshDate))
@@ -54,18 +58,19 @@ struct StepsEntry: TimelineEntry {
 struct GrowCalthStepsWidgetEntryView : View {
     var entry: Provider.Entry
     
-    let frame1: CGFloat = 125
-    
-    @Environment(\.colorScheme) var colorScheme
-    
+    let frame1: CGFloat = 135
+        
     var body: some View {
         ZStack {
-            ActivityRingView(progress: entry.progress,
-                             ringRadius: 60.0,
-                             thickness: 10.0,
-                             startColor: Color(hex: 0xD3D3D3),
-                             endColor: Color(hex: 0x808080))
-            .frame(height: 350)
+//            ActivityRingView(progress: entry.progress,
+//                             ringRadius: 60.0,
+//                             thickness: 10.0,
+//                             startColor: Color(hex: 0xD3D3D3),
+//                             endColor: Color(hex: 0x808080))
+//            .frame(height: 350)
+            Circle()
+                .foregroundColor(.secondary)
+                .frame(width: frame1, height: frame1)
             Circle()
                 .foregroundColor(Color(hex: 0xF1EEE9))
                 .frame(width: frame1 - 15, height: frame1 - 15)
