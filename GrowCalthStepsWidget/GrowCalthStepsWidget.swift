@@ -84,6 +84,15 @@ struct GrowCalthStepsWidgetEntryView : View {
                     .font(.system(size: 15.0))
             }
             .padding()
+//            VStack {
+//                Spacer()
+//                Text("Last updated: \(entry.date.formatted(date: .numeric, time: .shortened))")
+//                    .minimumScaleFactor(0.1)
+//                    .font(.caption2)
+//                    .lineLimit(1)
+//                    .multilineTextAlignment(.center)
+//            }
+//            .padding(.bottom, -12)
         }
     }
 }
