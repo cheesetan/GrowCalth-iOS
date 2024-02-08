@@ -51,6 +51,17 @@
 		F3C1885C2B7127F100FD9E2E /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = F3C1885B2B7127F100FD9E2E /* FirebaseMessaging */; };
 		F3C1885E2B712A1200FD9E2E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F3C1885D2B712A1200FD9E2E /* GoogleService-Info.plist */; };
 		F3C188622B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C188612B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift */; };
+		F3E504032B74862400E0664E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E503E92B747DC000E0664E /* WidgetKit.framework */; };
+		F3E504042B74862400E0664E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E503EB2B747DC000E0664E /* SwiftUI.framework */; };
+		F3E504072B74862400E0664E /* GrowCalthStepsWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E504062B74862400E0664E /* GrowCalthStepsWidgetBundle.swift */; };
+		F3E504092B74862400E0664E /* GrowCalthStepsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E504082B74862400E0664E /* GrowCalthStepsWidget.swift */; };
+		F3E5040B2B74862700E0664E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3E5040A2B74862700E0664E /* Assets.xcassets */; };
+		F3E5040F2B74862700E0664E /* GrowCalthStepsWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F3E504022B74862400E0664E /* GrowCalthStepsWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F3E504132B748C5D00E0664E /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABAA2AE6BEFA00211FE8 /* HealthKitManager.swift */; };
+		F3E504152B749CE300E0664E /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345ABAC2AE6C9D900211FE8 /* Color+Hex.swift */; };
+		F3E504172B749FBA00E0664E /* ActivityRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E504162B749FBA00E0664E /* ActivityRingView.swift */; };
+		F3E504182B749FBA00E0664E /* ActivityRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E504162B749FBA00E0664E /* ActivityRingView.swift */; };
+		F3E504192B74CD2400E0664E /* GoalsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBD22AECB52600801A1C /* GoalsManager.swift */; };
 		F3E9FBC72AEBA59000801A1C /* AnnouncementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */; };
 		F3E9FBC92AEBBCF200801A1C /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBC82AEBBCF200801A1C /* EventDetailView.swift */; };
 		F3E9FBCB2AEBC28600801A1C /* LeaderboardsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBCA2AEBC28600801A1C /* LeaderboardsManager.swift */; };
@@ -64,6 +75,30 @@
 		F3F6124C2AE6DF0400713E80 /* HealthInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */; };
 		F3F955112AEFF96700BD5376 /* PointsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3F955102AEFF96700BD5376 /* PointsManager.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F3E5040D2B74862700E0664E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F345AB7F2AE62EDE00211FE8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F3E504012B74862400E0664E;
+			remoteInfo = GrowCalthStepsWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F3E503FA2B747DC200E0664E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F3E5040F2B74862700E0664E /* GrowCalthStepsWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		F30C5C1B2AEF3A6E00474469 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
@@ -105,6 +140,15 @@
 		F3A2E6992AF3E90D00B34392 /* NewAnnouncementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAnnouncementView.swift; sourceTree = "<group>"; };
 		F3C1885D2B712A1200FD9E2E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F3C188612B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPushNotificationsManager.swift; sourceTree = "<group>"; };
+		F3E503E92B747DC000E0664E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		F3E503EB2B747DC000E0664E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		F3E504022B74862400E0664E /* GrowCalthStepsWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GrowCalthStepsWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F3E504062B74862400E0664E /* GrowCalthStepsWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowCalthStepsWidgetBundle.swift; sourceTree = "<group>"; };
+		F3E504082B74862400E0664E /* GrowCalthStepsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowCalthStepsWidget.swift; sourceTree = "<group>"; };
+		F3E5040A2B74862700E0664E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F3E5040C2B74862700E0664E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F3E504142B7493BC00E0664E /* GrowCalthStepsWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GrowCalthStepsWidgetExtension.entitlements; sourceTree = "<group>"; };
+		F3E504162B749FBA00E0664E /* ActivityRingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRingView.swift; sourceTree = "<group>"; };
 		F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementManager.swift; sourceTree = "<group>"; };
 		F3E9FBC82AEBBCF200801A1C /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
 		F3E9FBCA2AEBC28600801A1C /* LeaderboardsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardsManager.swift; sourceTree = "<group>"; };
@@ -135,13 +179,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F3E503FF2B74862400E0664E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3E504042B74862400E0664E /* SwiftUI.framework in Frameworks */,
+				F3E504032B74862400E0664E /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		F345AB7E2AE62EDE00211FE8 = {
 			isa = PBXGroup;
 			children = (
+				F3E504142B7493BC00E0664E /* GrowCalthStepsWidgetExtension.entitlements */,
 				F345AB892AE62EDE00211FE8 /* GrowCalth */,
+				F3E504052B74862400E0664E /* GrowCalthStepsWidget */,
 				F345AB882AE62EDE00211FE8 /* Products */,
 				F3C1885A2B7127F100FD9E2E /* Frameworks */,
 			);
@@ -151,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				F345AB872AE62EDE00211FE8 /* GrowCalth.app */,
+				F3E504022B74862400E0664E /* GrowCalthStepsWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -215,6 +271,7 @@
 				F345ABA62AE641CA00211FE8 /* MultiColumnTable.swift */,
 				F345ABAC2AE6C9D900211FE8 /* Color+Hex.swift */,
 				F3E9FBD62AED62C700801A1C /* ProgressBar.swift */,
+				F3E504162B749FBA00E0664E /* ActivityRingView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -299,8 +356,21 @@
 		F3C1885A2B7127F100FD9E2E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F3E503E92B747DC000E0664E /* WidgetKit.framework */,
+				F3E503EB2B747DC000E0664E /* SwiftUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F3E504052B74862400E0664E /* GrowCalthStepsWidget */ = {
+			isa = PBXGroup;
+			children = (
+				F3E5040C2B74862700E0664E /* Info.plist */,
+				F3E504062B74862400E0664E /* GrowCalthStepsWidgetBundle.swift */,
+				F3E504082B74862400E0664E /* GrowCalthStepsWidget.swift */,
+				F3E5040A2B74862700E0664E /* Assets.xcassets */,
+			);
+			path = GrowCalthStepsWidget;
 			sourceTree = "<group>";
 		};
 		F3F612482AE6DD9600713E80 /* Settings */ = {
@@ -325,10 +395,12 @@
 				F345AB832AE62EDE00211FE8 /* Sources */,
 				F345AB842AE62EDE00211FE8 /* Frameworks */,
 				F345AB852AE62EDE00211FE8 /* Resources */,
+				F3E503FA2B747DC200E0664E /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F3E5040E2B74862700E0664E /* PBXTargetDependency */,
 			);
 			name = GrowCalth;
 			packageProductDependencies = (
@@ -345,6 +417,23 @@
 			productReference = F345AB872AE62EDE00211FE8 /* GrowCalth.app */;
 			productType = "com.apple.product-type.application";
 		};
+		F3E504012B74862400E0664E /* GrowCalthStepsWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F3E504102B74862700E0664E /* Build configuration list for PBXNativeTarget "GrowCalthStepsWidgetExtension" */;
+			buildPhases = (
+				F3E503FE2B74862400E0664E /* Sources */,
+				F3E503FF2B74862400E0664E /* Frameworks */,
+				F3E504002B74862400E0664E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GrowCalthStepsWidgetExtension;
+			productName = GrowCalthStepsWidgetExtension;
+			productReference = F3E504022B74862400E0664E /* GrowCalthStepsWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -352,11 +441,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1510;
+				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					F345AB862AE62EDE00211FE8 = {
 						CreatedOnToolsVersion = 15.1;
+					};
+					F3E504012B74862400E0664E = {
+						CreatedOnToolsVersion = 15.2;
 					};
 				};
 			};
@@ -378,6 +470,7 @@
 			projectRoot = "";
 			targets = (
 				F345AB862AE62EDE00211FE8 /* GrowCalth */,
+				F3E504012B74862400E0664E /* GrowCalthStepsWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -390,6 +483,14 @@
 				F345AB922AE62EDF00211FE8 /* Preview Assets.xcassets in Resources */,
 				F3C1885E2B712A1200FD9E2E /* GoogleService-Info.plist in Resources */,
 				F345AB8F2AE62EDF00211FE8 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F3E504002B74862400E0664E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3E5040B2B74862700E0664E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,6 +514,7 @@
 				F3F6124C2AE6DF0400713E80 /* HealthInfo.swift in Sources */,
 				F3582CFB2B1E5C6E006A2FC0 /* AuthenticationManager+PasswordSignIn.swift in Sources */,
 				F3582D052B1E606E006A2FC0 /* AuthenticationManager+VerifyEmail.swift in Sources */,
+				F3E504172B749FBA00E0664E /* ActivityRingView.swift in Sources */,
 				F345AB9E2AE62F4600211FE8 /* Announcements.swift in Sources */,
 				F3E9FBCD2AEBFC0400801A1C /* DaysManager.swift in Sources */,
 				F383E24C2AE7C1C200C517C2 /* AnnouncementDetailView.swift in Sources */,
@@ -448,7 +550,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F3E503FE2B74862400E0664E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3E504072B74862400E0664E /* GrowCalthStepsWidgetBundle.swift in Sources */,
+				F3E504152B749CE300E0664E /* Color+Hex.swift in Sources */,
+				F3E504182B749FBA00E0664E /* ActivityRingView.swift in Sources */,
+				F3E504092B74862400E0664E /* GrowCalthStepsWidget.swift in Sources */,
+				F3E504192B74CD2400E0664E /* GoalsManager.swift in Sources */,
+				F3E504132B748C5D00E0664E /* HealthKitManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F3E5040E2B74862700E0664E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F3E504012B74862400E0664E /* GrowCalthStepsWidgetExtension */;
+			targetProxy = F3E5040D2B74862700E0664E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		F345AB932AE62EDF00211FE8 /* Debug */ = {
@@ -573,6 +696,7 @@
 		F345AB962AE62EDF00211FE8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GrowCalth/GrowCalth.entitlements;
@@ -613,6 +737,7 @@
 		F345AB972AE62EDF00211FE8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GrowCalth/GrowCalth.entitlements;
@@ -650,6 +775,78 @@
 			};
 			name = Release;
 		};
+		F3E504112B74862700E0664E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = GrowCalthStepsWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7K6ZTDFM48;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = GrowCalthStepsWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GrowCalthStepsWidget;
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth.GrowCalthStepsWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		F3E504122B74862700E0664E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = GrowCalthStepsWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7K6ZTDFM48;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = GrowCalthStepsWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = GrowCalthStepsWidget;
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth.GrowCalthStepsWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -667,6 +864,15 @@
 			buildConfigurations = (
 				F345AB962AE62EDF00211FE8 /* Debug */,
 				F345AB972AE62EDF00211FE8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F3E504102B74862700E0664E /* Build configuration list for PBXNativeTarget "GrowCalthStepsWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F3E504112B74862700E0664E /* Debug */,
+				F3E504122B74862700E0664E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import HealthKit
+import WidgetKit
 
 class HealthKitManager: ObservableObject {
     static let shared = HealthKitManager()
@@ -87,6 +88,7 @@ class HealthKitManager: ObservableObject {
         }
         
         healthStore.execute(query)
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     func readDistance() {
@@ -131,6 +133,7 @@ class HealthKitManager: ObservableObject {
         }
         
         healthStore.execute(query)
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     func fetchStepsForPointsCalculation(
