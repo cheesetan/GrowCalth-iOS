@@ -1,6 +1,6 @@
 //
 //  GrowCalthDistanceWidget.swift
-//  GrowCalthStepsWidgetExten
+//  GrowCalthStepsWidgetExtension
 //
 //  Created by Tristan Chay on 8/2/24.
 //
@@ -118,6 +118,6 @@ struct GrowCalthDistanceWidget: Widget {
         }
         .supportedFamilies([.systemSmall])
         .configurationDisplayName("Distance")
-        .description("Check how far you've walked today!")
+        .description("Check how far you've walked today.")
     }
 }

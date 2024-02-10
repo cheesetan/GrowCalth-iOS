@@ -118,6 +118,6 @@ struct GrowCalthStepsWidget: Widget {
         }
         .supportedFamilies([.systemSmall])
         .configurationDisplayName("Steps")
-        .description("Check how many steps you've walked today!")
+        .description("Check how many steps you've walked today.")
     }
 }
