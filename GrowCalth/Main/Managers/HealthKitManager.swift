@@ -74,7 +74,8 @@ class HealthKitManager: ObservableObject {
             var stepsToFilterOut = 0
             if let resultSources = hkResult.sources {
                 resultSources.forEach { source in
-                    if !source.bundleIdentifier.contains("com.apple.health") {
+                    print(source.bundleIdentifier)
+                    if source.bundleIdentifier == "com.apple.shortcuts" {
                         if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
                             stepsToFilterOut += Int(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.count()))
                         }
@@ -118,7 +119,8 @@ class HealthKitManager: ObservableObject {
             var distanceToBeFilteredOut: Double = 0
             if let resultSources = hkResult.sources {
                 resultSources.forEach { source in
-                    if !source.bundleIdentifier.contains("com.apple.health") {
+                    print(source.bundleIdentifier)
+                    if source.bundleIdentifier == "com.apple.shortcuts" {
                         if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
                             distanceToBeFilteredOut += sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter())
                             print(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter()))
@@ -170,7 +172,8 @@ class HealthKitManager: ObservableObject {
             var stepsToFilterOut = 0
             if let resultSources = hkResult.sources {
                 resultSources.forEach { source in
-                    if !source.bundleIdentifier.contains("com.apple.health") {
+                    print(source.bundleIdentifier)
+                    if source.bundleIdentifier == "com.apple.shortcuts" {
                         if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
                             stepsToFilterOut += Int(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.count()))
                         }
