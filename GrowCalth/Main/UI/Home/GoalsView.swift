@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 struct GoalsView: View {
     
@@ -180,6 +181,7 @@ struct GoalsView: View {
             distanceGoal += 0.5
             goalsManager.updateGoal(for: .distance, to: distanceGoal)
         }
+        WidgetCenter.shared.reloadAllTimelines()
     }
     
     func decrement(for goalType: GoalType) {
@@ -195,6 +197,7 @@ struct GoalsView: View {
             }
             goalsManager.updateGoal(for: .distance, to: distanceGoal)
         }
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }
 

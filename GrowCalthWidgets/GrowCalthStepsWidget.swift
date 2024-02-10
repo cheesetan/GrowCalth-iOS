@@ -1,6 +1,6 @@
 //
 //  GrowCalthStepsWidget.swift
-//  GrowCalthStepsWidget
+//  GrowCalthWidgetsExtension
 //
 //  Created by Tristan Chay on 8/2/24.
 //
@@ -8,7 +8,7 @@
 import WidgetKit
 import SwiftUI
 
-struct Provider: TimelineProvider {
+struct GrowCalthStepsWidgetProvider: TimelineProvider {
     
     @ObservedObject var hkManager: HealthKitManager = .shared
     @ObservedObject var goalsManager: GoalsManager = .shared
@@ -21,6 +21,7 @@ struct Provider: TimelineProvider {
         
         hkManager.fetchAllDatas()
         goalsManager.refreshGoals()
+//        print("snapshot \(goalsManager.stepsGoal)")
         var entry = StepsEntry(date: Date(), steps: hkManager.steps, progress: CGFloat(0))
         withAnimation {
             if let steps = hkManager.steps, let stepsGoals = goalsManager.stepsGoal {
@@ -37,6 +38,7 @@ struct Provider: TimelineProvider {
         
         hkManager.fetchAllDatas()
         goalsManager.refreshGoals()
+//        print("timeline \(goalsManager.stepsGoal)")
         var entry = StepsEntry(date: Date(), steps: hkManager.steps, progress: CGFloat(0))
         withAnimation {
             if let steps = hkManager.steps, let stepsGoals = goalsManager.stepsGoal {
@@ -56,29 +58,32 @@ struct StepsEntry: TimelineEntry {
 }
 
 struct GrowCalthStepsWidgetEntryView : View {
-    var entry: Provider.Entry
+    var entry: GrowCalthStepsWidgetProvider.Entry
     
     let frame1: CGFloat = 135
         
     var body: some View {
         ZStack {
-//            ActivityRingView(progress: entry.progress,
-//                             ringRadius: 60.0,
-//                             thickness: 10.0,
-//                             startColor: Color(hex: 0xD3D3D3),
-//                             endColor: Color(hex: 0x808080))
-//            .frame(height: 350)
-            Circle()
-                .foregroundColor(.secondary)
-                .frame(width: frame1, height: frame1)
+            ActivityRingView(progress: entry.progress,
+                             ringRadius: 60.0,
+                             thickness: 15.0,
+                             startColor: Color(hex: 0xD3D3D3),
+                             endColor: Color(hex: 0x808080))
+            .frame(height: 350)
+//            Circle()
+//                .foregroundColor(.secondary)
+//                .frame(width: frame1, height: frame1)
             Circle()
                 .foregroundColor(Color(hex: 0xF1EEE9))
                 .frame(width: frame1 - 15, height: frame1 - 15)
             VStack {
                 Text("\(entry.steps ?? 0)")
+                    .minimumScaleFactor(0.1)
                     .foregroundColor(.black)
                     .fontWeight(.black)
                     .font(.system(size: 28.0))
+                    .multilineTextAlignment(.center)
+                
                 Text("steps")
                     .foregroundColor(.gray)
                     .font(.system(size: 15.0))
@@ -101,7 +106,7 @@ struct GrowCalthStepsWidget: Widget {
     let kind: String = "GrowCalthStepsWidget"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
+        StaticConfiguration(kind: kind, provider: GrowCalthStepsWidgetProvider()) { entry in
             if #available(iOS 17.0, *) {
                 GrowCalthStepsWidgetEntryView(entry: entry)
                     .containerBackground(.fill.tertiary, for: .widget)
