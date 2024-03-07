@@ -42,8 +42,33 @@ class UpdateManager: ObservableObject {
                     throw UpdateError.invalidResponse
                 }
                 DispatchQueue.main.async {   
+                    let versionSeparated = version.components(separatedBy: ".")
+                    let currentVersionSeparated = currentVersion.components(separatedBy: ".")
+                   
+                    var versionNumberCode = 0
+                    var versionMultiplier = 100000
+                    versionSeparated.forEach { number in
+                        versionNumberCode = versionNumberCode + ((Int(number) ?? 0) * versionMultiplier)
+                        versionMultiplier = versionMultiplier / 100
+                    }
+                    
+                    print("versionNumberCode: \(versionNumberCode)")
+                    
+                    var currentVersionNumberCode = 0
+                    var currentVersionMultiplier = 100000
+                    currentVersionSeparated.forEach { number in
+                        currentVersionNumberCode = currentVersionNumberCode + ((Int(number) ?? 0) * currentVersionMultiplier)
+                        currentVersionMultiplier = currentVersionMultiplier / 100
+                    }
+                    
+                    print("currentVersionNumberCode: \(currentVersionNumberCode)")
+                    
                     withAnimation {
-                        self.updateAvailable = version != currentVersion
+                        if currentVersionNumberCode < versionNumberCode {
+                            self.updateAvailable = true
+                        } else {
+                            self.updateAvailable = false
+                        }
                     }
                 }
             } catch {
