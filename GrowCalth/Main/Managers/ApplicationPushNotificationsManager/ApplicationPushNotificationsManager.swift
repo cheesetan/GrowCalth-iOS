@@ -51,7 +51,7 @@ class ApplicationPushNotificationsManager: ObservableObject {
     
     private func sendPushNotification(fcmToken: String, title: String, subtitle: String, body: String) {
         // Replace "YOUR_SERVER_KEY" with your actual FCM server key
-        let serverKey = "AAAAkfMRk04:APA91bHVMbF_30AYZEvQ1WtCSIbB7WNPPSP8lJ54Ti0nHcr0Wfv2qu6AQxcLR5ZxxemZcP-KPNs0EYOw2ZXttD611k6yKHMNrDk72LrpCfy_XLNkQxGIdTz-UfGmEh_ku9ufcccr_dur"
+        let serverKey = ApplicationPushNotificationsManager.getServerKey()
         let url = URL(string: "https://fcm.googleapis.com/fcm/send")!
         
         var request = URLRequest(url: url)

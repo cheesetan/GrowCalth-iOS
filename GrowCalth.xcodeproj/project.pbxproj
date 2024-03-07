@@ -62,6 +62,7 @@
 		F3A2E69A2AF3E90D00B34392 /* NewAnnouncementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2E6992AF3E90D00B34392 /* NewAnnouncementView.swift */; };
 		F3C1885C2B7127F100FD9E2E /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = F3C1885B2B7127F100FD9E2E /* FirebaseMessaging */; };
 		F3C188622B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C188612B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift */; };
+		F3C4853E2B9992F4001643A2 /* ApplicationPushNotificationsManager+ServerKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C4853D2B9992F4001643A2 /* ApplicationPushNotificationsManager+ServerKey.swift */; };
 		F3E504172B749FBA00E0664E /* ActivityRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E504162B749FBA00E0664E /* ActivityRingView.swift */; };
 		F3E9FBC72AEBA59000801A1C /* AnnouncementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */; };
 		F3E9FBC92AEBBCF200801A1C /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBC82AEBBCF200801A1C /* EventDetailView.swift */; };
@@ -148,6 +149,7 @@
 		F3A2E6972AF3E63000B34392 /* AdminManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminManager.swift; sourceTree = "<group>"; };
 		F3A2E6992AF3E90D00B34392 /* NewAnnouncementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAnnouncementView.swift; sourceTree = "<group>"; };
 		F3C188612B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPushNotificationsManager.swift; sourceTree = "<group>"; };
+		F3C4853D2B9992F4001643A2 /* ApplicationPushNotificationsManager+ServerKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApplicationPushNotificationsManager+ServerKey.swift"; sourceTree = "<group>"; };
 		F3E503E92B747DC000E0664E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		F3E503EB2B747DC000E0664E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		F3E504162B749FBA00E0664E /* ActivityRingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRingView.swift; sourceTree = "<group>"; };
@@ -282,7 +284,7 @@
 			isa = PBXGroup;
 			children = (
 				F3582CF92B1E5C2F006A2FC0 /* AuthenticationManager */,
-				F3C188612B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift */,
+				F3C4853F2B999314001643A2 /* ApplicationPushNotificationsManager */,
 				F3E9FBCE2AEC0E8500801A1C /* QuotesManager.swift */,
 				F3E9FBCC2AEBFC0400801A1C /* DaysManager.swift */,
 				F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */,
@@ -374,6 +376,15 @@
 				F3E503EB2B747DC000E0664E /* SwiftUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F3C4853F2B999314001643A2 /* ApplicationPushNotificationsManager */ = {
+			isa = PBXGroup;
+			children = (
+				F3C188612B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift */,
+				F3C4853D2B9992F4001643A2 /* ApplicationPushNotificationsManager+ServerKey.swift */,
+			);
+			path = ApplicationPushNotificationsManager;
 			sourceTree = "<group>";
 		};
 		F3F612482AE6DD9600713E80 /* Settings */ = {
@@ -532,6 +543,7 @@
 				F3E9FBD72AED62C700801A1C /* ProgressBar.swift in Sources */,
 				F383E2492AE7BCD300C517C2 /* LeaderboardView.swift in Sources */,
 				F3E9FBD32AECB52600801A1C /* GoalsManager.swift in Sources */,
+				F3C4853E2B9992F4001643A2 /* ApplicationPushNotificationsManager+ServerKey.swift in Sources */,
 				F3582D032B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift in Sources */,
 				F3582CF82B1E5C1D006A2FC0 /* AuthenticationManager+Error.swift in Sources */,
 				F3582CFD2B1E5C87006A2FC0 /* AuthenticationManager.swift in Sources */,

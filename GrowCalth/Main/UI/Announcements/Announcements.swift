@@ -121,7 +121,7 @@ struct Announcements: View {
                         Button(role: .destructive) {
                             stateUUID = item.id
                             alertHeader = "Delete Announcement"
-                            alertMessage = "Are you sure you want to delete this announcement? This action cannot be undone."
+                            alertMessage = "Are you sure you want to delete this Announcement? This action cannot be undone."
                             showingDeleteAlert = true
                         } label: {
                             Label("Delete Announcement", systemImage: "trash")
@@ -151,7 +151,7 @@ struct Announcements: View {
                         Button(role: .destructive) {
                             stateUUID = item.id
                             alertHeader = "Delete Event"
-                            alertMessage = "Are you sure you want to delete this event? This action cannot be undone."
+                            alertMessage = "Are you sure you want to delete this Event? This action cannot be undone."
                             showingDeleteAlert = true
                         } label: {
                             Label("Delete Event", systemImage: "trash")
