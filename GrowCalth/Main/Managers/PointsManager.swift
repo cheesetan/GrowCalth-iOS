@@ -76,17 +76,47 @@ class PointsManager: ObservableObject {
         fetchCurrentPoints { result in
             switch result {
             case .success(let success):
-                Firestore.firestore().collection("HousePoints").document(success[0]).updateData([
-                    "points": Int(success[1])! + pointsToAdd
-                ]) { err in
-                    if let err = err {
-                        completion(.failure(err))
-                    } else {
-                        completion(.success(true))
+                self.fetchBlockedVersions { result in
+                    switch result {
+                    case .success(let versions):
+                        let info = Bundle.main.infoDictionary
+                        let currentVersion = info?["CFBundleShortVersionString"] as? String
+                        
+                        if let versions = versions, let currentVersion = currentVersion {
+                            if !versions.contains(currentVersion) {
+                                Firestore.firestore().collection("HousePoints").document(success[0]).updateData([
+                                    "points": Int(success[1])! + pointsToAdd
+                                ]) { err in
+                                    if let err = err {
+                                        completion(.failure(err))
+                                    } else {
+                                        completion(.success(true))
+                                    }
+                                }
+                            }
+                        }
+                    case .failure(let failure):
+                        print(failure.localizedDescription)
                     }
                 }
             case .failure(let failure):
                 print(failure.localizedDescription)
+            }
+        }
+    }
+    
+    private func fetchBlockedVersions(
+        _ completion: @escaping ((Result<[String]?, Error>) -> Void)
+    ) {
+        Firestore.firestore().collection("settings").document("versions-blocked").getDocument { (document, error) in
+            if let document = document, document.exists {
+                if let documentData = document.data() {
+                    withAnimation {
+                        completion(.success(documentData["versions"] as? [String]))
+                    }
+                }
+            } else {
+                print("Document does not exist")
             }
         }
     }

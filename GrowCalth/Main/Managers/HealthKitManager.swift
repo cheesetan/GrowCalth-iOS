@@ -111,7 +111,7 @@ class HealthKitManager: ObservableObject {
             options: [.cumulativeSum, .separateBySource]
         ) { (_, hkResult, error) in
             guard let hkResult = hkResult, let totalDistanceSumQuantity = hkResult.sumQuantity() else {
-                print("failed to read step count: \(error?.localizedDescription ?? "UNKNOWN ERROR")")
+                print("failed to read distance count: \(error?.localizedDescription ?? "UNKNOWN ERROR")")
                 return
             }
             
