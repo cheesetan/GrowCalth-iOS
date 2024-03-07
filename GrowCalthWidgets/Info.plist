@@ -2,36 +2,38 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleName</key>
-	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>GrowCalthStepsWidget</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION</key>
+	<true/>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
-	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>NSHealthShareUsageDescription</key>
-	<string>GrowCalth needs to access your steps and distance information from the Health app.</string>
-	<key>CFBundleDisplayName</key>
-	<string>GrowCalthStepsWidget</string>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>GrowCalth needs to access your steps and distance information from the Health app.</string>
 	<key>NSHealthClinicalHealthRecordsShareUsageDescription</key>
 	<string>GrowCalth needs to access your steps and distance information from the Health app.</string>
-	<key>CFBundlePackageType</key>
-	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>GrowCalth needs to access your steps and distance information from the Health app.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>GrowCalth needs to access your steps and distance information from the Health app.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(MARKETING_VERSION)</string>
 </dict>
 </plist>
