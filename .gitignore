@@ -90,4 +90,4 @@ fastlane/test_output
 iOSInjectionProject/
 
 # Custom ignores
-GoogleService-Info.plist
+GrowCalth/GoogleService-Info.plist
