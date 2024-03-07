@@ -46,19 +46,19 @@ class UpdateManager: ObservableObject {
                     let currentVersionSeparated = currentVersion.components(separatedBy: ".")
                    
                     var versionNumberCode = 0
-                    var versionMultiplier = 100000
+                    var versionMultiplier = 10000000000
                     versionSeparated.forEach { number in
                         versionNumberCode = versionNumberCode + ((Int(number) ?? 0) * versionMultiplier)
-                        versionMultiplier = versionMultiplier / 100
+                        versionMultiplier = versionMultiplier / 100000
                     }
                     
                     print("versionNumberCode: \(versionNumberCode)")
                     
                     var currentVersionNumberCode = 0
-                    var currentVersionMultiplier = 100000
+                    var currentVersionMultiplier = 10000000000
                     currentVersionSeparated.forEach { number in
                         currentVersionNumberCode = currentVersionNumberCode + ((Int(number) ?? 0) * currentVersionMultiplier)
-                        currentVersionMultiplier = currentVersionMultiplier / 100
+                        currentVersionMultiplier = currentVersionMultiplier / 100000
                     }
                     
                     print("currentVersionNumberCode: \(currentVersionNumberCode)")
