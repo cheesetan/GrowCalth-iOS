@@ -81,12 +81,38 @@ class ApplicationPushNotificationsManager: ObservableObject {
                 } else if let data = data {
                     let responseString = String(data: data, encoding: .utf8)
                     print("Response: \(responseString ?? "")")
+                    do {
+                        let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any]
+                        if let json = json, let failureCount = json["failure"] as? Int {
+                            if failureCount > 0 {
+                                self.removeFailedFCMToken(fcmToken: fcmToken)
+                            }
+                        }
+                    } catch {
+                        print("errorMsg")
+                    }
                 }
             }
             
             task.resume()
         } catch {
             print("Error serializing JSON: \(error)")
+        }
+    }
+    
+    private func removeFailedFCMToken(fcmToken: String) {
+        Firestore.firestore().collection("fcmTokens").whereField("token", isEqualTo: fcmToken).getDocuments { querySnapshot, err in
+            if let err = err {
+                print("Error finding FCM Token's document")
+            } else {
+                for document in querySnapshot!.documents {
+                    Firestore.firestore().collection("fcmTokens").document(document.documentID).delete() { err in
+                        if let err = err {
+                            print("Error while deleting FCM Token's document")
+                        }
+                    }
+                }
+            }
         }
     }
 }
