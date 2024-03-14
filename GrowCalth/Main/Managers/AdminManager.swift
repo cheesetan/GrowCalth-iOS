@@ -15,6 +15,8 @@ class AdminManager: ObservableObject {
     @Published var appForcesUpdates: Bool?
     @Published var approvedEmails = ["admin@growcalth.com", "chay_yu_hung@s2021.ssts.edu.sg", "han_jeong_seu_caleb@s2021.ssts.edu.sg"]
     
+    @ObservedObject var authManager: AuthenticationManager = .shared
+    
     init() {
         checkIfUnderMaintenance() { }
         checkIfAppForcesUpdates()
@@ -25,15 +27,18 @@ class AdminManager: ObservableObject {
         description: String,
         _ completion: @escaping ((Result<Bool, Error>) -> Void)
     ) {
-        Firestore.firestore().collection("Announcements").document().setData([
-            "dateAdded": Date(),
-            "header": title,
-            "text": description
-        ]) { err in
-            if let err = err {
-                completion(.failure(err))
-            } else {
-                completion(.success(true))
+        if let email = authManager.email {
+            Firestore.firestore().collection("Announcements").document().setData([
+                "dateAdded": Date(),
+                "header": title,
+                "text": description,
+                "name": email.components(separatedBy: "@")[0].components(separatedBy: "_").joined(separator: " ").uppercased()
+            ]) { err in
+                if let err = err {
+                    completion(.failure(err))
+                } else {
+                    completion(.success(true))
+                }
             }
         }
     }
@@ -45,17 +50,20 @@ class AdminManager: ObservableObject {
         eventVenues: String,
         _ completion: @escaping ((Result<Bool, Error>) -> Void)
     ) {
-        Firestore.firestore().collection("houseevents").document().setData([
-            "dateAdded": Date(),
-            "header": title,
-            "desc": description,
-            "venue": eventVenues,
-            "date": eventDate.formatted(date: .long, time: .omitted)
-        ]) { err in
-            if let err = err {
-                completion(.failure(err))
-            } else {
-                completion(.success(true))
+        if let email = authManager.email {
+            Firestore.firestore().collection("houseevents").document().setData([
+                "dateAdded": Date(),
+                "header": title,
+                "desc": description,
+                "venue": eventVenues,
+                "date": eventDate.formatted(date: .long, time: .omitted),
+                "name": email.components(separatedBy: "@")[0].components(separatedBy: "_").joined(separator: " ").uppercased()
+            ]) { err in
+                if let err = err {
+                    completion(.failure(err))
+                } else {
+                    completion(.success(true))
+                }
             }
         }
     }

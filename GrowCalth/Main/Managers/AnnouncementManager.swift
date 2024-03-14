@@ -11,12 +11,14 @@ import FirebaseFirestore
 
 struct Announcement: Identifiable, Equatable, Codable {
     var id: String
+    var name: String?
     var title: String
     var description: String?
 }
 
 struct EventItem: Identifiable, Equatable, Codable {
     var id: String
+    var name: String?
     var title: String
     var description: String?
     var venue: String
@@ -61,6 +63,7 @@ class AnnouncementManager: ObservableObject {
                     self.events.append(
                         EventItem(
                             id: document.documentID,
+                            name: document.data()["name"] as? String,
                             title: document.data()["header"] as! String,
                             description: document.data()["desc"] as! String?,
                             venue: document.data()["venue"] as! String,
@@ -83,6 +86,7 @@ class AnnouncementManager: ObservableObject {
                     self.announcements.append(
                         Announcement(
                             id: document.documentID,
+                            name: document.data()["name"] as? String,
                             title: document.data()["header"] as! String,
                             description: document.data()["text"] as! String?
                         )

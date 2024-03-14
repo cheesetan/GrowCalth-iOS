@@ -31,7 +31,13 @@ struct AnnouncementDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                title
+                VStack(alignment: .leading, spacing: 10) {
+                    title
+                    if let name = announcement.name {
+                        authorName(authorName: name)
+                    }
+                }
+                
                 Divider()
                     .padding(.vertical, 5)
                 description
@@ -88,6 +94,16 @@ struct AnnouncementDetailView: View {
                     .fontWeight(.heavy)
             }
         }
+    }
+    
+    @ViewBuilder
+    func authorName(authorName: String) -> some View {
+        HStack {
+            Image(systemName: "pencil.line")
+            Text(authorName)
+        }
+        .font(.headline)
+        .foregroundColor(.gray)
     }
     
     var description: some View {

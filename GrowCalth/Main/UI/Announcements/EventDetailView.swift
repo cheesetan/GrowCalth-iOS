@@ -35,6 +35,9 @@ struct EventDetailView: View {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading, spacing: 10) {
                     title
+                    if let name = event.name {
+                        authorName(authorName: name)
+                    }
                     date
                     venue
                 }
@@ -104,6 +107,16 @@ struct EventDetailView: View {
                     .fontWeight(.heavy)
             }
         }
+    }
+    
+    @ViewBuilder
+    func authorName(authorName: String) -> some View {
+        HStack {
+            Image(systemName: "pencil.line")
+            Text(authorName)
+        }
+        .font(.headline)
+        .foregroundColor(.gray)
     }
     
     var date: some View {

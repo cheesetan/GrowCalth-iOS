@@ -62,8 +62,8 @@ class ApplicationPushNotificationsManager: ObservableObject {
         let notificationData: [String: Any] = [
             "to": fcmToken,
             "notification": [
-                "title": title,
-                "subtitle": subtitle,
+                "title": subtitle,
+//                "subtitle": subtitle,
                 "body": body
             ],
             "data": [
