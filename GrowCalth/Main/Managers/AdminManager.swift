@@ -11,6 +11,7 @@ import FirebaseFirestore
 class AdminManager: ObservableObject {
     static let shared: AdminManager = .init()
     
+    @Published var bypassed = false
     @Published var isUnderMaintenance: Bool?
     @Published var appForcesUpdates: Bool?
     @Published var approvedEmails = ["admin@growcalth.com", "chay_yu_hung@s2021.ssts.edu.sg", "han_jeong_seu_caleb@s2021.ssts.edu.sg"]
@@ -161,6 +162,34 @@ class AdminManager: ObservableObject {
             } else {
                 print("Document does not exist")
             }
+        }
+    }
+    
+    func fetchBlockedVersions(
+        _ completion: @escaping ((Result<[String]?, Error>) -> Void)
+    ) {
+        Firestore.firestore().collection("settings").document("versions-blocked").getDocument { (document, error) in
+            if let document = document, document.exists {
+                if let documentData = document.data() {
+                    withAnimation {
+                        completion(.success(documentData["versions"] as? [String]))
+                    }
+                }
+            } else {
+                print("Document does not exist")
+            }
+        }
+    }
+    
+    func developerBypass() {
+        withAnimation {
+            self.bypassed = true
+        }
+    }
+    
+    func changeBypassValue(to newValue: Bool) {
+        withAnimation {
+            self.bypassed = newValue
         }
     }
 }

@@ -13,6 +13,7 @@ import SwiftPersistence
 class PointsManager: ObservableObject {
     static let shared: PointsManager = .init()
     
+    @ObservedObject var adminManager: AdminManager = .shared
     @ObservedObject var hkManager: HealthKitManager = .shared
     @ObservedObject var authManager: AuthenticationManager = .shared
     
@@ -76,7 +77,7 @@ class PointsManager: ObservableObject {
         fetchCurrentPoints { result in
             switch result {
             case .success(let success):
-                self.fetchBlockedVersions { result in
+                self.adminManager.fetchBlockedVersions { result in
                     switch result {
                     case .success(let versions):
                         let info = Bundle.main.infoDictionary
@@ -101,22 +102,6 @@ class PointsManager: ObservableObject {
                 }
             case .failure(let failure):
                 print(failure.localizedDescription)
-            }
-        }
-    }
-    
-    private func fetchBlockedVersions(
-        _ completion: @escaping ((Result<[String]?, Error>) -> Void)
-    ) {
-        Firestore.firestore().collection("settings").document("versions-blocked").getDocument { (document, error) in
-            if let document = document, document.exists {
-                if let documentData = document.data() {
-                    withAnimation {
-                        completion(.success(documentData["versions"] as? [String]))
-                    }
-                }
-            } else {
-                print("Document does not exist")
             }
         }
     }

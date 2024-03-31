@@ -11,6 +11,9 @@
 		F30CBAC72AEE92930017E100 /* SwiftPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = F30CBAC62AEE92930017E100 /* SwiftPersistence */; };
 		F31A7C062B736C550012A6A9 /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F31A7C052B736C550012A6A9 /* UpdateManager.swift */; };
 		F32046C52AEEB8150047F43E /* ColorSchemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */; };
+		F326AE262BB95F9300201C4A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F326AE252BB95F9300201C4A /* GoogleService-Info.plist */; };
+		F326AE282BB9603700201C4A /* DeveloperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F326AE272BB9603700201C4A /* DeveloperView.swift */; };
+		F326AE2A2BB9609500201C4A /* DeveloperManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F326AE292BB9609500201C4A /* DeveloperManager.swift */; };
 		F345AB8B2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB8A2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift */; };
 		F345AB8D2AE62EDE00211FE8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB8C2AE62EDE00211FE8 /* ContentView.swift */; };
 		F345AB8F2AE62EDF00211FE8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F345AB8E2AE62EDF00211FE8 /* Assets.xcassets */; };
@@ -41,7 +44,6 @@
 		F3582D032B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3582D022B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift */; };
 		F3582D052B1E606E006A2FC0 /* AuthenticationManager+VerifyEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3582D042B1E606E006A2FC0 /* AuthenticationManager+VerifyEmail.swift */; };
 		F37778482B1F14710079ACD4 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37778472B1F14710079ACD4 /* ForgotPasswordView.swift */; };
-		F3807D6B2B997314008993BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F3807D6A2B997314008993BD /* GoogleService-Info.plist */; };
 		F383E2462AE7A59300C517C2 /* HouseInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2452AE7A59300C517C2 /* HouseInfo.swift */; };
 		F383E2492AE7BCD300C517C2 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2482AE7BCD300C517C2 /* LeaderboardView.swift */; };
 		F383E24C2AE7C1C200C517C2 /* AnnouncementDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E24B2AE7C1C200C517C2 /* AnnouncementDetailView.swift */; };
@@ -106,6 +108,9 @@
 		F30C5C1B2AEF3A6E00474469 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		F31A7C052B736C550012A6A9 /* UpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateManager.swift; sourceTree = "<group>"; };
 		F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeManager.swift; sourceTree = "<group>"; };
+		F326AE252BB95F9300201C4A /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F326AE272BB9603700201C4A /* DeveloperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperView.swift; sourceTree = "<group>"; };
+		F326AE292BB9609500201C4A /* DeveloperManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperManager.swift; sourceTree = "<group>"; };
 		F345AB872AE62EDE00211FE8 /* GrowCalth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrowCalth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F345AB8A2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowCalth_iOSApp.swift; sourceTree = "<group>"; };
 		F345AB8C2AE62EDE00211FE8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -134,7 +139,6 @@
 		F3582D022B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthenticationManager+AccountChanges.swift"; sourceTree = "<group>"; };
 		F3582D042B1E606E006A2FC0 /* AuthenticationManager+VerifyEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthenticationManager+VerifyEmail.swift"; sourceTree = "<group>"; };
 		F37778472B1F14710079ACD4 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
-		F3807D6A2B997314008993BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F383E2452AE7A59300C517C2 /* HouseInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseInfo.swift; sourceTree = "<group>"; };
 		F383E2482AE7BCD300C517C2 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		F383E24B2AE7C1C200C517C2 /* AnnouncementDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementDetailView.swift; sourceTree = "<group>"; };
@@ -219,7 +223,7 @@
 			isa = PBXGroup;
 			children = (
 				F383E2552AE810B700C517C2 /* Info.plist */,
-				F3807D6A2B997314008993BD /* GoogleService-Info.plist */,
+				F326AE252BB95F9300201C4A /* GoogleService-Info.plist */,
 				F345ABA92AE6B9D000211FE8 /* GrowCalth.entitlements */,
 				F345AB982AE62EF700211FE8 /* Application */,
 				F345AB992AE62F0900211FE8 /* Main */,
@@ -296,6 +300,7 @@
 				F3A2E6972AF3E63000B34392 /* AdminManager.swift */,
 				F39B2DF92B452A7E006807D8 /* NAPFAManager.swift */,
 				F31A7C052B736C550012A6A9 /* UpdateManager.swift */,
+				F326AE292BB9609500201C4A /* DeveloperManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -395,6 +400,7 @@
 				F3F6124B2AE6DF0400713E80 /* HealthInfo.swift */,
 				F383E2692AE8297700C517C2 /* AccountInfo.swift */,
 				F383E2452AE7A59300C517C2 /* HouseInfo.swift */,
+				F326AE272BB9603700201C4A /* DeveloperView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -496,7 +502,7 @@
 			files = (
 				F345AB922AE62EDF00211FE8 /* Preview Assets.xcassets in Resources */,
 				F345AB8F2AE62EDF00211FE8 /* Assets.xcassets in Resources */,
-				F3807D6B2B997314008993BD /* GoogleService-Info.plist in Resources */,
+				F326AE262BB95F9300201C4A /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -524,12 +530,14 @@
 				F383E2462AE7A59300C517C2 /* HouseInfo.swift in Sources */,
 				F3582CFF2B1E5CA3006A2FC0 /* AuthenticationManager+MagicLinkSignIn.swift in Sources */,
 				F345ABAB2AE6BEFA00211FE8 /* HealthKitManager.swift in Sources */,
+				F326AE2A2BB9609500201C4A /* DeveloperManager.swift in Sources */,
 				F3F955112AEFF96700BD5376 /* PointsManager.swift in Sources */,
 				F3F6124C2AE6DF0400713E80 /* HealthInfo.swift in Sources */,
 				F3582CFB2B1E5C6E006A2FC0 /* AuthenticationManager+PasswordSignIn.swift in Sources */,
 				F3582D052B1E606E006A2FC0 /* AuthenticationManager+VerifyEmail.swift in Sources */,
 				F3E504172B749FBA00E0664E /* ActivityRingView.swift in Sources */,
 				F345AB9E2AE62F4600211FE8 /* Announcements.swift in Sources */,
+				F326AE282BB9603700201C4A /* DeveloperView.swift in Sources */,
 				F3E9FBCD2AEBFC0400801A1C /* DaysManager.swift in Sources */,
 				F383E24C2AE7C1C200C517C2 /* AnnouncementDetailView.swift in Sources */,
 				F31A7C062B736C550012A6A9 /* UpdateManager.swift in Sources */,

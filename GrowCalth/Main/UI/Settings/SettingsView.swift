@@ -22,6 +22,7 @@ struct SettingsView: View {
     @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var csManager: ColorSchemeManager = .shared
     @ObservedObject var adminManager: AdminManager = .shared
+    @ObservedObject var developerManager: DeveloperManager = .shared
     
     @Persistent("preferredColorSchemeAppStorage", store: .fileManager) private var preferredColorSchemeAppStorage: PreferredColorScheme = .automatic
         
@@ -32,6 +33,9 @@ struct SettingsView: View {
                 appearance
 //                health
                 permissions
+                if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                    developer
+                }
                 acknowledgements
                 signOutButton
             }
@@ -132,6 +136,23 @@ struct SettingsView: View {
                 }
             } label: {
                 Text("Open GrowCalth in Settings")
+            }
+        }
+    }
+    
+    var developer: some View {
+        Section("Developer") {
+            NavigationLink {
+                if let appForcesUpdates = adminManager.appForcesUpdates, let appIsUnderMaintenance = adminManager.isUnderMaintenance, let blockedVersions = developerManager.blockedVersions {
+                    DeveloperView(
+                        appForcesUpdates: appForcesUpdates,
+                        appIsUnderMaintenance: appIsUnderMaintenance,
+                        bypass: adminManager.bypassed,
+                        blockedVersions: blockedVersions
+                    )
+                }
+            } label: {
+                Text("Developer Controls")
             }
         }
     }
