@@ -40,7 +40,7 @@ struct Acknowledgements: View {
                 Label("Packages & Libraries", systemImage: "shippingbox.fill")
             }
         }
-        .navigationTitle("About")
+        .navigationTitle("Acknowledgements")
     }
     
     @ViewBuilder
