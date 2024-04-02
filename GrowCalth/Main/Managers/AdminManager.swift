@@ -181,6 +181,22 @@ class AdminManager: ObservableObject {
         }
     }
     
+    func fetchBlockedVersionsAndroid(
+        _ completion: @escaping ((Result<[String]?, Error>) -> Void)
+    ) {
+        Firestore.firestore().collection("settings").document("versions-blocked-android").getDocument { (document, error) in
+            if let document = document, document.exists {
+                if let documentData = document.data() {
+                    withAnimation {
+                        completion(.success(documentData["versions"] as? [String]))
+                    }
+                }
+            } else {
+                print("Document does not exist")
+            }
+        }
+    }
+    
     func developerBypass() {
         withAnimation {
             self.bypassed = true

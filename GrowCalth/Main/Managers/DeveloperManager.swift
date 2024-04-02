@@ -12,6 +12,7 @@ class DeveloperManager: ObservableObject {
     static let shared: DeveloperManager = .init()
     
     @Published var blockedVersions: [String]?
+    @Published var blockedVersionsAndroid: [String]?
     
     @ObservedObject var adminManager: AdminManager = .shared
     
@@ -24,6 +25,16 @@ class DeveloperManager: ObservableObject {
             switch result {
             case .success(let versions):
                 self.blockedVersions = versions?.sorted()
+                completion()
+            case .failure(_):
+                completion()
+            }
+        }
+        
+        adminManager.fetchBlockedVersionsAndroid { result in
+            switch result {
+            case .success(let versions):
+                self.blockedVersionsAndroid = versions?.sorted()
                 completion()
             case .failure(_):
                 completion()
@@ -57,6 +68,19 @@ class DeveloperManager: ObservableObject {
     
     func changeVersionsBlockedValue(to newValue: [String], _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
         Firestore.firestore().collection("settings").document("versions-blocked").updateData([
+            "versions": newValue
+        ]) { err in
+            if let err = err {
+                completion(.failure(err))
+            } else {
+                self.updateValues() {}
+                completion(.success(true))
+            }
+        }
+    }
+    
+    func changeVersionsBlockedValueForAndroid(to newValue: [String], _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
+        Firestore.firestore().collection("settings").document("versions-blocked-android").updateData([
             "versions": newValue
         ]) { err in
             if let err = err {

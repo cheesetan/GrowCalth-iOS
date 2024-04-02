@@ -143,12 +143,13 @@ struct SettingsView: View {
     var developer: some View {
         Section("Developer") {
             NavigationLink {
-                if let appForcesUpdates = adminManager.appForcesUpdates, let appIsUnderMaintenance = adminManager.isUnderMaintenance, let blockedVersions = developerManager.blockedVersions {
+                if let appForcesUpdates = adminManager.appForcesUpdates, let appIsUnderMaintenance = adminManager.isUnderMaintenance, let blockedVersions = developerManager.blockedVersions, let blockedVersionsAndroid = developerManager.blockedVersionsAndroid {
                     DeveloperView(
                         appForcesUpdates: appForcesUpdates,
                         appIsUnderMaintenance: appIsUnderMaintenance,
                         bypass: adminManager.bypassed,
-                        blockedVersions: blockedVersions
+                        blockedVersions: blockedVersions,
+                        blockedVersionsAndroid: blockedVersionsAndroid
                     )
                 }
             } label: {

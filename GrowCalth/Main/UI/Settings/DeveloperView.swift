@@ -10,13 +10,18 @@ import SwiftUI
 struct DeveloperView: View {
     
     @State var showAlert = false
+    @State var showAlertAndroid = false
+    
     @State var newVersionToBlock = ""
+    @State var newVersionToBlockAndroid = ""
+    
     @State var isLoading = false
     
     @State var appForcesUpdates: Bool
     @State var appIsUnderMaintenance: Bool
     @State var bypass: Bool
     @State var blockedVersions: [String]?
+    @State var blockedVersionsAndroid: [String]?
     
     @ObservedObject var adminManager: AdminManager = .shared
     @ObservedObject var developerManager: DeveloperManager = .shared
@@ -42,7 +47,7 @@ struct DeveloperView: View {
                 }
             } header: {
                 HStack {
-                    Text("Blocked Versions")
+                    Text("Blocked Versions (iOS)")
                     Button {
                         isLoading = true
                         developerManager.updateValues() {
@@ -69,9 +74,50 @@ struct DeveloperView: View {
                     }
                 }
             }
+            
+            Section {
+                if let blockedVersionsAndroid = blockedVersionsAndroid {
+                    ForEach(blockedVersionsAndroid, id: \.self) { version in
+                        Text(version)
+                    }
+                    .onDelete { indexSet in
+                        withAnimation {
+                            self.blockedVersionsAndroid?.remove(atOffsets: indexSet)
+                        }
+                    }
+                }
+            } header: {
+                HStack {
+                    Text("Blocked Versions (Android)")
+                    Button {
+                        isLoading = true
+                        developerManager.updateValues() {
+                            isLoading = false
+                        }
+                    } label: {
+                        if isLoading {
+                            ProgressView()
+                                .controlSize(.small)
+                                .padding(.leading, 2.5)
+                        } else {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                    }
+                    .disabled(isLoading)
+                    Spacer()
+                    EditButton()
+                        .textCase(nil)
+                        .disabled(blockedVersionsAndroid == nil || blockedVersionsAndroid?.count == 0)
+                    Button {
+                        showAlertAndroid.toggle()
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
         }
         .navigationTitle("Developer Controls")
-        .alert("Add Version", isPresented: $showAlert) {
+        .alert("Add Version (iOS)", isPresented: $showAlert) {
             TextField("Enter a Version Number", text: $newVersionToBlock)
             Button("Cancel", role: .cancel) {}
             Button("Add") {
@@ -79,6 +125,17 @@ struct DeveloperView: View {
                     blockedVersions?.append(newVersionToBlock)
                     blockedVersions?.sort()
                     newVersionToBlock = ""
+                }
+            }
+        }
+        .alert("Add Version (Android)", isPresented: $showAlertAndroid) {
+            TextField("Enter a Version Number", text: $newVersionToBlockAndroid)
+            Button("Cancel", role: .cancel) {}
+            Button("Add") {
+                withAnimation {
+                    blockedVersionsAndroid?.append(newVersionToBlockAndroid)
+                    blockedVersionsAndroid?.sort()
+                    newVersionToBlockAndroid = ""
                 }
             }
         }
@@ -99,6 +156,11 @@ struct DeveloperView: View {
         .onChange(of: blockedVersions) { newValue in
             if let newValue = newValue {
                 developerManager.changeVersionsBlockedValue(to: newValue) { _ in }
+            }
+        }
+        .onChange(of: blockedVersionsAndroid) { newValue in
+            if let newValue = newValue {
+                developerManager.changeVersionsBlockedValueForAndroid(to: newValue) { _ in }
             }
         }
         .onChange(of: bypass) { newValue in
