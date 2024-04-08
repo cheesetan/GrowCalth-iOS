@@ -45,20 +45,20 @@ struct LeaderboardView: View {
         }
         .listStyle(.grouped)
         .navigationTitle("Leaderboard")
-        .toolbar {
-            if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(role: .destructive) {
-                        showingAlert = true
-                        alertTitle = "Reset house points"
-                        alertMessage = "Are you sure you want to reset all house points? This action cannot be undone."
-                    } label: {
-                        Label("Reset house points", systemImage: "arrow.clockwise.circle")
-                    }
-                    .tint(.red)
-                }
-            }
-        }
+//        .toolbar {
+//            if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    Button(role: .destructive) {
+//                        showingAlert = true
+//                        alertTitle = "Reset house points"
+//                        alertMessage = "Are you sure you want to reset all house points? This action cannot be undone."
+//                    } label: {
+//                        Label("Reset house points", systemImage: "arrow.clockwise.circle")
+//                    }
+//                    .tint(.red)
+//                }
+//            }
+//        }
         .alert(alertTitle, isPresented: $showingAlert) {
             Button("Reset", role: .destructive) {
                 lbManager.resetLeaderboards(forHouse: "Black") { result in

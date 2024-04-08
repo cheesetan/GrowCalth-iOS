@@ -170,7 +170,7 @@ struct SettingsView: View {
     
     var signOutButton: some View {
         Section {
-            Link("Report a Bug", destination: URL(string: "mailto:chay_yu_hung@s2021.ssts.edu.sg,han_jeong_seu_caleb@s2021.ssts.edu.sg")!)
+            Link("Contact the Team", destination: URL(string: "mailto:chay_yu_hung@s2021.ssts.edu.sg,han_jeong_seu_caleb@s2021.ssts.edu.sg")!)
             
             Button {
                 showingSignOutAlert = true
