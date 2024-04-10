@@ -62,7 +62,7 @@ class PointsManager: ObservableObject {
             switch result {
             case .success(let steps):
                 print("pointsToAdd steps: \(steps)")
-                let points = Int(Double(steps) / Double(1000))
+                let points = Int(Double(steps) / Double(5000))
                 completion(.success(points))
             case .failure(let failure):
                 completion(.failure(failure))
