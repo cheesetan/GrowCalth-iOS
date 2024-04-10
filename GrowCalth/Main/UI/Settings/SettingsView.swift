@@ -33,10 +33,11 @@ struct SettingsView: View {
                 appearance
 //                health
                 permissions
+                resources
+                acknowledgements
                 if let email = authManager.email, adminManager.approvedEmails.contains(email) {
                     developer
                 }
-                acknowledgements
                 signOutButton
             }
             .navigationTitle("Settings")
@@ -154,6 +155,16 @@ struct SettingsView: View {
                 }
             } label: {
                 Text("Developer Controls")
+            }
+        }
+    }
+    
+    var resources: some View {
+        Section("Resources") {
+            NavigationLink {
+                CalculatorResourcesView()
+            } label: {
+                Text("Calculators")
             }
         }
     }
