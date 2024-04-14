@@ -31,10 +31,12 @@ class PointsManager: ObservableObject {
                         case .success(_):
                             self.updateVariables()
                         case .failure(let failure):
+                            self.updateVariables()
                             print(failure.localizedDescription)
                         }
                     }
                 case .failure(let failure):
+                    self.updateVariables()
                     print(failure.localizedDescription)
                 }
             }

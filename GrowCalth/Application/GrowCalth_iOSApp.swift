@@ -120,6 +120,7 @@ struct GrowCalth_iOSApp: App {
     
     @ObservedObject var csManager: ColorSchemeManager = .shared
     @Persistent("appInstalledDate") var appInstalledDate: Date = Date()
+    @Persistent("lastPointsAwardedDate") private var lastPointsAwardedDate: Date? = nil
     
     var body: some Scene {
         WindowGroup {
@@ -128,6 +129,13 @@ struct GrowCalth_iOSApp: App {
                 .onAppear {
                     let cal = Calendar(identifier: Calendar.Identifier.gregorian)
                     appInstalledDate = cal.startOfDay(for: appInstalledDate)
+                    
+                    if let lastPointsAwardedDate = lastPointsAwardedDate {
+                        let growCalthStartDate = Date.init(timeIntervalSince1970: TimeInterval(1713283200))
+                        if lastPointsAwardedDate < growCalthStartDate {
+                            self.lastPointsAwardedDate = growCalthStartDate
+                        }
+                    }
                 }
         }
     }
