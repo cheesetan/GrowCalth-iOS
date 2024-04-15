@@ -12,7 +12,8 @@
 		F30D3CC82BC3AD4E00F00156 /* CalculatorResourcesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30D3CC72BC3AD4E00F00156 /* CalculatorResourcesView.swift */; };
 		F31A7C062B736C550012A6A9 /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F31A7C052B736C550012A6A9 /* UpdateManager.swift */; };
 		F32046C52AEEB8150047F43E /* ColorSchemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */; };
-		F326AE262BB95F9300201C4A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F326AE252BB95F9300201C4A /* GoogleService-Info.plist */; };
+		F3261C802BCCCEB200ED89A8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F3261C7F2BCCCEB200ED89A8 /* GoogleService-Info.plist */; };
+		F3261C832BCCCEEB00ED89A8 /* ConfettiSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = F3261C822BCCCEEB00ED89A8 /* ConfettiSwiftUI */; };
 		F326AE282BB9603700201C4A /* DeveloperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F326AE272BB9603700201C4A /* DeveloperView.swift */; };
 		F326AE2A2BB9609500201C4A /* DeveloperManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F326AE292BB9609500201C4A /* DeveloperManager.swift */; };
 		F345AB8B2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB8A2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift */; };
@@ -110,7 +111,7 @@
 		F30D3CC72BC3AD4E00F00156 /* CalculatorResourcesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorResourcesView.swift; sourceTree = "<group>"; };
 		F31A7C052B736C550012A6A9 /* UpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateManager.swift; sourceTree = "<group>"; };
 		F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeManager.swift; sourceTree = "<group>"; };
-		F326AE252BB95F9300201C4A /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F3261C7F2BCCCEB200ED89A8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F326AE272BB9603700201C4A /* DeveloperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperView.swift; sourceTree = "<group>"; };
 		F326AE292BB9609500201C4A /* DeveloperManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperManager.swift; sourceTree = "<group>"; };
 		F345AB872AE62EDE00211FE8 /* GrowCalth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrowCalth.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -178,6 +179,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3261C832BCCCEEB00ED89A8 /* ConfettiSwiftUI in Frameworks */,
 				F3C1885C2B7127F100FD9E2E /* FirebaseMessaging in Frameworks */,
 				F383E2582AE812FB00C517C2 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				F383E25E2AE812FB00C517C2 /* FirebaseFirestore in Frameworks */,
@@ -225,7 +227,7 @@
 			isa = PBXGroup;
 			children = (
 				F383E2552AE810B700C517C2 /* Info.plist */,
-				F326AE252BB95F9300201C4A /* GoogleService-Info.plist */,
+				F3261C7F2BCCCEB200ED89A8 /* GoogleService-Info.plist */,
 				F345ABA92AE6B9D000211FE8 /* GrowCalth.entitlements */,
 				F345AB982AE62EF700211FE8 /* Application */,
 				F345AB992AE62F0900211FE8 /* Main */,
@@ -435,6 +437,7 @@
 				F383E2612AE812FB00C517C2 /* FirebaseFirestoreSwift */,
 				F30CBAC62AEE92930017E100 /* SwiftPersistence */,
 				F3C1885B2B7127F100FD9E2E /* FirebaseMessaging */,
+				F3261C822BCCCEEB00ED89A8 /* ConfettiSwiftUI */,
 			);
 			productName = "Growcalth-iOS";
 			productReference = F345AB872AE62EDE00211FE8 /* GrowCalth.app */;
@@ -487,6 +490,7 @@
 			packageReferences = (
 				F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				F30CBAC52AEE92930017E100 /* XCRemoteSwiftPackageReference "SwiftPersistence" */,
+				F3261C812BCCCEEB00ED89A8 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */,
 			);
 			productRefGroup = F345AB882AE62EDE00211FE8 /* Products */;
 			projectDirPath = "";
@@ -503,9 +507,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F3261C802BCCCEB200ED89A8 /* GoogleService-Info.plist in Resources */,
 				F345AB922AE62EDF00211FE8 /* Preview Assets.xcassets in Resources */,
 				F345AB8F2AE62EDF00211FE8 /* Assets.xcassets in Resources */,
-				F326AE262BB95F9300201C4A /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -916,6 +920,14 @@
 				minimumVersion = 1.1.1;
 			};
 		};
+		F3261C812BCCCEEB00ED89A8 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/simibac/ConfettiSwiftUI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
 		F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -931,6 +943,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F30CBAC52AEE92930017E100 /* XCRemoteSwiftPackageReference "SwiftPersistence" */;
 			productName = SwiftPersistence;
+		};
+		F3261C822BCCCEEB00ED89A8 /* ConfettiSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F3261C812BCCCEEB00ED89A8 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */;
+			productName = ConfettiSwiftUI;
 		};
 		F383E2572AE812FB00C517C2 /* FirebaseAnalyticsWithoutAdIdSupport */ = {
 			isa = XCSwiftPackageProductDependency;

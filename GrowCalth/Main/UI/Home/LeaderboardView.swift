@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import ConfettiSwiftUI
 import SwiftPersistence
 
 struct LeaderboardView: View {
+    
+    @State var counter = 0
     
     @State var loaded = false
     @State var leaderboardPoints = [String : Int]()
@@ -43,10 +46,11 @@ struct LeaderboardView: View {
                 }
             }
         }
+        .confettiCannon(counter: $counter, num: 100, rainHeight: 1600, openingAngle: Angle(degrees: 0), closingAngle: Angle(degrees: 360), radius: 200, repetitions: 2, repetitionInterval: 0.7)
         .listStyle(.grouped)
         .navigationTitle("Leaderboard")
         .toolbar {
-            if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+//            if let email = authManager.email, adminManager.approvedEmails.contains(email) {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(role: .destructive) {
                         showingAlert = true
@@ -57,60 +61,61 @@ struct LeaderboardView: View {
                     }
                     .tint(.red)
                 }
-            }
+//            }
         }
         .alert(alertTitle, isPresented: $showingAlert) {
             Button("Reset", role: .destructive) {
-                lbManager.resetLeaderboards(forHouse: "Black") { result in
-                    switch result {
-                    case .success(_):
-                        retrievePointsInformation()
-                    case .failure(_):
-                        showingAlert = true
-                        alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset house points for Black house. Please try again."
-                    }
-                }
-                lbManager.resetLeaderboards(forHouse: "Blue") { result in
-                    switch result {
-                    case .success(_):
-                        retrievePointsInformation()
-                    case .failure(_):
-                        showingAlert = true
-                        alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset house points for Blue house. Please try again."
-                    }
-                }
-                lbManager.resetLeaderboards(forHouse: "Green") { result in
-                    switch result {
-                    case .success(_):
-                        retrievePointsInformation()
-                    case .failure(_):
-                        showingAlert = true
-                        alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset house points for Green house. Please try again."
-                    }
-                }
-                lbManager.resetLeaderboards(forHouse: "Red") { result in
-                    switch result {
-                    case .success(_):
-                        retrievePointsInformation()
-                    case .failure(_):
-                        showingAlert = true
-                        alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset house points for Red house. Please try again."
-                    }
-                }
-                lbManager.resetLeaderboards(forHouse: "Yellow") { result in
-                    switch result {
-                    case .success(_):
-                        retrievePointsInformation()
-                    case .failure(_):
-                        showingAlert = true
-                        alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset house points for Yellow house. Please try again."
-                    }
-                }
+                counter += 1
+//                lbManager.resetLeaderboards(forHouse: "Black") { result in
+//                    switch result {
+//                    case .success(_):
+//                        retrievePointsInformation()
+//                    case .failure(_):
+//                        showingAlert = true
+//                        alertTitle = "Error"
+//                        alertTitle = "An error has occurred while attempting to reset house points for Black house. Please try again."
+//                    }
+//                }
+//                lbManager.resetLeaderboards(forHouse: "Blue") { result in
+//                    switch result {
+//                    case .success(_):
+//                        retrievePointsInformation()
+//                    case .failure(_):
+//                        showingAlert = true
+//                        alertTitle = "Error"
+//                        alertTitle = "An error has occurred while attempting to reset house points for Blue house. Please try again."
+//                    }
+//                }
+//                lbManager.resetLeaderboards(forHouse: "Green") { result in
+//                    switch result {
+//                    case .success(_):
+//                        retrievePointsInformation()
+//                    case .failure(_):
+//                        showingAlert = true
+//                        alertTitle = "Error"
+//                        alertTitle = "An error has occurred while attempting to reset house points for Green house. Please try again."
+//                    }
+//                }
+//                lbManager.resetLeaderboards(forHouse: "Red") { result in
+//                    switch result {
+//                    case .success(_):
+//                        retrievePointsInformation()
+//                    case .failure(_):
+//                        showingAlert = true
+//                        alertTitle = "Error"
+//                        alertTitle = "An error has occurred while attempting to reset house points for Red house. Please try again."
+//                    }
+//                }
+//                lbManager.resetLeaderboards(forHouse: "Yellow") { result in
+//                    switch result {
+//                    case .success(_):
+//                        retrievePointsInformation()
+//                    case .failure(_):
+//                        showingAlert = true
+//                        alertTitle = "Error"
+//                        alertTitle = "An error has occurred while attempting to reset house points for Yellow house. Please try again."
+//                    }
+//                }
             }
         } message: {
             Text(alertMessage)
@@ -179,5 +184,7 @@ struct LeaderboardView: View {
 }
 
 #Preview {
-    LeaderboardView()
+    NavigationStack {
+        LeaderboardView()
+    }
 }
