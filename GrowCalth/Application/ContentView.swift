@@ -49,8 +49,14 @@ struct ContentView: View {
                         }
                     }
                 } else {
-                    ProgressView()
-                        .controlSize(.large)
+                    ProgressView {
+                        if updateManager.updateAvailable == nil {
+                            Text("Checking For Updates...")
+                        } else {
+                            Text("Checking System Health...")
+                        }
+                    }
+                    .controlSize(.large)
                 }
             } else {
                 AuthenticationView()
