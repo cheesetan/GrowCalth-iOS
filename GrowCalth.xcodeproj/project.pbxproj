@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F3010E082BCEB13500E9483F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F3010E072BCEB13500E9483F /* GoogleService-Info.plist */; };
 		F30C5C1C2AEF3A6E00474469 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30C5C1B2AEF3A6E00474469 /* OnboardingView.swift */; };
 		F30CBAC72AEE92930017E100 /* SwiftPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = F30CBAC62AEE92930017E100 /* SwiftPersistence */; };
 		F30D3CC82BC3AD4E00F00156 /* CalculatorResourcesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30D3CC72BC3AD4E00F00156 /* CalculatorResourcesView.swift */; };
 		F31A7C062B736C550012A6A9 /* UpdateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F31A7C052B736C550012A6A9 /* UpdateManager.swift */; };
 		F32046C52AEEB8150047F43E /* ColorSchemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */; };
-		F3261C872BCCDC8900ED89A8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F3261C862BCCDC8900ED89A8 /* GoogleService-Info.plist */; };
 		F326AE282BB9603700201C4A /* DeveloperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F326AE272BB9603700201C4A /* DeveloperView.swift */; };
 		F326AE2A2BB9609500201C4A /* DeveloperManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F326AE292BB9609500201C4A /* DeveloperManager.swift */; };
 		F345AB8B2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F345AB8A2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift */; };
@@ -106,11 +106,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F3010E072BCEB13500E9483F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F30C5C1B2AEF3A6E00474469 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		F30D3CC72BC3AD4E00F00156 /* CalculatorResourcesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorResourcesView.swift; sourceTree = "<group>"; };
 		F31A7C052B736C550012A6A9 /* UpdateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateManager.swift; sourceTree = "<group>"; };
 		F32046C42AEEB8150047F43E /* ColorSchemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSchemeManager.swift; sourceTree = "<group>"; };
-		F3261C862BCCDC8900ED89A8 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F326AE272BB9603700201C4A /* DeveloperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperView.swift; sourceTree = "<group>"; };
 		F326AE292BB9609500201C4A /* DeveloperManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperManager.swift; sourceTree = "<group>"; };
 		F345AB872AE62EDE00211FE8 /* GrowCalth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrowCalth.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -225,7 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				F383E2552AE810B700C517C2 /* Info.plist */,
-				F3261C862BCCDC8900ED89A8 /* GoogleService-Info.plist */,
+				F3010E072BCEB13500E9483F /* GoogleService-Info.plist */,
 				F345ABA92AE6B9D000211FE8 /* GrowCalth.entitlements */,
 				F345AB982AE62EF700211FE8 /* Application */,
 				F345AB992AE62F0900211FE8 /* Main */,
@@ -505,7 +505,7 @@
 			files = (
 				F345AB922AE62EDF00211FE8 /* Preview Assets.xcassets in Resources */,
 				F345AB8F2AE62EDF00211FE8 /* Assets.xcassets in Resources */,
-				F3261C872BCCDC8900ED89A8 /* GoogleService-Info.plist in Resources */,
+				F3010E082BCEB13500E9483F /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
