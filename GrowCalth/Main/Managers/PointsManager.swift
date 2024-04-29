@@ -31,6 +31,7 @@ class PointsManager: ObservableObject {
                             switch result {
                             case .success(_):
                                 self.updateVariables()
+                                self.logPoints(points: pointsToAdd)
                             case .failure(let failure):
                                 self.updateVariables()
                                 print(failure.localizedDescription)
@@ -135,5 +136,12 @@ class PointsManager: ObservableObject {
     private func updateVariables() {
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         lastPointsAwardedDate = cal.startOfDay(for: Date())
+    }
+    
+    private func logPoints(points: Int) {
+        Firestore.firestore().collection("logs").document().setData([
+            "dateLogged": Date(),
+            "pointsAdded": points
+        ]) { _ in }
     }
 }
