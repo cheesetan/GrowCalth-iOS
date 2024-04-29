@@ -96,7 +96,8 @@ class AuthenticationManager: ObservableObject {
     }
     
     func fetchUsersHouse(_ completion: @escaping ((Result<String, Error>) -> Void)) {
-        Firestore.firestore().collection("users").document(Auth.auth().currentUser?.uid ?? "").getDocument { (document, error) in
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        Firestore.firestore().collection("users").document(uid).getDocument { (document, error) in
             if let document = document, document.exists {
                 if let documentData = document.data() {
                     completion(.success(documentData["house"] as! String))
