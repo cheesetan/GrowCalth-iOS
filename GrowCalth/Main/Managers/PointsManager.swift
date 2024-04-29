@@ -141,6 +141,8 @@ class PointsManager: ObservableObject {
     private func logPoints(points: Int) {
         Firestore.firestore().collection("logs").document().setData([
             "dateLogged": Date(),
+            "useruid": Auth.auth().currentUser?.uid ?? "UID NOT FOUND",
+            "email": authManager.email ?? "EMAIL NOT FOUND",
             "pointsAdded": points
         ]) { _ in }
     }
