@@ -19,6 +19,7 @@ class AuthenticationManager: ObservableObject {
     @Published var isLoggedIn: Bool = false
     @Published var accountVerified: Bool = false
     @Published var email: String?
+    @Published var usersHouse: String?
     
     @AppStorage("emailToSignInWithMagicLink") internal var emailToSignInWithMagicLink: String?
     
@@ -54,6 +55,14 @@ class AuthenticationManager: ObservableObject {
     
     internal func updatePublishedVariables() {
         email = Auth.auth().currentUser?.email
+        self.fetchUsersHouse { result in
+            switch result {
+            case .success(let success):
+                self.usersHouse = success
+            case .failure(_):
+                break
+            }
+        }
     }
     
     internal func emailProvidedIsSSTEmail(email: String) -> Bool {

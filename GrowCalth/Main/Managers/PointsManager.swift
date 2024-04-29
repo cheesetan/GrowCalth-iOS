@@ -26,14 +26,18 @@ class PointsManager: ObservableObject {
                 switch result {
                 case .success(let pointsToAdd):
                     print("pointsToAdd: \(pointsToAdd)")
-                    self.addPointsToFirebase(pointsToAdd: pointsToAdd) { result in
-                        switch result {
-                        case .success(_):
-                            self.updateVariables()
-                        case .failure(let failure):
-                            self.updateVariables()
-                            print(failure.localizedDescription)
+                    if pointsToAdd > 0 {
+                        self.addPointsToFirebase(pointsToAdd: pointsToAdd) { result in
+                            switch result {
+                            case .success(_):
+                                self.updateVariables()
+                            case .failure(let failure):
+                                self.updateVariables()
+                                print(failure.localizedDescription)
+                            }
                         }
+                    } else {
+                        self.updateVariables()
                     }
                 case .failure(let failure):
                     self.updateVariables()

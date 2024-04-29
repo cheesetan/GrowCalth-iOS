@@ -37,19 +37,38 @@ struct AccountInfo: View {
     
     var body: some View {
         List {
-            Section("Name (Inferred from email)") {
-                if let email = authManager.email {
-                    Text(email.components(separatedBy: "@")[0].components(separatedBy: "_").joined(separator: " ").uppercased())
-                } else {
-                    Text("Could not retrieve your name.")
+            Section("Account Information") {
+                LabeledContent("Name") {
+                    VStack {
+                        if let email = authManager.email {
+                            Text(email.components(separatedBy: "@")[0].components(separatedBy: "_").joined(separator: " ").uppercased())
+                        } else {
+                            Text("?")
+                        }
+                    }
+                    .multilineTextAlignment(.trailing)
                 }
-            }
-            
-            Section("Email") {
-                if let email = authManager.email {
-                    Text(email)
-                } else {
-                    Text("Could not retrieve your email.")
+                
+                LabeledContent("Email") {
+                    VStack {
+                        if let email = authManager.email {
+                            Text(email)
+                        } else {
+                            Text("?")
+                        }
+                    }
+                    .multilineTextAlignment(.trailing)
+                }
+                
+                LabeledContent("House") {
+                    VStack {
+                        if let house = authManager.usersHouse {
+                            Text(house)
+                        } else {
+                            Text("?")
+                        }
+                    }
+                    .multilineTextAlignment(.trailing)
                 }
             }
             

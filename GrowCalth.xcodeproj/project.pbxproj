@@ -43,7 +43,8 @@
 		F3582D012B1E5D51006A2FC0 /* AuthenticationManager+SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3582D002B1E5D51006A2FC0 /* AuthenticationManager+SignUp.swift */; };
 		F3582D032B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3582D022B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift */; };
 		F3582D052B1E606E006A2FC0 /* AuthenticationManager+VerifyEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3582D042B1E606E006A2FC0 /* AuthenticationManager+VerifyEmail.swift */; };
-		F35844192BCFE38800D51FF0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F35844182BCFE38800D51FF0 /* GoogleService-Info.plist */; };
+		F3655ED62BDE8704000A133C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F3655ED52BDE8704000A133C /* GoogleService-Info.plist */; };
+		F3655ED82BDE8719000A133C /* ApplicationPushNotificationsManager+ServerKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3655ED72BDE8719000A133C /* ApplicationPushNotificationsManager+ServerKey.swift */; };
 		F37778482B1F14710079ACD4 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37778472B1F14710079ACD4 /* ForgotPasswordView.swift */; };
 		F383E2462AE7A59300C517C2 /* HouseInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2452AE7A59300C517C2 /* HouseInfo.swift */; };
 		F383E2492AE7BCD300C517C2 /* LeaderboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F383E2482AE7BCD300C517C2 /* LeaderboardView.swift */; };
@@ -65,7 +66,6 @@
 		F3A2E69A2AF3E90D00B34392 /* NewAnnouncementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A2E6992AF3E90D00B34392 /* NewAnnouncementView.swift */; };
 		F3C1885C2B7127F100FD9E2E /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = F3C1885B2B7127F100FD9E2E /* FirebaseMessaging */; };
 		F3C188622B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C188612B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift */; };
-		F3C4853E2B9992F4001643A2 /* ApplicationPushNotificationsManager+ServerKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C4853D2B9992F4001643A2 /* ApplicationPushNotificationsManager+ServerKey.swift */; };
 		F3E504172B749FBA00E0664E /* ActivityRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E504162B749FBA00E0664E /* ActivityRingView.swift */; };
 		F3E9FBC72AEBA59000801A1C /* AnnouncementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBC62AEBA59000801A1C /* AnnouncementManager.swift */; };
 		F3E9FBC92AEBBCF200801A1C /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E9FBC82AEBBCF200801A1C /* EventDetailView.swift */; };
@@ -139,7 +139,8 @@
 		F3582D002B1E5D51006A2FC0 /* AuthenticationManager+SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthenticationManager+SignUp.swift"; sourceTree = "<group>"; };
 		F3582D022B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthenticationManager+AccountChanges.swift"; sourceTree = "<group>"; };
 		F3582D042B1E606E006A2FC0 /* AuthenticationManager+VerifyEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthenticationManager+VerifyEmail.swift"; sourceTree = "<group>"; };
-		F35844182BCFE38800D51FF0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F3655ED52BDE8704000A133C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F3655ED72BDE8719000A133C /* ApplicationPushNotificationsManager+ServerKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ApplicationPushNotificationsManager+ServerKey.swift"; sourceTree = "<group>"; };
 		F37778472B1F14710079ACD4 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		F383E2452AE7A59300C517C2 /* HouseInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HouseInfo.swift; sourceTree = "<group>"; };
 		F383E2482AE7BCD300C517C2 /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
@@ -155,7 +156,6 @@
 		F3A2E6972AF3E63000B34392 /* AdminManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminManager.swift; sourceTree = "<group>"; };
 		F3A2E6992AF3E90D00B34392 /* NewAnnouncementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewAnnouncementView.swift; sourceTree = "<group>"; };
 		F3C188612B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPushNotificationsManager.swift; sourceTree = "<group>"; };
-		F3C4853D2B9992F4001643A2 /* ApplicationPushNotificationsManager+ServerKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApplicationPushNotificationsManager+ServerKey.swift"; sourceTree = "<group>"; };
 		F3E503E92B747DC000E0664E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		F3E503EB2B747DC000E0664E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		F3E504162B749FBA00E0664E /* ActivityRingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRingView.swift; sourceTree = "<group>"; };
@@ -225,7 +225,7 @@
 			isa = PBXGroup;
 			children = (
 				F383E2552AE810B700C517C2 /* Info.plist */,
-				F35844182BCFE38800D51FF0 /* GoogleService-Info.plist */,
+				F3655ED52BDE8704000A133C /* GoogleService-Info.plist */,
 				F345ABA92AE6B9D000211FE8 /* GrowCalth.entitlements */,
 				F345AB982AE62EF700211FE8 /* Application */,
 				F345AB992AE62F0900211FE8 /* Main */,
@@ -389,7 +389,7 @@
 			isa = PBXGroup;
 			children = (
 				F3C188612B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift */,
-				F3C4853D2B9992F4001643A2 /* ApplicationPushNotificationsManager+ServerKey.swift */,
+				F3655ED72BDE8719000A133C /* ApplicationPushNotificationsManager+ServerKey.swift */,
 			);
 			path = ApplicationPushNotificationsManager;
 			sourceTree = "<group>";
@@ -504,7 +504,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F345AB922AE62EDF00211FE8 /* Preview Assets.xcassets in Resources */,
-				F35844192BCFE38800D51FF0 /* GoogleService-Info.plist in Resources */,
+				F3655ED62BDE8704000A133C /* GoogleService-Info.plist in Resources */,
 				F345AB8F2AE62EDF00211FE8 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -555,7 +555,6 @@
 				F3E9FBD72AED62C700801A1C /* ProgressBar.swift in Sources */,
 				F383E2492AE7BCD300C517C2 /* LeaderboardView.swift in Sources */,
 				F3E9FBD32AECB52600801A1C /* GoalsManager.swift in Sources */,
-				F3C4853E2B9992F4001643A2 /* ApplicationPushNotificationsManager+ServerKey.swift in Sources */,
 				F3582D032B1E5DA5006A2FC0 /* AuthenticationManager+AccountChanges.swift in Sources */,
 				F3582CF82B1E5C1D006A2FC0 /* AuthenticationManager+Error.swift in Sources */,
 				F3582CFD2B1E5C87006A2FC0 /* AuthenticationManager.swift in Sources */,
@@ -567,6 +566,7 @@
 				F397F71D2B499A310015828A /* EditingNAPFARow.swift in Sources */,
 				F383E2532AE80A8900C517C2 /* AuthenticationView.swift in Sources */,
 				F3582D012B1E5D51006A2FC0 /* AuthenticationManager+SignUp.swift in Sources */,
+				F3655ED82BDE8719000A133C /* ApplicationPushNotificationsManager+ServerKey.swift in Sources */,
 				F3C188622B714ACD00FD9E2E /* ApplicationPushNotificationsManager.swift in Sources */,
 				F3E9FBD12AEC197400801A1C /* QuoteView.swift in Sources */,
 				F383E26A2AE8297700C517C2 /* AccountInfo.swift in Sources */,
