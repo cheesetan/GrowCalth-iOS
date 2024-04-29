@@ -143,6 +143,7 @@ class PointsManager: ObservableObject {
             "dateLogged": Date(),
             "useruid": Auth.auth().currentUser?.uid ?? "UID NOT FOUND",
             "email": authManager.email ?? "EMAIL NOT FOUND",
+            "house": authManager.usersHouse ?? "HOUSE NOT FOUND",
             "pointsAdded": points
         ]) { _ in }
     }
