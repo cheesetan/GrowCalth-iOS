@@ -97,7 +97,7 @@ class PointsManager: ObservableObject {
                                     if let err = err {
                                         completion(.failure(err))
                                     } else {
-                                        self.logPoints(points: pointsToAdd, previousHousePoints: Int(success[1])!)
+                                        self.logPoints(points: pointsToAdd, previousHousePoints: Int(success[1])!, lastPointsAddedDate: self.lastPointsAwardedDate)
                                         completion(.success(true))
                                     }
                                 }
@@ -138,9 +138,11 @@ class PointsManager: ObservableObject {
         lastPointsAwardedDate = cal.startOfDay(for: Date())
     }
     
-    private func logPoints(points: Int, previousHousePoints: Int) {
+    private func logPoints(points: Int, previousHousePoints: Int, lastPointsAddedDate: Date?) {
         Firestore.firestore().collection("logs").document().setData([
             "dateLogged": Date(),
+            "appInstalledDate": self.appInstalledDate,
+            "lastPointsAddedDate": lastPointsAddedDate ?? "LASTPOINTSAWARDEDDATE NOT FOUND",
             "useruid": Auth.auth().currentUser?.uid ?? "UID NOT FOUND",
             "email": authManager.email ?? "EMAIL NOT FOUND",
             "house": authManager.usersHouse ?? "HOUSE NOT FOUND",
