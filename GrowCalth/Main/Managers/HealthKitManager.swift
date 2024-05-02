@@ -14,7 +14,18 @@ class HealthKitManager: ObservableObject {
     
     private var healthStore = HKHealthStore()
     @Published var steps: Int? = nil
-    @Published var distance: Double? = nil 
+    @Published var distance: Double? = nil
+    
+    let approvedBundleIdentifiers: [String] = [
+        "com.xiaomi.miwatch.pro", // Mi Fitness
+        "com.huawei.iossporthealth", // HUAWEI Fitness
+        "HM.wristband", // Zepp Life (formerly MiFit)
+        "com.samsung.gearwatch", // Samsung Galaxy Watch (Gear S)
+        "com.samsung.gearfit", // Samsung Galaxy Fit (Gear Fit)
+        "com.samsung.health", // Samsung Health
+        "com.google.Wear", // Wear OS by Google
+        "com.iapps.activesg" // ActiveSG
+    ]
     
     init() {
         requestAuthorization()
@@ -74,7 +85,9 @@ class HealthKitManager: ObservableObject {
             var stepsToFilterOut = 0
             if let resultSources = hkResult.sources {
                 resultSources.forEach { source in
-                    if source.bundleIdentifier == "com.apple.shortcuts" {
+                    if source.bundleIdentifier.contains("com.apple.health") || self.approvedBundleIdentifiers.contains(source.bundleIdentifier) {
+                        
+                    } else {
                         if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
                             stepsToFilterOut += Int(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.count()))
                         }
@@ -118,7 +131,9 @@ class HealthKitManager: ObservableObject {
             var distanceToBeFilteredOut: Double = 0
             if let resultSources = hkResult.sources {
                 resultSources.forEach { source in
-                    if source.bundleIdentifier == "com.apple.shortcuts" {
+                    if source.bundleIdentifier.contains("com.apple.health") || self.approvedBundleIdentifiers.contains(source.bundleIdentifier) {
+                        
+                    } else {
                         if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
                             distanceToBeFilteredOut += sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter())
                             print(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter()))
