@@ -15,6 +15,7 @@
 		F326AE282BB9603700201C4A /* DeveloperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F326AE272BB9603700201C4A /* DeveloperView.swift */; };
 		F326AE2A2BB9609500201C4A /* DeveloperManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F326AE292BB9609500201C4A /* DeveloperManager.swift */; };
 		F33939232BE53570001E9CF9 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33939222BE53570001E9CF9 /* NetworkManager.swift */; };
+		F33939272BE53DE6001E9CF9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F33939262BE53DE6001E9CF9 /* GoogleService-Info.plist */; };
 		F33E282D2BE52B1100777697 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = F33E282C2BE52B1100777697 /* FirebaseFirestore */; };
 		F33E282F2BE52B1100777697 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = F33E282E2BE52B1100777697 /* FirebaseFirestoreCombine-Community */; };
 		F33E28312BE52B1100777697 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F33E28302BE52B1100777697 /* FirebaseFirestoreSwift */; };
@@ -117,6 +118,7 @@
 		F326AE272BB9603700201C4A /* DeveloperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperView.swift; sourceTree = "<group>"; };
 		F326AE292BB9609500201C4A /* DeveloperManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperManager.swift; sourceTree = "<group>"; };
 		F33939222BE53570001E9CF9 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		F33939262BE53DE6001E9CF9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "GoogleService-Info.plist"; path = "GrowCalth/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		F345AB872AE62EDE00211FE8 /* GrowCalth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrowCalth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F345AB8A2AE62EDE00211FE8 /* GrowCalth_iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowCalth_iOSApp.swift; sourceTree = "<group>"; };
 		F345AB8C2AE62EDE00211FE8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -319,6 +321,7 @@
 		F3474FE32B77BF2F00F65CAC /* GrowCalthWidgets */ = {
 			isa = PBXGroup;
 			children = (
+				F33939262BE53DE6001E9CF9 /* GoogleService-Info.plist */,
 				F3474FE42B77BF2F00F65CAC /* GrowCalthWidgetsBundle.swift */,
 				F3474FE62B77BF2F00F65CAC /* GrowCalthStepsWidget.swift */,
 				F3474FF42B77C0E600F65CAC /* GrowCalthDistanceWidget.swift */,
@@ -528,6 +531,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3474FE92B77BF3200F65CAC /* Assets.xcassets in Resources */,
+				F33939272BE53DE6001E9CF9 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
