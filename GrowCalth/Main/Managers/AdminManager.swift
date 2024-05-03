@@ -136,7 +136,7 @@ class AdminManager: ObservableObject {
     }
     
     func checkIfUnderMaintenance(_ completion: @escaping (() -> Void)) {
-        Firestore.firestore().collection("settings").document("maintenance").getDocument { (document, error) in
+        Firestore.firestore().collection("settings").document("maintenance").getDocument(source: .server) { (document, error) in
             if let document = document, document.exists {
                 if let documentData = document.data() {
                     withAnimation {
@@ -152,7 +152,7 @@ class AdminManager: ObservableObject {
     }
     
     func checkIfAppForcesUpdates() {
-        Firestore.firestore().collection("settings").document("force-updates").getDocument { (document, error) in
+        Firestore.firestore().collection("settings").document("force-updates").getDocument(source: .server) { (document, error) in
             if let document = document, document.exists {
                 if let documentData = document.data() {
                     withAnimation {
@@ -168,7 +168,7 @@ class AdminManager: ObservableObject {
     func fetchBlockedVersions(
         _ completion: @escaping ((Result<[String]?, Error>) -> Void)
     ) {
-        Firestore.firestore().collection("settings").document("versions-blocked").getDocument { (document, error) in
+        Firestore.firestore().collection("settings").document("versions-blocked").getDocument(source: .server) { (document, error) in
             if let document = document, document.exists {
                 if let documentData = document.data() {
                     withAnimation {
@@ -184,7 +184,7 @@ class AdminManager: ObservableObject {
     func fetchBlockedVersionsAndroid(
         _ completion: @escaping ((Result<[String]?, Error>) -> Void)
     ) {
-        Firestore.firestore().collection("settings").document("versions-blocked-android").getDocument { (document, error) in
+        Firestore.firestore().collection("settings").document("versions-blocked-android").getDocument(source: .server) { (document, error) in
             if let document = document, document.exists {
                 if let documentData = document.data() {
                     withAnimation {

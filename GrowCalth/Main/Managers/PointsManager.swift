@@ -117,7 +117,7 @@ class PointsManager: ObservableObject {
         authManager.fetchUsersHouse { result in
             switch result {
             case .success(let house):
-                Firestore.firestore().collection("HousePoints").document(house).getDocument { (document, error) in
+                Firestore.firestore().collection("HousePoints").document(house).getDocument(source: .server) { (document, error) in
                     if let document = document, document.exists {
                         if let documentData = document.data() {
                             let pointsString = "\(documentData["points"] as! Int)"

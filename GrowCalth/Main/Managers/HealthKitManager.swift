@@ -57,7 +57,7 @@ class HealthKitManager: ObservableObject {
     }
     
     func fetchApprovedBundleIdentifiers(_ completion: @escaping ((Result<[String], Error>) -> Void)) {
-        Firestore.firestore().collection("settings").document("approved-bundleids").getDocument { (document, error) in
+        Firestore.firestore().collection("settings").document("approved-bundleids").getDocument(source: .server) { (document, error) in
             if let error = error {
                 completion(.failure(error))
             } else {
@@ -109,14 +109,14 @@ class HealthKitManager: ObservableObject {
                                 }
                             }
                         }
+                        
+                        DispatchQueue.main.async {
+                            self.steps = Int(totalStepSumQuantity.doubleValue(for: HKUnit.count())) - stepsToFilterOut
+                        }
                     case .failure(let failure):
                         print(failure)
                     }
                 }
-            }
-            
-            DispatchQueue.main.async {
-                self.steps = Int(totalStepSumQuantity.doubleValue(for: HKUnit.count())) - stepsToFilterOut
             }
         }
         
@@ -163,14 +163,14 @@ class HealthKitManager: ObservableObject {
                                 }
                             }
                         }
+                        
+                        DispatchQueue.main.async {
+                            self.distance = (totalDistanceSumQuantity.doubleValue(for: HKUnit.meter()) - distanceToBeFilteredOut) / 1000
+                        }
                     case .failure(let failure):
                         print(failure)
                     }
                 }
-            }
-            
-            DispatchQueue.main.async {
-                self.distance = (totalDistanceSumQuantity.doubleValue(for: HKUnit.meter()) - distanceToBeFilteredOut) / 1000
             }
         }
         
