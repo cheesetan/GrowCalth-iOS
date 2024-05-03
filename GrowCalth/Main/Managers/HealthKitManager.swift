@@ -8,6 +8,16 @@
 import SwiftUI
 import HealthKit
 import WidgetKit
+import FirebaseFirestore
+
+// "com.xiaomi.miwatch.pro", // Mi Fitness
+// "com.huawei.iossporthealth", // HUAWEI Fitness
+// "HM.wristband", // Zepp Life (formerly MiFit)
+// "com.samsung.gearwatch", // Samsung Galaxy Watch (Gear S)
+// "com.samsung.gearfit", // Samsung Galaxy Fit (Gear Fit)
+// "com.samsung.health", // Samsung Health
+// "com.google.Wear", // Wear OS by Google
+// "com.iapps.activesg" // ActiveSG
 
 class HealthKitManager: ObservableObject {
     static let shared = HealthKitManager()
@@ -15,17 +25,6 @@ class HealthKitManager: ObservableObject {
     private var healthStore = HKHealthStore()
     @Published var steps: Int? = nil
     @Published var distance: Double? = nil
-    
-    let approvedBundleIdentifiers: [String] = [
-        "com.xiaomi.miwatch.pro", // Mi Fitness
-        "com.huawei.iossporthealth", // HUAWEI Fitness
-        "HM.wristband", // Zepp Life (formerly MiFit)
-        "com.samsung.gearwatch", // Samsung Galaxy Watch (Gear S)
-        "com.samsung.gearfit", // Samsung Galaxy Fit (Gear Fit)
-        "com.samsung.health", // Samsung Health
-        "com.google.Wear", // Wear OS by Google
-        "com.iapps.activesg" // ActiveSG
-    ]
     
     init() {
         requestAuthorization()
@@ -57,6 +56,20 @@ class HealthKitManager: ObservableObject {
         readDistance()
     }
     
+    func fetchApprovedBundleIdentifiers(_ completion: @escaping ((Result<[String], Error>) -> Void)) {
+        Firestore.firestore().collection("settings").document("approved-bundleids").getDocument { (document, error) in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                if let document = document, document.exists {
+                    if let documentData = document.data() {
+                        completion(.success(documentData["ids"] as! [String]))
+                    }
+                }
+            }
+        }
+    }
+    
     func readSteps() {
         guard let stepCountType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
             return
@@ -84,13 +97,20 @@ class HealthKitManager: ObservableObject {
             
             var stepsToFilterOut = 0
             if let resultSources = hkResult.sources {
-                resultSources.forEach { source in
-                    if source.bundleIdentifier.contains("com.apple.health") || self.approvedBundleIdentifiers.contains(source.bundleIdentifier) {
-                        
-                    } else {
-                        if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
-                            stepsToFilterOut += Int(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.count()))
+                self.fetchApprovedBundleIdentifiers { result in
+                    switch result {
+                    case .success(let approvedBundleIdentifiers):
+                        resultSources.forEach { source in
+                            if source.bundleIdentifier.contains("com.apple.health") || approvedBundleIdentifiers.contains(source.bundleIdentifier) {
+                                
+                            } else {
+                                if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
+                                    stepsToFilterOut += Int(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.count()))
+                                }
+                            }
                         }
+                    case .failure(let failure):
+                        print(failure)
                     }
                 }
             }
@@ -130,14 +150,21 @@ class HealthKitManager: ObservableObject {
             
             var distanceToBeFilteredOut: Double = 0
             if let resultSources = hkResult.sources {
-                resultSources.forEach { source in
-                    if source.bundleIdentifier.contains("com.apple.health") || self.approvedBundleIdentifiers.contains(source.bundleIdentifier) {
-                        
-                    } else {
-                        if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
-                            distanceToBeFilteredOut += sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter())
-                            print(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter()))
+                self.fetchApprovedBundleIdentifiers { result in
+                    switch result {
+                    case .success(let approvedBundleIdentifiers):
+                        resultSources.forEach { source in
+                            if source.bundleIdentifier.contains("com.apple.health") || approvedBundleIdentifiers.contains(source.bundleIdentifier) {
+                                
+                            } else {
+                                if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
+                                    distanceToBeFilteredOut += sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter())
+                                    print(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter()))
+                                }
+                            }
                         }
+                    case .failure(let failure):
+                        print(failure)
                     }
                 }
             }
