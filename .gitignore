@@ -92,3 +92,4 @@ iOSInjectionProject/
 # Custom ignores
 GrowCalth/GoogleService-Info.plist
 GrowCalth/Main/Managers/ApplicationPushNotificationsManager/ApplicationPushNotificationsManager+ServerKey.swift
+GrowCalthWidgets/GoogleService-Info.plist
