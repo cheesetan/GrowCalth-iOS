@@ -17,34 +17,43 @@ struct ContentView: View {
     @ObservedObject var adminManager: AdminManager = .shared
     @ObservedObject var updateManager: UpdateManager = .shared
     @ObservedObject var developerManager: DeveloperManager = .shared
-
+    @ObservedObject var networkManager: NetworkManager = .shared
+    
     var body: some View {
-        if !onboardingView {
-            if authManager.isLoggedIn && authManager.accountVerified {
+        if networkManager.isConnectionAvailable != nil {
+            if networkManager.isConnectionAvailable == true {
                 if adminManager.isUnderMaintenance != nil && updateManager.updateAvailable != nil && adminManager.appForcesUpdates != nil {
                     if updateManager.updateAvailable == true && adminManager.appForcesUpdates == true && adminManager.bypassed == false {
-                        unavailableView(title: "New Update Available", systemImage: "app.dashed", description: "There's a new update available on the App Store! Install the latest update to continue using GrowCalth.")
+                        unavailableView(title: "New Update Available", systemImage: "app.dashed", description: "There's a new update available on the App Store! Install the latest update to continue using GrowCalth.", mode: .update)
                     } else {
                         if adminManager.isUnderMaintenance == true && adminManager.bypassed == false {
-                            unavailableView(title: "Under Maintenance", systemImage: "hammer.fill", description: "GrowCalth is currently undergoing maintenance, please check back again later.", isMaintenance: true)
+                            unavailableView(title: "Under Maintenance", systemImage: "hammer.fill", description: "GrowCalth is currently undergoing maintenance, please check back again later.", mode: .maintenance)
                         } else {
-                            TabView {
-                                Home()
-                                    .tabItem {
-                                        Label("Home", systemImage: "house.fill")
+                            if !onboardingView {
+                                if authManager.isLoggedIn && authManager.accountVerified {
+                                    TabView {
+                                        Home()
+                                            .tabItem {
+                                                Label("Home", systemImage: "house.fill")
+                                            }
+                                        Announcements()
+                                            .tabItem {
+                                                Label("Announcements", systemImage: "megaphone")
+                                            }
+                                        NAPFA()
+                                            .tabItem {
+                                                Label("NAPFA", systemImage: "figure.run")
+                                            }
+                                        SettingsView()
+                                            .tabItem {
+                                                Label("Settings", systemImage: "gearshape")
+                                            }
                                     }
-                                Announcements()
-                                    .tabItem {
-                                        Label("Announcements", systemImage: "megaphone")
-                                    }
-                                NAPFA()
-                                    .tabItem {
-                                        Label("NAPFA", systemImage: "figure.run")
-                                    }
-                                SettingsView()
-                                    .tabItem {
-                                        Label("Settings", systemImage: "gearshape")
-                                    }
+                                } else {
+                                    AuthenticationView()
+                                }
+                            } else {
+                                OnboardingView(onboardingView: $onboardingView)
                             }
                         }
                     }
@@ -59,15 +68,22 @@ struct ContentView: View {
                     .controlSize(.large)
                 }
             } else {
-                AuthenticationView()
+                unavailableView(title: "No Network Connection", systemImage: "pc", description: "You seem to be offline! GrowCalth requires a Network connection to work. If available, turn on your Mobile Data or WiFi and connect to a Network.", mode: .network)
             }
         } else {
-            OnboardingView(onboardingView: $onboardingView)
+            ProgressView {
+                Text("Checking Internet Connection...")
+            }
+            .controlSize(.large)
         }
     }
     
+    enum UnavailableMode {
+        case maintenance, update, network
+    }
+    
     @ViewBuilder
-    func unavailableView(title: String, systemImage: String, description: String, isMaintenance: Bool = false) -> some View {
+    func unavailableView(title: String, systemImage: String, description: String, mode: UnavailableMode) -> some View {
         VStack {
             if #available(iOS 17.0, *) {
                 ContentUnavailableView {
@@ -75,7 +91,8 @@ struct ContentView: View {
                 } description: {
                     Text(description)
                 } actions: {
-                    if isMaintenance {
+                    switch mode {
+                    case .maintenance:
                         Button {
                             isLoading = true
                             adminManager.checkIfUnderMaintenance() {
@@ -100,21 +117,28 @@ struct ContentView: View {
                             }
                             .buttonStyle(.borderedProminent)
                         }
-                    } else {
+                    case .update:
                         Link(destination: URL(string: "https://apps.apple.com/sg/app/growcalth/id6456388202")!) {
                             Label("Open App Store", systemImage: "arrow.up.forward.app.fill")
                                 .fontWeight(.bold)
                         }
                         .buttonStyle(.borderedProminent)
+                    case .network:
+                        EmptyView()
                     }
                     
-                    if let email = authManager.email, adminManager.approvedEmails.contains(email) {
-                        Button {
-                            adminManager.developerBypass()
-                        } label: {
-                            Text("Temporarily Bypass Restrictions (Developer ONLY)")
+                    switch mode {
+                    case .maintenance, .update:
+                        if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                            Button {
+                                adminManager.developerBypass()
+                            } label: {
+                                Text("Temporarily Bypass Restrictions (Developer ONLY)")
+                            }
+                            .buttonStyle(.borderedProminent)
                         }
-                        .buttonStyle(.borderedProminent)
+                    case .network:
+                        EmptyView()
                     }
                 }
             } else {
@@ -125,7 +149,8 @@ struct ContentView: View {
                         .foregroundColor(.secondary)
                     Text(description)
                         .multilineTextAlignment(.center)
-                    if isMaintenance {
+                    switch mode {
+                    case .maintenance:
                         Button {
                             isLoading = true
                             adminManager.checkIfUnderMaintenance() {
@@ -140,12 +165,14 @@ struct ContentView: View {
                             }
                         }
                         .buttonStyle(.borderedProminent)
-                    } else {
+                    case .update:
                         Link(destination: URL(string: "https://apps.apple.com/sg/app/growcalth/id6456388202")!) {
                             Label("Open App Store", systemImage: "arrow.up.forward.app.fill")
                                 .fontWeight(.bold)
                         }
                         .buttonStyle(.borderedProminent)
+                    case .network:
+                        EmptyView()
                     }
                     Spacer()
                 }
