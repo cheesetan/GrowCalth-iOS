@@ -7,9 +7,14 @@
 
 import WidgetKit
 import SwiftUI
+import FirebaseCore
 
 @main
 struct GrowCalthWidgetsBundle: WidgetBundle {
+    
+    init() {
+        FirebaseApp.configure()
+    }
     
     @WidgetBundleBuilder
     var body: some Widget {
