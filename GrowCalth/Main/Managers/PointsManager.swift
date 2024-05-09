@@ -68,8 +68,15 @@ class PointsManager: ObservableObject {
             switch result {
             case .success(let steps):
                 print("pointsToAdd steps: \(steps)")
-                let points = Int(Double(steps) / Double(5000))
-                completion(.success(points))
+//                let points = Int(Double(steps) / Double(5000))
+//                completion(.success(points))
+                if self.lastPointsAwardedDate ?? self.appInstalledDate < Date(timeIntervalSince1970: TimeInterval(1715270400)) {
+                    let points = Int(Double(steps) / Double(5000))
+                    completion(.success(points))
+                } else {
+                    let points = Int(Double(steps) / Double(2500))
+                    completion(.success(points))
+                }
             case .failure(let failure):
                 completion(.failure(failure))
             }
@@ -146,7 +153,7 @@ class PointsManager: ObservableObject {
             "useruid": Auth.auth().currentUser?.uid ?? "UID NOT FOUND",
             "email": authManager.email ?? "EMAIL NOT FOUND",
             "house": authManager.usersHouse ?? "HOUSE NOT FOUND",
-            "pointsAdded": points,
+            "pointsAdded": "\(points) - double points event",
             "previousHousePoints": previousHousePoints,
             "newHousePoints": previousHousePoints + points
         ]) { _ in }

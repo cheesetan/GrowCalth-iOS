@@ -217,7 +217,7 @@ struct Home: View {
             .foregroundColor(Color(uiColor: .systemBackground))
             .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
             .overlay {
-                let housePointsEarnedToday = Int(floor(Double((hkManager.steps ?? 0) / 5000)))
+                let housePointsEarnedToday = Int(floor(Double((hkManager.steps ?? 0) / 2500)))
                 VStack {
                     Spacer()
                     Text("\(housePointsEarnedToday)")
@@ -236,7 +236,7 @@ struct Home: View {
                     .minimumScaleFactor(0.1)
                     .lineLimit(2)
                     Spacer()
-                    Text("\(5000 - ((hkManager.steps ?? 0) - (housePointsEarnedToday * 5000))) more steps to another point!")
+                    Text("\(2500 - ((hkManager.steps ?? 0) - (housePointsEarnedToday * 2500))) more steps to another point!")
                         .font(.title3)
                         .fontWeight(.medium)
                         .multilineTextAlignment(.center)

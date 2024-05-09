@@ -31,7 +31,7 @@ struct LeaderboardView: View {
                         houseRow(text: house.key, points: house.value)
                     }
                 } footer: {
-                    Text("GrowCalth calculates and updates the Leaderboard upon the first launch of the app every day. 5000 steps = 1 point.\n\nGrowCalth needs to be opened to calculate and add your points, unclaimed points will accumulate and be added to the Leaderboard the next time you open the app.")
+                    Text("GrowCalth calculates and updates the Leaderboard upon the first launch of the app every day. 2500 steps = 1 point (Limited Time Double Points Event!).\n\nGrowCalth needs to be opened to calculate and add your points, unclaimed points will accumulate and be added to the Leaderboard the next time you open the app.")
                 }
             } else {
                 Section {
@@ -39,7 +39,7 @@ struct LeaderboardView: View {
                         houseRow(text: house.key, points: house.value)
                     }
                 } footer: {
-                    Text("GrowCalth calculates and updates the Leaderboard upon the first launch of the app every day. 5000 steps = 1 point.\n\nGrowCalth needs to be opened to calculate and add your points, unclaimed points will accumulate and be added to the Leaderboard the next time you open the app.")
+                    Text("GrowCalth calculates and updates the Leaderboard upon the first launch of the app every day. 2500 steps = 1 point (Limited Time Double Points Event!).\n\nGrowCalth needs to be opened to calculate and add your points, unclaimed points will accumulate and be added to the Leaderboard the next time you open the app.")
                 }
             }
         }
