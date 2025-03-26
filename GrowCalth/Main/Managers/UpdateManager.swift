@@ -26,7 +26,7 @@ class UpdateManager: ObservableObject {
         }
     }
     
-    func isUpdateAvailable() throws -> URLSessionDataTask {
+    func isUpdateAvailable() throws {
         guard let info = Bundle.main.infoDictionary,
             let currentVersion = info["CFBundleShortVersionString"] as? String,
             let identifier = info["CFBundleIdentifier"] as? String,
@@ -78,6 +78,5 @@ class UpdateManager: ObservableObject {
             }
         }
         task.resume()
-        return task
     }
 }

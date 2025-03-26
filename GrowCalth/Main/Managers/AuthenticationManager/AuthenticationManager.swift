@@ -15,14 +15,12 @@ class AuthenticationManager: ObservableObject {
     static let shared: AuthenticationManager = .init()
     
     // TODO: - doesnt add house if its a new account
-    @Published var magicLinkAuthenticationEnabled: Bool = false // Enabled Magic Link login here
+
     @Published var isLoggedIn: Bool = false
     @Published var accountVerified: Bool = false
     @Published var email: String?
     @Published var usersHouse: String?
-    
-    @AppStorage("emailToSignInWithMagicLink") internal var emailToSignInWithMagicLink: String?
-    
+        
     init() {
         verifyAuthenticationState()
         verifyVerificationState()

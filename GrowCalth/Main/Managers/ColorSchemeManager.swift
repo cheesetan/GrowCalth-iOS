@@ -24,7 +24,7 @@ class ColorSchemeManager: ObservableObject {
     }
     
     func updatePreferredColorScheme(to newColorScheme: PreferredColorScheme?) {
-        if let newColorScheme = newColorScheme {
+        if let newColorScheme {
             preferredColorSchemeAppStorage = newColorScheme
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {

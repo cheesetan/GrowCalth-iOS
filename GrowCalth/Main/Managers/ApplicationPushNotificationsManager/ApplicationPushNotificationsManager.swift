@@ -101,14 +101,14 @@ class ApplicationPushNotificationsManager: ObservableObject {
     }
     
     private func removeFailedFCMToken(fcmToken: String) {
-        Firestore.firestore().collection("fcmTokens").whereField("token", isEqualTo: fcmToken).getDocuments { querySnapshot, err in
-            if let err = err {
-                print("Error finding FCM Token's document")
+        Firestore.firestore().collection("fcmTokens").whereField("token", isEqualTo: fcmToken).getDocuments { querySnapshot, error in
+            if let error {
+                print("Error finding FCM Token's document: \(error)")
             } else {
                 for document in querySnapshot!.documents {
                     Firestore.firestore().collection("fcmTokens").document(document.documentID).delete() { err in
-                        if let err = err {
-                            print("Error while deleting FCM Token's document")
+                        if let error {
+                            print("Error while deleting FCM Token's document: \(error)")
                         }
                     }
                 }
