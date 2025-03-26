@@ -22,25 +22,18 @@ struct LeaderboardView: View {
     @ObservedObject var authManager: AuthenticationManager = .shared
     
     @Persistent("cachedLBPoints") var cachedLBPoints: [String : Int] = ["Black" : 0, "Blue" : 0, "Green" : 0, "Red" : 0, "Yellow" : 0]
-    
+
     var body: some View {
         List {
-            if loaded {
-                Section {
-                    ForEach(sortDictionary(for: leaderboardPoints), id: \.key) { house in
-                        houseRow(text: house.key, points: house.value)
-                    }
-                } footer: {
-                    Text("GrowCalth calculates and updates the Leaderboard upon the first launch of the app every day. 2500 steps = 1 point (Limited Time Double Points Event!).\n\nGrowCalth needs to be opened to calculate and add your points, unclaimed points will accumulate and be added to the Leaderboard the next time you open the app.")
+            Section {
+                ForEach(
+                    loaded ? sortDictionary(for: leaderboardPoints) : sortDictionary(for: cachedLBPoints),
+                    id: \.key
+                ) { house in
+                    houseRow(text: house.key, points: house.value)
                 }
-            } else {
-                Section {
-                    ForEach(sortDictionary(for: cachedLBPoints), id: \.key) { house in
-                        houseRow(text: house.key, points: house.value)
-                    }
-                } footer: {
-                    Text("GrowCalth calculates and updates the Leaderboard upon the first launch of the app every day. 2500 steps = 1 point (Limited Time Double Points Event!).\n\nGrowCalth needs to be opened to calculate and add your points, unclaimed points will accumulate and be added to the Leaderboard the next time you open the app.")
-                }
+            } footer: {
+                Text("GrowCalth calculates and updates the Leaderboard upon the first launch of the app every day. \(GLOBAL_STEPS_PER_POINT) steps = 1 point.\n\nGrowCalth needs to be opened to calculate and add your points, unclaimed points will accumulate and be added to the Leaderboard the next time you open the app.")
             }
         }
         .listStyle(.grouped)

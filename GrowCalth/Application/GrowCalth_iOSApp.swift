@@ -113,6 +113,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 }
 
+let GLOBAL_STEPS_PER_POINT: Int = 5000
+
 @main
 struct GrowCalth_iOSApp: App {
     
