@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct Quote: Codable {
-    var content: String
+    var id: Int
+    var quote: String
     var author: String
 }
 
@@ -31,20 +32,38 @@ class QuotesManager: ObservableObject {
             try fetchQuote()
             completion(.success(true))
         } catch {
-            print("error")
+            print("error fetching quote")
             completion(.failure(QuoteGenerationError.errorOccurredWhileFetchingQuote))
         }
     }
-    
+
     private func fetchQuote() throws {
-        Task {
-            let (data, _) = try await URLSession.shared.data(from: URL(string: "https://api.quotable.io/random")!)
-            let decoded = try JSONDecoder().decode(Quote.self, from: data)
-            print("decoded \(data)")
-            setQuote(newQuote: Quote(content: decoded.content, author: decoded.author))
+        var request = URLRequest(url: URL(string: "https://dummyjson.com/quotes/random")!,timeoutInterval: Double.infinity)
+        request.httpMethod = "GET"
+
+        let task = URLSession.shared.dataTask(with: request) {
+            [self] data,
+            response,
+            error in
+            guard let data = data else {
+                print(error)
+                return
+            }
+            Task {
+                let decoded = try JSONDecoder().decode(Quote.self, from: data)
+                setQuote(
+                    newQuote: Quote(
+                        id: decoded.id,
+                        quote: decoded.quote,
+                        author: decoded.author
+                    )
+                )
+            }
         }
+
+        task.resume()
     }
-    
+
     private func setQuote(newQuote: Quote) {
         DispatchQueue.main.async {
             withAnimation(.default) {
