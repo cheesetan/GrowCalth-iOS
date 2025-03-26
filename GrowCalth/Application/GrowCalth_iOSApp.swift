@@ -114,6 +114,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 }
 
 let GLOBAL_STEPS_PER_POINT: Int = 5000
+let GLOBAL_GROWCALTH_START_DATE: Date = .init(timeIntervalSince1970: TimeInterval(1744128000))
 
 @main
 struct GrowCalth_iOSApp: App {
@@ -126,9 +127,8 @@ struct GrowCalth_iOSApp: App {
     
     init() {
         if let lastPointsAwardedDate = lastPointsAwardedDate {
-            let growCalthStartDate = Date.init(timeIntervalSince1970: TimeInterval(1744128000))
-            if lastPointsAwardedDate < growCalthStartDate {
-                self.lastPointsAwardedDate = growCalthStartDate
+            if lastPointsAwardedDate < GLOBAL_GROWCALTH_START_DATE {
+                self.lastPointsAwardedDate = GLOBAL_GROWCALTH_START_DATE
             }
         }
     }
