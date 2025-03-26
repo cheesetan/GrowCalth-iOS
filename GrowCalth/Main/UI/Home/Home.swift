@@ -12,7 +12,6 @@ struct Home: View {
     
     let halfUIWidth = (UIScreen.main.bounds.width / 2) - 20
     
-    @ObservedObject var daysManager: DaysManager = .shared
     @ObservedObject var hkManager: HealthKitManager = .shared
     @ObservedObject var quotesManager: QuotesManager = .shared
     @ObservedObject var goalsManager: GoalsManager = .shared
@@ -68,7 +67,6 @@ struct Home: View {
             .navigationTitle("Home")
             .refreshable {
                 hkManager.fetchAllDatas()
-                daysManager.refreshNumberOfDaysInApp()
                 quotesManager.generateNewQuote() { _ in }
             }
         }
@@ -76,7 +74,6 @@ struct Home: View {
             adminManager.checkIfUnderMaintenance() { }
             adminManager.checkIfAppForcesUpdates()
             hkManager.fetchAllDatas()
-            daysManager.refreshNumberOfDaysInApp()
             quotesManager.generateNewQuote() { _ in }
             pointsManager.checkAndAddPoints()
         }
@@ -161,47 +158,6 @@ struct Home: View {
             }
             .overlay {
                 rectangleHeader(text: "Distance")
-            }
-            .overlay {
-                if colorScheme == .dark {
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(.white, lineWidth: 2)
-                }
-            }
-    }
-    
-    var daysinappprogress: some View {
-        RoundedRectangle(cornerRadius: 16)
-            .frame(width: halfUIWidth, height: halfUIWidth + 45)
-            .foregroundColor(Color(uiColor: .systemBackground))
-            .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
-            .overlay {
-                VStack {
-                    if let daysInApp = daysManager.daysInApp {
-                        Text("\(daysInApp)")
-                            .font(.system(size: 50))
-                            .fontWeight(.bold)
-                        VStack {
-                            if daysInApp == 1 {
-                                Text("day in this app")
-                                    .minimumScaleFactor(0.1)
-                                    .lineLimit(1)
-                            } else {
-                                Text("days in this app")
-                                    .minimumScaleFactor(0.1)
-                                    .lineLimit(1)
-                            }
-                        }
-                        .font(.title3)
-                        .fontWeight(.medium)
-                    } else {
-                        ProgressView()
-                    }
-                }
-                .padding()
-            }
-            .overlay {
-                rectangleHeader(text: "Progress")
             }
             .overlay {
                 if colorScheme == .dark {
