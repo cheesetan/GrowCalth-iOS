@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    
-    @State var isLoading = false
-    
+        
     @AppStorage("onboardingView", store: .standard) var onboardingView = true
     
     @ObservedObject var authManager: AuthenticationManager = .shared

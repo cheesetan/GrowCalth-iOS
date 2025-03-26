@@ -18,9 +18,11 @@ struct CustomContentUnavailableView: View {
     let description: String
     let mode: UnavailableMode
 
-    @EnvironmentObject private var authManager: AuthenticationManager
-    @EnvironmentObject private var adminManager: AdminManager
-    @EnvironmentObject private var developerManager: DeveloperManager
+    @State private var isLoading = false
+
+    @ObservedObject private var authManager: AuthenticationManager = .shared
+    @ObservedObject private var adminManager: AdminManager = .shared
+    @ObservedObject private var developerManager: DeveloperManager = .shared
 
     var body: some View {
         VStack {
