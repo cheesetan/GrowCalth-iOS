@@ -51,26 +51,6 @@ struct SignInView: View {
         } message: {
             Text(alertMessage)
         }
-        .onOpenURL { url in
-            handleMagicLink(url: url)
-        }
-    }
-    
-    private func handleMagicLink(url: URL) {
-        isLoading = true
-        Task {
-            await authManager.handleMagicLink(url: url) { result in
-                switch result {
-                case .success(_):
-                    isLoading = false
-                case .failure(let failure):
-                    isLoading = false
-                    alertHeader = "Error"
-                    alertMessage = failure.localizedDescription
-                    showingAlert = true
-                }
-            }
-        }
     }
     
     var infoFields: some View {
@@ -151,17 +131,9 @@ struct SignInView: View {
     
     var loginButton: some View {
         Button {
-            if authManager.magicLinkAuthenticationEnabled {
-                if !email.isEmpty && password.isEmpty {
-                    sendMagicLink()
-                } else {
-                    signInWithPassword()
-                }
-            } else {
-                signInWithPassword()
-            }
+            signInWithPassword()
         } label: {
-            Text(!email.isEmpty && password.isEmpty ? authManager.magicLinkAuthenticationEnabled ? "Login via Magic Link" : "Login" : "Login")
+            Text("Login")
                 .padding()
                 .frame(maxWidth: 300)
                 .foregroundColor(isLoading ? .clear : .white)
@@ -177,23 +149,15 @@ struct SignInView: View {
         .buttonStyle(.plain)
         .disabled(loginButtonDisabled)
     }
-    
+
     var loginButtonDisabled: Bool {
-        if authManager.magicLinkAuthenticationEnabled {
-            if email.isEmpty || isLoading {
-                return true
-            } else {
-                return false
-            }
+        if email.isEmpty || password.isEmpty || isLoading {
+            return true
         } else {
-            if email.isEmpty || password.isEmpty || isLoading {
-                return true
-            } else {
-                return false
-            }
+            return false
         }
     }
-    
+
     func signInWithPassword() {
         if !email.isEmpty && !password.isEmpty {
             isLoading = true
@@ -211,28 +175,6 @@ struct SignInView: View {
                     alertHeader = "Error"
                     alertMessage = "\(failure.localizedDescription)"
                     showingAlert = true
-                }
-            }
-        }
-    }
-    
-    func sendMagicLink() {
-        if !email.isEmpty && password.isEmpty {
-            isLoading = true
-            Task {
-                await authManager.sendMagicLink(email: email) { result in
-                    switch result {
-                    case .success(_):
-                        isLoading = false
-                        alertHeader = "Magic Link sent"
-                        alertMessage = "Check your email to continue with login."
-                        showingAlert = true
-                    case .failure(let failure):
-                        isLoading = false
-                        alertHeader = "Error"
-                        alertMessage = failure.localizedDescription
-                        showingAlert = true
-                    }
                 }
             }
         }
