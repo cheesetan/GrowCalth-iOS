@@ -181,9 +181,9 @@ struct Home: View {
                         .fontWeight(.bold)
                     VStack {
                         if housePointsEarnedToday == 1 {
-                            Text("house point earned today")
+                            Text("GrowCalth point earned today")
                         } else {
-                            Text("house points earned today")
+                            Text("GrowCalth points earned today")
                         }
                     }
                     .font(.title3)

@@ -10,8 +10,7 @@ import FirebaseFirestore
 
 class AdminManager: ObservableObject {
     static let shared: AdminManager = .init()
-    
-    @Published var bypassed = false
+
     @Published var isUnderMaintenance: Bool?
     @Published var appForcesUpdates: Bool?
     @Published var approvedEmails = ["admin@growcalth.com", "chay_yu_hung@s2021.ssts.edu.sg", "han_jeong_seu_caleb@s2021.ssts.edu.sg"]
@@ -194,18 +193,6 @@ class AdminManager: ObservableObject {
             } else {
                 print("Document does not exist")
             }
-        }
-    }
-    
-    func developerBypass() {
-        withAnimation {
-            self.bypassed = true
-        }
-    }
-    
-    func changeBypassValue(to newValue: Bool) {
-        withAnimation {
-            self.bypassed = newValue
         }
     }
 }

@@ -126,7 +126,7 @@ struct GrowCalth_iOSApp: App {
     
     init() {
         if let lastPointsAwardedDate = lastPointsAwardedDate {
-            let growCalthStartDate = Date.init(timeIntervalSince1970: TimeInterval(1713283200))
+            let growCalthStartDate = Date.init(timeIntervalSince1970: TimeInterval(1744128000))
             if lastPointsAwardedDate < growCalthStartDate {
                 self.lastPointsAwardedDate = growCalthStartDate
             }

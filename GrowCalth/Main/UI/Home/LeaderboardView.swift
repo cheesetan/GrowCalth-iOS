@@ -43,10 +43,10 @@ struct LeaderboardView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(role: .destructive) {
                         showingAlert = true
-                        alertTitle = "Reset house points"
-                        alertMessage = "Are you sure you want to reset all house points? This action cannot be undone."
+                        alertTitle = "Reset GrowCalth points"
+                        alertMessage = "Are you sure you want to reset all GrowCalth points? This action cannot be undone."
                     } label: {
-                        Label("Reset house points", systemImage: "arrow.clockwise.circle")
+                        Label("Reset GrowCalth points", systemImage: "arrow.clockwise.circle")
                     }
                     .tint(.red)
                 }
@@ -61,7 +61,7 @@ struct LeaderboardView: View {
                     case .failure(_):
                         showingAlert = true
                         alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset house points for Black house. Please try again."
+                        alertTitle = "An error has occurred while attempting to reset GrowCalth points for Black house. Please try again."
                     }
                 }
                 lbManager.resetLeaderboards(forHouse: "Blue") { result in
@@ -71,7 +71,7 @@ struct LeaderboardView: View {
                     case .failure(_):
                         showingAlert = true
                         alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset house points for Blue house. Please try again."
+                        alertTitle = "An error has occurred while attempting to reset GrowCalth points for Blue house. Please try again."
                     }
                 }
                 lbManager.resetLeaderboards(forHouse: "Green") { result in
@@ -81,7 +81,7 @@ struct LeaderboardView: View {
                     case .failure(_):
                         showingAlert = true
                         alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset house points for Green house. Please try again."
+                        alertTitle = "An error has occurred while attempting to reset GrowCalth points for Green house. Please try again."
                     }
                 }
                 lbManager.resetLeaderboards(forHouse: "Red") { result in
@@ -91,7 +91,7 @@ struct LeaderboardView: View {
                     case .failure(_):
                         showingAlert = true
                         alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset house points for Red house. Please try again."
+                        alertTitle = "An error has occurred while attempting to reset GrowCalth points for Red house. Please try again."
                     }
                 }
                 lbManager.resetLeaderboards(forHouse: "Yellow") { result in
@@ -101,7 +101,7 @@ struct LeaderboardView: View {
                     case .failure(_):
                         showingAlert = true
                         alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset house points for Yellow house. Please try again."
+                        alertTitle = "An error has occurred while attempting to reset GrowCalth points for Yellow house. Please try again."
                     }
                 }
             }

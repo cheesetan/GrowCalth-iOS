@@ -19,16 +19,6 @@ extension AuthenticationManager {
         }
     }
     
-    internal enum MagicLinkHandlerError: LocalizedError {
-        case noPersistedEmailInSignInFlow
-        var errorDescription: String? { 
-            switch self {
-            case .noPersistedEmailInSignInFlow:
-                return "The Magic Link you have used has most likely expired. Try requesting and signing in with a new Magic Link."
-            }
-        }
-    }
-    
     internal enum DeleteAccountError: LocalizedError {
         case failedToDeleteFromFirestore
         case failedToDeleteAccount

@@ -23,7 +23,6 @@ struct DeveloperView: View {
     @State var blockedVersions: [String]?
     @State var blockedVersionsAndroid: [String]?
     
-    @ObservedObject var adminManager: AdminManager = .shared
     @ObservedObject var developerManager: DeveloperManager = .shared
     
     var body: some View {
@@ -165,9 +164,9 @@ struct DeveloperView: View {
         }
         .onChange(of: bypass) { newValue in
             if newValue {
-                adminManager.changeBypassValue(to: true)
+                developerManager.changeBypassValue(to: true)
             } else {
-                adminManager.changeBypassValue(to: false)
+                developerManager.changeBypassValue(to: false)
             }
         }
     }

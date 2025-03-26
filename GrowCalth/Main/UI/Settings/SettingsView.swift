@@ -148,7 +148,7 @@ struct SettingsView: View {
                     DeveloperView(
                         appForcesUpdates: appForcesUpdates,
                         appIsUnderMaintenance: appIsUnderMaintenance,
-                        bypass: adminManager.bypassed,
+                        bypass: developerManager.bypassed,
                         blockedVersions: blockedVersions,
                         blockedVersionsAndroid: blockedVersionsAndroid
                     )

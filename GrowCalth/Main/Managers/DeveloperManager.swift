@@ -10,7 +10,8 @@ import FirebaseFirestore
 
 class DeveloperManager: ObservableObject {
     static let shared: DeveloperManager = .init()
-    
+
+    @Published var bypassed = false
     @Published var blockedVersions: [String]?
     @Published var blockedVersionsAndroid: [String]?
     
@@ -89,6 +90,18 @@ class DeveloperManager: ObservableObject {
                 self.updateValues() {}
                 completion(.success(true))
             }
+        }
+    }
+
+    func developerBypass() {
+        withAnimation {
+            self.bypassed = true
+        }
+    }
+
+    func changeBypassValue(to newValue: Bool) {
+        withAnimation {
+            self.bypassed = newValue
         }
     }
 }

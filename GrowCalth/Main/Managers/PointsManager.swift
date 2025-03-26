@@ -146,7 +146,7 @@ class PointsManager: ObservableObject {
             "useruid": Auth.auth().currentUser?.uid ?? "UID NOT FOUND",
             "email": authManager.email ?? "EMAIL NOT FOUND",
             "house": authManager.usersHouse ?? "HOUSE NOT FOUND",
-            "pointsAdded": "\(points) - double points event",
+            "pointsAdded": "\(points)",
             "previousHousePoints": previousHousePoints,
             "newHousePoints": previousHousePoints + points
         ]) { _ in }
