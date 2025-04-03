@@ -21,7 +21,7 @@ struct QuoteView: View {
         VStack {
             Spacer()
             VStack(spacing: 15) {
-                if let content = quotesManager.quote?.quote {
+                if let content = quotesManager.quote?.text {
                     Text(content)
                         .minimumScaleFactor(0.1)
                         .fontWeight(.semibold)

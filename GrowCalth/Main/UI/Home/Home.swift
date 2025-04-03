@@ -221,7 +221,7 @@ struct Home: View {
             .overlay {
                 VStack {
                     HStack {
-                        if let content = quotesManager.quote?.quote {
+                        if let content = quotesManager.quote?.text {
                             Text(content)
                                 .foregroundColor(.black)
                                 .font(.title3)
