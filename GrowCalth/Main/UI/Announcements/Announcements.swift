@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftPersistence
 
 struct Announcements: View {
     

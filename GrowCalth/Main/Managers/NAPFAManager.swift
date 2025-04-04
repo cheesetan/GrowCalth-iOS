@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftPersistence
 import FirebaseFirestore
 
 struct NAPFAResults: Identifiable, Codable, Equatable {

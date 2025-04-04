@@ -8,7 +8,6 @@
 import SwiftUI
 import FirebaseCore
 import FirebaseMessaging
-import SwiftPersistence
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import FirebaseFirestore
-import SwiftPersistence
 
 struct NAPFA: View {
     

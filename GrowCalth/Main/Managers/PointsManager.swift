@@ -8,7 +8,6 @@
 import SwiftUI
 import FirebaseFirestore
 import FirebaseAuth
-import SwiftPersistence
 
 class PointsManager: ObservableObject {
     static let shared: PointsManager = .init()

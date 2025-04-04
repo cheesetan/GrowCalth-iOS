@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftPersistence
 
 struct HealthInfoItem: Codable, Identifiable {
     var id = UUID()

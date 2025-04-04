@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftPersistence
 
 enum PreferredColorScheme: Codable {
     case light, dark, automatic
