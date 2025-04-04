@@ -17,7 +17,10 @@ struct Home: View {
     @ObservedObject var goalsManager: GoalsManager = .shared
     @ObservedObject var pointsManager: PointsManager = .shared
     @ObservedObject var adminManager: AdminManager = .shared
-    
+    @ObservedObject var authManager: AuthenticationManager = .shared
+
+    @State private var showingAlumnusAppreciationAlert = false
+
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
@@ -76,6 +79,15 @@ struct Home: View {
             hkManager.fetchAllDatas()
             quotesManager.generateNewQuote() { _ in }
             pointsManager.checkAndAddPoints()
+
+            if authManager.accountType == .alumnus {
+                self.showingAlumnusAppreciationAlert = true
+            }
+        }
+        .alert("Thank you.", isPresented: $showingAlumnusAppreciationAlert) {
+
+        } message: {
+            Text("As an alumnus, you're able to view the contents of the app, but are unable to contribute to the leaderboard. We really appreciate your previous support as a student!")
         }
     }
     
@@ -178,11 +190,11 @@ struct Home: View {
                 let housePointsEarnedToday = Int(floor(Double((hkManager.steps ?? 0) / GLOBAL_STEPS_PER_POINT)))
                 VStack {
                     Spacer()
-                    Text("\(housePointsEarnedToday)")
+                    Text(authManager.accountType.canAddPoints ? "\(housePointsEarnedToday)" : "-" )
                         .font(.system(size: 50))
                         .fontWeight(.bold)
                     VStack {
-                        if housePointsEarnedToday == 1 {
+                        if authManager.accountType.canAddPoints && housePointsEarnedToday == 1 {
                             Text("GrowCalth point earned today")
                         } else {
                             Text("GrowCalth points earned today")
@@ -194,12 +206,14 @@ struct Home: View {
                     .minimumScaleFactor(0.1)
                     .lineLimit(2)
                     Spacer()
-                    Text("\(GLOBAL_STEPS_PER_POINT - ((hkManager.steps ?? 0) - (housePointsEarnedToday * GLOBAL_STEPS_PER_POINT))) more steps to another point!")
-                        .font(.title3)
-                        .fontWeight(.medium)
-                        .multilineTextAlignment(.center)
-                        .minimumScaleFactor(0.1)
-                        .lineLimit(1)
+                    if authManager.accountType.canAddPoints {
+                        Text("\(GLOBAL_STEPS_PER_POINT - ((hkManager.steps ?? 0) - (housePointsEarnedToday * GLOBAL_STEPS_PER_POINT))) more steps to another point!")
+                            .font(.title3)
+                            .fontWeight(.medium)
+                            .multilineTextAlignment(.center)
+                            .minimumScaleFactor(0.1)
+                            .lineLimit(1)
+                    }
                 }
                 .padding()
             }

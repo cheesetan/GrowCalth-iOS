@@ -10,6 +10,32 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 
+enum AccountType {
+    case student, alumnus, teacher, special, admin, unknown
+
+    var name: String {
+        switch self {
+        case .student: "Student"
+        case .alumnus: "Alumnus"
+        case .teacher: "Teacher"
+        case .special: "Special"
+        case .admin: "Admin"
+        case .unknown: "Unknown"
+        }
+    }
+
+    var canAddPoints: Bool {
+        switch self {
+        case .student: true
+        case .alumnus: false
+        case .teacher: true
+        case .special: false
+        case .admin: false
+        case .unknown: false
+        }
+    }
+}
+
 class AuthenticationManager: ObservableObject {
     static let shared: AuthenticationManager = .init()
     
@@ -18,7 +44,8 @@ class AuthenticationManager: ObservableObject {
     @Published var accountVerified: Bool = false
     @Published var email: String?
     @Published var usersHouse: String?
-        
+    @Published var accountType: AccountType = .unknown
+
     init() {
         verifyAuthenticationState()
         verifyVerificationState()
@@ -51,6 +78,7 @@ class AuthenticationManager: ObservableObject {
     
     internal func updatePublishedVariables() {
         email = Auth.auth().currentUser?.email
+
         self.fetchUsersHouse { result in
             switch result {
             case .success(let success):
@@ -58,6 +86,29 @@ class AuthenticationManager: ObservableObject {
             case .failure(_):
                 break
             }
+        }
+
+        let year = Calendar.current.component(.year, from: Date())
+        if let email {
+            if email == "appreview@s2021.ssts.edu.sg" || email == "admin@growcalth.com" || email == "growcalth@sst.edu.sg" {
+                self.accountType = .special
+            } else if GLOBAL_ADMIN_EMAILS.contains(email) {
+                self.accountType = .admin
+            } else {
+                let domain = email.components(separatedBy: "@")[1]
+                if domain == "sst.edu.sg" {
+                    self.accountType = .teacher
+                } else {
+                    let emailYear = Int(domain.components(separatedBy: ".")[0].suffix(4)) ?? 0
+                    if emailYear <= year-4 {
+                        self.accountType = .alumnus
+                    } else {
+                        self.accountType = .student
+                    }
+                }
+            }
+        } else {
+            self.accountType = .unknown
         }
     }
     

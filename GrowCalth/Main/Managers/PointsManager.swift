@@ -59,17 +59,17 @@ class PointsManager: ObservableObject {
                         self.addPointsToFirebase(pointsToAdd: pointsToAdd) { result in
                             switch result {
                             case .success(_):
-                                self.updateVariables()
+                                self.updateLastPointsAwardedDate()
                             case .failure(let failure):
-                                self.updateVariables()
+                                self.updateLastPointsAwardedDate()
                                 print(failure.localizedDescription)
                             }
                         }
                     } else {
-                        self.updateVariables()
+                        self.updateLastPointsAwardedDate()
                     }
                 case .failure(let failure):
-                    self.updateVariables()
+                    self.updateLastPointsAwardedDate()
                     print(failure.localizedDescription)
                 }
             }
@@ -79,10 +79,14 @@ class PointsManager: ObservableObject {
     }
     
     private func isDueForPointsAwarding() -> Bool {
-        if let lastPointsAwardedDate = lastPointsAwardedDate {
-            if lastPointsAwardedDate.addingTimeInterval(86400) <= Date() {
-                return true
+        if authManager.accountType.canAddPoints {
+            if let lastPointsAwardedDate = lastPointsAwardedDate {
+                if lastPointsAwardedDate.addingTimeInterval(86400) <= Date() {
+                    return true
+                }
             }
+        } else {
+            self.updateLastPointsAwardedDate()
         }
         return false
     }
@@ -158,7 +162,7 @@ class PointsManager: ObservableObject {
         }
     }
     
-    private func updateVariables() {
+    private func updateLastPointsAwardedDate() {
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         lastPointsAwardedDate = cal.startOfDay(for: Date())
     }

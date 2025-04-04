@@ -49,7 +49,7 @@ struct CustomContentUnavailableView: View {
                         }
                         .buttonStyle(.borderedProminent)
 
-                        if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                        if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
                             Button {
                                 developerManager.changeAppIsUnderMaintenanceValue(to: false) { _ in }
                                 adminManager.checkIfUnderMaintenance { }
@@ -70,7 +70,7 @@ struct CustomContentUnavailableView: View {
 
                     switch mode {
                     case .maintenance, .update:
-                        if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                        if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
                             Button {
                                 developerManager.developerBypass()
                             } label: {

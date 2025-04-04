@@ -94,7 +94,7 @@ struct NAPFA: View {
     
     var title: some View {
         VStack {
-            if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
+            if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
                 Button {
                     showingNAPFAEditing.toggle()
                 } label: {

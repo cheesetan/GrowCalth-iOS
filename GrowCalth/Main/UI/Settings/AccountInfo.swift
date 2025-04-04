@@ -70,6 +70,13 @@ struct AccountInfo: View {
                     }
                     .multilineTextAlignment(.trailing)
                 }
+
+                LabeledContent("Account Type") {
+                    VStack {
+                        Text(authManager.accountType.name)
+                    }
+                    .multilineTextAlignment(.trailing)
+                }
             }
             
             Section {

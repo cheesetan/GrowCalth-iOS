@@ -13,7 +13,6 @@ class AdminManager: ObservableObject {
 
     @Published var isUnderMaintenance: Bool?
     @Published var appForcesUpdates: Bool?
-    @Published var approvedEmails = ["admin@growcalth.com", "chay_yu_hung@s2021.ssts.edu.sg", "han_jeong_seu_caleb@s2021.ssts.edu.sg"]
     
     @ObservedObject var authManager: AuthenticationManager = .shared
     

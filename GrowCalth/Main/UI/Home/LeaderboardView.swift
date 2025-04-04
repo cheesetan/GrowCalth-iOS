@@ -32,7 +32,7 @@ struct LeaderboardView: View {
         .listStyle(.grouped)
         .navigationTitle("Leaderboard")
         .toolbar {
-            if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+            if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(role: .destructive) {
                         showingAlert = true

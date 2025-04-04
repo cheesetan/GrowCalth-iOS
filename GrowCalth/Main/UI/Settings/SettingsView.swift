@@ -31,7 +31,7 @@ struct SettingsView: View {
                 permissions
                 resources
                 acknowledgements
-                if let email = authManager.email, adminManager.approvedEmails.contains(email) {
+                if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
                     developer
                 }
                 signOutButton

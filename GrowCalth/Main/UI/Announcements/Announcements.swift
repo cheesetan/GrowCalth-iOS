@@ -69,7 +69,7 @@ struct Announcements: View {
                 adminManager.checkIfUnderMaintenance() { }
             }
             .toolbar {
-                if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
+                if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         createPostButton
                     }
@@ -105,7 +105,7 @@ struct Announcements: View {
                     )
                 }
                 .swipeActions {
-                    if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
+                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
                         Button(role: .destructive) {
                             stateUUID = item.id
                             alertHeader = "Delete Announcement"
@@ -135,7 +135,7 @@ struct Announcements: View {
                     )
                 }
                 .swipeActions {
-                    if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
+                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
                         Button(role: .destructive) {
                             stateUUID = item.id
                             alertHeader = "Delete Event"
