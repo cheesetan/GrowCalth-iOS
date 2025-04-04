@@ -47,6 +47,7 @@ struct NAPFA: View {
             .onAppear {
                 adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
+                isLoading = true
                 napfaManager.fetchAllData(for: napfaManager.year) {
                     isLoading = false
                 }
@@ -55,6 +56,7 @@ struct NAPFA: View {
                 adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
                 if !showingNAPFAEditing {
+                    isLoading = true
                     napfaManager.fetchAllData(for: napfaManager.year) {
                         isLoading = false
                     }
@@ -70,6 +72,7 @@ struct NAPFA: View {
             .onChange(of: napfaManager.levelSelection) { _ in
                 adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
+                isLoading = true
                 napfaManager.fetchAllData(for: napfaManager.year) {
                     isLoading = false
                 }
