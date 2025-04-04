@@ -30,12 +30,6 @@ struct Acknowledgements: View {
                 Link(destination: URL(string: "https://github.com/firebase/firebase-ios-sdk")!) {
                     acknowledgement(title: "Firebase iOS SDK", description: "Developed by Google. Licensed under the Apache License 2.0.", image: "server.rack")
                 }
-                
-                Link(destination: URL(string: "https://github.com/cheesetan/SwiftPersistence")!) {
-                    HStack {
-                        acknowledgement(title: "SwiftPersistence", description: "Developed by Tristan Chay. Licensed under the MIT License.", image: "square.and.arrow.down.on.square")
-                    }
-                }
             } header: {
                 Label("Packages & Libraries", systemImage: "shippingbox.fill")
             }
