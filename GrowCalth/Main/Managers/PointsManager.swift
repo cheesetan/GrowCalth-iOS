@@ -16,10 +16,40 @@ class PointsManager: ObservableObject {
     @ObservedObject var adminManager: AdminManager = .shared
     @ObservedObject var hkManager: HealthKitManager = .shared
     @ObservedObject var authManager: AuthenticationManager = .shared
-    
-    @Persistent("lastPointsAwardedDate") private var lastPointsAwardedDate: Date? = nil
-    @Persistent("appInstalledDate") private var appInstalledDate: Date = Date()
-    
+
+    @Published var lastPointsAwardedDate: Date? = nil {
+        didSet {
+            save()
+        }
+    }
+
+    init() {
+        load()
+    }
+
+    private func getArchiveURL() -> URL {
+        URL.documentsDirectory.appending(path: "lastPointsAwardedDate.json")
+    }
+
+    private func save() {
+        let archiveURL = getArchiveURL()
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
+
+        let encodedlastPointsAwardedDates = try? jsonEncoder.encode(lastPointsAwardedDate)
+        try? encodedlastPointsAwardedDates?.write(to: archiveURL, options: .noFileProtection)
+    }
+
+    private func load() {
+        let archiveURL = getArchiveURL()
+        let jsonDecoder = JSONDecoder()
+
+        if let retrievedDateData = try? Data(contentsOf: archiveURL),
+           let lastPointsAwardedDatesDecoded = try? jsonDecoder.decode(Date.self, from: retrievedDateData) {
+            lastPointsAwardedDate = lastPointsAwardedDatesDecoded
+        }
+    }
+
     func checkAndAddPoints() {
         if isDueForPointsAwarding() {
             calculatePoints { result in
@@ -54,17 +84,13 @@ class PointsManager: ObservableObject {
             if lastPointsAwardedDate.addingTimeInterval(86400) <= Date() {
                 return true
             }
-        } else {
-            if appInstalledDate.addingTimeInterval(86400) <= Date() {
-                return true
-            }
         }
         return false
     }
     
     private func calculatePoints(_ completion: @escaping ((Result<Int, Error>) -> Void)) {
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
-        hkManager.fetchStepsForPointsCalculation(startDate: lastPointsAwardedDate ?? appInstalledDate, endDate: cal.startOfDay(for: Date())) { result in
+        hkManager.fetchStepsForPointsCalculation(startDate: lastPointsAwardedDate, endDate: cal.startOfDay(for: Date())) { result in
             switch result {
             case .success(let steps):
                 print("pointsToAdd steps: \(steps)")
@@ -141,14 +167,14 @@ class PointsManager: ObservableObject {
     private func logPoints(points: Int, previousHousePoints: Int) {
         Firestore.firestore().collection("logs").document().setData([
             "dateLogged": Date(),
-            "appInstalledDate": self.appInstalledDate,
-            "lastPointsAddedDate": self.lastPointsAwardedDate ?? "LASTPOINTSAWARDEDDATE NOT FOUND",
+            "lastPointsAddedDate": self.lastPointsAwardedDate ?? "LASTPOINTSAWARDEDDATE NOT FOUND (impossible)",
             "useruid": Auth.auth().currentUser?.uid ?? "UID NOT FOUND",
             "email": authManager.email ?? "EMAIL NOT FOUND",
             "house": authManager.usersHouse ?? "HOUSE NOT FOUND",
             "pointsAdded": "\(points)",
             "previousHousePoints": previousHousePoints,
-            "newHousePoints": previousHousePoints + points
+            "newHousePoints": previousHousePoints + points,
+            "appVersion": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "idk",
         ]) { _ in }
     }
 }

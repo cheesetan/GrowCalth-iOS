@@ -13,30 +13,24 @@ struct NAPFA: View {
     
     @State var isLoading = false
     
-    @AppStorage("levelSelection", store: .standard) private var levelSelection: String = NAPFALevel.secondary2.rawValue
-    @AppStorage("yearSelection", store: .standard) private var yearSelection: Int = Calendar.current.component(.year, from: Date())
-    
     @State var showingNAPFAEditing = false
     @ObservedObject var adminManager: AdminManager = .shared
     @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var napfaManager: NAPFAManager = .shared
-    
-    @Persistent("cachedNAPFAData", store: .fileManager) private var cachedData: [String : [NAPFAResults]] = [:]
-    
+
     var body: some View {
         NavigationStack {
             VStack {
                 picker
                 table
             }
-            .animation(.default, value: yearSelection)
-            .animation(.default, value: levelSelection)
-            .animation(.default, value: cachedData)
+            .animation(.default, value: napfaManager.year)
+            .animation(.default, value: napfaManager.levelSelection)
             .animation(.default, value: napfaManager.data)
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showingNAPFAEditing) {
                 EditingNAPFA(
-                    yearSelection: yearSelection,
+                    yearSelection: napfaManager.year,
                     twoPointFourKm: napfaManager.twoPointFourKm,
                     inclinedPullUps: napfaManager.inclinedPullUps,
                     pullUps: napfaManager.pullUps,
@@ -54,7 +48,7 @@ struct NAPFA: View {
             .onAppear {
                 adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
-                napfaManager.fetchAllData(for: yearSelection) {
+                napfaManager.fetchAllData(for: napfaManager.year) {
                     isLoading = false
                 }
             }
@@ -62,22 +56,22 @@ struct NAPFA: View {
                 adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
                 if !showingNAPFAEditing {
-                    napfaManager.fetchAllData(for: yearSelection) {
+                    napfaManager.fetchAllData(for: napfaManager.year) {
                         isLoading = false
                     }
                 }
             }
-            .onChange(of: yearSelection) { newYear in
+            .onChange(of: napfaManager.year) { newYear in
                 adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
                 napfaManager.fetchAllData(for: newYear) {
                     isLoading = false
                 }
             }
-            .onChange(of: levelSelection) { _ in
+            .onChange(of: napfaManager.levelSelection) { _ in
                 adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
-                napfaManager.fetchAllData(for: yearSelection) {
+                napfaManager.fetchAllData(for: napfaManager.year) {
                     isLoading = false
                 }
             }
@@ -86,14 +80,14 @@ struct NAPFA: View {
     
     var previousButton: some View {
         Button {
-            if yearSelection > 2023 {
-                yearSelection -= 1
+            if napfaManager.year > 2023 {
+                napfaManager.year -= 1
             }
         } label: {
             Label("Previous year", systemImage: "chevron.left.circle.fill")
                 .fontWeight(.bold)
         }
-        .disabled(yearSelection <= 2023)
+        .disabled(napfaManager.year <= 2023)
     }
     
     var title: some View {
@@ -103,7 +97,7 @@ struct NAPFA: View {
                     showingNAPFAEditing.toggle()
                 } label: {
                     HStack {
-                        Text("NAPFA \(String(yearSelection))")
+                        Text("NAPFA \(String(napfaManager.year))")
                             .font(.headline)
                         Image(systemName: "chevron.down")
                             .font(.caption2)
@@ -116,7 +110,7 @@ struct NAPFA: View {
                 .buttonStyle(.bordered)
                 .mask(Capsule())
             } else {
-                Text("NAPFA \(String(yearSelection))")
+                Text("NAPFA \(String(napfaManager.year))")
                     .font(.headline)
             }
         }
@@ -124,19 +118,19 @@ struct NAPFA: View {
     
     var nextButton: some View {
         Button {
-            if yearSelection < Calendar.current.component(.year, from: Date()) {
-                yearSelection += 1
+            if napfaManager.year < Calendar.current.component(.year, from: Date()) {
+                napfaManager.year += 1
             }
         } label: {
             Label("Next year", systemImage: "chevron.right.circle.fill")
                 .fontWeight(.bold)
         }
-        .disabled(yearSelection >= Calendar.current.component(.year, from: Date()))
+        .disabled(napfaManager.year >= Calendar.current.component(.year, from: Date()))
     }
     
     var picker: some View {
         VStack {
-            Picker(selection: $levelSelection) {
+            Picker(selection: $napfaManager.levelSelection) {
                 ForEach(NAPFALevel.allCases, id: \.rawValue) { level in
                     Text(level.rawValue)
                         .tag(level.rawValue)
@@ -151,11 +145,11 @@ struct NAPFA: View {
     
     var table: some View {
         VStack {
-            if let cachedDataForYear = cachedData["\(NAPFALevel(rawValue: levelSelection)!.firebaseCode)-\(String(yearSelection))"], !cachedDataForYear.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
+            if let cachedDataForYear = napfaManager.data["\(NAPFALevel(rawValue: napfaManager.levelSelection)!.firebaseCode)-\(String(napfaManager.year))"], !cachedDataForYear.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
                 MultiColumnTable(headers: ["Rank", "Name", "Class", "Result"], data: .constant(cachedDataForYear))
                     .padding(.top)
             } else {
-                noDataAvailable(year: yearSelection)
+                noDataAvailable(year: napfaManager.year)
             }
         }
     }
@@ -167,11 +161,11 @@ struct NAPFA: View {
                 ContentUnavailableView {
                     Label("No Data", systemImage: "questionmark.square.dashed")
                 } description: {
-                    Text("There is no data available for \(String(year)) \(levelSelection) NAPFA at the moment.")
+                    Text("There is no data available for \(String(year)) \(napfaManager.levelSelection) NAPFA at the moment.")
                 } actions: {
                     Button {
                         isLoading = true
-                        napfaManager.fetchAllData(for: yearSelection) {
+                        napfaManager.fetchAllData(for: napfaManager.year) {
                             isLoading = false
                         }
                     } label: {
@@ -190,11 +184,11 @@ struct NAPFA: View {
                     Image(systemName: "questionmark.square.dashed")
                         .font(.system(size: 70))
                         .foregroundColor(.secondary)
-                    Text("There is no data available for \(String(year)) \(levelSelection) NAPFA at the moment.")
+                    Text("There is no data available for \(String(year)) \(napfaManager.levelSelection) NAPFA at the moment.")
                         .multilineTextAlignment(.center)
                     Button {
                         isLoading = true
-                        napfaManager.fetchAllData(for: yearSelection) {
+                        napfaManager.fetchAllData(for: napfaManager.year) {
                             isLoading = false
                         }
                     } label: {

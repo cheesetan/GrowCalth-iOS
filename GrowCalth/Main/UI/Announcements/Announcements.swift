@@ -25,9 +25,6 @@ struct Announcements: View {
     @ObservedObject var announcementManager: AnnouncementManager = .shared
     @ObservedObject var adminManager: AdminManager = .shared
     
-    @Persistent("cachedEvents", store: .fileManager) private var cachedEvents: [EventItem] = []
-    @Persistent("cachedAnnouncements", store: .fileManager) private var cachedAnnouncements: [Announcement] = []
-    
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
@@ -35,13 +32,13 @@ struct Announcements: View {
                 Spacer()
                 switch selection {
                 case .announcements:
-                    if !cachedAnnouncements.isEmpty || !announcementManager.announcements.isEmpty {
+                    if !announcementManager.announcements.isEmpty {
                         announcementsList
                     } else {
                         noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
                     }
                 case .events:
-                    if !cachedEvents.isEmpty || !announcementManager.events.isEmpty {
+                    if !announcementManager.events.isEmpty {
                         eventsList
                     } else {
                         noContentView(keyword: "Events", systemImage: "calendar")
@@ -52,33 +49,25 @@ struct Announcements: View {
             .animation(.default, value: selection)
             .animation(.default, value: announcementManager.announcements)
             .animation(.default, value: announcementManager.events)
-            .animation(.default, value: cachedAnnouncements)
-            .animation(.default, value: cachedEvents)
             .listStyle(.grouped)
             .navigationTitle(selection == .announcements ? "Announcements" : "Events")
             .refreshable {
                 adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
-                announcementManager.retrieveAllPosts() {
-                    announcementManager.updateCacheForAllPosts()
-                }
+                announcementManager.retrieveAllPosts() {}
             }
             .onAppear {
                 adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
-                announcementManager.retrieveAllPosts() {
-                    announcementManager.updateCacheForAllPosts()
-                }
+                announcementManager.retrieveAllPosts() {}
             }
             .onChange(of: announcementManager.announcements) { _ in
                 adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
-                announcementManager.updateCacheForAllPosts()
             }
             .onChange(of: announcementManager.events) { _ in
                 adminManager.checkIfAppForcesUpdates()
                 adminManager.checkIfUnderMaintenance() { }
-                announcementManager.updateCacheForAllPosts()
             }
             .toolbar {
                 if let email = authManager.email, adminManager.approvedEmails.contains(email) || email.contains("@sst.edu.sg") {
@@ -107,7 +96,7 @@ struct Announcements: View {
     
     var announcementsList: some View {
         List {
-            ForEach(announcementManager.announcements.isEmpty ? $cachedAnnouncements : $announcementManager.announcements, id: \.id) { item in
+            ForEach($announcementManager.announcements, id: \.id) { item in
                 NavigationLink {
                     AnnouncementDetailView(announcement: item)
                 } label: {
@@ -135,7 +124,7 @@ struct Announcements: View {
     
     var eventsList: some View {
         List {
-            ForEach(announcementManager.events.isEmpty ? $cachedEvents : $announcementManager.events, id: \.id) { item in
+            ForEach($announcementManager.events, id: \.id) { item in
                 NavigationLink {
                     EventDetailView(event: item)
                 } label: {
@@ -280,9 +269,7 @@ struct Announcements: View {
             adminManager.deleteAnnouncement(announcementUUID: uuid) { result in
                 switch result {
                 case .success(_):
-                    announcementManager.retrieveAllPosts() {
-                        cachedAnnouncements = announcementManager.announcements
-                    }
+                    announcementManager.retrieveAllPosts() {}
                 case .failure(let failure):
                     alertHeader = "Error"
                     alertMessage = failure.localizedDescription
@@ -293,9 +280,7 @@ struct Announcements: View {
             adminManager.deleteEvent(eventUUID: uuid) { result in
                 switch result {
                 case .success(_):
-                    announcementManager.retrieveAllPosts() {
-                        cachedEvents = announcementManager.events
-                    }
+                    announcementManager.retrieveAllPosts() {}
                 case .failure(let failure):
                     alertHeader = "Error"
                     alertMessage = failure.localizedDescription

@@ -11,46 +11,55 @@ import FirebaseFirestore
 class LeaderboardsManager: ObservableObject {
     static let shared: LeaderboardsManager = .init()
     
-    @Published var black: Int?
-    @Published var blue: Int?
-    @Published var green: Int?
-    @Published var red: Int?
-    @Published var yellow: Int?
-    
-    init() {
-        retrievePoints { _ in }
+    @Published var leaderboard: [String : Int] = [:] {
+        didSet {
+            save()
+        }
     }
-    
-    func retrievePoints(_ completion: @escaping ((Bool) -> Void)) {
+
+    init() {
+        load()
+        retrievePoints()
+    }
+
+    private func getArchiveURL() -> URL {
+        URL.documentsDirectory.appending(path: "leaderboard.json")
+    }
+
+    private func save() {
+        let archiveURL = getArchiveURL()
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
+
+        let encodedTypes = try? jsonEncoder.encode(leaderboard)
+        try? encodedTypes?.write(to: archiveURL, options: .noFileProtection)
+    }
+
+    private func load() {
+        let archiveURL = getArchiveURL()
+        let jsonDecoder = JSONDecoder()
+
+        if let retrievedTypeData = try? Data(contentsOf: archiveURL),
+           let leaderboardDecoded = try? jsonDecoder.decode([String : Int].self, from: retrievedTypeData) {
+            leaderboard = leaderboardDecoded
+        }
+    }
+
+    func retrievePoints() {
         Firestore.firestore().collection("HousePoints").getDocuments { (query: QuerySnapshot?, err) in
             if let err {
                 print("Error getting documents: \(err)")
             } else {
                 for document in query!.documents {
                     switch document.documentID {
-                    case "Black":
+                    case "Black", "Blue", "Green", "Red", "Yellow":
                         withAnimation {
-                            self.black = document.data()["points"] as? Int
-                        }
-                    case "Blue":
-                        withAnimation {
-                            self.blue = document.data()["points"] as? Int
-                        }
-                    case "Green":
-                        self.green = document.data()["points"] as? Int
-                    case "Red":
-                        withAnimation {
-                            self.red = document.data()["points"] as? Int
-                        }
-                    case "Yellow":
-                        withAnimation {
-                            self.yellow = document.data()["points"] as? Int
+                            self.leaderboard[document.documentID] = document.data()["points"] as? Int
                         }
                     default:
                         print("error")
                     }
                 }
-                completion(true)
             }
         }
     }

@@ -16,16 +16,13 @@ struct SettingsView: View {
     @State var alertMessage = ""
     @State var showingAlert = false
     
-    @State var settingsColorScheme: PreferredColorScheme = .automatic
     @State var showingSignOutAlert = false
     
     @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var csManager: ColorSchemeManager = .shared
     @ObservedObject var adminManager: AdminManager = .shared
     @ObservedObject var developerManager: DeveloperManager = .shared
-    
-    @Persistent("preferredColorSchemeAppStorage", store: .fileManager) private var preferredColorSchemeAppStorage: PreferredColorScheme = .automatic
-        
+
     var body: some View {
         NavigationStack {
             List {
@@ -45,7 +42,6 @@ struct SettingsView: View {
         .onAppear {
             adminManager.checkIfAppForcesUpdates()
             adminManager.checkIfUnderMaintenance() { }
-            settingsColorScheme = preferredColorSchemeAppStorage
         }
         .alert(alertHeader, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}
@@ -100,7 +96,7 @@ struct SettingsView: View {
     
     var appearance: some View {
         Section {
-            Picker("Preferred Appearance", selection: $settingsColorScheme) {
+            Picker("Preferred Appearance", selection: $csManager.colorScheme) {
                 Text("Light")
                     .tag(PreferredColorScheme.light)
                 Text("Automatic")
@@ -109,9 +105,6 @@ struct SettingsView: View {
                     .tag(PreferredColorScheme.dark)
             }
             .pickerStyle(.segmented)
-            .onChange(of: settingsColorScheme) { newValue in
-                csManager.updatePreferredColorScheme(to: newValue)
-            }
         } header: {
             Text("Appearance")
         } footer: {

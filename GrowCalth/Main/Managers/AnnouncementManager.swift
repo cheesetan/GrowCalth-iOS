@@ -32,27 +32,76 @@ enum AnnouncementType: String, CaseIterable {
 
 class AnnouncementManager: ObservableObject {
     static let shared: AnnouncementManager = .init()
-    
-    @Published var events: [EventItem] = []
-    @Published var announcements: [Announcement] = []
-    
-    @Persistent("cachedEvents", store: .fileManager) private var cachedEvents: [EventItem] = []
-    @Persistent("cachedAnnouncements", store: .fileManager) private var cachedAnnouncements: [Announcement] = []
+
+    @Published var announcements: [Announcement] = [] {
+        didSet {
+            saveAnnouncements()
+        }
+    }
+
+    @Published var events: [EventItem] = [] {
+        didSet {
+            saveEvents()
+        }
+    }
     
     init() {
-        retrieveAllPosts() {
-            self.updateCacheForAllPosts()
+        loadEvents()
+        loadAnnouncements()
+        retrieveAllPosts() {}
+    }
+
+    private func getAnnouncementArchiveURL() -> URL {
+        URL.documentsDirectory.appending(path: "announcements.json")
+    }
+
+    private func getEventArchiveURL() -> URL {
+        URL.documentsDirectory.appending(path: "events.json")
+    }
+
+    private func saveAnnouncements() {
+        let archiveURL = getAnnouncementArchiveURL()
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
+
+        let encodedAnnouncements = try? jsonEncoder.encode(announcements)
+        try? encodedAnnouncements?.write(to: archiveURL, options: .noFileProtection)
+    }
+
+    private func saveEvents() {
+        let archiveURL = getEventArchiveURL()
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
+        
+        let encodedEventItems = try? jsonEncoder.encode(events)
+        try? encodedEventItems?.write(to: archiveURL, options: .noFileProtection)
+    }
+
+    private func loadAnnouncements() {
+        let archiveURL = getAnnouncementArchiveURL()
+        let jsonDecoder = JSONDecoder()
+
+        if let retrievedAnnouncementData = try? Data(contentsOf: archiveURL),
+           let announcementsDecoded = try? jsonDecoder.decode([Announcement].self, from: retrievedAnnouncementData) {
+            announcements = announcementsDecoded
+        }
+    }
+
+    private func loadEvents() {
+        let archiveURL = getEventArchiveURL()
+        let jsonDecoder = JSONDecoder()
+        
+        if let retrievedEventItemData = try? Data(contentsOf: archiveURL),
+           let eventsDecoded = try? jsonDecoder.decode([EventItem].self, from: retrievedEventItemData) {
+            events = eventsDecoded
         }
     }
     
     func retrieveAllPosts(_ completion: @escaping (() -> Void)) {
-        self.retrieveEvents() { _ in
-            self.retrieveAnnouncements() { _ in
-                completion()
-            }
-        }
+        self.retrieveEvents() { _ in }
+        self.retrieveAnnouncements() { _ in }
     }
-    
+
     func retrieveEvents(_ completion: @escaping ((Result<Bool, Error>) -> Void)) {
         Firestore.firestore().collection("houseevents").order(by: "dateAdded", descending: true).getDocuments { (query: QuerySnapshot?, err) in
             if let err {
@@ -95,18 +144,5 @@ class AnnouncementManager: ObservableObject {
                 completion(.success(true))
             }
         }
-    }
-    
-    func updateCacheForAllPosts() {
-        updateCacheForEvents()
-        updateCacheForAnnouncements()
-    }
-    
-    func updateCacheForEvents() {
-        self.cachedEvents = self.events
-    }
-    
-    func updateCacheForAnnouncements() {
-        self.cachedAnnouncements = self.announcements
     }
 }

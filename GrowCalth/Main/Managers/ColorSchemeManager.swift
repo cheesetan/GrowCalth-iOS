@@ -14,25 +14,37 @@ enum PreferredColorScheme: Codable {
 
 class ColorSchemeManager: ObservableObject {
     static let shared: ColorSchemeManager = .init()
-    
-    @Published var colorScheme: PreferredColorScheme? = .automatic
-    
-    @Persistent("preferredColorSchemeAppStorage", store: .fileManager) private var preferredColorSchemeAppStorage: PreferredColorScheme = .automatic
-    
+
+    @Published var colorScheme: PreferredColorScheme = .automatic {
+        didSet {
+            save()
+        }
+    }
+
     init() {
-        refreshPublishedVariable()
+        load()
     }
-    
-    func updatePreferredColorScheme(to newColorScheme: PreferredColorScheme?) {
-        if let newColorScheme {
-            preferredColorSchemeAppStorage = newColorScheme
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
-            self.refreshPublishedVariable()
-        }
+
+    private func getArchiveURL() -> URL {
+        URL.documentsDirectory.appending(path: "preferredCSs.json")
     }
-    
-    private func refreshPublishedVariable() {
-        self.colorScheme = preferredColorSchemeAppStorage
+
+    private func save() {
+        let archiveURL = getArchiveURL()
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
+
+        let encodedPreferredColorSchemes = try? jsonEncoder.encode(colorScheme)
+        try? encodedPreferredColorSchemes?.write(to: archiveURL, options: .noFileProtection)
+    }
+
+    private func load() {
+        let archiveURL = getArchiveURL()
+        let jsonDecoder = JSONDecoder()
+
+        if let retrievedPreferredColorSchemeData = try? Data(contentsOf: archiveURL),
+           let preferredCSsDecoded = try? jsonDecoder.decode(PreferredColorScheme.self, from: retrievedPreferredColorSchemeData) {
+            colorScheme = preferredCSsDecoded
+        }
     }
 }

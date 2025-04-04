@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F30CBAC72AEE92930017E100 /* SwiftPersistence in Frameworks */ = {isa = PBXBuildFile; productRef = F30CBAC62AEE92930017E100 /* SwiftPersistence */; };
 		F33939272BE53DE6001E9CF9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F33939262BE53DE6001E9CF9 /* GoogleService-Info.plist */; };
 		F33E282D2BE52B1100777697 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = F33E282C2BE52B1100777697 /* FirebaseFirestore */; };
 		F33E282F2BE52B1100777697 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = F33E282E2BE52B1100777697 /* FirebaseFirestoreCombine-Community */; };
@@ -97,7 +96,6 @@
 				F3C1885C2B7127F100FD9E2E /* FirebaseMessaging in Frameworks */,
 				F383E25C2AE812FB00C517C2 /* FirebaseAuthCombine-Community in Frameworks */,
 				F383E25A2AE812FB00C517C2 /* FirebaseAuth in Frameworks */,
-				F30CBAC72AEE92930017E100 /* SwiftPersistence in Frameworks */,
 				F33E282D2BE52B1100777697 /* FirebaseFirestore in Frameworks */,
 				F33E282F2BE52B1100777697 /* FirebaseFirestoreCombine-Community in Frameworks */,
 				F33E28312BE52B1100777697 /* FirebaseFirestoreSwift in Frameworks */,
@@ -185,7 +183,6 @@
 			packageProductDependencies = (
 				F383E2592AE812FB00C517C2 /* FirebaseAuth */,
 				F383E25B2AE812FB00C517C2 /* FirebaseAuthCombine-Community */,
-				F30CBAC62AEE92930017E100 /* SwiftPersistence */,
 				F3C1885B2B7127F100FD9E2E /* FirebaseMessaging */,
 				F33E282C2BE52B1100777697 /* FirebaseFirestore */,
 				F33E282E2BE52B1100777697 /* FirebaseFirestoreCombine-Community */,
@@ -246,7 +243,6 @@
 			mainGroup = F345AB7E2AE62EDE00211FE8;
 			packageReferences = (
 				F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				F30CBAC52AEE92930017E100 /* XCRemoteSwiftPackageReference "SwiftPersistence" */,
 			);
 			productRefGroup = F345AB882AE62EDE00211FE8 /* Products */;
 			projectDirPath = "";
@@ -610,14 +606,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F30CBAC52AEE92930017E100 /* XCRemoteSwiftPackageReference "SwiftPersistence" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/cheesetan/SwiftPersistence";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.1;
-			};
-		};
 		F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -629,11 +617,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F30CBAC62AEE92930017E100 /* SwiftPersistence */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F30CBAC52AEE92930017E100 /* XCRemoteSwiftPackageReference "SwiftPersistence" */;
-			productName = SwiftPersistence;
-		};
 		F33E282C2BE52B1100777697 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

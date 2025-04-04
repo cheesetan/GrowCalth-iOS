@@ -122,25 +122,11 @@ struct GrowCalth_iOSApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
     @ObservedObject var csManager: ColorSchemeManager = .shared
-    @Persistent("appInstalledDate") var appInstalledDate: Date = Date()
-    @Persistent("lastPointsAwardedDate") private var lastPointsAwardedDate: Date? = nil
-    
-    init() {
-        if let lastPointsAwardedDate = lastPointsAwardedDate {
-            if lastPointsAwardedDate < GLOBAL_GROWCALTH_START_DATE {
-                self.lastPointsAwardedDate = GLOBAL_GROWCALTH_START_DATE
-            }
-        }
-    }
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .preferredColorScheme(csManager.colorScheme == .automatic ? .none : csManager.colorScheme == .dark ? .dark : .light)
-                .onAppear {
-                    let cal = Calendar(identifier: Calendar.Identifier.gregorian)
-                    appInstalledDate = cal.startOfDay(for: appInstalledDate)
-                }
         }
     }
 }

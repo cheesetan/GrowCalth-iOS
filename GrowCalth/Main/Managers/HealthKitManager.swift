@@ -177,16 +177,34 @@ class HealthKitManager: ObservableObject {
         healthStore.execute(query)
         WidgetCenter.shared.reloadAllTimelines()
     }
-    
+
+    internal enum FetchStepsError: LocalizedError {
+        case couldNotFindStepCountType
+        case startDateIsNil
+
+        var errorDescription: String? {
+            switch self {
+            case .couldNotFindStepCountType: return "Could not find Step Count Type."
+            case .startDateIsNil: return "StartDate is a nil value"
+            }
+        }
+    }
+
     func fetchStepsForPointsCalculation(
-        startDate: Date,
+        startDate: Date?,
         endDate: Date,
         _ completion: @escaping ((Result<Int, Error>) -> Void)
     ) {
         guard let stepCountType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
+            completion(.failure(FetchStepsError.couldNotFindStepCountType))
             return
         }
-        
+
+        guard let startDate else {
+            completion(.failure(FetchStepsError.startDateIsNil))
+            return
+        }
+
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         let newDate = cal.startOfDay(for: startDate)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [

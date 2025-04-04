@@ -13,27 +13,64 @@ struct HealthInfoItem: Codable, Identifiable {
     var text: String
 }
 
+class HealthInfoManager: ObservableObject {
+    static let shared: HealthInfoManager = .init()
+
+    @Published var healthInfoItems: [HealthInfoItem] = [] {
+        didSet {
+            save()
+        }
+    }
+
+    init() {
+        load()
+    }
+
+    private func getArchiveURL() -> URL {
+        URL.documentsDirectory.appending(path: "healthInfoItems.json")
+    }
+
+    private func save() {
+        let archiveURL = getArchiveURL()
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
+
+        let HealthInfoItems = try? jsonEncoder.encode(healthInfoItems)
+        try? HealthInfoItems?.write(to: archiveURL, options: .noFileProtection)
+    }
+
+    private func load() {
+        let archiveURL = getArchiveURL()
+        let jsonDecoder = JSONDecoder()
+
+        if let HealthInfoItemData = try? Data(contentsOf: archiveURL),
+           let healthInfoItemsDecoded = try? jsonDecoder.decode([HealthInfoItem].self, from: HealthInfoItemData) {
+            healthInfoItems = healthInfoItemsDecoded
+        }
+    }
+}
+
 struct HealthInfo: View {
     
     @State var text = ""
     
-    @Persistent("healthInfos", store: .fileManager) private var healthInfos: [HealthInfoItem] = []
-    
+    @ObservedObject private var healthInfoManager: HealthInfoManager = .shared
+
     var body: some View {
         VStack {
-            if !healthInfos.isEmpty {
+            if !healthInfoManager.healthInfoItems.isEmpty {
                 List {
-                    ForEach(healthInfos, id: \.id) { item in
+                    ForEach(healthInfoManager.healthInfoItems, id: \.id) { item in
                         VStack(alignment: .leading) {
                             Text(item.text)
                                 .lineLimit(2)
                         }
                     }
                     .onDelete { indexSet in
-                        healthInfos.remove(atOffsets: indexSet)
+                        healthInfoManager.healthInfoItems.remove(atOffsets: indexSet)
                     }
                     .onMove { from, to in
-                        healthInfos.move(fromOffsets: from, toOffset: to)
+                        healthInfoManager.healthInfoItems.move(fromOffsets: from, toOffset: to)
                     }
                 }
             } else {
@@ -50,7 +87,7 @@ struct HealthInfo: View {
                 }
                 Button {
                     if !text.isEmpty {
-                        healthInfos.append(HealthInfoItem(text: text))
+                        healthInfoManager.healthInfoItems.append(HealthInfoItem(text: text))
                         text = ""
                     }
                 } label: {

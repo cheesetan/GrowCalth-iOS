@@ -33,8 +33,8 @@ enum NAPFALevel: String, Codable, CaseIterable {
 class NAPFAManager: ObservableObject {
     static let shared: NAPFAManager = .init()
     
-    @AppStorage("levelSelection", store: .standard) private var levelSelection: String = NAPFALevel.secondary2.rawValue
-    @AppStorage("yearSelection", store: .standard) private var year: Int = Calendar.current.component(.year, from: Date())
+    @AppStorage("levelSelection", store: .standard) var levelSelection: String = NAPFALevel.secondary2.rawValue
+    @AppStorage("yearSelection", store: .standard) var year: Int = Calendar.current.component(.year, from: Date())
     
     @Published internal var sitUps: [NAPFAResults] = []
     @Published internal var sitAndReach: [NAPFAResults] = []
@@ -43,16 +43,16 @@ class NAPFAManager: ObservableObject {
     @Published internal var inclinedPullUps: [NAPFAResults] = []
     @Published internal var pullUps: [NAPFAResults] = []
     @Published internal var twoPointFourKm: [NAPFAResults] = []
-    
-    @Published var data: [NAPFAResults] = []
-    @Persistent("cachedNAPFAData", store: .fileManager) private var cachedData: [String : [NAPFAResults]] = [:]
+
+    @Published internal var internalData: [NAPFAResults] = []
+    @Published var data: [String : [NAPFAResults]] = [:]
     
     init() {
         self.fetchAllData(for: self.year) {}
     }
     
     func fetchAllData(for year: Int, _ completion: @escaping (() -> Void)) {
-        self.data = []
+        self.internalData = []
         self.fetchSitUps(for: year) {
             self.fetchSitAndReach(for: year) {
                 self.fetchSBJ(for: year) {
@@ -156,34 +156,34 @@ class NAPFAManager: ObservableObject {
     }
     
     func updateCache(for year: Int, _ completion: @escaping (() -> Void)) {
-        cachedData["\(NAPFALevel(rawValue: levelSelection)!.firebaseCode)-\(String(year))"] = data
+        data["\(NAPFALevel(rawValue: levelSelection)!.firebaseCode)-\(String(year))"] = internalData
         completion()
     }
     
     func sortAndAddToData(_ completion: @escaping (() -> Void)) {
-        self.data = []
+        self.internalData = []
         twoPointFourKm.forEach { data in
-            self.data.append(data)
+            self.internalData.append(data)
         }
         inclinedPullUps.forEach { data in
-            self.data.append(data)
+            self.internalData.append(data)
         }
         if NAPFALevel(rawValue: levelSelection)! == .secondary4 {
             pullUps.forEach { data in
-                self.data.append(data)
+                self.internalData.append(data)
             }
         }
         shuttleRun.forEach { data in
-            self.data.append(data)
+            self.internalData.append(data)
         }
         sitAndReach.forEach { data in
-            self.data.append(data)
+            self.internalData.append(data)
         }
         sitUps.forEach { data in
-            self.data.append(data)
+            self.internalData.append(data)
         }
         sbj.forEach { data in
-            self.data.append(data)
+            self.internalData.append(data)
         }
         completion()
     }

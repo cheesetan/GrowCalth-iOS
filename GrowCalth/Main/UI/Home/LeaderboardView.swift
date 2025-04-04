@@ -11,8 +11,7 @@ import SwiftPersistence
 struct LeaderboardView: View {
     
     @State var loaded = false
-    @State var leaderboardPoints = [String : Int]()
-    
+
     @State var showingAlert = false
     @State var alertTitle = ""
     @State var alertMessage = ""
@@ -20,16 +19,11 @@ struct LeaderboardView: View {
     @ObservedObject var lbManager: LeaderboardsManager = .shared
     @ObservedObject var adminManager: AdminManager = .shared
     @ObservedObject var authManager: AuthenticationManager = .shared
-    
-    @Persistent("cachedLBPoints") var cachedLBPoints: [String : Int] = ["Black" : 0, "Blue" : 0, "Green" : 0, "Red" : 0, "Yellow" : 0]
 
     var body: some View {
         List {
             Section {
-                ForEach(
-                    loaded ? sortDictionary(for: leaderboardPoints) : sortDictionary(for: cachedLBPoints),
-                    id: \.key
-                ) { house in
+                ForEach(sortDictionary(for: lbManager.leaderboard), id: \.key) { house in
                     houseRow(text: house.key, points: house.value)
                 }
             } footer: {
@@ -57,7 +51,7 @@ struct LeaderboardView: View {
                 lbManager.resetLeaderboards(forHouse: "Black") { result in
                     switch result {
                     case .success(_):
-                        retrievePointsInformation()
+                        lbManager.retrievePoints()
                     case .failure(_):
                         showingAlert = true
                         alertTitle = "Error"
@@ -67,7 +61,7 @@ struct LeaderboardView: View {
                 lbManager.resetLeaderboards(forHouse: "Blue") { result in
                     switch result {
                     case .success(_):
-                        retrievePointsInformation()
+                        lbManager.retrievePoints()
                     case .failure(_):
                         showingAlert = true
                         alertTitle = "Error"
@@ -77,7 +71,7 @@ struct LeaderboardView: View {
                 lbManager.resetLeaderboards(forHouse: "Green") { result in
                     switch result {
                     case .success(_):
-                        retrievePointsInformation()
+                        lbManager.retrievePoints()
                     case .failure(_):
                         showingAlert = true
                         alertTitle = "Error"
@@ -87,7 +81,7 @@ struct LeaderboardView: View {
                 lbManager.resetLeaderboards(forHouse: "Red") { result in
                     switch result {
                     case .success(_):
-                        retrievePointsInformation()
+                        lbManager.retrievePoints()
                     case .failure(_):
                         showingAlert = true
                         alertTitle = "Error"
@@ -97,7 +91,7 @@ struct LeaderboardView: View {
                 lbManager.resetLeaderboards(forHouse: "Yellow") { result in
                     switch result {
                     case .success(_):
-                        retrievePointsInformation()
+                        lbManager.retrievePoints()
                     case .failure(_):
                         showingAlert = true
                         alertTitle = "Error"
@@ -109,33 +103,15 @@ struct LeaderboardView: View {
             Text(alertMessage)
         }
         .refreshable {
-            retrievePointsInformation()
+            lbManager.retrievePoints()
         }
         .onAppear {
             adminManager.checkIfUnderMaintenance() { }
             adminManager.checkIfAppForcesUpdates()
-            print("cachedLBPoints before: \(cachedLBPoints)")
-            retrievePointsInformation()
-            print("cachedLBPoints after: \(cachedLBPoints)")
+            lbManager.retrievePoints()
         }
     }
-    
-    func retrievePointsInformation() {
-        lbManager.retrievePoints { _ in
-            leaderboardPoints["Black"] = lbManager.black
-            cachedLBPoints["Black"] = lbManager.black
-            leaderboardPoints["Blue"] = lbManager.blue
-            cachedLBPoints["Blue"] = lbManager.blue
-            leaderboardPoints["Green"] = lbManager.green
-            cachedLBPoints["Green"] = lbManager.green
-            leaderboardPoints["Red"] = lbManager.red
-            cachedLBPoints["Red"] = lbManager.red
-            leaderboardPoints["Yellow"] = lbManager.yellow
-            cachedLBPoints["Yellow"] = lbManager.yellow
-            loaded = true
-        }
-    }
-    
+
     private func sortDictionary(for dictionary: [String : Int]) -> Array<(key: String, value: Int)> {
         return dictionary.sorted { $0.value > $1.value }.sorted { first, second in
             if first.value == second.value {

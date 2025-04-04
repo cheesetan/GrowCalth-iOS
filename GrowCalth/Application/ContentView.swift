@@ -69,7 +69,25 @@ struct ContentView: View {
     @ObservedObject var updateManager: UpdateManager = .shared
     @ObservedObject var developerManager: DeveloperManager = .shared
     @ObservedObject var networkManager: NetworkManager = .shared
-    
+    @ObservedObject var pointsManager: PointsManager = .shared
+
+    init() {
+        if let lastPointsAwardedDate = pointsManager.lastPointsAwardedDate {
+            if lastPointsAwardedDate < GLOBAL_GROWCALTH_START_DATE {
+                pointsManager.lastPointsAwardedDate = GLOBAL_GROWCALTH_START_DATE
+            }
+        } else {
+            let cal = Calendar(identifier: Calendar.Identifier.gregorian)
+            let today = cal.startOfDay(for: Date())
+
+            if today < GLOBAL_GROWCALTH_START_DATE {
+                pointsManager.lastPointsAwardedDate = GLOBAL_GROWCALTH_START_DATE
+            } else {
+                pointsManager.lastPointsAwardedDate = today
+            }
+        }
+    }
+
     var body: some View {
         Group {
             switch appState.status {
