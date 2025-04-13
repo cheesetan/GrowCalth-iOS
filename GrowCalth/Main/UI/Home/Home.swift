@@ -105,6 +105,8 @@ struct Home: View {
                                 .fontWeight(.black)
                                 .font(.system(size: 28.0))
                                 .multilineTextAlignment(.center)
+                                .minimumScaleFactor(0.1)
+                                .lineLimit(1)
                             Text("steps")
                                 .foregroundColor(.gray)
                                 .font(.system(size: 15.0))
@@ -157,13 +159,13 @@ struct Home: View {
                     .overlay {
                         VStack {
                             Text("\(hkManager.distance ?? 0.00, specifier: "%.2f")")
-                                .minimumScaleFactor(0.1)
                                 .foregroundColor(.black)
                                 .fontWeight(.black)
                                 .font(.system(size: 28.0))
                                 .multilineTextAlignment(.center)
-                            Text("km")
                                 .minimumScaleFactor(0.1)
+                                .lineLimit(1)
+                            Text("km")
                                 .foregroundColor(.gray)
                                 .font(.system(size: 15.0))
                         }
