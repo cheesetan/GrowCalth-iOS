@@ -23,6 +23,7 @@
 		F3474FF52B77C0E600F65CAC /* GrowCalthDistanceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3474FF42B77C0E600F65CAC /* GrowCalthDistanceWidget.swift */; };
 		F383E25A2AE812FB00C517C2 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = F383E2592AE812FB00C517C2 /* FirebaseAuth */; };
 		F383E25C2AE812FB00C517C2 /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = F383E25B2AE812FB00C517C2 /* FirebaseAuthCombine-Community */; };
+		F38A55D52DAC206E005F5CFC /* SwiftJWT in Frameworks */ = {isa = PBXBuildFile; productRef = F38A55D42DAC206E005F5CFC /* SwiftJWT */; };
 		F3C1885C2B7127F100FD9E2E /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = F3C1885B2B7127F100FD9E2E /* FirebaseMessaging */; };
 /* End PBXBuildFile section */
 
@@ -98,6 +99,7 @@
 				F383E25A2AE812FB00C517C2 /* FirebaseAuth in Frameworks */,
 				F33E282D2BE52B1100777697 /* FirebaseFirestore in Frameworks */,
 				F33E282F2BE52B1100777697 /* FirebaseFirestoreCombine-Community in Frameworks */,
+				F38A55D52DAC206E005F5CFC /* SwiftJWT in Frameworks */,
 				F33E28312BE52B1100777697 /* FirebaseFirestoreSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -187,6 +189,7 @@
 				F33E282C2BE52B1100777697 /* FirebaseFirestore */,
 				F33E282E2BE52B1100777697 /* FirebaseFirestoreCombine-Community */,
 				F33E28302BE52B1100777697 /* FirebaseFirestoreSwift */,
+				F38A55D42DAC206E005F5CFC /* SwiftJWT */,
 			);
 			productName = "Growcalth-iOS";
 			productReference = F345AB872AE62EDE00211FE8 /* GrowCalth.app */;
@@ -243,6 +246,7 @@
 			mainGroup = F345AB7E2AE62EDE00211FE8;
 			packageReferences = (
 				F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				F38A55D32DAC206E005F5CFC /* XCRemoteSwiftPackageReference "Swift-JWT" */,
 			);
 			productRefGroup = F345AB882AE62EDE00211FE8 /* Products */;
 			projectDirPath = "";
@@ -448,7 +452,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.3;
+				MARKETING_VERSION = 3.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -488,7 +492,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.3;
+				MARKETING_VERSION = 3.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -614,6 +618,14 @@
 				version = 10.0.0;
 			};
 		};
+		F38A55D32DAC206E005F5CFC /* XCRemoteSwiftPackageReference "Swift-JWT" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Kitura/Swift-JWT.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -656,6 +668,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseAuthCombine-Community";
+		};
+		F38A55D42DAC206E005F5CFC /* SwiftJWT */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F38A55D32DAC206E005F5CFC /* XCRemoteSwiftPackageReference "Swift-JWT" */;
+			productName = SwiftJWT;
 		};
 		F3C1885B2B7127F100FD9E2E /* FirebaseMessaging */ = {
 			isa = XCSwiftPackageProductDependency;
