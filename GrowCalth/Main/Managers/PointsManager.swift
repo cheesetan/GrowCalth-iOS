@@ -53,10 +53,13 @@ class PointsManager: ObservableObject {
         if isDueForPointsAwarding() {
             calculatePoints { result in
                 switch result {
-                case .success(let pointsToAdd):
+                case .success((let pointsToAdd, let approvedBundleIdsUsed)):
                     print("pointsToAdd: \(pointsToAdd)")
                     if pointsToAdd > 0 {
-                        self.addPointsToFirebase(pointsToAdd: pointsToAdd) { result in
+                        self.addPointsToFirebase(
+                            pointsToAdd: pointsToAdd,
+                            approvedBundleIdsUsed: approvedBundleIdsUsed
+                        ) { result in
                             switch result {
                             case .success(_):
                                 self.updateLastPointsAwardedDate()
@@ -91,14 +94,17 @@ class PointsManager: ObservableObject {
         return false
     }
     
-    private func calculatePoints(_ completion: @escaping ((Result<Int, Error>) -> Void)) {
+    private func calculatePoints(_ completion: @escaping ((Result<(Int, [String]), Error>) -> Void)) {
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
-        hkManager.fetchStepsForPointsCalculation(startDate: lastPointsAwardedDate, endDate: cal.startOfDay(for: Date())) { result in
-            switch result {
-            case .success(let steps):
+        hkManager.fetchStepsForPointsCalculation(startDate: lastPointsAwardedDate, endDate: cal.startOfDay(for: Date())) { results in
+            switch results {
+            case .success((let steps, let approvedBundleIdsUsed)):
                 print("pointsToAdd steps: \(steps)")
                 let points = Int(Double(steps) / Double(GLOBAL_STEPS_PER_POINT))
-                completion(.success(points))
+                completion(.success((
+                    points,
+                    approvedBundleIdsUsed
+                )))
             case .failure(let failure):
                 completion(.failure(failure))
             }
@@ -106,7 +112,8 @@ class PointsManager: ObservableObject {
     }
     
     private func addPointsToFirebase(
-        pointsToAdd: Int, 
+        pointsToAdd: Int,
+        approvedBundleIdsUsed: [String],
         _ completion: @escaping ((Result<Bool, Error>) -> Void)
     ) {
         fetchCurrentPoints { result in
@@ -126,7 +133,11 @@ class PointsManager: ObservableObject {
                                     if let err = err {
                                         completion(.failure(err))
                                     } else {
-                                        self.logPoints(points: pointsToAdd, previousHousePoints: Int(success[1])!)
+                                        self.logPoints(
+                                            points: pointsToAdd,
+                                            approvedBundleIdsUsed: approvedBundleIdsUsed,
+                                            previousHousePoints: Int(success[1])!
+                                        )
                                         completion(.success(true))
                                     }
                                 }
@@ -167,7 +178,11 @@ class PointsManager: ObservableObject {
         lastPointsAwardedDate = cal.startOfDay(for: Date())
     }
     
-    private func logPoints(points: Int, previousHousePoints: Int) {
+    private func logPoints(
+        points: Int,
+        approvedBundleIdsUsed: [String],
+        previousHousePoints: Int
+    ) {
         Firestore.firestore().collection("logs").document().setData([
             "dateLogged": Date(),
             "lastPointsAddedDate": self.lastPointsAwardedDate ?? "LASTPOINTSAWARDEDDATE NOT FOUND (impossible)",
@@ -178,6 +193,7 @@ class PointsManager: ObservableObject {
             "previousHousePoints": previousHousePoints,
             "newHousePoints": previousHousePoints + points,
             "appVersion": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "idk",
+            "approvedBundleIdsUsed": approvedBundleIdsUsed
         ]) { _ in }
     }
 }
