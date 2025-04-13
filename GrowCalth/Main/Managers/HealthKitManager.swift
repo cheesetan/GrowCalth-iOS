@@ -155,7 +155,6 @@ class HealthKitManager: ObservableObject {
                     case .success(let approvedBundleIdentifiers):
                         resultSources.forEach { source in
                             if source.bundleIdentifier.contains("com.apple.health") || approvedBundleIdentifiers.contains(source.bundleIdentifier) {
-                                
                             } else {
                                 if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
                                     distanceToBeFilteredOut += sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter())
@@ -193,7 +192,7 @@ class HealthKitManager: ObservableObject {
     func fetchStepsForPointsCalculation(
         startDate: Date?,
         endDate: Date,
-        _ completion: @escaping ((Result<Int, Error>) -> Void)
+        _ completion: @escaping ((Result<(Int, [String]), Error>) -> Void)
     ) {
         guard let stepCountType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
             completion(.failure(FetchStepsError.couldNotFindStepCountType))
@@ -226,21 +225,35 @@ class HealthKitManager: ObservableObject {
                 }
                 return
             }
-            
+
             var stepsToFilterOut = 0
+            var approvedBundleIdsUsed: [String] = []
+
             if let resultSources = hkResult.sources {
-                resultSources.forEach { source in
-                    if source.bundleIdentifier == "com.apple.shortcuts" {
-                        if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
-                            stepsToFilterOut += Int(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.count()))
+                self.fetchApprovedBundleIdentifiers { result in
+                    switch result {
+                    case .success(let approvedBundleIdentifiers):
+                        resultSources.forEach { source in
+                            if source.bundleIdentifier.contains("com.apple.health") || approvedBundleIdentifiers.contains(source.bundleIdentifier) {
+                                approvedBundleIdsUsed.append(source.bundleIdentifier)
+                            } else {
+                                if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
+                                    stepsToFilterOut += Int(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.count()))
+                                }
+                            }
                         }
+                    case .failure(let failure):
+                        completion(.failure(failure))
                     }
                 }
             }
-            
-            completion(.success(Int(totalStepSumQuantity.doubleValue(for: HKUnit.count())) - stepsToFilterOut))
+
+            completion(.success((
+                Int(totalStepSumQuantity.doubleValue(for: HKUnit.count())) - stepsToFilterOut,
+                approvedBundleIdsUsed
+            )))
         }
-        
+
         healthStore.execute(query)
     }
 }
