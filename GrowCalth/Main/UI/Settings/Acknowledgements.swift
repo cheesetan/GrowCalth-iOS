@@ -27,7 +27,7 @@ struct Acknowledgements: View {
                     acknowledgement(title: "**Felix** Forbes Dimjati - User Experience (UX) Specialist of GrowCalth", description: "Class of 2024", image: "hammer.fill")
                     acknowledgement(title: "Bellam Nandakumar **Aravind** - GrowCalth's Marketing and Communications IC", description: "Class of 2024", image: "text.bubble.fill")
                     acknowledgement(title: "**Darryan** Lim Yuan Sheng - GrowCalth's Designer", description: "Class of 2024", image: "paintbrush.pointed.fill")
-                    acknowledgement(title: "**Scoobert** - GrowCalth's Mascot", description: "Loves to exercise. I'll do a backflip if you tap me 5 times.", image: "scoobert")
+                    acknowledgement(title: "**Scoobert** - GrowCalth's Mascot", description: "Loves to exercise. Will do a backflip if you tap him 5 times.", image: "scoobert")
                 } header: {
                     Label("Development Team", systemImage: "person.3.fill")
                 }
