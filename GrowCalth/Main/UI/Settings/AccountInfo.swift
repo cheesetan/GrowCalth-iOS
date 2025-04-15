@@ -38,7 +38,7 @@ struct AccountInfo: View {
     var body: some View {
         List {
             Section("Account Information") {
-                LabeledContent("Name") {
+                CustomLabeledContent("Name") {
                     VStack {
                         if let email = authManager.email {
                             Text(email.components(separatedBy: "@")[0].components(separatedBy: "_").joined(separator: " ").uppercased())
@@ -48,8 +48,8 @@ struct AccountInfo: View {
                     }
                     .multilineTextAlignment(.trailing)
                 }
-                
-                LabeledContent("Email") {
+
+                CustomLabeledContent("Email") {
                     VStack {
                         if let email = authManager.email {
                             Text(email)
@@ -59,8 +59,8 @@ struct AccountInfo: View {
                     }
                     .multilineTextAlignment(.trailing)
                 }
-                
-                LabeledContent("House") {
+
+                CustomLabeledContent("House") {
                     VStack {
                         if let house = authManager.usersHouse {
                             Text(house)
@@ -71,7 +71,7 @@ struct AccountInfo: View {
                     .multilineTextAlignment(.trailing)
                 }
 
-                LabeledContent("Account Type") {
+                CustomLabeledContent("Account Type") {
                     VStack {
                         Text(authManager.accountType.name)
                     }

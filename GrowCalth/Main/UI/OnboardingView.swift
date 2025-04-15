@@ -16,54 +16,65 @@ struct OnboardingView: View {
     @State var doneButtonShowing = false
         
     var body: some View {
-        NavigationStack {
-            TabView(selection: $tabSelection) {
-                onboardingPage(text: "HealthKit Integration", 
-                               description: "GrowCalth iOS integrates with Apple's Health App, allowing you to track your steps using your iPhone or Apple Watch even when the app is not opened.",
-                               imageString: "heart.text.square.fill",
-                               renderingMode: .palette,
-                               primaryColor: .red,
-                               secondaryColor: .white)
-                    .tag(0)
-                onboardingPage(text: "Motivational Quotes", 
-                               description: "Having a positive mindset will help with your daily mental health and physical health!",
-                               imageString: "quote.opening",
-                               primaryColor: .gray)
-                    .tag(1)
-                onboardingPage(text: "Set your Goals",
-                               description: "Set and achieve your daily steps and distance goals for a healthier lifestyle!",
-                               imageString: "chart.bar.fill",
-                               primaryColor: .red)
-                    .tag(2)
+        if #available(iOS 16.0, *) {
+            NavigationStack {
+                main
             }
-            .tabViewStyle(.page(indexDisplayMode: .always))
-            .toolbar {
-                ToolbarItem(placement: .bottomBar) {
-                    previousButton
-                }
-                ToolbarItem(placement: .status) {
-                    HStack {
-                        Spacer()
-                    }
-                }
-                ToolbarItem(placement: .bottomBar) {
-                    if doneButtonShowing {
-                        doneButton
-                    } else {
-                        nextButton
-                    }
+        } else {
+            NavigationView {
+                main
+            }
+            .navigationViewStyle(.stack)
+        }
+    }
+
+    var main: some View {
+        TabView(selection: $tabSelection) {
+            onboardingPage(text: "HealthKit Integration",
+                           description: "GrowCalth iOS integrates with Apple's Health App, allowing you to track your steps using your iPhone or Apple Watch even when the app is not opened.",
+                           imageString: "heart.text.square.fill",
+                           renderingMode: .palette,
+                           primaryColor: .red,
+                           secondaryColor: .white)
+            .tag(0)
+            onboardingPage(text: "Motivational Quotes",
+                           description: "Having a positive mindset will help with your daily mental health and physical health!",
+                           imageString: "quote.opening",
+                           primaryColor: .gray)
+            .tag(1)
+            onboardingPage(text: "Set your Goals",
+                           description: "Set and achieve your daily steps and distance goals for a healthier lifestyle!",
+                           imageString: "chart.bar.fill",
+                           primaryColor: .red)
+            .tag(2)
+        }
+        .tabViewStyle(.page(indexDisplayMode: .always))
+        .toolbar {
+            ToolbarItem(placement: .bottomBar) {
+                previousButton
+            }
+            ToolbarItem(placement: .status) {
+                HStack {
+                    Spacer()
                 }
             }
-            .onChange(of: tabSelection) { _ in
-                bounceEffect += 1
-                if tabSelection == 2 {
-                    withAnimation {
-                        doneButtonShowing = true
-                    }
+            ToolbarItem(placement: .bottomBar) {
+                if doneButtonShowing {
+                    doneButton
                 } else {
-                    withAnimation {
-                        doneButtonShowing = false
-                    }
+                    nextButton
+                }
+            }
+        }
+        .onChange(of: tabSelection) { _ in
+            bounceEffect += 1
+            if tabSelection == 2 {
+                withAnimation {
+                    doneButtonShowing = true
+                }
+            } else {
+                withAnimation {
+                    doneButtonShowing = false
                 }
             }
         }
@@ -73,7 +84,7 @@ struct OnboardingView: View {
             }
         }
     }
-    
+
     @ViewBuilder
     func onboardingPage(text: String, description: String, imageString: String, renderingMode: SymbolRenderingMode = .monochrome, primaryColor: Color = .accentColor, secondaryColor: Color = .accentColor) -> some View {
         VStack {
@@ -99,13 +110,11 @@ struct OnboardingView: View {
             VStack(spacing: 5) {
                 Text(text)
                     .minimumScaleFactor(0.1)
-                    .font(.title)
-                    .fontWeight(.bold)
+                    .font(.title.weight(.bold))
                     .multilineTextAlignment(.center)
                 Text(description)
                     .minimumScaleFactor(0.1)
                     .font(.subheadline)
-                    .fontWeight(.none)
                     .multilineTextAlignment(.center)
             }
             .padding(.top, 45)

@@ -124,8 +124,12 @@ struct SignInView: View {
         .buttonStyle(.plain)
         .padding(.bottom, 5)
         .sheet(isPresented: $showingForgotPassword) {
-            ForgotPasswordView(email: email, showingForgotPassword: $showingForgotPassword)
-            .presentationDetents([.height(300)])
+            if #available(iOS 16.0, *) {
+                ForgotPasswordView(email: email, showingForgotPassword: $showingForgotPassword)
+                    .presentationDetents([.height(300)])
+            } else {
+                ForgotPasswordView(email: email, showingForgotPassword: $showingForgotPassword)
+            }
         }
     }
     
@@ -137,7 +141,7 @@ struct SignInView: View {
                 .padding()
                 .frame(maxWidth: 300)
                 .foregroundColor(isLoading ? .clear : .white)
-                .fontWeight(.semibold)
+                .font(.body.weight(.semibold))
                 .background(Color(hex: 0xDB5461))
                 .cornerRadius(16)
                 .overlay {

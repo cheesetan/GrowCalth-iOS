@@ -102,14 +102,14 @@ struct CustomContentUnavailableView: View {
                                 ProgressView()
                             } else {
                                 Label("Check Status", systemImage: "arrow.clockwise")
-                                    .fontWeight(.bold)
+                                    .font(.body.weight(.bold))
                             }
                         }
                         .buttonStyle(.borderedProminent)
                     case .update:
                         Link(destination: URL(string: "https://apps.apple.com/sg/app/growcalth/id6456388202")!) {
                             Label("Open App Store", systemImage: "arrow.up.forward.app.fill")
-                                .fontWeight(.bold)
+                                .font(.body.weight(.bold))
                         }
                         .buttonStyle(.borderedProminent)
                     case .network:

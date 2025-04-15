@@ -49,8 +49,7 @@ struct ProgressBar: View {
                 }
                 .minimumScaleFactor(0.1)
                 .padding(10)
-                .font(.subheadline)
-                .fontWeight(.bold)
+                .font(.subheadline.weight(.bold))
                 .lineLimit(1)
             }
             .mask(Capsule())

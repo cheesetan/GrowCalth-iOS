@@ -29,9 +29,27 @@ struct EventDetailView: View {
     @ObservedObject var adminManager: AdminManager = .shared
     
     @Environment(\.dismiss) var dismiss
-    
+
+    init(event: Binding<EventItem>) {
+        self._event = event
+
+        if #available(iOS 16.0, *) {
+        } else {
+            UIScrollView.appearance().keyboardDismissMode = .onDrag
+        }
+    }
+
     var body: some View {
-        ScrollView {
+        if #available(iOS 16.0, *) {
+            main
+                .scrollDismissesKeyboard(.interactively)
+        } else {
+            main
+        }
+    }
+
+    var main: some View {
+        ScrollView(.vertical, showsIndicators: true) {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading, spacing: 10) {
                     title
@@ -41,25 +59,24 @@ struct EventDetailView: View {
                     date
                     venue
                 }
-                
+
                 Divider()
                     .padding(.vertical, 5)
-                
+
                 description
             }
             .padding()
             .animation(.default, value: isEditing)
         }
-        .scrollDismissesKeyboard(.interactively)
         .navigationTitle("Event")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             editableTitle = event.title
-            
+
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd/MMMM/yyyy"
             editableDate = dateFormatter.date(from: event.date) ?? Date()
-            
+
             editableVenue = event.venue
             if let description = event.description {
                 editableDescription = description
@@ -68,8 +85,8 @@ struct EventDetailView: View {
             }
         }
         .toolbar {
-            if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
                     VStack {
                         if isEditing {
                             saveEditButton
@@ -94,17 +111,15 @@ struct EventDetailView: View {
             Text(alertMessage)
         }
     }
-    
+
     var title: some View {
         VStack {
             if isEditing {
                 TextField("Event Title", text: $editableTitle)
-                    .font(.title)
-                    .fontWeight(.heavy)
+                    .font(.title.weight(.heavy))
             } else {
                 Text(event.title)
-                    .font(.title)
-                    .fontWeight(.heavy)
+                    .font(.title.weight(.heavy))
             }
         }
     }
@@ -156,7 +171,11 @@ struct EventDetailView: View {
     var description: some View {
         VStack {
             if isEditing {
-                TextField("Event Description", text: $editableDescription, axis: .vertical)
+                if #available(iOS 16.0, *) {
+                    TextField("Event Description", text: $editableDescription, axis: .vertical)
+                } else {
+                    TextEditor(text: $editableDescription)
+                }
             } else {
                 if let description = event.description {
                     Text(LocalizedStringKey(description))

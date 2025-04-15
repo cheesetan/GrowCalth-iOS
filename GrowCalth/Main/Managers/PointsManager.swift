@@ -27,7 +27,12 @@ class PointsManager: ObservableObject {
     }
 
     private func getArchiveURL() -> URL {
-        URL.documentsDirectory.appending(path: "lastPointsAwardedDate.json")
+        if #available(iOS 16.0, *) {
+            return URL.documentsDirectory.appending(path: "lastPointsAwardedDate.json")
+        } else {
+            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            return paths[0].appendingPathComponent("lastPointsAwardedDate.json")
+        }
     }
 
     private func save() {

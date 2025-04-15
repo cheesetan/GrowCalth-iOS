@@ -23,7 +23,12 @@ class LeaderboardsManager: ObservableObject {
     }
 
     private func getArchiveURL() -> URL {
-        URL.documentsDirectory.appending(path: "leaderboard.json")
+        if #available(iOS 16.0, *) {
+            return URL.documentsDirectory.appending(path: "leaderboard.json")
+        } else {
+            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            return paths[0].appendingPathComponent("leaderboard.json")
+        }
     }
 
     private func save() {

@@ -25,7 +25,12 @@ class ColorSchemeManager: ObservableObject {
     }
 
     private func getArchiveURL() -> URL {
-        URL.documentsDirectory.appending(path: "preferredCSs.json")
+        if #available(iOS 16.0, *) {
+            return URL.documentsDirectory.appending(path: "preferredCSs.json")
+        } else {
+            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            return paths[0].appendingPathComponent("preferredCSs.json")
+        }
     }
 
     private func save() {

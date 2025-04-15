@@ -26,7 +26,12 @@ class HealthInfoManager: ObservableObject {
     }
 
     private func getArchiveURL() -> URL {
-        URL.documentsDirectory.appending(path: "healthInfoItems.json")
+        if #available(iOS 16.0, *) {
+            return URL.documentsDirectory.appending(path: "healthInfoItems.json")
+        } else {
+            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            return paths[0].appendingPathComponent("healthInfoItems.json")
+        }
     }
 
     private func save() {

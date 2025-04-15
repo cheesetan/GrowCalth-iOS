@@ -24,15 +24,13 @@ struct QuoteView: View {
                 if let content = quotesManager.quote?.text {
                     Text(content)
                         .minimumScaleFactor(0.1)
-                        .fontWeight(.semibold)
-                        .font(.title2)
+                        .font(.title2.weight(.semibold))
                         .multilineTextAlignment(.center)
                 }
                 if let author = quotesManager.quote?.author {
                     Text(author)
                         .minimumScaleFactor(0.1)
-                        .fontWeight(.bold)
-                        .font(.subheadline)
+                        .font(.subheadline.weight(.bold))
                         .multilineTextAlignment(.center)
                 }
             }
@@ -47,7 +45,7 @@ struct QuoteView: View {
                     .frame(height: 50)
                     .background(.blue)
                     .foregroundColor(isLoading ? .clear : .white)
-                    .fontWeight(.bold)
+                    .font(.body.weight(.bold))
                     .cornerRadius(16)
                     .overlay {
                         if isLoading {

@@ -16,70 +16,81 @@ struct NAPFA: View {
     @ObservedObject var adminManager: AdminManager = .shared
     @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var napfaManager: NAPFAManager = .shared
-
+    
     var body: some View {
-        NavigationStack {
-            VStack {
-                picker
-                table
+        if #available(iOS 16.0, *) {
+            NavigationStack {
+                main
             }
-            .animation(.default, value: napfaManager.year)
-            .animation(.default, value: napfaManager.levelSelection)
-            .animation(.default, value: napfaManager.data)
-            .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $showingNAPFAEditing) {
-                EditingNAPFA(
-                    yearSelection: napfaManager.year,
-                    twoPointFourKm: napfaManager.twoPointFourKm,
-                    inclinedPullUps: napfaManager.inclinedPullUps,
-                    pullUps: napfaManager.pullUps,
-                    shuttleRun: napfaManager.shuttleRun,
-                    sitAndReach: napfaManager.sitAndReach,
-                    sitUps: napfaManager.sitUps,
-                    sbj: napfaManager.sbj
-                )
+        } else {
+            NavigationView {
+                main
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) { previousButton }
-                ToolbarItem(placement: .principal) { title }
-                ToolbarItem(placement: .navigationBarTrailing) { nextButton }
+            .navigationViewStyle(.stack)
+        }
+    }
+    
+    var main: some View {
+        VStack {
+            picker
+            table
+        }
+        .animation(.default, value: napfaManager.year)
+        .animation(.default, value: napfaManager.levelSelection)
+        .animation(.default, value: napfaManager.data)
+        .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showingNAPFAEditing) {
+            EditingNAPFA(
+                yearSelection: napfaManager.year,
+                twoPointFourKm: napfaManager.twoPointFourKm,
+                inclinedPullUps: napfaManager.inclinedPullUps,
+                pullUps: napfaManager.pullUps,
+                shuttleRun: napfaManager.shuttleRun,
+                sitAndReach: napfaManager.sitAndReach,
+                sitUps: napfaManager.sitUps,
+                sbj: napfaManager.sbj
+            )
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) { previousButton }
+            ToolbarItem(placement: .principal) { title }
+            ToolbarItem(placement: .navigationBarTrailing) { nextButton }
+        }
+        .onAppear {
+            adminManager.checkIfAppForcesUpdates()
+            adminManager.checkIfUnderMaintenance() { }
+            isLoading = true
+            napfaManager.fetchAllData(for: napfaManager.year) {
+                isLoading = false
             }
-            .onAppear {
-                adminManager.checkIfAppForcesUpdates()
-                adminManager.checkIfUnderMaintenance() { }
-                isLoading = true
-                napfaManager.fetchAllData(for: napfaManager.year) {
-                    isLoading = false
-                }
-            }
-            .refreshable {
-                adminManager.checkIfAppForcesUpdates()
-                adminManager.checkIfUnderMaintenance() { }
-                if !showingNAPFAEditing {
-                    isLoading = true
-                    napfaManager.fetchAllData(for: napfaManager.year) {
-                        isLoading = false
-                    }
-                }
-            }
-            .onChange(of: napfaManager.year) { newYear in
-                adminManager.checkIfAppForcesUpdates()
-                adminManager.checkIfUnderMaintenance() { }
-                napfaManager.fetchAllData(for: newYear) {
-                    isLoading = false
-                }
-            }
-            .onChange(of: napfaManager.levelSelection) { _ in
-                adminManager.checkIfAppForcesUpdates()
-                adminManager.checkIfUnderMaintenance() { }
+        }
+        .refreshable {
+            adminManager.checkIfAppForcesUpdates()
+            adminManager.checkIfUnderMaintenance() { }
+            if !showingNAPFAEditing {
                 isLoading = true
                 napfaManager.fetchAllData(for: napfaManager.year) {
                     isLoading = false
                 }
             }
         }
+        .onChange(of: napfaManager.year) { newYear in
+            adminManager.checkIfAppForcesUpdates()
+            adminManager.checkIfUnderMaintenance() { }
+            napfaManager.fetchAllData(for: newYear) {
+                isLoading = false
+            }
+        }
+        .onChange(of: napfaManager.levelSelection) { _ in
+            adminManager.checkIfAppForcesUpdates()
+            adminManager.checkIfUnderMaintenance() { }
+            isLoading = true
+            napfaManager.fetchAllData(for: napfaManager.year) {
+                isLoading = false
+            }
+        }
     }
-    
+
     var previousButton: some View {
         Button {
             if napfaManager.year > 2023 {
@@ -87,7 +98,7 @@ struct NAPFA: View {
             }
         } label: {
             Label("Previous year", systemImage: "chevron.left.circle.fill")
-                .fontWeight(.bold)
+                .font(.body.weight(.bold))
         }
         .disabled(napfaManager.year <= 2023)
     }
@@ -102,8 +113,7 @@ struct NAPFA: View {
                         Text("NAPFA \(String(napfaManager.year))")
                             .font(.headline)
                         Image(systemName: "chevron.down")
-                            .font(.caption2)
-                            .fontWeight(.bold)
+                            .font(.caption2.weight(.bold))
                             .symbolRenderingMode(.hierarchical)
                             .padding(.leading, -3)
                     }
@@ -125,7 +135,7 @@ struct NAPFA: View {
             }
         } label: {
             Label("Next year", systemImage: "chevron.right.circle.fill")
-                .fontWeight(.bold)
+                .font(.body.weight(.bold))
         }
         .disabled(napfaManager.year >= Calendar.current.component(.year, from: Date()))
     }
@@ -198,7 +208,7 @@ struct NAPFA: View {
                             ProgressView()
                         } else {
                             Label("Refresh", systemImage: "arrow.clockwise")
-                                .fontWeight(.bold)
+                                .font(.body.weight(.bold))
                         }
                     }
                     .buttonStyle(.borderedProminent)

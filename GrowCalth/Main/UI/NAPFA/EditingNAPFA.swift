@@ -39,46 +39,57 @@ struct EditingNAPFA: View {
     }
     
     var body: some View {
-        NavigationStack {
-            List {
-                twoPointFourKmView
-                inclinedPullUpsView
-                if NAPFALevel(rawValue: levelSelection)! == .secondary4 {
-                    pullUpsView
-                }
-                shuttleRunView
-                sitAndReachView
-                sitUpsView
-                sbjView
+        if #available(iOS 16.0, *) {
+            NavigationStack {
+                main
             }
-            .alert(alertHeader, isPresented: $showingAlert) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(alertMessage)
+        } else {
+            NavigationView {
+                main
             }
-            .navigationTitle("\(String(yearSelection)) \(NAPFALevel(rawValue: levelSelection)!.rawValue) NAPFA")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    EditButton()
-                }
-                
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        save()
-                    } label: {
-                        if saveLoading {
-                            ProgressView()
-                        } else {
-                            Text("Save")
-                        }
+            .navigationViewStyle(.stack)
+        }
+    }
+
+    var main: some View {
+        List {
+            twoPointFourKmView
+            inclinedPullUpsView
+            if NAPFALevel(rawValue: levelSelection)! == .secondary4 {
+                pullUpsView
+            }
+            shuttleRunView
+            sitAndReachView
+            sitUpsView
+            sbjView
+        }
+        .alert(alertHeader, isPresented: $showingAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
+        }
+        .navigationTitle("\(String(yearSelection)) \(NAPFALevel(rawValue: levelSelection)!.rawValue) NAPFA")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                EditButton()
+            }
+
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    save()
+                } label: {
+                    if saveLoading {
+                        ProgressView()
+                    } else {
+                        Text("Save")
                     }
-                    .disabled(saveButtonDisabled)
                 }
+                .disabled(saveButtonDisabled)
             }
         }
     }
-    
+
     var twoPointFourKmView: some View {
         dataSections(data: self.$twoPointFourKm, sectionHeader: "2.4km Run")
     }
@@ -202,8 +213,7 @@ struct EditingNAPFA: View {
             Text(text)
                 .padding(.leading, -5)
         }
-        .font(.caption2)
-        .fontWeight(.bold)
+        .font(.caption2.weight(.bold))
         .padding(5)
         .background(backgroundColor.opacity(0.5))
         .cornerRadius(8)

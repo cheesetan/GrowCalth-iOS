@@ -30,44 +30,58 @@ struct NewAnnouncementView: View {
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                picker
-                    .padding(.top, -15)
-                    .padding([.bottom, .horizontal])
-                
-                TextField("\(postType == .announcements ? "Announcement" : "Event") Title", text: $title)
-                    .font(.largeTitle)
-                    .fontWeight(.heavy)
-                
-                if postType == .events {
-                    eventItems
-                }
-                
-                Divider()
-                    .padding(.vertical, 10)
-                
-                TextField("\(postType == .announcements ? "Announcement" : "Event") Description", text: $description, axis: .vertical)
-                
-                Spacer()
-                
-                createButton
+        if #available(iOS 16.0, *) {
+            NavigationStack {
+                main
             }
-            .animation(.default, value: postType)
-            .navigationTitle("Create a Post")
-            .navigationBarTitleDisplayMode(.inline)
-            .padding(.top)
-            .padding(.horizontal, 30)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        dismiss.callAsFunction()
-                    } label: {
-                        Label("Close", systemImage: "xmark")
-                    }
+        } else {
+            NavigationView {
+                main
+            }
+            .navigationViewStyle(.stack)
+        }
+    }
+
+    var main: some View {
+        VStack {
+            picker
+                .padding(.top, -15)
+                .padding([.bottom, .horizontal])
+
+            TextField("\(postType == .announcements ? "Announcement" : "Event") Title", text: $title)
+                .font(.largeTitle.weight(.heavy))
+
+            if postType == .events {
+                eventItems
+            }
+
+            Divider()
+                .padding(.vertical, 10)
+
+            if #available(iOS 16.0, *) {
+                TextField("\(postType == .announcements ? "Announcement" : "Event") Description", text: $description, axis: .vertical)
+            } else {
+                TextEditor(text: $description)
+            }
+
+            Spacer()
+
+            createButton
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    dismiss.callAsFunction()
+                } label: {
+                    Label("Close", systemImage: "xmark")
                 }
             }
         }
+        .animation(.default, value: postType)
+        .navigationTitle("Create a Post")
+        .navigationBarTitleDisplayMode(.inline)
+        .padding(.top)
+        .padding(.horizontal, 30)
         .alert(alertTitle, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -82,7 +96,7 @@ struct NewAnnouncementView: View {
             eventDate = calendar.startOfDay(for: eventDate)
         }
     }
-    
+
     var picker: some View {
         VStack {
             Picker("Post Type", selection: $postType) {
@@ -124,7 +138,7 @@ struct NewAnnouncementView: View {
                 .foregroundColor(.white)
                 .background(.blue)
                 .cornerRadius(16)
-                .fontWeight(.bold)
+                .font(.body.weight(.bold))
         }
         .buttonStyle(.plain)
         .padding(.bottom, 30)

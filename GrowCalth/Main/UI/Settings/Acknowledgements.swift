@@ -87,7 +87,7 @@ struct Acknowledgements: View {
                         .init(color: Color(hex: 0xF0675E), location: 0.6),
                         .init(color: Color(hex: 0xFDA701), location: 1),
                     ] : [.init(color: .primary, location: 1)])
-                    .fontWeight(title == "Aurelius Intelligence" ? .bold : .regular)
+                    .font(.body.weight(title == "Aurelius Intelligence" ? .bold : .regular))
                 Text(description)
                     .font(.caption)
                     .foregroundColor(.secondary)

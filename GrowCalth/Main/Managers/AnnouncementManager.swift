@@ -51,11 +51,21 @@ class AnnouncementManager: ObservableObject {
     }
 
     private func getAnnouncementArchiveURL() -> URL {
-        URL.documentsDirectory.appending(path: "announcements.json")
+        if #available(iOS 16.0, *) {
+            return URL.documentsDirectory.appending(path: "announcements.json")
+        } else {
+            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            return paths[0].appendingPathComponent("announcements.json")
+        }
     }
 
     private func getEventArchiveURL() -> URL {
-        URL.documentsDirectory.appending(path: "events.json")
+        if #available(iOS 16.0, *) {
+            return URL.documentsDirectory.appending(path: "events.json")
+        } else {
+            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            return paths[0].appendingPathComponent("events.json")
+        }
     }
 
     private func saveAnnouncements() {

@@ -32,8 +32,8 @@ struct LeaderboardView: View {
         .listStyle(.grouped)
         .navigationTitle("Leaderboard")
         .toolbar {
-            if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
-                ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
                     Button(role: .destructive) {
                         showingAlert = true
                         alertTitle = "Reset GrowCalth points"

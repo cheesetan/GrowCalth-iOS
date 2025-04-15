@@ -153,7 +153,7 @@ struct SignUpView: View {
                 .padding()
                 .frame(maxWidth: 300)
                 .foregroundColor(isLoading ? .clear : .white)
-                .fontWeight(.semibold)
+                .font(.body.weight(.semibold))
                 .background(Color(hex: 0xDB5461))
                 .cornerRadius(16)
                 .overlay {

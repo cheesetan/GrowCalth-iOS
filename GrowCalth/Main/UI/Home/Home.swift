@@ -22,56 +22,67 @@ struct Home: View {
     @State private var showingAlumnusAppreciationAlert = false
 
     @Environment(\.colorScheme) var colorScheme
-    
+
     var body: some View {
-        NavigationStack {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack {
-                    HStack(alignment: .top, spacing: 15) {
-                        VStack(spacing: 15) {
-                            steps
-                            distance
-                        }
-                        .frame(maxWidth: .infinity)
-                        
-                        VStack(spacing: 15) {
-                            NavigationLink {
-                                LeaderboardView()
-                            } label: {
-                                leaderboards
-                            }
-                            .buttonStyle(.plain)
-                            
-                            housePointsProgress
-                        }
-                        .frame(maxWidth: .infinity)
+        if #available(iOS 16.0, *) {
+            NavigationStack {
+                main
+            }
+        } else {
+            NavigationView {
+                main
+            }
+            .navigationViewStyle(.stack)
+        }
+    }
+
+    var main: some View {
+        ScrollView(.vertical, showsIndicators: false) {
+            VStack {
+                HStack(alignment: .top, spacing: 15) {
+                    VStack(spacing: 15) {
+                        steps
+                        distance
                     }
-                    
+                    .frame(maxWidth: .infinity)
+
                     VStack(spacing: 15) {
                         NavigationLink {
-                            QuoteView()
+                            LeaderboardView()
                         } label: {
-                            quotes
+                            leaderboards
                         }
                         .buttonStyle(.plain)
-                        
-                        NavigationLink {
-                            GoalsView()
-                        } label: {
-                            goals
-                        }
-                        .buttonStyle(.plain)
+
+                        housePointsProgress
                     }
-                    .padding(.top, 7.5)
+                    .frame(maxWidth: .infinity)
                 }
-                .padding(.horizontal)
-                .padding(.vertical, 20)
+
+                VStack(spacing: 15) {
+                    NavigationLink {
+                        QuoteView()
+                    } label: {
+                        quotes
+                    }
+                    .buttonStyle(.plain)
+
+                    NavigationLink {
+                        GoalsView()
+                    } label: {
+                        goals
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.top, 7.5)
             }
-            .navigationTitle("Home")
-            .refreshable {
-                hkManager.fetchAllDatas()
-                quotesManager.generateNewQuote() { _ in }
-            }
+            .padding(.horizontal)
+            .padding(.vertical, 20)
+        }
+        .navigationTitle("Home")
+        .refreshable {
+            hkManager.fetchAllDatas()
+            quotesManager.generateNewQuote() { _ in }
         }
         .onAppear {
             adminManager.checkIfUnderMaintenance() { }
@@ -90,7 +101,7 @@ struct Home: View {
             Text("As an alumnus, you're able to view the contents of the app, but are unable to contribute to the leaderboard. We really appreciate your previous support as a student!")
         }
     }
-    
+
     var steps: some View {
         RoundedRectangle(cornerRadius: 16)
             .frame(width: halfUIWidth, height: halfUIWidth + 30)
@@ -202,8 +213,7 @@ struct Home: View {
                             Text("GrowCalth points earned today")
                         }
                     }
-                    .font(.title3)
-                    .fontWeight(.medium)
+                    .font(.title3.weight(.medium))
                     .multilineTextAlignment(.center)
                     .minimumScaleFactor(0.1)
                     .lineLimit(2)
@@ -295,8 +305,7 @@ struct Home: View {
                     ProgressBar(text: "Steps", color: .red, height: 35, value: stepsGoalFloat)
                     ProgressBar(text: "Distance", color: .green, height: 35, value: distanceGoalFloat)
                 }
-                .font(.headline)
-                .fontWeight(.semibold)
+                .font(.headline.weight(.semibold))
                 .foregroundColor(.white)
                 .padding([.horizontal, .top])
             }
@@ -335,8 +344,7 @@ struct Home: View {
             HStack {
                 Text(text)
                     .minimumScaleFactor(0.1)
-                    .font(.system(size: font == .small ? 15.0 : 20.0))
-                    .fontWeight(.bold)
+                    .font(.system(size: font == .small ? 15.0 : 20.0).weight(.bold))
                     .lineLimit(1)
                 Spacer()
             }

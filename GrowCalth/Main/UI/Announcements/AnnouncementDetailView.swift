@@ -27,9 +27,27 @@ struct AnnouncementDetailView: View {
     @ObservedObject var adminManager: AdminManager = .shared
     
     @Environment(\.dismiss) var dismiss
-    
+
+    init(announcement: Binding<Announcement>) {
+        self._announcement = announcement
+
+        if #available(iOS 16.0, *) {
+        } else {
+            UIScrollView.appearance().keyboardDismissMode = .onDrag
+        }
+    }
+
     var body: some View {
-        ScrollView {
+        if #available(iOS 16.0, *) {
+            main
+                .scrollDismissesKeyboard(.interactively)
+        } else {
+            main
+        }
+    }
+
+    var main: some View {
+        ScrollView(.vertical, showsIndicators: true) {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading, spacing: 10) {
                     title
@@ -37,7 +55,7 @@ struct AnnouncementDetailView: View {
                         authorName(authorName: name)
                     }
                 }
-                
+
                 Divider()
                     .padding(.vertical, 5)
                 description
@@ -45,7 +63,6 @@ struct AnnouncementDetailView: View {
             .padding()
             .animation(.default, value: isEditing)
         }
-        .scrollDismissesKeyboard(.interactively)
         .navigationTitle("Announcement")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
@@ -55,8 +72,8 @@ struct AnnouncementDetailView: View {
             }
         }
         .toolbar {
-            if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
                     VStack {
                         if isEditing {
                             saveEditButton
@@ -81,13 +98,12 @@ struct AnnouncementDetailView: View {
             Text(alertMessage)
         }
     }
-    
+
     var title: some View {
         VStack {
             if isEditing {
                 TextField("Announcement Title", text: $editableTitle)
-                    .font(.title)
-                    .fontWeight(.heavy)
+                    .font(.title.weight(.heavy))
             } else {
                 Text(announcement.title)
                     .font(.title)
@@ -109,7 +125,11 @@ struct AnnouncementDetailView: View {
     var description: some View {
         VStack {
             if isEditing {
-                TextField("Announcement Description", text: $editableDescription, axis: .vertical)
+                if #available(iOS 16.0, *) {
+                    TextField("Announcement Description", text: $editableDescription, axis: .vertical)
+                } else {
+                    TextEditor(text: $editableDescription)
+                }
             } else {
                 if let description = announcement.description {
                     Text(LocalizedStringKey(description))

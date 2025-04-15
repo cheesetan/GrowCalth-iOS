@@ -23,21 +23,32 @@ struct SettingsView: View {
     @ObservedObject var developerManager: DeveloperManager = .shared
 
     var body: some View {
-        NavigationStack {
-            List {
-                account
-                appearance
-//                health
-                permissions
-                resources
-                acknowledgements
-                if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
-                    developer
-                }
-                signOutButton
+        if #available(iOS 16.0, *) {
+            NavigationStack {
+                main
             }
-            .navigationTitle("Settings")
+        } else {
+            NavigationView {
+                main
+            }
+            .navigationViewStyle(.stack)
         }
+    }
+
+    var main: some View {
+        List {
+            account
+            appearance
+            //                health
+            permissions
+            resources
+            acknowledgements
+            if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
+                developer
+            }
+            signOutButton
+        }
+        .navigationTitle("Settings")
         .onAppear {
             adminManager.checkIfAppForcesUpdates()
             adminManager.checkIfUnderMaintenance() { }
@@ -48,7 +59,7 @@ struct SettingsView: View {
             Text(alertMessage)
         }
     }
-    
+
     var account: some View {
         Section("Account") {
             NavigationLink {
@@ -87,8 +98,7 @@ struct SettingsView: View {
                         Text("?")
                     }
                 }
-                .font(.system(size: 30.0))
-                .fontWeight(.semibold)
+                .font(.system(size: 30.0).weight(.semibold))
                 .foregroundColor(.white)
             }
     }

@@ -25,74 +25,85 @@ struct Announcements: View {
     @ObservedObject var adminManager: AdminManager = .shared
     
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                picker
-                Spacer()
-                switch selection {
-                case .announcements:
-                    if !announcementManager.announcements.isEmpty {
-                        announcementsList
-                    } else {
-                        noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
-                    }
-                case .events:
-                    if !announcementManager.events.isEmpty {
-                        eventsList
-                    } else {
-                        noContentView(keyword: "Events", systemImage: "calendar")
-                    }
+        if #available(iOS 16.0, *) {
+            NavigationStack {
+                main
+            }
+        } else {
+            NavigationView {
+                main
+            }
+            .navigationViewStyle(.stack)
+        }
+    }
+
+    var main: some View {
+        VStack(spacing: 0) {
+            picker
+            Spacer()
+            switch selection {
+            case .announcements:
+                if !announcementManager.announcements.isEmpty {
+                    announcementsList
+                } else {
+                    noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
                 }
-                Spacer()
+            case .events:
+                if !announcementManager.events.isEmpty {
+                    eventsList
+                } else {
+                    noContentView(keyword: "Events", systemImage: "calendar")
+                }
             }
-            .animation(.default, value: selection)
-            .animation(.default, value: announcementManager.announcements)
-            .animation(.default, value: announcementManager.events)
-            .listStyle(.grouped)
-            .navigationTitle(selection == .announcements ? "Announcements" : "Events")
-            .refreshable {
-                adminManager.checkIfAppForcesUpdates()
-                adminManager.checkIfUnderMaintenance() { }
-                announcementManager.retrieveAllPosts() {}
-            }
-            .onAppear {
-                adminManager.checkIfAppForcesUpdates()
-                adminManager.checkIfUnderMaintenance() { }
-                announcementManager.retrieveAllPosts() {}
-            }
-            .onChange(of: announcementManager.announcements) { _ in
-                adminManager.checkIfAppForcesUpdates()
-                adminManager.checkIfUnderMaintenance() { }
-            }
-            .onChange(of: announcementManager.events) { _ in
-                adminManager.checkIfAppForcesUpdates()
-                adminManager.checkIfUnderMaintenance() { }
-            }
-            .toolbar {
+            Spacer()
+        }
+        .animation(.default, value: selection)
+        .animation(.default, value: announcementManager.announcements)
+        .animation(.default, value: announcementManager.events)
+        .listStyle(.grouped)
+        .navigationTitle(selection == .announcements ? "Announcements" : "Events")
+        .refreshable {
+            adminManager.checkIfAppForcesUpdates()
+            adminManager.checkIfUnderMaintenance() { }
+            announcementManager.retrieveAllPosts() {}
+        }
+        .onAppear {
+            adminManager.checkIfAppForcesUpdates()
+            adminManager.checkIfUnderMaintenance() { }
+            announcementManager.retrieveAllPosts() {}
+        }
+        .onChange(of: announcementManager.announcements) { _ in
+            adminManager.checkIfAppForcesUpdates()
+            adminManager.checkIfUnderMaintenance() { }
+        }
+        .onChange(of: announcementManager.events) { _ in
+            adminManager.checkIfAppForcesUpdates()
+            adminManager.checkIfUnderMaintenance() { }
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
                 if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        createPostButton
-                    }
+                    createPostButton
                 }
             }
-            .alert(alertHeader, isPresented: $showingAlert) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(alertMessage)
+        }
+        .alert(alertHeader, isPresented: $showingAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
+        }
+        .alert(alertHeader, isPresented: $showingDeleteAlert) {
+            Button("Delete", role: .destructive) {
+                confirmDelete(uuid: stateUUID)
             }
-            .alert(alertHeader, isPresented: $showingDeleteAlert) {
-                Button("Delete", role: .destructive) {
-                    confirmDelete(uuid: stateUUID)
-                }
-            } message: {
-                Text(alertMessage)
-            }
+        } message: {
+            Text(alertMessage)
         }
         .sheet(isPresented: $showingNewAnnouncementView) {
             NewAnnouncementView(postType: selection)
         }
     }
-    
+
     var announcementsList: some View {
         List {
             ForEach($announcementManager.announcements, id: \.id) { item in
@@ -192,7 +203,7 @@ struct Announcements: View {
                             ProgressView()
                         } else {
                             Label("Refresh", systemImage: "arrow.clockwise")
-                                .fontWeight(.bold)
+                                .font(.body.weight(.bold))
                         }
                     }
                     .buttonStyle(.borderedProminent)

@@ -19,70 +19,80 @@ struct ForgotPasswordView: View {
     @State var alertMessage: String = ""
     
     @FocusState var emailFocused: Bool
-    
+
     @ObservedObject var authManager: AuthenticationManager = .shared
-    
+
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 15) {
-                Spacer()
-                Text("Enter the email address you want to reset the password for.")
-                    .multilineTextAlignment(.center)
-                    .fontWeight(.semibold)
-                TextField("Email Address", text: $email)
-                    .padding()
-                    .background(.ultraThickMaterial)
-                    .cornerRadius(16)
-                    .keyboardType(.emailAddress)
-                    .textContentType(.username)
-                    .autocorrectionDisabled(true)
-                    .textInputAutocapitalization(.never)
-                    .focused($emailFocused)
-                    .onSubmit {
-                        if !forgotPasswordLoading && !email.isEmpty {
-                            sendForgotPasswordRequest()
-                        }
-                    }
-                
-                Button(role: .destructive) {
-                    sendForgotPasswordRequest()
-                } label: {
-                    VStack {
-                        if forgotPasswordLoading {
-                            ProgressView()
-                        } else {
-                            Text("Reset Password")
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(email.isEmpty ? .red.opacity(0.5) : forgotPasswordLoading ? .red.opacity(0.5) : .red)
-                    .foregroundColor(.white)
-                    .fontWeight(.bold)
-                    .font(.headline)
-                    .cornerRadius(16)
-                }
-                .disabled(email.isEmpty || forgotPasswordLoading)
-                Spacer()
+        if #available(iOS 16.0, *) {
+            NavigationStack {
+                main
             }
-            .padding(.horizontal)
-            .navigationTitle("Forgot Password")
-            .navigationBarTitleDisplayMode(.inline)
-            .alert(alertHeader, isPresented: $showingAlert) {
-                Button("OK", role: .cancel) {
-                    showingForgotPassword = false
-                }
-            } message: {
-                Text(alertMessage)
+        } else {
+            NavigationView {
+                main
             }
-            .alert(alertHeader, isPresented: $showingErrorAlert) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(alertMessage)
-            }
+            .navigationViewStyle(.stack)
         }
     }
-    
+
+    var main: some View {
+        VStack(spacing: 15) {
+            Spacer()
+            Text("Enter the email address you want to reset the password for.")
+                .multilineTextAlignment(.center)
+                .font(.body.weight(.semibold))
+            TextField("Email Address", text: $email)
+                .padding()
+                .background(.ultraThickMaterial)
+                .cornerRadius(16)
+                .keyboardType(.emailAddress)
+                .textContentType(.username)
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
+                .focused($emailFocused)
+                .onSubmit {
+                    if !forgotPasswordLoading && !email.isEmpty {
+                        sendForgotPasswordRequest()
+                    }
+                }
+
+            Button(role: .destructive) {
+                sendForgotPasswordRequest()
+            } label: {
+                VStack {
+                    if forgotPasswordLoading {
+                        ProgressView()
+                    } else {
+                        Text("Reset Password")
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(email.isEmpty ? .red.opacity(0.5) : forgotPasswordLoading ? .red.opacity(0.5) : .red)
+                .foregroundColor(.white)
+                .font(.headline.weight(.bold))
+                .cornerRadius(16)
+            }
+            .disabled(email.isEmpty || forgotPasswordLoading)
+            Spacer()
+        }
+        .padding(.horizontal)
+        .navigationTitle("Forgot Password")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert(alertHeader, isPresented: $showingAlert) {
+            Button("OK", role: .cancel) {
+                showingForgotPassword = false
+            }
+        } message: {
+            Text(alertMessage)
+        }
+        .alert(alertHeader, isPresented: $showingErrorAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
+        }
+    }
+
     func sendForgotPasswordRequest() {
         emailFocused = false
         forgotPasswordLoading = true

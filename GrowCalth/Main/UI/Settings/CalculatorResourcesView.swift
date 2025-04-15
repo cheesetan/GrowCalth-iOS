@@ -37,7 +37,7 @@ struct CalculatorResourcesView: View {
     @ViewBuilder
     func resource(_ title: String, subtitle: String, link: String) -> some View {
         Link(destination: URL(string: link)!) {
-            LabeledContent {
+            CustomLabeledContent {
                 Image(systemName: "arrow.up.forward.square.fill")
             } label: {
                 Text(title)
