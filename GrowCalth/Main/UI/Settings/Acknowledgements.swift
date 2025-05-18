@@ -33,6 +33,14 @@ struct Acknowledgements: View {
                 }
 
                 Section {
+                    acknowledgement(title: "Ms **Adele** Lim", description: "Sports and Wellness Department", image: "figure.run")
+                    acknowledgement(title: "Mr Ng **Jun Wei**", description: "Sports and Wellness Department", image: "figure.run")
+                    acknowledgement(title: "Mr **Wade** Wang", description: "Sports and Wellness Department", image: "figure.run")
+                } header: {
+                    Label("Special Thanks", systemImage: "star.fill")
+                }
+
+                Section {
                     acknowledgement(title: "Aurelius Intelligence", description: "Developed by GrowCalth.", image: "brain.fill")
                     Link(destination: URL(string: "https://github.com/firebase/firebase-ios-sdk")!) {
                         acknowledgement(title: "Firebase iOS SDK", description: "Developed by Google. Licensed under the Apache License 2.0.", image: "server.rack")
