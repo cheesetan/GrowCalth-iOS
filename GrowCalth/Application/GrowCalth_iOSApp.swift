@@ -112,7 +112,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 }
 
-let GLOBAL_STEPS_PER_POINT: Int = 5000
+let GLOBAL_STEPS_PER_POINT: Int = 2500
 let GLOBAL_GROWCALTH_START_DATE: Date = .init(timeIntervalSince1970: TimeInterval(1744128000))
 let GLOBAL_ADMIN_EMAILS: [String] = ["admin@growcalth.com", "chay_yu_hung@s2021.ssts.edu.sg", "han_jeong_seu_caleb@s2021.ssts.edu.sg"]
 
