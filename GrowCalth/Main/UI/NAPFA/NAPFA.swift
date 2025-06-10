@@ -32,7 +32,9 @@ struct NAPFA: View {
     
     var main: some View {
         VStack {
-            picker
+            if #unavailable(iOS 26.0) {
+                picker
+            }
             table
         }
         .animation(.default, value: napfaManager.year)

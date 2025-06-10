@@ -27,6 +27,13 @@ struct EventItem: Identifiable, Equatable, Codable {
 enum AnnouncementType: String, CaseIterable {
     case announcements = "Announcements"
     case events = "Events"
+
+    var icon: String {
+        switch self {
+        case .announcements: "megaphone.fill"
+        case .events: "calendar"
+        }
+    }
 }
 
 class AnnouncementManager: ObservableObject {

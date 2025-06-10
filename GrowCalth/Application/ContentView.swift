@@ -110,6 +110,20 @@ struct ContentView: View {
                             Label("Settings", systemImage: "gearshape")
                         }
                 }
+//                TabView {
+//                    Tab("Home", systemImage: "house.fill"){
+//                        Home()
+//                    }
+//                    Tab("Announcements", systemImage: "megaphone"){
+//                        Announcements()
+//                    }
+//                    Tab("NAPFA", systemImage: "figure.run"){
+//                        NAPFA()
+//                    }
+//                    Tab("Settings", systemImage: "gearshape"){
+//                        SettingsView()
+//                    }
+//                }
             case .login:
                 AuthenticationView()
             case .onboarding:

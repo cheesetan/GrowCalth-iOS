@@ -39,8 +39,12 @@ struct Announcements: View {
 
     var main: some View {
         VStack(spacing: 0) {
-            picker
-            Spacer()
+            if #unavailable(iOS 26.0) {
+                picker
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal)
+                Spacer()
+            }
             switch selection {
             case .announcements:
                 if !announcementManager.announcements.isEmpty {
@@ -55,12 +59,13 @@ struct Announcements: View {
                     noContentView(keyword: "Events", systemImage: "calendar")
                 }
             }
-            Spacer()
+            if #unavailable(iOS 26.0) {
+                Spacer()
+            }
         }
         .animation(.default, value: selection)
         .animation(.default, value: announcementManager.announcements)
         .animation(.default, value: announcementManager.events)
-        .listStyle(.grouped)
         .navigationTitle(selection == .announcements ? "Announcements" : "Events")
         .refreshable {
             adminManager.checkIfAppForcesUpdates()
@@ -101,6 +106,16 @@ struct Announcements: View {
         }
         .sheet(isPresented: $showingNewAnnouncementView) {
             NewAnnouncementView(postType: selection)
+        }
+        .overlay(alignment: .bottomTrailing) {
+            if #available(iOS 26.0, *) {
+                picker
+                    .padding(8)
+                    .pickerStyle(.menu)
+                    .labelStyle(.iconOnly)
+                    .glassEffect()
+                    .padding()
+            }
         }
     }
 
@@ -224,13 +239,11 @@ struct Announcements: View {
         VStack {
             Picker("Filters", selection: $selection) {
                 ForEach(AnnouncementType.allCases, id: \.hashValue) { type in
-                    Text(type.rawValue)
+                    Label(type.rawValue, systemImage: type.icon)
                         .tag(type)
                 }
             }
-            .pickerStyle(.segmented)
         }
-        .padding(.horizontal)
     }
     
     @ViewBuilder
