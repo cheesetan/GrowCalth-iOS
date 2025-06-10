@@ -41,39 +41,8 @@ struct ForgotPasswordView: View {
             Text("Enter the email address you want to reset the password for.")
                 .multilineTextAlignment(.center)
                 .font(.body.weight(.semibold))
-            TextField("Email Address", text: $email)
-                .padding()
-                .background(.ultraThickMaterial)
-                .cornerRadius(16)
-                .keyboardType(.emailAddress)
-                .textContentType(.username)
-                .autocorrectionDisabled(true)
-                .textInputAutocapitalization(.never)
-                .focused($emailFocused)
-                .onSubmit {
-                    if !forgotPasswordLoading && !email.isEmpty {
-                        sendForgotPasswordRequest()
-                    }
-                }
-
-            Button(role: .destructive) {
-                sendForgotPasswordRequest()
-            } label: {
-                VStack {
-                    if forgotPasswordLoading {
-                        ProgressView()
-                    } else {
-                        Text("Reset Password")
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(email.isEmpty ? .red.opacity(0.5) : forgotPasswordLoading ? .red.opacity(0.5) : .red)
-                .foregroundColor(.white)
-                .font(.headline.weight(.bold))
-                .cornerRadius(16)
-            }
-            .disabled(email.isEmpty || forgotPasswordLoading)
+            emailField
+            resetPasswordButton
             Spacer()
         }
         .padding(.horizontal)
@@ -90,6 +59,74 @@ struct ForgotPasswordView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(alertMessage)
+        }
+    }
+
+    var emailField: some View {
+        Group {
+            if #available(iOS 26.0, *) {
+                TextField("Email Address", text: $email)
+                    .padding()
+                    .glassEffect()
+            } else {
+                TextField("Email Address", text: $email)
+                    .padding()
+                    .background(.ultraThickMaterial)
+                    .cornerRadius(16)
+            }
+        }
+        .keyboardType(.emailAddress)
+        .textContentType(.username)
+        .autocorrectionDisabled(true)
+        .textInputAutocapitalization(.never)
+        .focused($emailFocused)
+        .onSubmit {
+            if !forgotPasswordLoading && !email.isEmpty {
+                sendForgotPasswordRequest()
+            }
+        }
+    }
+
+    var resetPasswordButton: some View {
+        Group {
+            if #available(iOS 26.0, *) {
+                Button(role: .destructive) {
+                    sendForgotPasswordRequest()
+                } label: {
+                    VStack {
+                        if forgotPasswordLoading {
+                            ProgressView()
+                        } else {
+                            Text("Reset Password")
+                        }
+                    }
+                    .padding(8)
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonBorderShape(.capsule)
+                .buttonStyle(.borderedProminent)
+                .disabled(email.isEmpty || forgotPasswordLoading)
+                .glassEffect()
+            } else {
+                Button(role: .destructive) {
+                    sendForgotPasswordRequest()
+                } label: {
+                    VStack {
+                        if forgotPasswordLoading {
+                            ProgressView()
+                        } else {
+                            Text("Reset Password")
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(email.isEmpty ? .red.opacity(0.5) : forgotPasswordLoading ? .red.opacity(0.5) : .red)
+                    .foregroundColor(.white)
+                    .font(.headline.weight(.bold))
+                    .cornerRadius(16)
+                }
+                .disabled(email.isEmpty || forgotPasswordLoading)
+            }
         }
     }
 

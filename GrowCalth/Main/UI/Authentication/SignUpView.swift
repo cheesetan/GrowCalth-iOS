@@ -62,57 +62,77 @@ struct SignUpView: View {
     
     var infoFields: some View {
         VStack(spacing: 10) {
-            TextField("Email Address", text: $email)
-                .padding()
-                .background(.ultraThickMaterial)
-                .cornerRadius(16)
-                .keyboardType(.emailAddress)
-                .textContentType(.username)
-                .autocorrectionDisabled(true)
-                .textInputAutocapitalization(.never)
-            
-                passwordField
-            
-            Picker("Select your house", selection: $houseSelection) {
-                ForEach(Houses.allCases, id: \.hashValue) { house in
-                    if house != .selectHouse {
-                        Text(house.rawValue)
-                            .minimumScaleFactor(0.1)
-                            .tag(house)
-                    } else {
-                        if houseSelection == .selectHouse {
-                            Text(house.rawValue)
-                                .tag(house)
-                            Divider()
-                        }
-                    }
-                }
-            }
-            .minimumScaleFactor(0.1)
-            .pickerStyle(.menu)
-            .padding(.vertical, 5)
+            emailField
+            passwordField
+            housePicker
         }
     }
-    
+
+    var emailField: some View {
+        Group {
+            if #available(iOS 26.0, *) {
+                TextField("Email Address", text: $email)
+                    .padding()
+                    .keyboardType(.emailAddress)
+                    .textContentType(.username)
+                    .autocorrectionDisabled(true)
+                    .textInputAutocapitalization(.never)
+                    .glassEffect()
+
+            } else {
+                TextField("Email Address", text: $email)
+                    .padding()
+                    .background(.ultraThickMaterial)
+                    .cornerRadius(16)
+                    .keyboardType(.emailAddress)
+                    .textContentType(.username)
+                    .autocorrectionDisabled(true)
+                    .textInputAutocapitalization(.never)
+            }
+        }
+    }
+
     var passwordField: some View {
         ZStack(alignment: .trailing) {
-            VStack {
-                if showingPassword {
-                    TextField("Password", text: $password)
-                        .focused($isFieldFocus, equals: .textField)
+            Group {
+                if #available(iOS 26.0, *) {
+                    Group {
+                        if showingPassword {
+                            TextField("Password", text: $password)
+                                .focused($isFieldFocus, equals: .textField)
+                        } else {
+                            SecureField("Password", text: $password)
+                                .focused($isFieldFocus, equals: .secureField)
+                        }
+                    }
+                    .padding()
+                    .glassEffect()
                 } else {
-                    SecureField("Password", text: $password)
-                        .focused($isFieldFocus, equals: .secureField)
+                    Group {
+                        if showingPassword {
+                            TextField("Password", text: $password)
+                                .focused($isFieldFocus, equals: .textField)
+                        } else {
+                            SecureField("Password", text: $password)
+                                .focused($isFieldFocus, equals: .secureField)
+                        }
+                    }
+                    .padding()
+                    .background(.ultraThickMaterial)
+                    .cornerRadius(16)
                 }
             }
-            .padding()
-            .background(.ultraThickMaterial)
-            .cornerRadius(16)
-            .textContentType(.newPassword)
+            .textContentType(.password)
             .keyboardType(.alphabet)
             .autocorrectionDisabled(true)
             .autocapitalization(.none)
-            
+            .submitLabel(.done)
+            .onSubmit {
+                if !email.isEmpty && !password.isEmpty && !isLoading {
+                    signUp()
+                }
+            }
+
             Button {
                 showingPassword.toggle()
             } label: {
@@ -128,42 +148,89 @@ struct SignUpView: View {
             }
         }
     }
-    
-    var signUpButton: some View {
-        Button {
-            if !email.isEmpty && !password.isEmpty && houseSelection != .selectHouse {
-                isLoading = true
-                authManager.createAccount(email: email, password: password, house: houseSelection) { result in
-                    switch result {
-                    case .success(_):
-                        isLoading = false
-                        alertHeader = "Verify account"
-                        alertMessage = "A verification email has been sent to your account's email address. Verify your email then try logging in again."
-                        showingAlert = true
-                    case .failure(let failure):
-                        isLoading = false
-                        alertHeader = "Error"
-                        alertMessage = "\(failure.localizedDescription)"
-                        showingAlert = true
+
+    var housePicker: some View {
+        Group {
+            if #available(iOS 26.0, *) {
+                Picker("Select your house", selection: $houseSelection) {
+                    ForEach(Houses.allCases, id: \.hashValue) { house in
+                        if house != .selectHouse {
+                            Text(house.rawValue)
+                                .minimumScaleFactor(0.1)
+                                .tag(house)
+                        } else {
+                            if houseSelection == .selectHouse {
+                                Text(house.rawValue)
+                                    .tag(house)
+                                Divider()
+                            }
+                        }
+                    }
+                }
+                .glassEffect()
+            } else {
+                Picker("Select your house", selection: $houseSelection) {
+                    ForEach(Houses.allCases, id: \.hashValue) { house in
+                        if house != .selectHouse {
+                            Text(house.rawValue)
+                                .minimumScaleFactor(0.1)
+                                .tag(house)
+                        } else {
+                            if houseSelection == .selectHouse {
+                                Text(house.rawValue)
+                                    .tag(house)
+                                Divider()
+                            }
+                        }
                     }
                 }
             }
-        } label: {
-            Text("Sign Up")
-                .padding()
-                .frame(maxWidth: 300)
-                .foregroundColor(isLoading ? .clear : .white)
-                .font(.body.weight(.semibold))
-                .background(Color(hex: 0xDB5461))
-                .cornerRadius(16)
-                .overlay {
-                    if isLoading {
-                        ProgressView()
-                    }
-                }
         }
-        .buttonStyle(.plain)
-        .disabled(email.isEmpty || password.isEmpty || houseSelection == .selectHouse || isLoading)
+    }
+
+    var signUpButton: some View {
+        Group {
+            if #available(iOS 26.0, *) {
+                Button {
+                    signUp()
+                } label: {
+                    Text("Sign Up")
+                        .padding(8)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(isLoading ? .clear : .white)
+                        .font(.body.weight(.semibold))
+                        .overlay {
+                            if isLoading {
+                                ProgressView()
+                            }
+                        }
+                }
+                .buttonBorderShape(.capsule)
+                .buttonStyle(.borderedProminent)
+                .disabled(email.isEmpty || password.isEmpty || houseSelection == .selectHouse || isLoading)
+                .glassEffect()
+
+            } else {
+                Button {
+                    signUp()
+                } label: {
+                    Text("Sign Up")
+                        .padding()
+                        .frame(maxWidth: 300)
+                        .foregroundColor(isLoading ? .clear : .white)
+                        .font(.body.weight(.semibold))
+                        .background(Color(hex: 0xDB5461))
+                        .cornerRadius(16)
+                        .overlay {
+                            if isLoading {
+                                ProgressView()
+                            }
+                        }
+                }
+                .buttonStyle(.plain)
+                .disabled(email.isEmpty || password.isEmpty || houseSelection == .selectHouse || isLoading)
+            }
+        }
     }
     
     var bottomText: some View {
@@ -185,6 +252,27 @@ struct SignUpView: View {
         }
         .font(.subheadline)
         .padding(.top, 5)
+    }
+
+    func signUp() {
+        if !email.isEmpty && !password.isEmpty && houseSelection != .selectHouse {
+            isLoading = true
+            authManager.createAccount(email: email, password: password, house: houseSelection) { result in
+                switch result {
+                case .success(_):
+                    isLoading = false
+                    alertHeader = "Verify account"
+                    alertMessage = "A verification email has been sent to your account's email address. Verify your email, then try logging in again."
+                    signInView = true
+                    showingAlert = true
+                case .failure(let failure):
+                    isLoading = false
+                    alertHeader = "Error"
+                    alertMessage = "\(failure.localizedDescription)"
+                    showingAlert = true
+                }
+            }
+        }
     }
 }
 

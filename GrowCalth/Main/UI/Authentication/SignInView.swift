@@ -55,34 +55,65 @@ struct SignInView: View {
     
     var infoFields: some View {
         VStack(spacing: 10) {
-            TextField("Email Address", text: $email)
-                .padding()
-                .background(.ultraThickMaterial)
-                .cornerRadius(16)
-                .keyboardType(.emailAddress)
-                .textContentType(.username)
-                .autocorrectionDisabled(true)
-                .textInputAutocapitalization(.never)
-                .submitLabel(.next)
-            
+            emailField
             passwordField
         }
     }
-    
+
+    var emailField: some View {
+        Group {
+            if #available(iOS 26.0, *) {
+                TextField("Email Address", text: $email)
+                    .padding()
+                    .keyboardType(.emailAddress)
+                    .textContentType(.username)
+                    .autocorrectionDisabled(true)
+                    .textInputAutocapitalization(.never)
+                    .glassEffect()
+
+            } else {
+                TextField("Email Address", text: $email)
+                    .padding()
+                    .background(.ultraThickMaterial)
+                    .cornerRadius(16)
+                    .keyboardType(.emailAddress)
+                    .textContentType(.username)
+                    .autocorrectionDisabled(true)
+                    .textInputAutocapitalization(.never)
+            }
+        }
+    }
+
     var passwordField: some View {
         ZStack(alignment: .trailing) {
-            VStack {
-                if showingPassword {
-                    TextField("Password", text: $password)
-                        .focused($isFieldFocus, equals: .textField)
+            Group {
+                if #available(iOS 26.0, *) {
+                    Group {
+                        if showingPassword {
+                            TextField("Password", text: $password)
+                                .focused($isFieldFocus, equals: .textField)
+                        } else {
+                            SecureField("Password", text: $password)
+                                .focused($isFieldFocus, equals: .secureField)
+                        }
+                    }
+                    .padding()
+                    .glassEffect()
                 } else {
-                    SecureField("Password", text: $password)
-                        .focused($isFieldFocus, equals: .secureField)
+                    Group {
+                        if showingPassword {
+                            TextField("Password", text: $password)
+                                .focused($isFieldFocus, equals: .textField)
+                        } else {
+                            SecureField("Password", text: $password)
+                                .focused($isFieldFocus, equals: .secureField)
+                        }
+                    }
+                    .padding()
+                    .background(.ultraThickMaterial)
+                    .cornerRadius(16)
                 }
             }
-            .padding()
-            .background(.ultraThickMaterial)
-            .cornerRadius(16)
             .textContentType(.password)
             .keyboardType(.alphabet)
             .autocorrectionDisabled(true)
@@ -93,6 +124,7 @@ struct SignInView: View {
                     signInWithPassword()
                 }
             }
+
             Button {
                 showingPassword.toggle()
             } label: {
@@ -134,24 +166,48 @@ struct SignInView: View {
     }
     
     var loginButton: some View {
-        Button {
-            signInWithPassword()
-        } label: {
-            Text("Login")
-                .padding()
-                .frame(maxWidth: 300)
-                .foregroundColor(isLoading ? .clear : .white)
-                .font(.body.weight(.semibold))
-                .background(Color(hex: 0xDB5461))
-                .cornerRadius(16)
-                .overlay {
-                    if isLoading {
-                        ProgressView()
-                    }
+        Group {
+            if #available(iOS 26.0, *) {
+                Button {
+                    signInWithPassword()
+                } label: {
+                    Text("Login")
+                        .padding(8)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(isLoading ? .clear : .white)
+                        .font(.body.weight(.semibold))
+                        .overlay {
+                            if isLoading {
+                                ProgressView()
+                            }
+                        }
                 }
+                .buttonBorderShape(.capsule)
+                .buttonStyle(.borderedProminent)
+                .disabled(loginButtonDisabled)
+                .glassEffect()
+
+            } else {
+                Button {
+                    signInWithPassword()
+                } label: {
+                    Text("Login")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(isLoading ? .clear : .white)
+                        .font(.body.weight(.semibold))
+                        .background(Color(hex: 0xDB5461))
+                        .cornerRadius(16)
+                        .overlay {
+                            if isLoading {
+                                ProgressView()
+                            }
+                        }
+                }
+                .buttonStyle(.plain)
+                .disabled(loginButtonDisabled)
+            }
         }
-        .buttonStyle(.plain)
-        .disabled(loginButtonDisabled)
     }
 
     var loginButtonDisabled: Bool {
