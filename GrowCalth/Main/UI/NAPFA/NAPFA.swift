@@ -34,6 +34,8 @@ struct NAPFA: View {
         VStack {
             if #unavailable(iOS 26.0) {
                 picker
+                    .pickerStyle(.segmented)
+                    .padding([.horizontal, .top])
             }
             table
         }
@@ -91,6 +93,16 @@ struct NAPFA: View {
                 isLoading = false
             }
         }
+        .overlay(alignment: .bottomTrailing) {
+            if #available(iOS 26.0, *) {
+                picker
+                    .padding(8)
+                    .pickerStyle(.menu)
+                    .labelStyle(.iconOnly)
+                    .glassEffect()
+                    .padding()
+            }
+        }
     }
 
     var previousButton: some View {
@@ -143,20 +155,16 @@ struct NAPFA: View {
     }
     
     var picker: some View {
-        VStack {
-            Picker(selection: $napfaManager.levelSelection) {
-                ForEach(NAPFALevel.allCases, id: \.rawValue) { level in
-                    Text(level.rawValue)
-                        .tag(level.rawValue)
-                }
-            } label: {
-                Text("NAPFA Secondary Level")
+        Picker(selection: $napfaManager.levelSelection) {
+            ForEach(NAPFALevel.allCases, id: \.rawValue) { level in
+                Label(level.rawValue, systemImage: level.icon)
+                    .tag(level.rawValue)
             }
-            .pickerStyle(.segmented)
-            .padding([.horizontal, .top])
+        } label: {
+            Text("NAPFA Secondary Level")
         }
     }
-    
+
     var table: some View {
         VStack {
             if let cachedDataForYear = napfaManager.data["\(NAPFALevel(rawValue: napfaManager.levelSelection)!.firebaseCode)-\(String(napfaManager.year))"], !cachedDataForYear.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {

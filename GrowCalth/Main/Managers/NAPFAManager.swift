@@ -27,6 +27,13 @@ enum NAPFALevel: String, Codable, CaseIterable {
         case .secondary4: return "s4"
         }
     }
+
+    var icon: String {
+        switch self {
+        case .secondary2: return "2.circle.fill"
+        case .secondary4: return "4.circle.fill"
+        }
+    }
 }
 
 class NAPFAManager: ObservableObject {

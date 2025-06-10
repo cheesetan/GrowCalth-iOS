@@ -236,12 +236,10 @@ struct Announcements: View {
     }
     
     var picker: some View {
-        VStack {
-            Picker("Filters", selection: $selection) {
-                ForEach(AnnouncementType.allCases, id: \.hashValue) { type in
-                    Label(type.rawValue, systemImage: type.icon)
-                        .tag(type)
-                }
+        Picker("Filters", selection: $selection) {
+            ForEach(AnnouncementType.allCases, id: \.hashValue) { type in
+                Label(type.rawValue, systemImage: type.icon)
+                    .tag(type)
             }
         }
     }
