@@ -47,20 +47,40 @@ struct OnboardingView: View {
                            imageString: "chart.bar.fill",
                            primaryColor: .red)
             .tag(2)
+            onboardingPage(text: "Redesigned with Liquid Glass",
+                           description: "GrowCalth 4.0, designed for iOS 26, brings Apple’s new Liquid Glass design language to the app, delivering a sleek and seamless user experience.",
+                           imageString: "paintbrush.fill",
+                           primaryColor: .indigo)
+            .tag(3)
         }
         .tabViewStyle(.page(indexDisplayMode: .always))
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
                 previousButton
             }
-            ToolbarItem(placement: .status) {
-                HStack {
-                    Spacer()
+            if #available(iOS 26.0, *) {
+                ToolbarItem(placement: .status) {
+                    HStack {
+                        Spacer()
+                    }
+                }
+                .sharedBackgroundVisibility(.hidden)
+            } else {
+                ToolbarItem(placement: .status) {
+                    HStack {
+                        Spacer()
+                    }
                 }
             }
             ToolbarItem(placement: .bottomBar) {
                 if doneButtonShowing {
-                    doneButton
+                    if #available(iOS 26.0, *) {
+                        doneButton
+                            .labelStyle(.iconOnly)
+                    } else {
+                        doneButton
+                            .labelStyle(.titleOnly)
+                    }
                 } else {
                     nextButton
                 }
@@ -68,7 +88,7 @@ struct OnboardingView: View {
         }
         .onChange(of: tabSelection) { _ in
             bounceEffect += 1
-            if tabSelection == 2 {
+            if tabSelection == 3 {
                 withAnimation {
                     doneButtonShowing = true
                 }
@@ -145,7 +165,7 @@ struct OnboardingView: View {
             Image(systemName: "arrowshape.right.fill")
         }
         .buttonStyle(.plain)
-        .disabled(tabSelection > 1)
+        .disabled(tabSelection > 2)
         .animation(.default, value: tabSelection)
     }
     
@@ -155,10 +175,10 @@ struct OnboardingView: View {
                 onboardingView = false
             }
         } label: {
-            Text("Done")
+            Label("Done", systemImage: "checkmark")
         }
         .buttonStyle(.plain)
-        .disabled(tabSelection != 2)
+        .disabled(tabSelection != 3)
         .animation(.default, value: tabSelection)
         .animation(.default, value: doneButtonShowing)
     }
