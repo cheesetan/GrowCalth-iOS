@@ -29,7 +29,6 @@ struct LeaderboardView: View {
                 Text("GrowCalth calculates and updates the Leaderboard upon the first launch of the app every day. \(GLOBAL_STEPS_PER_POINT) steps = 1 point.\(GLOBAL_STEPS_PER_POINT == 2500 ? " (Limited Time Double Points Event!)" : "")\n\nGrowCalth needs to be opened to calculate and add your points, unclaimed points will accumulate and be added to the Leaderboard the next time you open the app.")
             }
         }
-        .listStyle(.grouped)
         .navigationTitle("Leaderboard")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

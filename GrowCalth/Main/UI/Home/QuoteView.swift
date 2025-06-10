@@ -35,26 +35,7 @@ struct QuoteView: View {
                 }
             }
             Spacer()
-            Button {
-                generateNewQuote()
-            } label: {
-                Text("Generate new quote")
-                    .minimumScaleFactor(0.1)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(.blue)
-                    .foregroundColor(isLoading ? .clear : .white)
-                    .font(.body.weight(.bold))
-                    .cornerRadius(16)
-                    .overlay {
-                        if isLoading {
-                            ProgressView()
-                        }
-                    }
-            }
-            .buttonStyle(.plain)
-            .disabled(isLoading)
+            generateButton
         }
         .padding()
         .navigationTitle("Quotes")
@@ -66,7 +47,52 @@ struct QuoteView: View {
         }
 
     }
-    
+
+    var generateButton: some View {
+        Group {
+            if #available(iOS 26.0, *) {
+                Button {
+                    generateNewQuote()
+                } label: {
+                    Text("Generate new quote")
+                        .minimumScaleFactor(0.1)
+                        .padding(8)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(isLoading ? .clear : .white)
+                        .font(.body.weight(.bold))
+                        .overlay {
+                            if isLoading {
+                                ProgressView()
+                            }
+                        }
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(isLoading)
+            } else {
+                Button {
+                    generateNewQuote()
+                } label: {
+                    Text("Generate new quote")
+                        .minimumScaleFactor(0.1)
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(.blue)
+                        .foregroundColor(isLoading ? .clear : .white)
+                        .font(.body.weight(.bold))
+                        .cornerRadius(16)
+                        .overlay {
+                            if isLoading {
+                                ProgressView()
+                            }
+                        }
+                }
+                .buttonStyle(.plain)
+                .disabled(isLoading)
+            }
+        }
+    }
+
     func generateNewQuote() {
         isLoading = true
         quotesManager.generateNewQuote() { result in
