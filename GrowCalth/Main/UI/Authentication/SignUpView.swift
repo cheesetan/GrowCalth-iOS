@@ -219,7 +219,7 @@ struct SignUpView: View {
                         .frame(maxWidth: 300)
                         .foregroundColor(isLoading ? .clear : .white)
                         .font(.body.weight(.semibold))
-                        .background(Color(hex: 0xDB5461))
+                        .background(.accent)
                         .cornerRadius(16)
                         .overlay {
                             if isLoading {
@@ -243,14 +243,13 @@ struct SignUpView: View {
                 }
             } label: {
                 Text("Log In")
-                    .foregroundColor(Color(hex: 0xDB5461))
+                    .foregroundColor(.accent)
                     .underline()
                     .fontWeight(.semibold)
             }
             .minimumScaleFactor(0.1)
             .buttonStyle(.plain)
         }
-        .font(.subheadline)
         .padding(.top, 5)
     }
 

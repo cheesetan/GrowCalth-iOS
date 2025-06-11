@@ -38,15 +38,12 @@ struct ForgotPasswordView: View {
     var main: some View {
         VStack(spacing: 15) {
             Spacer()
-            Text("Enter the email address you want to reset the password for.")
-                .multilineTextAlignment(.center)
-                .font(.body.weight(.semibold))
             emailField
             resetPasswordButton
             Spacer()
         }
         .padding(.horizontal)
-        .navigationTitle("Forgot Password")
+        .navigationTitle("Forgot Password?")
         .navigationBarTitleDisplayMode(.inline)
         .alert(alertHeader, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {
@@ -97,16 +94,16 @@ struct ForgotPasswordView: View {
                         if forgotPasswordLoading {
                             ProgressView()
                         } else {
-                            Text("Reset Password")
+                            Text("Send Reset Password Email")
                         }
                     }
-                    .padding(8)
                     .frame(maxWidth: .infinity)
                 }
                 .buttonBorderShape(.capsule)
                 .buttonStyle(.borderedProminent)
                 .disabled(email.isEmpty || forgotPasswordLoading)
                 .glassEffect()
+                .controlSize(.large)
             } else {
                 Button(role: .destructive) {
                     sendForgotPasswordRequest()

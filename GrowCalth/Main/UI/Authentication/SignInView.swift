@@ -30,7 +30,9 @@ struct SignInView: View {
     }
     
     @ObservedObject var authManager: AuthenticationManager = .shared
-    
+
+    @Namespace private var namespace
+
     var body: some View {
         VStack(alignment: .leading) {
             Text("The House You\nNeed.")
@@ -142,21 +144,38 @@ struct SignInView: View {
     }
     
     var forgotPassword: some View {
-        Button {
-            forgottenPasswordEmail = email
-            showingForgotPassword.toggle()
-        } label: {
-            HStack {
-                Text("Forgot Password?")
-                    .underline()
+        Group {
+            if #available(iOS 26.0, *) {
+                Button {
+                    forgottenPasswordEmail = email
+                    showingForgotPassword.toggle()
+                } label: {
+                    Text("Forgot Password?")
+                }
+                .buttonStyle(.glass)
+                .buttonBorderShape(.capsule)
+                .frame(maxWidth: .infinity)
+                .matchedTransitionSource(id: "forgotpassword", in: namespace)
+            } else {
+                Button {
+                    forgottenPasswordEmail = email
+                    showingForgotPassword.toggle()
+                } label: {
+                    Text("Forgot Password?")
+                        .underline()
+                }
+                .foregroundColor(.gray)
+                .minimumScaleFactor(0.1)
+                .buttonStyle(.plain)
+                .padding(.bottom, 5)
             }
         }
-        .foregroundColor(.gray)
-        .minimumScaleFactor(0.1)
-        .buttonStyle(.plain)
-        .padding(.bottom, 5)
         .sheet(isPresented: $showingForgotPassword) {
-            if #available(iOS 16.0, *) {
+            if #available(iOS 26.0, *) {
+                ForgotPasswordView(email: email, showingForgotPassword: $showingForgotPassword)
+                    .presentationDetents([.height(200)])
+                    .navigationTransition(.zoom(sourceID: "forgotpassword", in: namespace))
+            } else if #available(iOS 16.0, *) {
                 ForgotPasswordView(email: email, showingForgotPassword: $showingForgotPassword)
                     .presentationDetents([.height(300)])
             } else {
@@ -186,7 +205,6 @@ struct SignInView: View {
                 .buttonStyle(.borderedProminent)
                 .disabled(loginButtonDisabled)
                 .glassEffect()
-
             } else {
                 Button {
                     signInWithPassword()
@@ -196,7 +214,7 @@ struct SignInView: View {
                         .frame(maxWidth: .infinity)
                         .foregroundColor(isLoading ? .clear : .white)
                         .font(.body.weight(.semibold))
-                        .background(Color(hex: 0xDB5461))
+                        .background(.accent)
                         .cornerRadius(16)
                         .overlay {
                             if isLoading {
@@ -244,24 +262,21 @@ struct SignInView: View {
         VStack {
             HStack {
                 Text("Dont have an account yet?")
-                    .minimumScaleFactor(0.1)
                 Button {
                     withAnimation {
                         signInView.toggle()
                     }
                 } label: {
                     Text("Sign Up")
-                        .foregroundColor(Color(hex: 0xDB5461))
+                        .foregroundColor(.accent)
                         .underline()
                         .fontWeight(.semibold)
                 }
                 .buttonStyle(.plain)
             }
-            .minimumScaleFactor(0.1)
             .padding(.top, 5)
             
             Text("Your house is waiting for ya!")
-                .minimumScaleFactor(0.1)
                 .font(.subheadline)
         }
     }

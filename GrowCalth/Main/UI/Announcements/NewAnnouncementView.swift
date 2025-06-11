@@ -121,26 +121,49 @@ struct NewAnnouncementView: View {
     }
     
     var createButton: some View {
-        Button {
-            if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                switch postType {
-                case .announcements:
-                    createAnnouncement()
-                case .events:
-                    createEvent()
+        Group {
+            if #available(iOS 26.0, *) {
+                Button {
+                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                        switch postType {
+                        case .announcements:
+                            createAnnouncement()
+                        case .events:
+                            createEvent()
+                        }
+                    }
+                } label: {
+                    Text("Create \(postType == .announcements ? "Announcement" : "Event")")
+                        .padding(8)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.white)
+                        .font(.body.weight(.bold))
                 }
+                .buttonStyle(.borderedProminent)
+                .glassEffect()
+            } else {
+                Button {
+                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                        switch postType {
+                        case .announcements:
+                            createAnnouncement()
+                        case .events:
+                            createEvent()
+                        }
+                    }
+                } label: {
+                    Text("Create \(postType == .announcements ? "Announcement" : "Event")")
+                        .minimumScaleFactor(0.1)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .foregroundColor(.white)
+                        .background(.blue)
+                        .cornerRadius(16)
+                        .font(.body.weight(.bold))
+                }
+                .buttonStyle(.plain)
             }
-        } label: {
-            Text("Create \(postType == .announcements ? "Announcement" : "Event")")
-                .minimumScaleFactor(0.1)
-                .frame(maxWidth: .infinity)
-                .frame(height: 50)
-                .foregroundColor(.white)
-                .background(.blue)
-                .cornerRadius(16)
-                .font(.body.weight(.bold))
         }
-        .buttonStyle(.plain)
         .padding(.bottom, 30)
         .disabled(title.isEmpty)
         .disabled(description.isEmpty)

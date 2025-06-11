@@ -87,7 +87,7 @@ struct SettingsView: View {
     
     var profileImage: some View {
         Circle()
-            .foregroundColor(.blue)
+            .foregroundColor(.accent)
             .frame(width: 60)
             .overlay {
                 VStack {

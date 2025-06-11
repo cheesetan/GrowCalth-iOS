@@ -23,7 +23,9 @@ struct Announcements: View {
     @ObservedObject var authManager: AuthenticationManager = .shared
     @ObservedObject var announcementManager: AnnouncementManager = .shared
     @ObservedObject var adminManager: AdminManager = .shared
-    
+
+    @Namespace private var namespace
+
     var body: some View {
         if #available(iOS 16.0, *) {
             NavigationStack {
@@ -86,9 +88,18 @@ struct Announcements: View {
             adminManager.checkIfUnderMaintenance() { }
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                    createPostButton
+            if #available(iOS 26.0, *) {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                        createPostButton
+                    }
+                }
+                .matchedTransitionSource(id: "createpost", in: namespace)
+            } else {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                        createPostButton
+                    }
                 }
             }
         }
@@ -105,7 +116,12 @@ struct Announcements: View {
             Text(alertMessage)
         }
         .sheet(isPresented: $showingNewAnnouncementView) {
-            NewAnnouncementView(postType: selection)
+            if #available(iOS 26.0, *) {
+                NewAnnouncementView(postType: selection)
+                    .navigationTransition(.zoom(sourceID: "createpost", in: namespace))
+            } else {
+                NewAnnouncementView(postType: selection)
+            }
         }
         .overlay(alignment: .bottomTrailing) {
             if #available(iOS 26.0, *) {
