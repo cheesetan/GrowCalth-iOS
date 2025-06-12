@@ -134,11 +134,11 @@ struct SettingsView: View {
     var permissions: some View {
         Section("Permissions") {
             Button {
-                if let url = URL(string: UIApplication.openSettingsURLString) {
+                if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
                     UIApplication.shared.open(url)
                 }
             } label: {
-                Text("Open GrowCalth in Settings")
+                Text("Open GrowCalth Notification Settings")
             }
         }
     }
