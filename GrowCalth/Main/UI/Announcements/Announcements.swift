@@ -131,6 +131,7 @@ struct Announcements: View {
                     .labelStyle(.iconOnly)
                     .glassEffect()
                     .padding()
+                    .padding(.horizontal, 4)
             }
         }
     }

@@ -37,7 +37,7 @@ struct AccountInfo: View {
     
     var body: some View {
         List {
-            Section("Account Information") {
+            Section("Personal Information") {
                 CustomLabeledContent("Name") {
                     VStack {
                         if let email = authManager.email {
@@ -79,7 +79,7 @@ struct AccountInfo: View {
                 }
             }
             
-            Section {
+            Section("Sign In & Security") {
                 NavigationLink {
                     changePassword
                 } label: {
