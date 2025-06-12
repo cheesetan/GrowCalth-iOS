@@ -19,7 +19,7 @@ struct Home: View {
     @ObservedObject var adminManager: AdminManager = .shared
     @ObservedObject var authManager: AuthenticationManager = .shared
 
-    @State private var showingAlumnusAppreciationAlert = true
+    @State private var showingAlumnusAppreciationAlert = false
 
     @Environment(\.colorScheme) var colorScheme
 

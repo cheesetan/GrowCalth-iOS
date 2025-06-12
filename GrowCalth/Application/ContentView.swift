@@ -92,38 +92,41 @@ struct ContentView: View {
         Group {
             switch appState.status {
             case .home:
-                TabView {
-                    Home()
-                        .tabItem {
-                            Label("Home", systemImage: "house.fill")
+                if #available(iOS 26.0, *) {
+                    TabView {
+                        Tab("Home", systemImage: "house.fill"){
+                            Home()
                         }
-                    Announcements()
-                        .tabItem {
-                            Label("Announcements", systemImage: "megaphone")
+                        Tab("Announcements", systemImage: "megaphone"){
+                            Announcements()
                         }
-                    NAPFA()
-                        .tabItem {
-                            Label("NAPFA", systemImage: "figure.run")
+                        Tab("NAPFA", systemImage: "figure.run"){
+                            NAPFA()
                         }
-                    SettingsView()
-                        .tabItem {
-                            Label("Settings", systemImage: "gearshape")
+                        Tab("Settings", systemImage: "gearshape"){
+                            SettingsView()
                         }
+                    }
+                } else {
+                    TabView {
+                        Home()
+                            .tabItem {
+                                Label("Home", systemImage: "house.fill")
+                            }
+                        Announcements()
+                            .tabItem {
+                                Label("Announcements", systemImage: "megaphone")
+                            }
+                        NAPFA()
+                            .tabItem {
+                                Label("NAPFA", systemImage: "figure.run")
+                            }
+                        SettingsView()
+                            .tabItem {
+                                Label("Settings", systemImage: "gearshape")
+                            }
+                    }
                 }
-//                TabView {
-//                    Tab("Home", systemImage: "house.fill"){
-//                        Home()
-//                    }
-//                    Tab("Announcements", systemImage: "megaphone"){
-//                        Announcements()
-//                    }
-//                    Tab("NAPFA", systemImage: "figure.run"){
-//                        NAPFA()
-//                    }
-//                    Tab("Settings", systemImage: "gearshape"){
-//                        SettingsView()
-//                    }
-//                }
             case .login:
                 AuthenticationView()
             case .onboarding:
