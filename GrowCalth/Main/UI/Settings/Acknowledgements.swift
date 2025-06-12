@@ -79,7 +79,7 @@ struct Acknowledgements: View {
                             .init(color: Color(hex: 0xB46CC3), location: 0.60),
                             .init(color: Color(hex: 0xF0675E), location: 0.8),
                             .init(color: Color(hex: 0xFDA701), location: 1),
-                        ] : [.init(color: .blue, location: 1)])
+                        ] : [.init(color: .accentColor, location: 1)])
                 }
             }
             .scaledToFit()
