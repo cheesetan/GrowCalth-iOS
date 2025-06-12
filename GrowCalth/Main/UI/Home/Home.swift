@@ -19,9 +19,11 @@ struct Home: View {
     @ObservedObject var adminManager: AdminManager = .shared
     @ObservedObject var authManager: AuthenticationManager = .shared
 
-    @State private var showingAlumnusAppreciationAlert = false
+    @State private var showingAlumnusAppreciationAlert = true
 
     @Environment(\.colorScheme) var colorScheme
+
+    @Namespace private var namespace
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -47,12 +49,23 @@ struct Home: View {
                     .frame(maxWidth: .infinity)
 
                     VStack(spacing: 15) {
-                        NavigationLink {
-                            LeaderboardView()
-                        } label: {
-                            leaderboards
+                        if #available(iOS 18.0, *) {
+                            NavigationLink {
+                                LeaderboardView()
+                                    .navigationTransition(.zoom(sourceID: "leaderboard", in: namespace))
+                            } label: {
+                                leaderboards
+                                    .matchedTransitionSource(id: "leaderboard", in: namespace)
+                            }
+                            .buttonStyle(.plain)
+                        } else {
+                            NavigationLink {
+                                LeaderboardView()
+                            } label: {
+                                leaderboards
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
 
                         housePointsProgress
                     }
@@ -60,21 +73,43 @@ struct Home: View {
                 }
 
                 VStack(spacing: 15) {
-                    NavigationLink {
-                        QuoteView()
-                    } label: {
-                        quotes
+                    if #available(iOS 18.0, *) {
+                        NavigationLink {
+                            QuoteView()
+                                .navigationTransition(.zoom(sourceID: "quote", in: namespace))
+                        } label: {
+                            quotes
+                                .matchedTransitionSource(id: "quote", in: namespace)
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        NavigationLink {
+                            QuoteView()
+                        } label: {
+                            quotes
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
 
-                    NavigationLink {
-                        GoalsView()
-                    } label: {
-                        goals
+                    if #available(iOS 18.0, *) {
+                        NavigationLink {
+                            GoalsView()
+                                .navigationTransition(.zoom(sourceID: "goals", in: namespace))
+                        } label: {
+                            goals
+                                .matchedTransitionSource(id: "goals", in: namespace)
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        NavigationLink {
+                            GoalsView()
+                        } label: {
+                            goals
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
-                .padding(.top, 7.5)
+                .padding(.top, 8)
             }
             .padding(.horizontal)
             .padding(.vertical, 20)
