@@ -149,8 +149,7 @@ struct SettingsView: View {
                 if let appForcesUpdates = adminManager.appForcesUpdates, let appIsUnderMaintenance = adminManager.isUnderMaintenance, let blockedVersions = developerManager.blockedVersions, let blockedVersionsAndroid = developerManager.blockedVersionsAndroid {
                     DeveloperView(
                         appForcesUpdates: appForcesUpdates,
-                        appIsUnderMaintenance: appIsUnderMaintenance,
-                        bypass: developerManager.bypassed,
+                        appIsUnderMaintenance: appIsUnderMaintenance
                         blockedVersions: blockedVersions,
                         blockedVersionsAndroid: blockedVersionsAndroid
                     )

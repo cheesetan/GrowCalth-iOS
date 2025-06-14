@@ -9,15 +9,19 @@ import SwiftUI
 import FirebaseFirestore
 
 class DeveloperManager: ObservableObject {
-    static let shared: DeveloperManager = .init()
-
+    
     @Published var bypassed = false
     @Published var blockedVersions: [String]?
     @Published var blockedVersionsAndroid: [String]?
     
-    @ObservedObject var adminManager: AdminManager = .shared
+    @ObservedObject var adminManager: AdminManager
     
-    init() {
+    init(bypassed: Bool = false, blockedVersions: [String]? = nil, blockedVersionsAndroid: [String]? = nil, adminManager: AdminManager) {
+        self.bypassed = bypassed
+        self.blockedVersions = blockedVersions
+        self.blockedVersionsAndroid = blockedVersionsAndroid
+        self.adminManager = adminManager
+        
         updateValues() {}
     }
     
@@ -90,18 +94,6 @@ class DeveloperManager: ObservableObject {
                 self.updateValues() {}
                 completion(.success(true))
             }
-        }
-    }
-
-    func developerBypass() {
-        withAnimation {
-            self.bypassed = true
-        }
-    }
-
-    func changeBypassValue(to newValue: Bool) {
-        withAnimation {
-            self.bypassed = newValue
         }
     }
 }

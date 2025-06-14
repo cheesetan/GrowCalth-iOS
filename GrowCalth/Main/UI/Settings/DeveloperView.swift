@@ -19,7 +19,6 @@ struct DeveloperView: View {
     
     @State var appForcesUpdates: Bool
     @State var appIsUnderMaintenance: Bool
-    @State var bypass: Bool
     @State var blockedVersions: [String]?
     @State var blockedVersionsAndroid: [String]?
     
@@ -30,7 +29,13 @@ struct DeveloperView: View {
             Section("App Controls") {
                 Toggle("App Forces Updates", isOn: $appForcesUpdates)
                 Toggle("App Under Maintenance", isOn: $appIsUnderMaintenance)
-                Toggle("Bypass Restrictions", isOn: $bypass)
+                Toggle("Bypass Restrictions", isOn: Binding(get: {
+                    developerManager.bypassed
+                }, set: { value in
+                    withAnimation {
+                        developerManager.bypassed = value
+                    }
+                }))
             }
             
             Section {
@@ -160,13 +165,6 @@ struct DeveloperView: View {
         .onChange(of: blockedVersionsAndroid) { newValue in
             if let newValue = newValue {
                 developerManager.changeVersionsBlockedValueForAndroid(to: newValue) { _ in }
-            }
-        }
-        .onChange(of: bypass) { newValue in
-            if newValue {
-                developerManager.changeBypassValue(to: true)
-            } else {
-                developerManager.changeBypassValue(to: false)
             }
         }
     }

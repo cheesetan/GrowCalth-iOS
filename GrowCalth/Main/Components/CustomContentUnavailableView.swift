@@ -72,7 +72,9 @@ struct CustomContentUnavailableView: View {
                     case .maintenance, .update:
                         if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
                             Button {
-                                developerManager.developerBypass()
+                                withAnimation {
+                                    developerManager.bypassed = true
+                                }
                             } label: {
                                 Text("Temporarily Bypass Restrictions (Developer ONLY)")
                             }
