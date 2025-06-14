@@ -120,14 +120,14 @@ class PointsManager: ObservableObject {
         }
     }
 
-    private func addPointsToFirebase(
+    func addPointsToFirebase(
         pointsToAdd: Int,
         approvedBundleIdsUsed: [String],
         _ completion: @escaping ((Result<Bool, Error>) -> Void)
     ) {
-        fetchCurrentPoints { result in
+        authManager.fetchUsersHouse { result in
             switch result {
-            case .success(let success):
+            case .success(let house):
                 self.adminManager.fetchBlockedVersions { result in
                     switch result {
                     case .success(let versions):
@@ -136,16 +136,15 @@ class PointsManager: ObservableObject {
 
                         if let versions = versions, let currentVersion = currentVersion {
                             if !versions.contains(currentVersion) {
-                                Firestore.firestore().collection("HousePoints").document(success[0]).updateData([
-                                    "points": Int(success[1])! + pointsToAdd
+                                Firestore.firestore().collection("HousePoints").document(house).updateData([
+                                    "points": FieldValue.increment(Double(pointsToAdd))
                                 ]) { err in
                                     if let err = err {
                                         completion(.failure(err))
                                     } else {
                                         self.logPoints(
                                             points: pointsToAdd,
-                                            approvedBundleIdsUsed: approvedBundleIdsUsed,
-                                            previousHousePoints: Int(success[1])!
+                                            approvedBundleIdsUsed: approvedBundleIdsUsed
                                         )
                                         completion(.success(true))
                                     }
@@ -189,8 +188,7 @@ class PointsManager: ObservableObject {
 
     private func logPoints(
         points: Int,
-        approvedBundleIdsUsed: [String],
-        previousHousePoints: Int
+        approvedBundleIdsUsed: [String]
     ) {
         Firestore.firestore().collection("logs").document().setData([
             "dateLogged": Date(),
@@ -199,8 +197,6 @@ class PointsManager: ObservableObject {
             "email": authManager.email ?? "EMAIL NOT FOUND",
             "house": authManager.usersHouse ?? "HOUSE NOT FOUND",
             "pointsAdded": "\(points)",
-            "previousHousePoints": previousHousePoints,
-            "newHousePoints": previousHousePoints + points,
             "appVersion": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "idk",
             "approvedBundleIdsUsed": approvedBundleIdsUsed
         ]) { _ in }
