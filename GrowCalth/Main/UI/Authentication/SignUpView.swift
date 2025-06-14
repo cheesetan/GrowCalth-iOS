@@ -68,15 +68,18 @@ struct SignUpView: View {
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
 
                 Text("Join The House Today.")
                     .fontWeight(.black)
                     .font(.largeTitle)
+                    .multilineTextAlignment(.center)
 
                 Text("Sign up to be part of the community")
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
             }
 
             infoFields

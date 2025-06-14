@@ -58,15 +58,18 @@ struct SignInView: View {
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
 
                 Text("The House You Need.")
                     .fontWeight(.black)
                     .font(.largeTitle)
+                    .multilineTextAlignment(.center)
 
                 Text("Sign in to contribute to your House")
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
             }
             VStack(spacing: 10) {
                 infoFields
