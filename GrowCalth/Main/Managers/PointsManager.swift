@@ -120,7 +120,7 @@ class PointsManager: ObservableObject {
         }
     }
 
-    func addPointsToFirebase(
+    private func addPointsToFirebase(
         pointsToAdd: Int,
         approvedBundleIdsUsed: [String],
         _ completion: @escaping ((Result<Bool, Error>) -> Void)
