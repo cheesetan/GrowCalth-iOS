@@ -18,8 +18,14 @@ extension AuthenticationManager {
     ) {
         if emailProvidedIsSSTEmail(email: email) {
             Auth.auth().createUser(withEmail: email, password: password) { result, error in
-                if error != nil {
-                    completion(.failure(CreateAccountError.failedToCreateAccount))
+                if let error {
+                    if error.localizedDescription == "The password must be 6 characters long or more." {
+                        completion(.failure(CreateAccountError.passwordMustBe6Characters))
+                    } else if error.localizedDescription == "The email address is already in use by another account." {
+                        completion(.failure(CreateAccountError.emailAlreadyInUse))
+                    } else {
+                        completion(.failure(CreateAccountError.genericAccountCreationFailed))
+                    }
                 } else {
                     if let currentUserUID = Auth.auth().currentUser?.uid {
                         Firestore.firestore().collection("users").document(currentUserUID).setData([

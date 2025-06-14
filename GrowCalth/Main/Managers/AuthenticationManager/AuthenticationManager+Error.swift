@@ -43,15 +43,21 @@ extension AuthenticationManager {
     }
     
     internal enum CreateAccountError: LocalizedError {
-        case failedToCreateAccount
+        case emailAlreadyInUse
+        case passwordMustBe6Characters
+        case genericAccountCreationFailed
         case failedToCreateFirestoreForNewAccount
         
         var errorDescription: String? {
             switch self {
-            case .failedToCreateAccount:
-                return "Failed to create account. This email address may already be in use or your password is less than 6 characters long."
+            case .emailAlreadyInUse:
+                return "An account with this email already exists. Please log in instead."
+            case .passwordMustBe6Characters:
+                return "Failed to create account. Your password must be at least 6 characters long."
+            case .genericAccountCreationFailed:
+                return "An error has occurred while attempting to create your account. Please try again."
             case .failedToCreateFirestoreForNewAccount:
-                return "An error has occurred while attempting to create your account."
+                return "An error has occurred while attempting to create your account. Please try again."
             }
         }
     }

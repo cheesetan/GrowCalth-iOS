@@ -54,7 +54,19 @@ struct SignUpView: View {
             .padding(.horizontal)
         }
         .alert(alertHeader, isPresented: $showingAlert) {
-            Button("OK", role: .cancel) {}
+            if alertMessage == "An account with this email already exists. Please log in instead." {
+                if #available(iOS 26.0, *) {
+                    Button("Proceed to Login", role: .confirm) { signInView = true }
+                } else {
+                    Button("Proceed to Login") { signInView = true }
+                }
+            } else {
+                if #available(iOS 26.0, *) {
+                    Button("OK", role: .close) {}
+                } else {
+                    Button("OK", role: .cancel) {}
+                }
+            }
         } message: {
             Text(alertMessage)
         }
@@ -266,8 +278,12 @@ struct SignUpView: View {
                     showingAlert = true
                 case .failure(let failure):
                     isLoading = false
-                    alertHeader = "Error"
                     alertMessage = "\(failure.localizedDescription)"
+                    if alertMessage == "An account with this email already exists. Please log in instead." {
+                        alertHeader = "Account Exists"
+                    } else {
+                        alertHeader = "Error"
+                    }
                     showingAlert = true
                 }
             }
