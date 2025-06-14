@@ -72,7 +72,7 @@ struct SignUpView: View {
 
                 Text("Join The House Today.")
                     .fontWeight(.black)
-                    .font(.largeTitle)
+                    .font(.title)
                     .multilineTextAlignment(.center)
 
                 Text("Sign up to be part of the community")
@@ -243,7 +243,8 @@ struct SignUpView: View {
                         }
                     }
                 }
-                .padding()
+                .padding(10)
+                .frame(maxWidth: .infinity)
                 .background(.ultraThickMaterial)
                 .mask(RoundedRectangle(cornerRadius: 16))
             }
@@ -278,7 +279,7 @@ struct SignUpView: View {
                 } label: {
                     Text("Sign Up")
                         .padding()
-                        .frame(maxWidth: 300)
+                        .frame(maxWidth: .infinity)
                         .foregroundColor(isLoading ? .clear : .white)
                         .font(.body.weight(.semibold))
                         .background(.accent)

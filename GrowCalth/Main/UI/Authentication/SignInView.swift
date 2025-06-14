@@ -62,7 +62,7 @@ struct SignInView: View {
 
                 Text("The House You Need.")
                     .fontWeight(.black)
-                    .font(.largeTitle)
+                    .font(.title)
                     .multilineTextAlignment(.center)
 
                 Text("Sign in to contribute to your House")

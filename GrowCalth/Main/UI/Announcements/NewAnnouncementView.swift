@@ -153,15 +153,12 @@ struct NewAnnouncementView: View {
                     }
                 } label: {
                     Text("Create \(postType == .announcements ? "Announcement" : "Event")")
-                        .minimumScaleFactor(0.1)
+                        .padding(8)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 50)
                         .foregroundColor(.white)
-                        .background(.blue)
-                        .mask(RoundedRectangle(cornerRadius: 16))
                         .font(.body.weight(.bold))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.borderedProminent)
             }
         }
         .padding(.bottom, 30)
