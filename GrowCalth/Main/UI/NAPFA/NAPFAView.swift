@@ -1,5 +1,5 @@
 //
-//  NAPFA.swift
+//  NAPFAView.swift
 //  GrowCalth-iOS
 //
 //  Created by Tristan Chay on 23/10/23.
@@ -8,14 +8,14 @@
 import SwiftUI
 import FirebaseFirestore
 
-struct NAPFA: View {
-    
+struct NAPFAView: View {
+
     @State var isLoading = false
     
     @State var showingNAPFAEditing = false
-    @ObservedObject var adminManager: AdminManager = .shared
-    @ObservedObject var authManager: AuthenticationManager = .shared
-    @ObservedObject var napfaManager: NAPFAManager = .shared
+    @EnvironmentObject var adminManager: AdminManager
+    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var napfaManager: NAPFAManager
 
     @Namespace private var namespace
 
@@ -320,5 +320,5 @@ struct NAPFA: View {
 }
 
 #Preview {
-    NAPFA()
+    NAPFAView()
 }

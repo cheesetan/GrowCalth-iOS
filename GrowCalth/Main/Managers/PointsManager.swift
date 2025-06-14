@@ -10,20 +10,24 @@ import FirebaseFirestore
 import FirebaseAuth
 
 class PointsManager: ObservableObject {
-    static let shared: PointsManager = .init()
-    
-    @ObservedObject var adminManager: AdminManager = .shared
-    @ObservedObject var hkManager: HealthKitManager = .shared
-    @ObservedObject var authManager: AuthenticationManager = .shared
+
+    @ObservedObject var adminManager: AdminManager
+    @ObservedObject var hkManager: HealthKitManager
+    @ObservedObject var authManager: AuthenticationManager
+
+    init(adminManager: AdminManager, hkManager: HealthKitManager, authManager: AuthenticationManager, lastPointsAwardedDate: Date? = nil) {
+        self.adminManager = adminManager
+        self.hkManager = hkManager
+        self.authManager = authManager
+        self.lastPointsAwardedDate = lastPointsAwardedDate
+
+        load()
+    }
 
     @Published var lastPointsAwardedDate: Date? = nil {
         didSet {
             save()
         }
-    }
-
-    init() {
-        load()
     }
 
     private func getArchiveURL() -> URL {
@@ -85,7 +89,7 @@ class PointsManager: ObservableObject {
             print("not due for adding \(String(describing: lastPointsAwardedDate))")
         }
     }
-    
+
     private func isDueForPointsAwarding() -> Bool {
         if authManager.accountType.canAddPoints {
             if let lastPointsAwardedDate = lastPointsAwardedDate {
@@ -98,7 +102,7 @@ class PointsManager: ObservableObject {
         }
         return false
     }
-    
+
     private func calculatePoints(_ completion: @escaping ((Result<(Int, [String]), Error>) -> Void)) {
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         hkManager.fetchStepsForPointsCalculation(startDate: lastPointsAwardedDate, endDate: cal.startOfDay(for: Date())) { results in
@@ -115,15 +119,15 @@ class PointsManager: ObservableObject {
             }
         }
     }
-    
-    func addPointsToFirebase(
+
+    private func addPointsToFirebase(
         pointsToAdd: Int,
         approvedBundleIdsUsed: [String],
         _ completion: @escaping ((Result<Bool, Error>) -> Void)
     ) {
-        authManager.fetchUsersHouse { result in
+        fetchCurrentPoints { result in
             switch result {
-            case .success(let house):
+            case .success(let success):
                 self.adminManager.fetchBlockedVersions { result in
                     switch result {
                     case .success(let versions):
@@ -132,15 +136,16 @@ class PointsManager: ObservableObject {
 
                         if let versions = versions, let currentVersion = currentVersion {
                             if !versions.contains(currentVersion) {
-                                Firestore.firestore().collection("HousePoints").document(house).updateData([
-                                    "points": FieldValue.increment(Double(pointsToAdd))
+                                Firestore.firestore().collection("HousePoints").document(success[0]).updateData([
+                                    "points": Int(success[1])! + pointsToAdd
                                 ]) { err in
                                     if let err = err {
                                         completion(.failure(err))
                                     } else {
                                         self.logPoints(
                                             points: pointsToAdd,
-                                            approvedBundleIdsUsed: approvedBundleIdsUsed
+                                            approvedBundleIdsUsed: approvedBundleIdsUsed,
+                                            previousHousePoints: Int(success[1])!
                                         )
                                         completion(.success(true))
                                     }
@@ -156,7 +161,7 @@ class PointsManager: ObservableObject {
             }
         }
     }
-    
+
     private func fetchCurrentPoints(_ completion: @escaping ((Result<[String], Error>) -> Void)) {
         authManager.fetchUsersHouse { result in
             switch result {
@@ -176,15 +181,16 @@ class PointsManager: ObservableObject {
             }
         }
     }
-    
+
     private func updateLastPointsAwardedDate() {
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         lastPointsAwardedDate = cal.startOfDay(for: Date())
     }
-    
+
     private func logPoints(
         points: Int,
-        approvedBundleIdsUsed: [String]
+        approvedBundleIdsUsed: [String],
+        previousHousePoints: Int
     ) {
         Firestore.firestore().collection("logs").document().setData([
             "dateLogged": Date(),
@@ -193,6 +199,8 @@ class PointsManager: ObservableObject {
             "email": authManager.email ?? "EMAIL NOT FOUND",
             "house": authManager.usersHouse ?? "HOUSE NOT FOUND",
             "pointsAdded": "\(points)",
+            "previousHousePoints": previousHousePoints,
+            "newHousePoints": previousHousePoints + points,
             "appVersion": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "idk",
             "approvedBundleIdsUsed": approvedBundleIdsUsed
         ]) { _ in }

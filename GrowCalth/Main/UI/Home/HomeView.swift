@@ -1,5 +1,5 @@
 //
-//  Home.swift
+//  HomeView.swift
 //  GrowCalth-iOS
 //
 //  Created by Tristan Chay on 23/10/23.
@@ -8,16 +8,16 @@
 import SwiftUI
 import HealthKitUI
 
-struct Home: View {
-    
+struct HomeView: View {
+
     let halfUIWidth = (UIScreen.main.bounds.width / 2) - 20
     
-    @ObservedObject var hkManager: HealthKitManager = .shared
-    @ObservedObject var quotesManager: QuotesManager = .shared
-    @ObservedObject var goalsManager: GoalsManager = .shared
-    @ObservedObject var pointsManager: PointsManager = .shared
-    @ObservedObject var adminManager: AdminManager = .shared
-    @ObservedObject var authManager: AuthenticationManager = .shared
+    @EnvironmentObject var hkManager: HealthKitManager
+    @EnvironmentObject var quotesManager: QuotesManager
+    @EnvironmentObject var goalsManager: GoalsManager
+    @EnvironmentObject var pointsManager: PointsManager
+    @EnvironmentObject var adminManager: AdminManager
+    @EnvironmentObject var authManager: AuthenticationManager
 
     @State private var showingAlumnusAppreciationAlert = false
 
@@ -390,5 +390,5 @@ struct Home: View {
 }
 
 #Preview {
-    Home()
+    HomeView()
 }

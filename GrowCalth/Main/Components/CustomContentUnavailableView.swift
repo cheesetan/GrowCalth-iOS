@@ -20,9 +20,9 @@ struct CustomContentUnavailableView: View {
 
     @State private var isLoading = false
 
-    @ObservedObject private var authManager: AuthenticationManager = .shared
-    @ObservedObject private var adminManager: AdminManager = .shared
-    @ObservedObject private var developerManager: DeveloperManager = .shared
+    @EnvironmentObject private var authManager: AuthenticationManager
+    @EnvironmentObject private var adminManager: AdminManager
+    @EnvironmentObject private var developerManager: DeveloperManager
 
     var body: some View {
         VStack {

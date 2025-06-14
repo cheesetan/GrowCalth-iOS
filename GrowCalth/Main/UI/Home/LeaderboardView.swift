@@ -15,9 +15,9 @@ struct LeaderboardView: View {
     @State var alertTitle = ""
     @State var alertMessage = ""
     
-    @ObservedObject var lbManager: LeaderboardsManager = .shared
-    @ObservedObject var adminManager: AdminManager = .shared
-    @ObservedObject var authManager: AuthenticationManager = .shared
+    @EnvironmentObject var lbManager: LeaderboardsManager
+    @EnvironmentObject var adminManager: AdminManager
+    @EnvironmentObject var authManager: AuthenticationManager
 
     var body: some View {
         List {

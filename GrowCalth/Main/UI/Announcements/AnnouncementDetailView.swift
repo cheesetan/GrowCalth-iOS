@@ -22,9 +22,9 @@ struct AnnouncementDetailView: View {
     @State var alertHeader: String = ""
     @State var alertMessage: String = ""
     
-    @ObservedObject var authManager: AuthenticationManager = .shared
-    @ObservedObject var announcementManager: AnnouncementManager = .shared
-    @ObservedObject var adminManager: AdminManager = .shared
+    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var announcementManager: AnnouncementManager
+    @EnvironmentObject var adminManager: AdminManager
     
     @Environment(\.dismiss) var dismiss
 

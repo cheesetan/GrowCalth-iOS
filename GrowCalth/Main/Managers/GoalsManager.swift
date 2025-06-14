@@ -8,7 +8,6 @@
 import SwiftUI
 
 class GoalsManager: ObservableObject {
-    static let shared: GoalsManager = .init()
     
     @Published var stepsGoal: Int?
     @Published var distanceGoal: Double?

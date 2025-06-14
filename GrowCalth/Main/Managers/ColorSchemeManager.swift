@@ -12,7 +12,6 @@ enum PreferredColorScheme: Codable {
 }
 
 class ColorSchemeManager: ObservableObject {
-    static let shared: ColorSchemeManager = .init()
 
     @Published var colorScheme: PreferredColorScheme = .automatic {
         didSet {

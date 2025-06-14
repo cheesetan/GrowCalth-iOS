@@ -15,7 +15,7 @@ struct GoalsView: View {
     
     @State private var timer: Timer?
     
-    @ObservedObject var goalsManager: GoalsManager = .shared
+    @EnvironmentObject var goalsManager: GoalsManager
     
     enum GoalType {
         case steps, distance

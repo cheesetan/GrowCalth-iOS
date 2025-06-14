@@ -21,11 +21,11 @@ struct NewAnnouncementView: View {
     
     @State var postType: AnnouncementType
     
-    @ObservedObject var authManager: AuthenticationManager = .shared
-    @ObservedObject var announcementManager: AnnouncementManager = .shared
-    @ObservedObject var adminManager: AdminManager = .shared
+    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var announcementManager: AnnouncementManager
+    @EnvironmentObject var adminManager: AdminManager
     
-    @ObservedObject var apnManager: ApplicationPushNotificationsManager = .shared
+    @EnvironmentObject var apnManager: ApplicationPushNotificationsManager
     
     @Environment(\.dismiss) var dismiss
     

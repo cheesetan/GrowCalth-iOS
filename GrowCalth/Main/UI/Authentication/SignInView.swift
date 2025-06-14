@@ -29,7 +29,7 @@ struct SignInView: View {
         case secureField, textField
     }
     
-    @ObservedObject var authManager: AuthenticationManager = .shared
+    @EnvironmentObject var authManager: AuthenticationManager
 
     @Namespace private var namespace
 

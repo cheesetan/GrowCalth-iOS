@@ -26,7 +26,7 @@ struct EditingNAPFA: View {
     @State var sbj: [NAPFAResults]
     
     @AppStorage("levelSelection", store: .standard) private var levelSelection: String = NAPFALevel.secondary2.rawValue
-    @ObservedObject var napfaManager: NAPFAManager = .shared
+    @EnvironmentObject var napfaManager: NAPFAManager
     
     @Environment(\.dismiss) var dismiss
     

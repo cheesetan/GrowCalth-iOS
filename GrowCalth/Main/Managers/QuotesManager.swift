@@ -13,7 +13,6 @@ struct Quote: Codable {
 }
 
 class QuotesManager: ObservableObject {
-    static let shared: QuotesManager = .init()
     
     @Published var quote: Quote?
     

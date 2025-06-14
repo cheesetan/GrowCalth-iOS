@@ -15,7 +15,7 @@ struct QuoteView: View {
     @State var alertDescription = ""
     @State var showingAlert = false
     
-    @ObservedObject var quotesManager: QuotesManager = .shared
+    @EnvironmentObject var quotesManager: QuotesManager
     
     var body: some View {
         VStack {

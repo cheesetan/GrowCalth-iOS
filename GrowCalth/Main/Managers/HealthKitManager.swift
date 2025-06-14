@@ -10,17 +10,7 @@ import HealthKit
 import WidgetKit
 import FirebaseFirestore
 
-// "com.xiaomi.miwatch.pro", // Mi Fitness
-// "com.huawei.iossporthealth", // HUAWEI Fitness
-// "HM.wristband", // Zepp Life (formerly MiFit)
-// "com.samsung.gearwatch", // Samsung Galaxy Watch (Gear S)
-// "com.samsung.gearfit", // Samsung Galaxy Fit (Gear Fit)
-// "com.samsung.health", // Samsung Health
-// "com.google.Wear", // Wear OS by Google
-// "com.iapps.activesg" // ActiveSG
-
 class HealthKitManager: ObservableObject {
-    static let shared = HealthKitManager()
     
     private var healthStore = HKHealthStore()
     @Published var steps: Int? = nil

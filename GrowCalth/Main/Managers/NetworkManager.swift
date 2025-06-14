@@ -9,7 +9,6 @@ import SwiftUI
 import Network
 
 class NetworkManager: ObservableObject {
-    static let shared: NetworkManager = .init()
     
     @Published var isConnectionAvailable: Bool? = nil
     

@@ -31,7 +31,7 @@ struct SignUpView: View {
     @State var alertMessage = ""
     @State var showingAlert = false
     
-    @ObservedObject var authManager: AuthenticationManager = .shared
+    @EnvironmentObject var authManager: AuthenticationManager
     
     @FocusState var isFieldFocus: FieldToFocus?
     

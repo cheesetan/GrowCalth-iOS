@@ -9,14 +9,16 @@ import SwiftUI
 import FirebaseFirestore
 
 class AdminManager: ObservableObject {
-    static let shared: AdminManager = .init()
 
     @Published var isUnderMaintenance: Bool?
     @Published var appForcesUpdates: Bool?
     
-    @ObservedObject var authManager: AuthenticationManager = .shared
-    
-    init() {
+    @ObservedObject var authManager: AuthenticationManager
+
+    init(isUnderMaintenance: Bool? = nil, appForcesUpdates: Bool? = nil, authManager: AuthenticationManager) {
+        self.isUnderMaintenance = isUnderMaintenance
+        self.appForcesUpdates = appForcesUpdates
+        self.authManager = authManager
         checkIfUnderMaintenance() { }
         checkIfAppForcesUpdates()
     }

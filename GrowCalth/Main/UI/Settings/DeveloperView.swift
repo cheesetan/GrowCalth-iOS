@@ -22,7 +22,7 @@ struct DeveloperView: View {
     @State var blockedVersions: [String]?
     @State var blockedVersionsAndroid: [String]?
     
-    @ObservedObject var developerManager: DeveloperManager = .shared
+    @EnvironmentObject var developerManager: DeveloperManager
     
     var body: some View {
         List {

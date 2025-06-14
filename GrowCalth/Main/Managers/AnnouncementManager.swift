@@ -37,7 +37,6 @@ enum AnnouncementType: String, CaseIterable {
 }
 
 class AnnouncementManager: ObservableObject {
-    static let shared: AnnouncementManager = .init()
 
     @Published var announcements: [Announcement] = [] {
         didSet {

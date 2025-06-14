@@ -20,7 +20,7 @@ struct ForgotPasswordView: View {
     
     @FocusState var emailFocused: Bool
 
-    @ObservedObject var authManager: AuthenticationManager = .shared
+    @EnvironmentObject var authManager: AuthenticationManager
 
     var body: some View {
         if #available(iOS 16.0, *) {

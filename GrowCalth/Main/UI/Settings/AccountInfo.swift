@@ -33,7 +33,7 @@ struct AccountInfo: View {
         case currentSecureField, currentTextField, newSecureField, newTextField
     }
     
-    @ObservedObject var authManager: AuthenticationManager = .shared
+    @EnvironmentObject var authManager: AuthenticationManager
     
     var body: some View {
         List {

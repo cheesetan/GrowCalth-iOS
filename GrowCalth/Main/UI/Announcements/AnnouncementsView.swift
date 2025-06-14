@@ -1,5 +1,5 @@
 //
-//  Announcements.swift
+//  AnnouncementsView.swift
 //  GrowCalth-iOS
 //
 //  Created by Tristan Chay on 23/10/23.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct Announcements: View {
-    
+struct AnnouncementsView: View {
+
     @State var showingNewAnnouncementView = false
     @State var selection: AnnouncementType = .announcements
     
@@ -20,9 +20,9 @@ struct Announcements: View {
     @State var stateUUID = ""
     @State var isLoading = false
     
-    @ObservedObject var authManager: AuthenticationManager = .shared
-    @ObservedObject var announcementManager: AnnouncementManager = .shared
-    @ObservedObject var adminManager: AdminManager = .shared
+    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var announcementManager: AnnouncementManager
+    @EnvironmentObject var adminManager: AdminManager
 
     @Namespace private var namespace
 
@@ -330,5 +330,5 @@ struct Announcements: View {
 }
 
 #Preview {
-    Announcements()
+    AnnouncementsView()
 }

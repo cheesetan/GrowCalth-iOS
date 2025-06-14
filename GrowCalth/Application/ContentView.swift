@@ -12,17 +12,23 @@ enum AppStatus {
 }
 
 class AppState: ObservableObject {
-    static let shared: AppState = .init()
-
-//    @Published var status: AppStatus = .loading("Loading...")
 
     @AppStorage("onboardingView", store: .standard) var onboardingView = true
 
-    @ObservedObject var authManager: AuthenticationManager = .shared
-    @ObservedObject var adminManager: AdminManager = .shared
-    @ObservedObject var updateManager: UpdateManager = .shared
-    @ObservedObject var developerManager: DeveloperManager = .shared
-    @ObservedObject var networkManager: NetworkManager = .shared
+    @ObservedObject var authManager: AuthenticationManager
+    @ObservedObject var adminManager: AdminManager
+    @ObservedObject var updateManager: UpdateManager
+    @ObservedObject var developerManager: DeveloperManager
+    @ObservedObject var networkManager: NetworkManager
+
+    init(onboardingView: Bool = true, authManager: AuthenticationManager, adminManager: AdminManager, updateManager: UpdateManager, developerManager: DeveloperManager, networkManager: NetworkManager) {
+        self.onboardingView = onboardingView
+        self.authManager = authManager
+        self.adminManager = adminManager
+        self.updateManager = updateManager
+        self.developerManager = developerManager
+        self.networkManager = networkManager
+    }
 
     var status: AppStatus {
         if networkManager.isConnectionAvailable != nil {
@@ -63,15 +69,54 @@ class AppState: ObservableObject {
 
 struct ContentView: View {
 
-    @ObservedObject var appState: AppState = .shared
-    @ObservedObject var authManager: AuthenticationManager = .shared
-    @ObservedObject var adminManager: AdminManager = .shared
-    @ObservedObject var updateManager: UpdateManager = .shared
-    @ObservedObject var developerManager: DeveloperManager = .shared
-    @ObservedObject var networkManager: NetworkManager = .shared
-    @ObservedObject var pointsManager: PointsManager = .shared
+    @ObservedObject var authManager: AuthenticationManager
+    @ObservedObject var updateManager: UpdateManager
+    @ObservedObject var networkManager: NetworkManager
+    @ObservedObject var hkManager: HealthKitManager
+    @ObservedObject var apnsManager: ApplicationPushNotificationsManager
+    @ObservedObject var goalsManager: GoalsManager
+    @ObservedObject var lbManager: LeaderboardsManager
+    @ObservedObject var napfaManager: NAPFAManager
+    @ObservedObject var quotesManager: QuotesManager
+    @ObservedObject var announcementManager: AnnouncementManager
 
-    init() {
+    @ObservedObject var pointsManager: PointsManager
+    @ObservedObject var developerManager: DeveloperManager
+    @ObservedObject var adminManager: AdminManager
+    @ObservedObject var appState: AppState
+
+    init(
+        authManager: AuthenticationManager = .init(),
+        updateManager: UpdateManager = .init(),
+        networkManager: NetworkManager = .init(),
+        hkManager: HealthKitManager = .init(),
+        apnsManager: ApplicationPushNotificationsManager = .init(),
+        goalsManager: GoalsManager = .init(),
+        lbManager: LeaderboardsManager = .init(),
+        napfaManager: NAPFAManager = .init(),
+        quotesManager: QuotesManager = .init(),
+        announcementManager: AnnouncementManager = .init()
+    ) {
+        self.authManager = authManager
+        self.updateManager = updateManager
+        self.networkManager = networkManager
+        self.hkManager = hkManager
+        self.apnsManager = apnsManager
+        self.goalsManager = goalsManager
+        self.lbManager = lbManager
+        self.napfaManager = napfaManager
+        self.quotesManager = quotesManager
+        self.announcementManager = announcementManager
+
+        let adminManager = AdminManager(authManager: authManager)
+        self.adminManager = adminManager
+
+        let developerManager = DeveloperManager(adminManager: adminManager)
+        self.developerManager = developerManager
+
+        self.appState = AppState(authManager: authManager, adminManager: adminManager, updateManager: updateManager, developerManager: developerManager, networkManager: networkManager)
+        self.pointsManager = PointsManager(adminManager: adminManager, hkManager: hkManager, authManager: authManager)
+
         if let lastPointsAwardedDate = pointsManager.lastPointsAwardedDate {
             if lastPointsAwardedDate < GLOBAL_GROWCALTH_START_DATE {
                 pointsManager.lastPointsAwardedDate = GLOBAL_GROWCALTH_START_DATE
@@ -95,13 +140,13 @@ struct ContentView: View {
                 if #available(iOS 26.0, *) {
                     TabView {
                         Tab("Home", systemImage: "house.fill"){
-                            Home()
+                            HomeView()
                         }
                         Tab("Announcements", systemImage: "megaphone"){
-                            Announcements()
+                            AnnouncementsView()
                         }
                         Tab("NAPFA", systemImage: "figure.run"){
-                            NAPFA()
+                            NAPFAView()
                         }
                         Tab("Settings", systemImage: "gearshape"){
                             SettingsView()
@@ -109,15 +154,15 @@ struct ContentView: View {
                     }
                 } else {
                     TabView {
-                        Home()
+                        HomeView()
                             .tabItem {
                                 Label("Home", systemImage: "house.fill")
                             }
-                        Announcements()
+                        AnnouncementsView()
                             .tabItem {
                                 Label("Announcements", systemImage: "megaphone")
                             }
-                        NAPFA()
+                        NAPFAView()
                             .tabItem {
                                 Label("NAPFA", systemImage: "figure.run")
                             }
@@ -159,6 +204,20 @@ struct ContentView: View {
                 .controlSize(.large)
             }
         }
+        .environmentObject(authManager)
+        .environmentObject(updateManager)
+        .environmentObject(networkManager)
+        .environmentObject(hkManager)
+        .environmentObject(apnsManager)
+        .environmentObject(goalsManager)
+        .environmentObject(lbManager)
+        .environmentObject(napfaManager)
+        .environmentObject(quotesManager)
+        .environmentObject(announcementManager)
+        .environmentObject(pointsManager)
+        .environmentObject(developerManager)
+        .environmentObject(adminManager)
+        .environmentObject(appState)
     }
 }
 

@@ -9,7 +9,6 @@ import SwiftUI
 import FirebaseFirestore
 
 class LeaderboardsManager: ObservableObject {
-    static let shared: LeaderboardsManager = .init()
     
     @Published var leaderboard: [String : Int] = [:] {
         didSet {

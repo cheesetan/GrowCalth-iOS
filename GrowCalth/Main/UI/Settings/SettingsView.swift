@@ -17,10 +17,10 @@ struct SettingsView: View {
     
     @State var showingSignOutAlert = false
     
-    @ObservedObject var authManager: AuthenticationManager = .shared
-    @ObservedObject var csManager: ColorSchemeManager = .shared
-    @ObservedObject var adminManager: AdminManager = .shared
-    @ObservedObject var developerManager: DeveloperManager = .shared
+    @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var csManager: ColorSchemeManager
+    @EnvironmentObject var adminManager: AdminManager
+    @EnvironmentObject var developerManager: DeveloperManager
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -118,16 +118,6 @@ struct SettingsView: View {
             Text("Appearance")
         } footer: {
             Text("Automatic sets GrowCalth's appearance based on your device's appearance.")
-        }
-    }
-    
-    var health: some View {
-        Section("Health") {
-            NavigationLink {
-                HealthInfo()
-            } label: {
-                Label("Health Information", systemImage: "heart.text.square.fill")
-            }
         }
     }
     

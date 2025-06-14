@@ -14,7 +14,6 @@ enum UpdateError: Error {
 
 
 class UpdateManager: ObservableObject {
-    static let shared: UpdateManager = .init()
     
     @Published var updateAvailable: Bool?
     
