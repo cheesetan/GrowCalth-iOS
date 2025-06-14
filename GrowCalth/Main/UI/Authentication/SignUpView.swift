@@ -38,21 +38,52 @@ struct SignUpView: View {
     internal enum FieldToFocus {
         case secureField, textField
     }
-    
+
+    var buttonDisabled: Bool {
+        email.isEmpty || password.isEmpty || houseSelection == .selectHouse || isLoading
+    }
+
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Join The House Today.")
-                .fontWeight(.black)
-                .font(.system(size: 35))
-                .padding(.horizontal)
-            
-            VStack {
-                infoFields
-                signUpButton
-                bottomText
+        VStack(spacing: 30) {
+            if #available(iOS 26.0, *) {
+                Image(systemName: "person.and.person.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .padding(30)
+                    .frame(width: 100, height: 100)
+                    .foregroundStyle(.accent)
+                    .glassEffect()
+            } else {
+                Image(systemName: "person.and.person.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .padding(30)
+                    .frame(width: 100, height: 100)
+                    .foregroundStyle(.accent)
+                    .background(.ultraThickMaterial)
+                    .mask(RoundedRectangle(cornerRadius: 32))
             }
-            .padding(.horizontal)
+            VStack(spacing: 5) {
+                Text("Create Account")
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.secondary)
+
+                Text("Join The House Today.")
+                    .fontWeight(.black)
+                    .font(.largeTitle)
+
+                Text("Sign up to be part of the community")
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.secondary)
+            }
+
+            infoFields
+            signUpButton
+            bottomText
         }
+        .padding(.horizontal)
         .alert(alertHeader, isPresented: $showingAlert) {
             if alertMessage == "An account with this email already exists. Please log in instead." {
                 if #available(iOS 26.0, *) {
@@ -83,23 +114,26 @@ struct SignUpView: View {
     var emailField: some View {
         Group {
             if #available(iOS 26.0, *) {
-                TextField("Email Address", text: $email)
-                    .padding()
-                    .keyboardType(.emailAddress)
-                    .textContentType(.username)
-                    .autocorrectionDisabled(true)
-                    .textInputAutocapitalization(.never)
-                    .glassEffect()
-
+                TextField(text: $email) {
+                    Label("School Email", systemImage: "envelope")
+                }
+                .padding()
+                .keyboardType(.emailAddress)
+                .textContentType(.username)
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
+                .glassEffect()
             } else {
-                TextField("Email Address", text: $email)
-                    .padding()
-                    .background(.ultraThickMaterial)
-                    .cornerRadius(16)
-                    .keyboardType(.emailAddress)
-                    .textContentType(.username)
-                    .autocorrectionDisabled(true)
-                    .textInputAutocapitalization(.never)
+                TextField(text: $email) {
+                    Label("School Email", systemImage: "envelope")
+                }
+                .padding()
+                .background(.ultraThickMaterial)
+                .mask(RoundedRectangle(cornerRadius: 16))
+                .keyboardType(.emailAddress)
+                .textContentType(.username)
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
             }
         }
     }
@@ -110,11 +144,15 @@ struct SignUpView: View {
                 if #available(iOS 26.0, *) {
                     Group {
                         if showingPassword {
-                            TextField("Password", text: $password)
-                                .focused($isFieldFocus, equals: .textField)
+                            TextField(text: $password) {
+                                Label("Password", systemImage: "lock")
+                            }
+                            .focused($isFieldFocus, equals: .textField)
                         } else {
-                            SecureField("Password", text: $password)
-                                .focused($isFieldFocus, equals: .secureField)
+                            SecureField(text: $password) {
+                                Label("Password", systemImage: "lock")
+                            }
+                            .focused($isFieldFocus, equals: .secureField)
                         }
                     }
                     .padding()
@@ -122,16 +160,20 @@ struct SignUpView: View {
                 } else {
                     Group {
                         if showingPassword {
-                            TextField("Password", text: $password)
-                                .focused($isFieldFocus, equals: .textField)
+                            TextField(text: $password) {
+                                Label("Password", systemImage: "lock")
+                            }
+                            .focused($isFieldFocus, equals: .textField)
                         } else {
-                            SecureField("Password", text: $password)
-                                .focused($isFieldFocus, equals: .secureField)
+                            SecureField(text: $password) {
+                                Label("Password", systemImage: "lock")
+                            }
+                            .focused($isFieldFocus, equals: .secureField)
                         }
                     }
                     .padding()
                     .background(.ultraThickMaterial)
-                    .cornerRadius(16)
+                    .mask(RoundedRectangle(cornerRadius: 16))
                 }
             }
             .textContentType(.password)
@@ -179,6 +221,8 @@ struct SignUpView: View {
                         }
                     }
                 }
+                .padding(10)
+                .frame(maxWidth: .infinity)
                 .glassEffect()
             } else {
                 Picker("Select your house", selection: $houseSelection) {
@@ -196,6 +240,9 @@ struct SignUpView: View {
                         }
                     }
                 }
+                .padding()
+                .background(.ultraThickMaterial)
+                .mask(RoundedRectangle(cornerRadius: 16))
             }
         }
     }
@@ -209,7 +256,7 @@ struct SignUpView: View {
                     Text("Sign Up")
                         .padding(8)
                         .frame(maxWidth: .infinity)
-                        .foregroundColor(isLoading ? .clear : .white)
+                        .foregroundColor(isLoading ? .clear : buttonDisabled ? .primary : .white)
                         .font(.body.weight(.semibold))
                         .overlay {
                             if isLoading {
@@ -219,7 +266,7 @@ struct SignUpView: View {
                 }
                 .buttonBorderShape(.capsule)
                 .buttonStyle(.borderedProminent)
-                .disabled(email.isEmpty || password.isEmpty || houseSelection == .selectHouse || isLoading)
+                .disabled(buttonDisabled)
                 .glassEffect()
 
             } else {
@@ -232,7 +279,7 @@ struct SignUpView: View {
                         .foregroundColor(isLoading ? .clear : .white)
                         .font(.body.weight(.semibold))
                         .background(.accent)
-                        .cornerRadius(16)
+                        .mask(RoundedRectangle(cornerRadius: 16))
                         .overlay {
                             if isLoading {
                                 ProgressView()
@@ -240,29 +287,29 @@ struct SignUpView: View {
                         }
                 }
                 .buttonStyle(.plain)
-                .disabled(email.isEmpty || password.isEmpty || houseSelection == .selectHouse || isLoading)
+                .disabled(buttonDisabled)
             }
         }
     }
     
     var bottomText: some View {
-        HStack {
-            Text("Already have an account?")
-                .minimumScaleFactor(0.1)
-            Button {
-                withAnimation {
-                    signInView.toggle()
+        VStack {
+            HStack {
+                Text("Already have an account?")
+                    .foregroundStyle(.secondary)
+                Button {
+                    withAnimation {
+                        signInView.toggle()
+                    }
+                } label: {
+                    Text("Sign In")
+                        .foregroundColor(.accent)
+                        .underline()
+                        .fontWeight(.semibold)
                 }
-            } label: {
-                Text("Log In")
-                    .foregroundColor(.accent)
-                    .underline()
-                    .fontWeight(.semibold)
+                .buttonStyle(.plain)
             }
-            .minimumScaleFactor(0.1)
-            .buttonStyle(.plain)
         }
-        .padding(.top, 5)
     }
 
     func signUp() {

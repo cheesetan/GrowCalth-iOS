@@ -69,7 +69,7 @@ struct ForgotPasswordView: View {
                 TextField("Email Address", text: $email)
                     .padding()
                     .background(.ultraThickMaterial)
-                    .cornerRadius(16)
+                    .mask(RoundedRectangle(cornerRadius: 16))
             }
         }
         .keyboardType(.emailAddress)
@@ -120,7 +120,7 @@ struct ForgotPasswordView: View {
                     .background(email.isEmpty ? .red.opacity(0.5) : forgotPasswordLoading ? .red.opacity(0.5) : .red)
                     .foregroundColor(.white)
                     .font(.headline.weight(.bold))
-                    .cornerRadius(16)
+                    .mask(RoundedRectangle(cornerRadius: 16))
                 }
                 .disabled(email.isEmpty || forgotPasswordLoading)
             }

@@ -158,7 +158,7 @@ struct NewAnnouncementView: View {
                         .frame(height: 50)
                         .foregroundColor(.white)
                         .background(.blue)
-                        .cornerRadius(16)
+                        .mask(RoundedRectangle(cornerRadius: 16))
                         .font(.body.weight(.bold))
                 }
                 .buttonStyle(.plain)

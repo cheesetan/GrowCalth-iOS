@@ -186,7 +186,7 @@ struct EditingNAPFA: View {
                                         }
                                     }
                                 }
-                                .cornerRadius(8)
+                                .mask(RoundedRectangle(cornerRadius: 8))
                             }
                         }
                     }
@@ -216,6 +216,6 @@ struct EditingNAPFA: View {
         .font(.caption2.weight(.bold))
         .padding(5)
         .background(backgroundColor.opacity(0.5))
-        .cornerRadius(8)
+        .mask(RoundedRectangle(cornerRadius: 8))
     }
 }

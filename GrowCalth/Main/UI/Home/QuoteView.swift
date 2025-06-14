@@ -80,7 +80,7 @@ struct QuoteView: View {
                         .background(.blue)
                         .foregroundColor(isLoading ? .clear : .white)
                         .font(.body.weight(.bold))
-                        .cornerRadius(16)
+                        .mask(RoundedRectangle(cornerRadius: 16))
                         .overlay {
                             if isLoading {
                                 ProgressView()

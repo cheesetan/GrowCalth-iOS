@@ -34,20 +34,48 @@ struct SignInView: View {
     @Namespace private var namespace
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("The House You\nNeed.")
-                .fontWeight(.black)
-                .font(.system(size: 35))
-                .padding(.horizontal)
-            
-            VStack {
+        VStack(spacing: 30) {
+            if #available(iOS 26.0, *) {
+                Image(systemName: "house.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .padding(30)
+                    .frame(width: 100, height: 100)
+                    .foregroundStyle(.accent)
+                    .glassEffect()
+            } else {
+                Image(systemName: "house.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .padding(30)
+                    .frame(width: 100, height: 100)
+                    .foregroundStyle(.accent)
+                    .background(.ultraThickMaterial)
+                    .mask(RoundedRectangle(cornerRadius: 32))
+            }
+            VStack(spacing: 5) {
+                Text("Welcome Back")
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.secondary)
+
+                Text("The House You Need.")
+                    .fontWeight(.black)
+                    .font(.largeTitle)
+
+                Text("Sign in to contribute to your House")
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.secondary)
+            }
+            VStack(spacing: 10) {
                 infoFields
                 forgotPassword
-                loginButton
-                bottomText
             }
-            .padding(.horizontal)
+            loginButton
+            bottomText
         }
+        .padding(.horizontal)
         .alert(alertHeader, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -65,23 +93,27 @@ struct SignInView: View {
     var emailField: some View {
         Group {
             if #available(iOS 26.0, *) {
-                TextField("Email Address", text: $email)
-                    .padding()
-                    .keyboardType(.emailAddress)
-                    .textContentType(.username)
-                    .autocorrectionDisabled(true)
-                    .textInputAutocapitalization(.never)
-                    .glassEffect()
+                TextField(text: $email) {
+                    Label("School Email", systemImage: "envelope")
+                }
+                .padding()
+                .keyboardType(.emailAddress)
+                .textContentType(.username)
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
+                .glassEffect()
 
             } else {
-                TextField("Email Address", text: $email)
-                    .padding()
-                    .background(.ultraThickMaterial)
-                    .cornerRadius(16)
-                    .keyboardType(.emailAddress)
-                    .textContentType(.username)
-                    .autocorrectionDisabled(true)
-                    .textInputAutocapitalization(.never)
+                TextField(text: $email) {
+                    Label("School Email", systemImage: "envelope")
+                }
+                .padding()
+                .background(.ultraThickMaterial)
+                .mask(RoundedRectangle(cornerRadius: 16))
+                .keyboardType(.emailAddress)
+                .textContentType(.username)
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
             }
         }
     }
@@ -92,11 +124,15 @@ struct SignInView: View {
                 if #available(iOS 26.0, *) {
                     Group {
                         if showingPassword {
-                            TextField("Password", text: $password)
-                                .focused($isFieldFocus, equals: .textField)
+                            TextField(text: $password) {
+                                Label("Password", systemImage: "lock")
+                            }
+                            .focused($isFieldFocus, equals: .textField)
                         } else {
-                            SecureField("Password", text: $password)
-                                .focused($isFieldFocus, equals: .secureField)
+                            SecureField(text: $password) {
+                                Label("Password", systemImage: "lock")
+                            }
+                            .focused($isFieldFocus, equals: .secureField)
                         }
                     }
                     .padding()
@@ -104,16 +140,20 @@ struct SignInView: View {
                 } else {
                     Group {
                         if showingPassword {
-                            TextField("Password", text: $password)
-                                .focused($isFieldFocus, equals: .textField)
+                            TextField(text: $password) {
+                                Label("Password", systemImage: "lock")
+                            }
+                            .focused($isFieldFocus, equals: .textField)
                         } else {
-                            SecureField("Password", text: $password)
-                                .focused($isFieldFocus, equals: .secureField)
+                            SecureField(text: $password) {
+                                Label("Password", systemImage: "lock")
+                            }
+                            .focused($isFieldFocus, equals: .secureField)
                         }
                     }
                     .padding()
                     .background(.ultraThickMaterial)
-                    .cornerRadius(16)
+                    .mask(RoundedRectangle(cornerRadius: 16))
                 }
             }
             .textContentType(.password)
@@ -144,17 +184,18 @@ struct SignInView: View {
     }
     
     var forgotPassword: some View {
-        Group {
+        HStack {
+            Spacer()
             if #available(iOS 26.0, *) {
                 Button {
                     forgottenPasswordEmail = email
                     showingForgotPassword.toggle()
                 } label: {
                     Text("Forgot Password?")
+                        .foregroundStyle(.accent)
                 }
                 .buttonStyle(.glass)
                 .buttonBorderShape(.capsule)
-                .frame(maxWidth: .infinity)
                 .matchedTransitionSource(id: "forgotpassword", in: namespace)
             } else {
                 Button {
@@ -164,7 +205,7 @@ struct SignInView: View {
                     Text("Forgot Password?")
                         .underline()
                 }
-                .foregroundColor(.gray)
+                .foregroundColor(.accent)
                 .minimumScaleFactor(0.1)
                 .buttonStyle(.plain)
                 .padding(.bottom, 5)
@@ -193,7 +234,7 @@ struct SignInView: View {
                     Text("Login")
                         .padding(8)
                         .frame(maxWidth: .infinity)
-                        .foregroundColor(isLoading ? .clear : .white)
+                        .foregroundColor(isLoading ? .clear : loginButtonDisabled ? .primary : .white)
                         .font(.body.weight(.semibold))
                         .overlay {
                             if isLoading {
@@ -215,7 +256,7 @@ struct SignInView: View {
                         .foregroundColor(isLoading ? .clear : .white)
                         .font(.body.weight(.semibold))
                         .background(.accent)
-                        .cornerRadius(16)
+                        .mask(RoundedRectangle(cornerRadius: 16))
                         .overlay {
                             if isLoading {
                                 ProgressView()
@@ -262,6 +303,7 @@ struct SignInView: View {
         VStack {
             HStack {
                 Text("Dont have an account yet?")
+                    .foregroundStyle(.secondary)
                 Button {
                     withAnimation {
                         signInView.toggle()
@@ -274,10 +316,6 @@ struct SignInView: View {
                 }
                 .buttonStyle(.plain)
             }
-            .padding(.top, 5)
-            
-            Text("Your house is waiting for ya!")
-                .font(.subheadline)
         }
     }
 }
