@@ -157,15 +157,7 @@ struct GoalsView: View {
     }
 
     private func refreshGoals() async {
-        // Assuming goalsManager.refreshGoals() should be async
-        // If it's not async, you can call it directly without await
-        if let refreshMethod = goalsManager.refreshGoals as? () async -> Void {
-            await refreshMethod()
-        } else {
-            goalsManager.refreshGoals()
-        }
-
-        // Update local state after refresh
+        goalsManager.refreshGoals()
         loadInitialGoals()
     }
 

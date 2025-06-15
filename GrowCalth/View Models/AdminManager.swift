@@ -55,11 +55,18 @@ final class AdminManager: ObservableObject, Sendable {
     }
 
     private func initializeSettings() async {
-        async let maintenanceTask = checkIfUnderMaintenance()
-        async let updatesTask = checkIfAppForcesUpdates()
-
         do {
-            _ = try await (maintenanceTask, updatesTask)
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                group.addTask {
+                    try await self.checkIfUnderMaintenance()
+                }
+                group.addTask {
+                    try await self.checkIfAppForcesUpdates()
+                }
+
+                // Wait for all tasks to complete
+                for try await _ in group { }
+            }
         } catch {
             print("Failed to initialize settings: \(error)")
         }

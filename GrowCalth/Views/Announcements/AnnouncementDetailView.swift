@@ -92,9 +92,7 @@ struct AnnouncementDetailView: View {
         }
         .alert(alertHeader, isPresented: $showingDeleteAlert) {
             Button("Delete", role: .destructive) {
-                Task {
-                    try await confirmDelete()
-                }
+                confirmDelete()
             }
         } message: {
             Text(alertMessage)

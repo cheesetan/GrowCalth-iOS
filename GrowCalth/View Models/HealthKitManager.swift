@@ -71,11 +71,14 @@ class HealthKitManager: ObservableObject {
     }
 
     func fetchAllDatas() async {
-        async let stepsTask = readSteps()
-        async let distanceTask = readDistance()
-
-        await stepsTask
-        await distanceTask
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask {
+                await self.readSteps()
+            }
+            group.addTask {
+                await self.readDistance()
+            }
+        }
     }
 
     func fetchApprovedBundleIdentifiers() async throws -> [String] {

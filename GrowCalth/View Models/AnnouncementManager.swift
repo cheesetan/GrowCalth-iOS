@@ -114,12 +114,20 @@ final class AnnouncementManager: ObservableObject, Sendable {
     }
 
     func retrieveAllPosts() async throws {
-        async let eventsTask = retrieveEvents()
-        async let announcementsTask = retrieveAnnouncements()
-
         do {
-            _ = try await (eventsTask, announcementsTask)
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                group.addTask {
+                    try await self.retrieveAnnouncements()
+                }
+                group.addTask {
+                    try await self.retrieveEvents()
+                }
+
+                // Wait for all tasks to complete
+                for try await _ in group { }
+            }
         } catch {
+            print("Failed to initialize settings: \(error)")
             throw error
         }
     }
