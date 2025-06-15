@@ -8,19 +8,26 @@
 import SwiftUI
 
 struct ForgotPasswordView: View {
-    
+
+    let alert_success_title = "Password Reset Email Sent"
+
     @State var email: String
     @State var forgotPasswordLoading = false
     @Binding var showingForgotPassword: Bool
     
     @State var showingAlert = false
-    @State var showingErrorAlert = false
     @State var alertHeader: String = ""
     @State var alertMessage: String = ""
     
     @FocusState var emailFocused: Bool
 
+    @Environment(\.dismiss) private var dismiss
+
     @EnvironmentObject var authManager: AuthenticationManager
+
+    var buttonDisabled: Bool {
+        email.isEmpty || forgotPasswordLoading
+    }
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -47,13 +54,11 @@ struct ForgotPasswordView: View {
         .navigationBarTitleDisplayMode(.inline)
         .alert(alertHeader, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {
-                showingForgotPassword = false
+                if alertHeader == alert_success_title {
+                    dismiss.callAsFunction()
+                    showingForgotPassword = false
+                }
             }
-        } message: {
-            Text(alertMessage)
-        }
-        .alert(alertHeader, isPresented: $showingErrorAlert) {
-            Button("OK", role: .cancel) {}
         } message: {
             Text(alertMessage)
         }
@@ -87,42 +92,43 @@ struct ForgotPasswordView: View {
     var resetPasswordButton: some View {
         Group {
             if #available(iOS 26.0, *) {
-                Button(role: .destructive) {
+                Button {
                     sendForgotPasswordRequest()
                 } label: {
-                    VStack {
-                        if forgotPasswordLoading {
-                            ProgressView()
-                        } else {
-                            Text("Send Reset Password Email")
+                    Text("Reset Password")
+                        .padding(8)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(forgotPasswordLoading ? .clear : buttonDisabled ? .primary : .white)
+                        .font(.body.weight(.semibold))
+                        .overlay {
+                            if forgotPasswordLoading {
+                                ProgressView()
+                            }
                         }
-                    }
-                    .frame(maxWidth: .infinity)
                 }
                 .buttonBorderShape(.capsule)
                 .buttonStyle(.borderedProminent)
-                .disabled(email.isEmpty || forgotPasswordLoading)
+                .disabled(buttonDisabled)
                 .glassEffect()
-                .controlSize(.large)
             } else {
-                Button(role: .destructive) {
+                Button {
                     sendForgotPasswordRequest()
                 } label: {
-                    VStack {
-                        if forgotPasswordLoading {
-                            ProgressView()
-                        } else {
-                            Text("Reset Password")
+                    Text("Reset Password")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(forgotPasswordLoading ? .clear : .white)
+                        .font(.body.weight(.semibold))
+                        .background(.accent)
+                        .mask(RoundedRectangle(cornerRadius: 16))
+                        .overlay {
+                            if forgotPasswordLoading {
+                                ProgressView()
+                            }
                         }
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(email.isEmpty ? .red.opacity(0.5) : forgotPasswordLoading ? .red.opacity(0.5) : .red)
-                    .foregroundColor(.white)
-                    .font(.headline.weight(.bold))
-                    .mask(RoundedRectangle(cornerRadius: 16))
                 }
-                .disabled(email.isEmpty || forgotPasswordLoading)
+                .buttonStyle(.plain)
+                .disabled(buttonDisabled)
             }
         }
     }
@@ -133,14 +139,14 @@ struct ForgotPasswordView: View {
         Task {
             do {
                 try await authManager.forgotPassword(email: email)
-                alertHeader = "Email sent"
-                alertMessage = "Check your inbox for the password reset link."
+                alertHeader = alert_success_title
+                alertMessage = "We've sent a password reset link to your email. If you don't see it in your inbox, be sure to check your junk or spam folder as well."
             } catch {
                 alertHeader = "Error"
                 alertMessage = "\(error.localizedDescription)"
             }
+            showingAlert = true
             forgotPasswordLoading = false
-            showingErrorAlert = true
         }
     }
 }
