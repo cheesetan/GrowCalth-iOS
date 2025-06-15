@@ -55,25 +55,37 @@ class AuthenticationManager: ObservableObject {
         email = Auth.auth().currentUser?.email
 
         if let house = try? await self.fetchUsersHouse() {
-            self.usersHouse = house
+            await MainActor.run {
+                self.usersHouse = house
+            }
         }
 
         let year = Calendar.current.component(.year, from: Date())
         if let email {
             if email == "appreview@s2021.ssts.edu.sg" || email == "admin@growcalth.com" || email == "growcalth@sst.edu.sg" {
-                self.accountType = .special
+                await MainActor.run {
+                    self.accountType = .special
+                }
             } else if GLOBAL_ADMIN_EMAILS.contains(email) {
-                self.accountType = .admin
+                await MainActor.run {
+                    self.accountType = .admin
+                }
             } else {
                 let domain = email.components(separatedBy: "@")[1]
                 if domain == "sst.edu.sg" {
-                    self.accountType = .teacher
+                    await MainActor.run {
+                        self.accountType = .teacher
+                    }
                 } else {
                     let emailYear = Int(domain.components(separatedBy: ".")[0].suffix(4)) ?? 0
                     if emailYear <= year-4 {
-                        self.accountType = .alumnus
+                        await MainActor.run {
+                            self.accountType = .alumnus
+                        }
                     } else {
-                        self.accountType = .student
+                        await MainActor.run {
+                            self.accountType = .student
+                        }
                     }
                 }
             }

@@ -22,8 +22,10 @@ class NetworkManager: ObservableObject {
             if path.status == .satisfied {
                 print("Internet connection is available.")
                 Task {
-                    withAnimation {
-                        self.isConnectionAvailable = true
+                    await MainActor.run {
+                        withAnimation {
+                            self.isConnectionAvailable = true
+                        }
                     }
                 }
             } else {

@@ -99,18 +99,20 @@ class AnnouncementManager: ObservableObject {
         do {
             let query = try await Firestore.firestore().collection("houseevents").order(by: "dateAdded", descending: true).getDocuments()
 
-            self.events = []
-            for document in query.documents {
-                self.events.append(
-                    EventItem(
-                        id: document.documentID,
-                        name: document.data()["name"] as? String,
-                        title: document.data()["header"] as! String,
-                        description: document.data()["desc"] as! String?,
-                        venue: document.data()["venue"] as! String,
-                        date: document.data()["date"] as! String
+            await MainActor.run {
+                self.events = []
+                for document in query.documents {
+                    self.events.append(
+                        EventItem(
+                            id: document.documentID,
+                            name: document.data()["name"] as? String,
+                            title: document.data()["header"] as! String,
+                            description: document.data()["desc"] as! String?,
+                            venue: document.data()["venue"] as! String,
+                            date: document.data()["date"] as! String
+                        )
                     )
-                )
+                }
             }
         } catch {
             throw error
@@ -120,17 +122,18 @@ class AnnouncementManager: ObservableObject {
     func retrieveAnnouncements() async throws {
         do {
             let query = try await Firestore.firestore().collection("Announcements").order(by: "dateAdded", descending: true).getDocuments()
-
-            self.announcements = []
-            for document in query.documents {
-                self.announcements.append(
-                    Announcement(
-                        id: document.documentID,
-                        name: document.data()["name"] as? String,
-                        title: document.data()["header"] as! String,
-                        description: document.data()["text"] as! String?
+            await MainActor.run {
+                self.announcements = []
+                for document in query.documents {
+                    self.announcements.append(
+                        Announcement(
+                            id: document.documentID,
+                            name: document.data()["name"] as? String,
+                            title: document.data()["header"] as! String,
+                            description: document.data()["text"] as! String?
+                        )
                     )
-                )
+                }
             }
         } catch {
             throw error

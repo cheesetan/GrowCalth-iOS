@@ -81,8 +81,10 @@ class QuotesManager: ObservableObject {
 
     private func setQuote(newQuote: Quote) {
         Task {
-            withAnimation(.default) {
-                self.quote = newQuote
+            await MainActor.run {
+                withAnimation(.default) {
+                    self.quote = newQuote
+                }
             }
         }
     }
