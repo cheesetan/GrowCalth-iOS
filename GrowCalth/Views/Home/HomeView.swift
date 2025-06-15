@@ -120,11 +120,13 @@ struct HomeView: View {
             quotesManager.generateNewQuote() { _ in }
         }
         .onAppear {
-            adminManager.checkIfUnderMaintenance() { }
-            adminManager.checkIfAppForcesUpdates()
-            hkManager.fetchAllDatas()
-            quotesManager.generateNewQuote() { _ in }
-            pointsManager.checkAndAddPoints()
+            Task {
+                hkManager.fetchAllDatas()
+                quotesManager.generateNewQuote() { _ in }
+                try await adminManager.checkIfUnderMaintenance()
+                try await adminManager.checkIfAppForcesUpdates()
+                try await pointsManager.checkAndAddPoints()
+            }
 
             if authManager.accountType == .alumnus {
                 self.showingAlumnusAppreciationAlert = true

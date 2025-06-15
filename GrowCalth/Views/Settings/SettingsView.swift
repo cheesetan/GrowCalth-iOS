@@ -50,8 +50,10 @@ struct SettingsView: View {
         }
         .navigationTitle("Settings")
         .onAppear {
-            adminManager.checkIfAppForcesUpdates()
-            adminManager.checkIfUnderMaintenance() { }
+            Task {
+                try await adminManager.checkIfAppForcesUpdates()
+                try await adminManager.checkIfUnderMaintenance()
+            }
         }
         .alert(alertHeader, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}

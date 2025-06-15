@@ -38,14 +38,10 @@ extension AuthenticationManager {
     }
 
     func createAccount(email: String, password: String, house: Houses) async throws {
-        do {
-            try emailProvidedIsSSTEmail(email: email)
-            try await sendCreateAccountRequest(email: email, password: password)
-            let user = try getCurrentUser()
-            try await createFirestoreAccount(email: email, house: house, uid: user.uid)
-            try await verifyEmail(user: user)
-        } catch {
-            throw error
-        }
+        try emailProvidedIsSSTEmail(email: email)
+        try await sendCreateAccountRequest(email: email, password: password)
+        let user = try getCurrentUser()
+        try await createFirestoreAccount(email: email, house: house, uid: user.uid)
+        try await verifyEmail(user: user)
     }
 }

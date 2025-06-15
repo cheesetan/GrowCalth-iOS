@@ -73,7 +73,9 @@ extension AppDelegate: MessagingDelegate {
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         let dataDict: [String: String] = ["token": fcmToken ?? ""]
         apnManager.setSelfFCMToken(fcmToken: fcmToken ?? "")
-        apnManager.updateFCMTokenInFirebase(fcmToken: fcmToken ?? "")
+        Task {
+            try await apnManager.updateFCMTokenInFirebase(fcmToken: fcmToken ?? "")
+        }
         print(dataDict)
     }
 }

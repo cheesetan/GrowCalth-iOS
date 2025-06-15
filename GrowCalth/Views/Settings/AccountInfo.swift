@@ -106,18 +106,16 @@ struct AccountInfo: View {
             SecureField("Current Password", text: $deleteAccountPassword)
             Button("Delete", role: .destructive) {
                 isDeletingAccount = true
-                authManager.deleteAccount(password: deleteAccountPassword) { result in
-                    isDeletingAccount = false
-                    switch result {
-                    case .success(_):
-                        break
-                    case .failure(let failure):
+                Task {
+                    do {
+                        try await authManager.deleteAccount(password: deleteAccountPassword)
+                    } catch {
                         alertHeader = "Error"
-                        alertMessage = failure.localizedDescription
+                        alertMessage = error.localizedDescription
                         showingAlert.toggle()
                     }
+                    deleteAccountPassword = ""
                 }
-                deleteAccountPassword = ""
             }
         } message: {
             Text("Are you sure you want to delete your account? This action cannot be undone.")
@@ -130,21 +128,19 @@ struct AccountInfo: View {
         .alert(alertHeader, isPresented: $showingAlertWithConfirmation) {
             Button("Change Password", role: .destructive) {
                 isLoading = true
-                authManager.updatePassword(from: currentPassword, to: newPassword) { result in
-                    switch result {
-                    case .success(_):
-                        isLoading = false
+                Task {
+                    do {
+                        try await authManager.updatePassword(from: currentPassword, to: newPassword)
                         currentPassword = ""
                         newPassword = ""
                         alertHeader = "Password Changed"
                         alertMessage = "Your password has been successfully changed."
-                        showingAlert = true
-                    case .failure(let failure):
-                        isLoading = false
+                    } catch {
                         alertHeader = "Error"
-                        alertMessage = "\(failure.localizedDescription)"
-                        showingAlert = true
+                        alertMessage = "\(error.localizedDescription)"
                     }
+                    isLoading = false
+                    showingAlert = true
                 }
             }
         } message: {

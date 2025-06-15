@@ -225,25 +225,23 @@ struct EventDetailView: View {
         if !editableTitle.isEmpty && !editableDescription.isEmpty && !editableVenue.isEmpty {
             if editableTitle != event.title || editableDate.formatted(date: .long, time: .omitted) != event.date || editableVenue != event.venue || editableDescription != event.description {
                 saveIsLoading = true
-                adminManager.editEvent(
-                    eventUUID: event.id,
-                    title: editableTitle,
-                    description: editableDescription,
-                    eventDate: editableDate,
-                    eventVenues: editableVenue
-                ) { result in
-                    switch result {
-                    case .success(_):
-                        saveIsLoading = false
-                        isEditing = false
-                        announcementManager.retrieveAllPosts() {}
-                    case .failure(let failure):
-                        saveIsLoading = false
-                        isEditing = false
+                Task {
+                    do {
+                        try await adminManager.editEvent(
+                            eventUUID: event.id,
+                            title: editableTitle,
+                            description: editableDescription,
+                            eventDate: editableDate,
+                            eventVenues: editableVenue
+                        )
+                        try await announcementManager.retrieveAllPosts()
+                    } catch {
                         alertHeader = "Error"
-                        alertMessage = failure.localizedDescription
+                        alertMessage = error.localizedDescription
                         showingAlert = true
                     }
+                    saveIsLoading = false
+                    isEditing = false
                 }
             } else {
                 isEditing = false
@@ -252,20 +250,16 @@ struct EventDetailView: View {
     }
     
     func confirmDelete() {
-        adminManager.deleteEvent(eventUUID: event.id) { result in
-            switch result {
-            case .success(_):
+        Task {
+            do {
+                try await adminManager.deleteEvent(eventUUID: event.id)
                 dismiss.callAsFunction()
-                announcementManager.retrieveAllPosts() {}
-            case .failure(let failure):
+                try await announcementManager.retrieveAllPosts()
+            } catch {
                 alertHeader = "Error"
-                alertMessage = failure.localizedDescription
+                alertMessage = error.localizedDescription
                 showingAlert = true
             }
         }
     }
 }
-//
-//#Preview {
-//    EventDetailView()
-//}

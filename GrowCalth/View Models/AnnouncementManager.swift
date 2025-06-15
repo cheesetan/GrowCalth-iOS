@@ -23,9 +23,11 @@ class AnnouncementManager: ObservableObject {
     }
     
     init() {
-        loadEvents()
-        loadAnnouncements()
-        retrieveAllPosts() {}
+        Task {
+            loadEvents()
+            loadAnnouncements()
+            try await retrieveAllPosts()
+        }
     }
 
     private func getAnnouncementArchiveURL() -> URL {
@@ -84,52 +86,54 @@ class AnnouncementManager: ObservableObject {
         }
     }
     
-    func retrieveAllPosts(_ completion: @escaping (() -> Void)) {
-        self.retrieveEvents() { _ in }
-        self.retrieveAnnouncements() { _ in }
+    func retrieveAllPosts() async throws {
+        do {
+            try await retrieveEvents()
+            try await retrieveAnnouncements()
+        } catch {
+            throw error
+        }
     }
 
-    func retrieveEvents(_ completion: @escaping ((Result<Bool, Error>) -> Void)) {
-        Firestore.firestore().collection("houseevents").order(by: "dateAdded", descending: true).getDocuments { (query: QuerySnapshot?, err) in
-            if let err {
-                completion(.failure(err))
-            } else {
-                self.events = []
-                for document in query!.documents {
-                    self.events.append(
-                        EventItem(
-                            id: document.documentID,
-                            name: document.data()["name"] as? String,
-                            title: document.data()["header"] as! String,
-                            description: document.data()["desc"] as! String?,
-                            venue: document.data()["venue"] as! String,
-                            date: document.data()["date"] as! String
-                        )
+    func retrieveEvents() async throws {
+        do {
+            let query = try await Firestore.firestore().collection("houseevents").order(by: "dateAdded", descending: true).getDocuments()
+
+            self.events = []
+            for document in query.documents {
+                self.events.append(
+                    EventItem(
+                        id: document.documentID,
+                        name: document.data()["name"] as? String,
+                        title: document.data()["header"] as! String,
+                        description: document.data()["desc"] as! String?,
+                        venue: document.data()["venue"] as! String,
+                        date: document.data()["date"] as! String
                     )
-                }
-                completion(.success(true))
+                )
             }
+        } catch {
+            throw error
         }
     }
     
-    func retrieveAnnouncements(_ completion: @escaping ((Result<Bool, Error>) -> Void)) {
-        Firestore.firestore().collection("Announcements").order(by: "dateAdded", descending: true).getDocuments { (query: QuerySnapshot?, err) in
-            if let err {
-                completion(.failure(err))
-            } else {
-                self.announcements = []
-                for document in query!.documents {
-                    self.announcements.append(
-                        Announcement(
-                            id: document.documentID,
-                            name: document.data()["name"] as? String,
-                            title: document.data()["header"] as! String,
-                            description: document.data()["text"] as! String?
-                        )
+    func retrieveAnnouncements() async throws {
+        do {
+            let query = try await Firestore.firestore().collection("Announcements").order(by: "dateAdded", descending: true).getDocuments()
+
+            self.announcements = []
+            for document in query.documents {
+                self.announcements.append(
+                    Announcement(
+                        id: document.documentID,
+                        name: document.data()["name"] as? String,
+                        title: document.data()["header"] as! String,
+                        description: document.data()["text"] as! String?
                     )
-                }
-                completion(.success(true))
+                )
             }
+        } catch {
+            throw error
         }
     }
 }

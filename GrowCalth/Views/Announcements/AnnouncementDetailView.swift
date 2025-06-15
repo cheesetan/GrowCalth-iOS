@@ -92,7 +92,9 @@ struct AnnouncementDetailView: View {
         }
         .alert(alertHeader, isPresented: $showingDeleteAlert) {
             Button("Delete", role: .destructive) {
-                confirmDelete()
+                Task {
+                    try await confirmDelete()
+                }
             }
         } message: {
             Text(alertMessage)
@@ -179,19 +181,17 @@ struct AnnouncementDetailView: View {
         if !editableTitle.isEmpty && !editableDescription.isEmpty {
             if editableTitle != announcement.title || editableDescription != announcement.description {
                 saveIsLoading = true
-                adminManager.editAnnouncement(announcementUUID: announcement.id, title: editableTitle, description: editableDescription) { result in
-                    switch result {
-                    case .success(_):
-                        saveIsLoading = false
-                        isEditing = false
-                    case .failure(let failure):
-                        saveIsLoading = false
-                        isEditing = false
+                Task {
+                    do {
+                        try await adminManager.editAnnouncement(announcementUUID: announcement.id, title: editableTitle, description: editableDescription)
+                        try await announcementManager.retrieveAllPosts()
+                    } catch {
                         alertHeader = "Error"
-                        alertMessage = failure.localizedDescription
+                        alertMessage = error.localizedDescription
                         showingAlert = true
                     }
-                    announcementManager.retrieveAllPosts() {}
+                    saveIsLoading = false
+                    isEditing = false
                 }
             } else {
                 isEditing = false
@@ -200,14 +200,14 @@ struct AnnouncementDetailView: View {
     }
     
     func confirmDelete() {
-        adminManager.deleteAnnouncement(announcementUUID: announcement.id) { result in
-            switch result {
-            case .success(_):
+        Task {
+            do {
+                try await adminManager.deleteAnnouncement(announcementUUID: announcement.id)
                 dismiss.callAsFunction()
-                announcementManager.retrieveAllPosts() {}
-            case .failure(let failure):
+                try await announcementManager.retrieveAllPosts()
+            } catch {
                 alertHeader = "Error"
-                alertMessage = failure.localizedDescription
+                alertMessage = error.localizedDescription
                 showingAlert = true
             }
         }

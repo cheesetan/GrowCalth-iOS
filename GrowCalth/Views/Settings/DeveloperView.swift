@@ -54,7 +54,8 @@ struct DeveloperView: View {
                     Text("Blocked Versions (iOS)")
                     Button {
                         isLoading = true
-                        developerManager.updateValues() {
+                        Task {
+                            try await developerManager.updateValues()
                             isLoading = false
                         }
                     } label: {
@@ -95,7 +96,8 @@ struct DeveloperView: View {
                     Text("Blocked Versions (Android)")
                     Button {
                         isLoading = true
-                        developerManager.updateValues() {
+                        Task {
+                            try await developerManager.updateValues()
                             isLoading = false
                         }
                     } label: {
@@ -144,27 +146,35 @@ struct DeveloperView: View {
             }
         }
         .onChange(of: appForcesUpdates) { newValue in
-            if newValue {
-                developerManager.changeAppForcesUpdatesValue(to: true) { _ in }
-            } else {
-                developerManager.changeAppForcesUpdatesValue(to: false) { _ in }
+            Task {
+                if newValue {
+                    try await developerManager.changeAppForcesUpdatesValue(to: true)
+                } else {
+                    try await developerManager.changeAppForcesUpdatesValue(to: false)
+                }
             }
         }
         .onChange(of: appIsUnderMaintenance) { newValue in
-            if newValue {
-                developerManager.changeAppIsUnderMaintenanceValue(to: true) { _ in }
-            } else {
-                developerManager.changeAppIsUnderMaintenanceValue(to: false) { _ in }
+            Task {
+                if newValue {
+                    try await developerManager.changeAppIsUnderMaintenanceValue(to: true)
+                } else {
+                    try await developerManager.changeAppIsUnderMaintenanceValue(to: false)
+                }
             }
         }
         .onChange(of: blockedVersions) { newValue in
-            if let newValue = newValue {
-                developerManager.changeVersionsBlockedValue(to: newValue) { _ in }
+            Task {
+                if let newValue = newValue {
+                    try await developerManager.changeVersionsBlockedValue(to: newValue)
+                }
             }
         }
         .onChange(of: blockedVersionsAndroid) { newValue in
-            if let newValue = newValue {
-                developerManager.changeVersionsBlockedValueForAndroid(to: newValue) { _ in }
+            Task {
+                if let newValue = newValue {
+                    try await developerManager.changeVersionsBlockedValueForAndroid(to: newValue)
+                }
             }
         }
     }

@@ -32,7 +32,8 @@ struct CustomContentUnavailableView: View {
                     case .maintenance:
                         Button {
                             isLoading = true
-                            adminManager.checkIfUnderMaintenance() {
+                            Task {
+                                try await adminManager.checkIfUnderMaintenance()
                                 isLoading = false
                             }
                         } label: {
@@ -47,8 +48,10 @@ struct CustomContentUnavailableView: View {
 
                         if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
                             Button {
-                                developerManager.changeAppIsUnderMaintenanceValue(to: false) { _ in }
-                                adminManager.checkIfUnderMaintenance { }
+                                Task {
+                                    try await developerManager.changeAppIsUnderMaintenanceValue(to: false)
+                                    try await adminManager.checkIfUnderMaintenance()
+                                }
                             } label: {
                                 Text("Turn Off Maintenance Mode FOR EVERYONE")
                             }
@@ -92,7 +95,8 @@ struct CustomContentUnavailableView: View {
                     case .maintenance:
                         Button {
                             isLoading = true
-                            adminManager.checkIfUnderMaintenance() {
+                            Task {
+                                try await adminManager.checkIfUnderMaintenance()
                                 isLoading = false
                             }
                         } label: {

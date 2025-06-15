@@ -58,126 +58,69 @@ class PointsManager: ObservableObject {
         }
     }
 
-    func checkAndAddPoints() {
-        if isDueForPointsAwarding() {
-            calculatePoints { result in
-                switch result {
-                case .success((let pointsToAdd, let approvedBundleIdsUsed)):
-                    print("pointsToAdd: \(pointsToAdd)")
-                    if pointsToAdd > 0 {
-                        self.addPointsToFirebase(
-                            pointsToAdd: pointsToAdd,
-                            approvedBundleIdsUsed: approvedBundleIdsUsed
-                        ) { result in
-                            switch result {
-                            case .success(_):
-                                self.updateLastPointsAwardedDate()
-                            case .failure(let failure):
-                                self.updateLastPointsAwardedDate()
-                                print(failure.localizedDescription)
-                            }
-                        }
-                    } else {
-                        self.updateLastPointsAwardedDate()
-                    }
-                case .failure(let failure):
-                    self.updateLastPointsAwardedDate()
-                    print(failure.localizedDescription)
-                }
+    func checkAndAddPoints() async throws {
+        try isDueForPointsAwarding()
+        let (pointsToAdd, approvedBundleIdsUsed) = try await calculatePoints()
+        print("pointsToAdd: \(pointsToAdd)")
+        if pointsToAdd > 0 {
+            do {
+                try await self.addPointsToFirebase(pointsToAdd: pointsToAdd, approvedBundleIdsUsed: approvedBundleIdsUsed)
+            } catch {
+                print(error.localizedDescription)
             }
-        } else {
-            print("not due for adding \(String(describing: lastPointsAwardedDate))")
-        }
-    }
-
-    private func isDueForPointsAwarding() -> Bool {
-        if authManager.accountType.canAddPoints {
-            if let lastPointsAwardedDate = lastPointsAwardedDate {
-                if lastPointsAwardedDate.addingTimeInterval(86400) <= Date() {
-                    return true
-                }
-            }
+            self.updateLastPointsAwardedDate()
         } else {
             self.updateLastPointsAwardedDate()
         }
-        return false
+
     }
 
-    private func calculatePoints(_ completion: @escaping ((Result<(Int, [String]), Error>) -> Void)) {
-        let cal = Calendar(identifier: Calendar.Identifier.gregorian)
-        hkManager.fetchStepsForPointsCalculation(startDate: lastPointsAwardedDate, endDate: cal.startOfDay(for: Date())) { results in
-            switch results {
-            case .success((let steps, let approvedBundleIdsUsed)):
-                print("pointsToAdd steps: \(steps)")
-                let points = Int(Double(steps) / Double(GLOBAL_STEPS_PER_POINT))
-                completion(.success((
-                    points,
-                    approvedBundleIdsUsed
-                )))
-            case .failure(let failure):
-                completion(.failure(failure))
+    internal enum PointsAddingError: LocalizedError {
+        case notDueForAdding
+        var errorDescription: String? {
+            switch self {
+            case .notDueForAdding: "Not due for points adding."
             }
         }
+    }
+
+    private func isDueForPointsAwarding() throws {
+        if authManager.accountType.canAddPoints {
+            if let lastPointsAwardedDate = lastPointsAwardedDate {
+                if lastPointsAwardedDate.addingTimeInterval(86400) <= Date() {
+                    return
+                }
+            }
+        }
+        throw PointsAddingError.notDueForAdding
+    }
+
+    private func calculatePoints() async throws -> (Int, [String]) {
+        let cal = Calendar(identifier: Calendar.Identifier.gregorian)
+        let (steps, approvedBundleIdsUsed) = try await hkManager.fetchStepsForPointsCalculation(startDate: lastPointsAwardedDate, endDate: cal.startOfDay(for: Date()))
+
+        let points = Int(Double(steps) / Double(GLOBAL_STEPS_PER_POINT))
+        return (points, approvedBundleIdsUsed)
     }
 
     private func addPointsToFirebase(
         pointsToAdd: Int,
-        approvedBundleIdsUsed: [String],
-        _ completion: @escaping ((Result<Bool, Error>) -> Void)
-    ) {
-        authManager.fetchUsersHouse { result in
-            switch result {
-            case .success(let house):
-                self.adminManager.fetchBlockedVersions { result in
-                    switch result {
-                    case .success(let versions):
-                        let info = Bundle.main.infoDictionary
-                        let currentVersion = info?["CFBundleShortVersionString"] as? String
+        approvedBundleIdsUsed: [String]
+    ) async throws {
+        let house = try await authManager.fetchUsersHouse()
+        let versions = try await adminManager.fetchBlockedVersions()
 
-                        if let versions = versions, let currentVersion = currentVersion {
-                            if !versions.contains(currentVersion) {
-                                Firestore.firestore().collection("HousePoints").document(house).updateData([
-                                    "points": FieldValue.increment(Double(pointsToAdd))
-                                ]) { err in
-                                    if let err = err {
-                                        completion(.failure(err))
-                                    } else {
-                                        self.logPoints(
-                                            points: pointsToAdd,
-                                            approvedBundleIdsUsed: approvedBundleIdsUsed
-                                        )
-                                        completion(.success(true))
-                                    }
-                                }
-                            }
-                        }
-                    case .failure(let failure):
-                        print(failure.localizedDescription)
-                    }
-                }
-            case .failure(let failure):
-                print(failure.localizedDescription)
-            }
-        }
-    }
+        let info = Bundle.main.infoDictionary
+        let currentVersion = info?["CFBundleShortVersionString"] as? String
 
-    private func fetchCurrentPoints(_ completion: @escaping ((Result<[String], Error>) -> Void)) {
-        authManager.fetchUsersHouse { result in
-            switch result {
-            case .success(let house):
-                Firestore.firestore().collection("HousePoints").document(house).getDocument(source: .server) { (document, error) in
-                    if let document = document, document.exists {
-                        if let documentData = document.data() {
-                            let pointsString = "\(documentData["points"] as! Int)"
-                            completion(.success([house, pointsString]))
-                        }
-                    } else {
-                        print("Document does not exist")
-                    }
-                }
-            case .failure(let failure):
-                print(failure.localizedDescription)
-            }
+        if let currentVersion = currentVersion, !versions.contains(currentVersion) {
+            try await Firestore.firestore().collection("HousePoints").document(house).updateData([
+                "points": FieldValue.increment(Double(pointsToAdd))
+            ])
+            try await self.logPoints(
+                points: pointsToAdd,
+                approvedBundleIdsUsed: approvedBundleIdsUsed
+            )
         }
     }
 
@@ -189,8 +132,8 @@ class PointsManager: ObservableObject {
     private func logPoints(
         points: Int,
         approvedBundleIdsUsed: [String]
-    ) {
-        Firestore.firestore().collection("logs").document().setData([
+    ) async throws {
+        try await Firestore.firestore().collection("logs").document().setData([
             "dateLogged": Date(),
             "lastPointsAddedDate": self.lastPointsAwardedDate ?? "LASTPOINTSAWARDEDDATE NOT FOUND (impossible)",
             "useruid": Auth.auth().currentUser?.uid ?? "UID NOT FOUND",
@@ -199,6 +142,6 @@ class PointsManager: ObservableObject {
             "pointsAdded": "\(points)",
             "appVersion": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "idk",
             "approvedBundleIdsUsed": approvedBundleIdsUsed
-        ]) { _ in }
+        ])
     }
 }

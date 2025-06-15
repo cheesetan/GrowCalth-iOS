@@ -104,9 +104,11 @@ struct LeaderboardView: View {
             lbManager.retrievePoints()
         }
         .onAppear {
-            adminManager.checkIfUnderMaintenance() { }
-            adminManager.checkIfAppForcesUpdates()
-            lbManager.retrievePoints()
+            Task {
+                lbManager.retrievePoints()
+                try await adminManager.checkIfUnderMaintenance()
+                try await adminManager.checkIfAppForcesUpdates()
+            }
         }
     }
 

@@ -70,22 +70,30 @@ struct AnnouncementsView: View {
         .animation(.default, value: announcementManager.events)
         .navigationTitle(selection == .announcements ? "Announcements" : "Events")
         .refreshable {
-            adminManager.checkIfAppForcesUpdates()
-            adminManager.checkIfUnderMaintenance() { }
-            announcementManager.retrieveAllPosts() {}
+            Task {
+                try await adminManager.checkIfAppForcesUpdates()
+                try await adminManager.checkIfUnderMaintenance()
+                try await announcementManager.retrieveAllPosts()
+            }
         }
         .onAppear {
-            adminManager.checkIfAppForcesUpdates()
-            adminManager.checkIfUnderMaintenance() { }
-            announcementManager.retrieveAllPosts() {}
+            Task {
+                try await adminManager.checkIfAppForcesUpdates()
+                try await adminManager.checkIfUnderMaintenance()
+                try await announcementManager.retrieveAllPosts()
+            }
         }
         .onChange(of: announcementManager.announcements) { _ in
-            adminManager.checkIfAppForcesUpdates()
-            adminManager.checkIfUnderMaintenance() { }
+            Task {
+                try await adminManager.checkIfAppForcesUpdates()
+                try await adminManager.checkIfUnderMaintenance()
+            }
         }
         .onChange(of: announcementManager.events) { _ in
-            adminManager.checkIfAppForcesUpdates()
-            adminManager.checkIfUnderMaintenance() { }
+            Task {
+                try await adminManager.checkIfAppForcesUpdates()
+                try await adminManager.checkIfUnderMaintenance()
+            }
         }
         .toolbar {
             if #available(iOS 26.0, *) {
@@ -205,7 +213,8 @@ struct AnnouncementsView: View {
                 } actions: {
                     Button {
                         isLoading = true
-                        announcementManager.retrieveAllPosts() {
+                        Task {
+                            try await announcementManager.retrieveAllPosts()
                             isLoading = false
                         }
                     } label: {
@@ -227,7 +236,8 @@ struct AnnouncementsView: View {
                         .multilineTextAlignment(.center)
                     Button {
                         isLoading = true
-                        announcementManager.retrieveAllPosts() {
+                        Task {
+                            try await announcementManager.retrieveAllPosts()
                             isLoading = false
                         }
                     } label: {
@@ -304,24 +314,24 @@ struct AnnouncementsView: View {
     func confirmDelete(uuid: String) {
         switch selection {
         case .announcements:
-            adminManager.deleteAnnouncement(announcementUUID: uuid) { result in
-                switch result {
-                case .success(_):
-                    announcementManager.retrieveAllPosts() {}
-                case .failure(let failure):
+            Task {
+                do {
+                    try await adminManager.deleteAnnouncement(announcementUUID: uuid)
+                    try await announcementManager.retrieveAllPosts()
+                } catch {
                     alertHeader = "Error"
-                    alertMessage = failure.localizedDescription
+                    alertMessage = error.localizedDescription
                     showingAlert = true
                 }
             }
         case .events:
-            adminManager.deleteEvent(eventUUID: uuid) { result in
-                switch result {
-                case .success(_):
-                    announcementManager.retrieveAllPosts() {}
-                case .failure(let failure):
+            Task {
+                do {
+                    try await adminManager.deleteEvent(eventUUID: uuid)
+                    try await announcementManager.retrieveAllPosts()
+                } catch {
                     alertHeader = "Error"
-                    alertMessage = failure.localizedDescription
+                    alertMessage = error.localizedDescription
                     showingAlert = true
                 }
             }

@@ -42,21 +42,17 @@ extension AuthenticationManager {
             throw AuthenticationError.failedToGetUserUid
         }
 
-        do {
-            let document = try await Firestore.firestore().collection("users").document(uid).getDocument()
-            guard document.exists else {
-                throw FirestoreError.documentDoesNotExist
-            }
-            guard let documentData = document.data() else {
-                throw FirestoreError.documentHasNoData
-            }
-            guard let house = documentData["house"] as? String else {
-                throw FirestoreError.failedToGetSpecifiedField
-            }
-            return house
-        } catch {
-            throw error
+        let document = try await Firestore.firestore().collection("users").document(uid).getDocument()
+        guard document.exists else {
+            throw FirestoreError.documentDoesNotExist
         }
+        guard let documentData = document.data() else {
+            throw FirestoreError.documentHasNoData
+        }
+        guard let house = documentData["house"] as? String else {
+            throw FirestoreError.failedToGetSpecifiedField
+        }
+        return house
     }
 
     internal func reauthenticate(user: User, credential: AuthCredential) async throws {

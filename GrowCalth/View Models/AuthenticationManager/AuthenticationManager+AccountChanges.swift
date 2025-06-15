@@ -19,12 +19,8 @@ extension AuthenticationManager {
     }
 
     func forgotPassword(email: String) async throws {
-        do {
-            try emailProvidedIsSSTEmail(email: email)
-            try await sendForgotPasswordRequest(email: email)
-        } catch {
-            throw error
-        }
+        try emailProvidedIsSSTEmail(email: email)
+        try await sendForgotPasswordRequest(email: email)
     }
 }
 
@@ -38,17 +34,13 @@ extension AuthenticationManager {
     }
 
     func updatePassword(from oldPassword: String, to newPassword: String) async throws {
-        do {
-            let user = try getCurrentUser()
-            let credential = EmailAuthProvider.credential(
-                withEmail: user.email ?? "",
-                password: oldPassword
-            )
-            try await reauthenticate(user: user, credential: credential)
-            try await sendUpdatePasswordRequest(user: user, to: newPassword)
-        } catch {
-            throw error
-        }
+        let user = try getCurrentUser()
+        let credential = EmailAuthProvider.credential(
+            withEmail: user.email ?? "",
+            password: oldPassword
+        )
+        try await reauthenticate(user: user, credential: credential)
+        try await sendUpdatePasswordRequest(user: user, to: newPassword)
     }
 }
 
@@ -68,20 +60,16 @@ extension AuthenticationManager {
             throw DeleteAccountError.failedToDeleteAccount
         }
     }
-
+    
     func deleteAccount(password: String) async throws {
-        do {
-            let user = try getCurrentUser()
-            let credential = EmailAuthProvider.credential(
-                withEmail: user.email ?? "",
-                password: password
-            )
-            try await reauthenticate(user: user, credential: credential)
-            try await deleteAccountFromFirestore(uid: user.uid)
-            try await sendDeleteAccountRequest(user: user)
-            try await signOut()
-        } catch {
-            throw error
-        }
+        let user = try getCurrentUser()
+        let credential = EmailAuthProvider.credential(
+            withEmail: user.email ?? "",
+            password: password
+        )
+        try await reauthenticate(user: user, credential: credential)
+        try await deleteAccountFromFirestore(uid: user.uid)
+        try await sendDeleteAccountRequest(user: user)
+        try await signOut()
     }
 }

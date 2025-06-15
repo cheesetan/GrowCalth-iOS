@@ -10,6 +10,35 @@ import SwiftJWT
 import FirebaseFirestore
 import FirebaseMessaging
 
+internal enum APNSError: LocalizedError {
+    case failedToFetchPrivateKeyFromFirestore
+    case failedToDecodePrivateKey
+    case jwtSigningError
+    case httpError
+    case failedToParseTokenResponse
+
+    case failedToFetchFCMTokensFromFirestore
+
+    case errorFindingSpecifiedFCMToken
+    case errorDeletingSpecifiedFCMToken
+
+    case errorUpdatingFCMToken
+
+    var errorDescription: String? {
+        switch self {
+        case .failedToFetchPrivateKeyFromFirestore: "Failed to fetch private key from Firestore. Please try again later."
+        case .failedToDecodePrivateKey: "Failed to decode private key. Please try again later."
+        case .httpError: "A HTTP Error occured. Please try again later."
+        case .jwtSigningError: "Failed to sign JWT. Please try again later."
+        case .failedToParseTokenResponse: "Failed to parse token response. Please try again later."
+        case .failedToFetchFCMTokensFromFirestore: "Failed to fetch FCM Tokens from Firestore. Please try again later."
+        case .errorFindingSpecifiedFCMToken: "Failed to fetch specified FCM Token. Please try again later."
+        case .errorDeletingSpecifiedFCMToken: "Failed to delete specified FCM Token. Please try again later."
+        case .errorUpdatingFCMToken: "Failed to update your FCM Token. Please try again later."
+        }
+    }
+}
+
 class ApplicationPushNotificationsManager: ObservableObject {
     static let shared: ApplicationPushNotificationsManager = .init()
     
@@ -19,29 +48,35 @@ class ApplicationPushNotificationsManager: ObservableObject {
         self.selfFCMToken = fcmToken
     }
 
-    func updateFCMTokenInFirebase(fcmToken: String) {
-        Firestore.firestore().collection("fcmTokens").document(UIDevice.current.identifierForVendor?.uuidString ?? "").setData([
-            "token": fcmToken
-        ]) { err in
-            if let err = err {
-                print(err.localizedDescription)
-            }
+    func updateFCMTokenInFirebase(fcmToken: String) async throws {
+        do {
+            try await Firestore.firestore().collection("fcmTokens").document(UIDevice.current.identifierForVendor?.uuidString ?? "").setData([
+                "token": fcmToken
+            ])
+        } catch {
+            throw APNSError.errorUpdatingFCMToken
         }
     }
 
-    func sendPushNotificationsToEveryone(title: String, subtitle: String, body: String) {
-        self.getOAuthToken { token in
-            if let token {
-                self.fetchFCMTokensFromFirebase { fcmTokens in
-                    fcmTokens.forEach { fcmToken in
-                        if token != self.selfFCMToken {
-                            self.sendPushNotification(
+    func sendPushNotificationsToEveryone(title: String, subtitle: String, body: String) async throws {
+        let token = try await getOAuthToken()
+        let fcmTokens = try await fetchFCMTokensFromFirebase()
+
+        // Use TaskGroup for concurrent execution with proper async handling
+        await withTaskGroup(of: Void.self) { group in
+            for fcmToken in fcmTokens {
+                if fcmToken != self.selfFCMToken {
+                    group.addTask {
+                        do {
+                            try await self.sendPushNotification(
                                 accessToken: token,
                                 fcmToken: fcmToken,
                                 title: title,
                                 subtitle: subtitle,
                                 body: body
                             )
+                        } catch {
+                            print("Failed to send notification to token \(fcmToken): \(error)")
                         }
                     }
                 }
@@ -49,20 +84,23 @@ class ApplicationPushNotificationsManager: ObservableObject {
         }
     }
 
-    private func fetchFCMTokensFromFirebase(_ completion: @escaping (([String]) -> Void)) {
-        Firestore.firestore().collection("fcmTokens").getDocuments { (query: QuerySnapshot?, err) in
-            if let err {
-                print("Error getting documents: \(err)")
-            } else {
-                let tokenArray = query!.documents.map { $0.data()["token"] as! String }
-                print("tokenArray = \(tokenArray)")
-                completion(tokenArray)
-            }
+    internal func sendFCMTokenFetchRequest() async throws -> QuerySnapshot {
+        do {
+            return try await Firestore.firestore().collection("fcmTokens").getDocuments()
+        } catch {
+            throw APNSError.failedToFetchFCMTokensFromFirestore
         }
     }
+
+    private func fetchFCMTokensFromFirebase() async throws -> [String] {
+        let query = try await Firestore.firestore().collection("fcmTokens").getDocuments()
+        let tokenArray = query.documents.map { document in
+            document.data()["token"] as? String
+        }
+        return tokenArray.compactMap({$0})
+    }
     
-    func sendPushNotification(accessToken: String, fcmToken: String, title: String, subtitle: String, body: String) {
-        // Replace "YOUR_SERVER_KEY" with your actual FCM server key
+    func sendPushNotification(accessToken: String, fcmToken: String, title: String, subtitle: String, body: String) async throws {
         let url = URL(string: "https://fcm.googleapis.com/v1/projects/new-growcalth/messages:send")!
 
         var request = URLRequest(url: url)
@@ -70,64 +108,95 @@ class ApplicationPushNotificationsManager: ObservableObject {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
 
-        // Build the message payload
         let notificationData: [String: Any] = [
             "message": [
                 "token": fcmToken,
                 "notification": [
                     "title": subtitle,
-//                    "subtitle": subtitle,
                     "body": body
-                ],
+                ]
             ]
         ]
 
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: notificationData, options: [])
             request.httpBody = jsonData
-            
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                if let error = error {
-                    print("Error: \(error)")
-                } else if let data = data {
-                    let responseString = String(data: data, encoding: .utf8)
-                    print("Response: \(responseString ?? "")")
-                    do {
-                        let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String : Any]
-                        if let json = json, let failureCount = json["failure"] as? Int {
-                            if failureCount > 0 {
-                                self.removeFailedFCMToken(fcmToken: fcmToken)
-                            }
-                        }
-                    } catch {
-                        print("errorMsg")
-                    }
-                }
+
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NSError(domain: "InvalidResponse", code: 0, userInfo: nil)
             }
-            
-            task.resume()
+
+            let responseString = String(data: data, encoding: .utf8)
+            print("Response: \(responseString ?? "")")
+
+            // Check for failures - Fixed error handling for FCM v1 API
+            if httpResponse.statusCode >= 400 {
+                do {
+                    let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                    if let json = json, let error = json["error"] as? [String: Any] {
+                        let errorCode = error["code"] as? String ?? "unknown"
+                        let errorMessage = error["message"] as? String ?? "Unknown error"
+
+                        // Remove token for specific error codes that indicate invalid tokens
+                        if errorCode == "INVALID_ARGUMENT" ||
+                            errorCode == "NOT_FOUND" ||
+                            errorCode == "UNREGISTERED" {
+                            try await self.removeFailedFCMToken(fcmToken: fcmToken)
+                        }
+
+                        throw NSError(domain: "FCMError", code: httpResponse.statusCode,
+                                      userInfo: ["message": errorMessage, "code": errorCode])
+                    }
+                } catch let parseError as NSError where parseError.domain != "FCMError" {
+                    print("Error parsing error response JSON: \(parseError)")
+                }
+
+                // If we can't parse the error, still throw based on status code
+                throw NSError(domain: "HTTPError", code: httpResponse.statusCode, userInfo: nil)
+            }
+
         } catch {
-            print("Error serializing JSON: \(error)")
-        }
-    }
-    
-    private func removeFailedFCMToken(fcmToken: String) {
-        Firestore.firestore().collection("fcmTokens").whereField("token", isEqualTo: fcmToken).getDocuments { querySnapshot, error in
-            if let error {
-                print("Error finding FCM Token's document: \(error)")
-            } else {
-                for document in querySnapshot!.documents {
-                    Firestore.firestore().collection("fcmTokens").document(document.documentID).delete() { err in
-                        if let error {
-                            print("Error while deleting FCM Token's document: \(error)")
-                        }
-                    }
-                }
-            }
+            print("Error sending push notification: \(error)")
+            throw error
         }
     }
 
-    func getOAuthToken(completion: @escaping (String?) -> Void) {
+    internal func fetchSpecifiedFCMTokenRequest(fcmToken: String) async throws -> QuerySnapshot {
+        do {
+            return try await Firestore.firestore().collection("fcmTokens").whereField("token", isEqualTo: fcmToken).getDocuments()
+        } catch {
+            throw APNSError.errorFindingSpecifiedFCMToken
+        }
+    }
+
+    internal func removeSpecifiedFCMTokenRequest(documentID: String) async throws {
+        do {
+            try await Firestore.firestore().collection("fcmTokens").document(documentID).delete()
+        } catch {
+            throw APNSError.errorFindingSpecifiedFCMToken
+        }
+    }
+
+    private func removeFailedFCMToken(fcmToken: String) async throws {
+        let query = try await fetchSpecifiedFCMTokenRequest(fcmToken: fcmToken)
+        for document in query.documents {
+            try await removeSpecifiedFCMTokenRequest(documentID: document.documentID)
+        }
+    }
+
+    internal func signJWT(jwt: JWT<GoogleClaims>, using signer: JWTSigner) throws -> String {
+        do {
+            var jwt = jwt
+            return try jwt.sign(using: signer)
+        } catch {
+            print("❌ JWT signing error:", error)
+            throw APNSError.jwtSigningError
+        }
+    }
+
+    func getOAuthToken() async throws -> String {
         let iat = Int(Date().timeIntervalSince1970)
         let exp = iat + 3600
 
@@ -142,76 +211,66 @@ class ApplicationPushNotificationsManager: ObservableObject {
         var jwt = JWT(claims: claims)
 
         // Clean up PEM format to raw base64 key
-        fetchPrivateKeyForOAuth { result in
-            switch result {
-            case .success(let privateKey):
-                let base64Key = privateKey
-                    .replacingOccurrences(of: "-----BEGIN PRIVATE KEY-----", with: "")
-                    .replacingOccurrences(of: "-----END PRIVATE KEY-----", with: "")
-                    .replacingOccurrences(of: "\n", with: "")
-                    .replacingOccurrences(of: "\\n", with: "")
+        let privateKey = try await fetchPrivateKeyForOAuth()
+        let base64Key = privateKey
+            .replacingOccurrences(of: "-----BEGIN PRIVATE KEY-----", with: "")
+            .replacingOccurrences(of: "-----END PRIVATE KEY-----", with: "")
+            .replacingOccurrences(of: "\n", with: "")
+            .replacingOccurrences(of: "\\n", with: "")
 
+        guard let privateKeyData = Data(base64Encoded: base64Key) else {
+            print("❌ Failed to decode private key")
+            throw APNSError.failedToDecodePrivateKey
+        }
 
-                guard let privateKeyData = Data(base64Encoded: base64Key) else {
-                    print("❌ Failed to decode private key")
-                    completion(nil)
-                    return
-                }
+        let signer = JWTSigner.rs256(privateKey: privateKeyData)
+        let signedJWT = try signJWT(jwt: jwt, using: signer)
 
-                let signer = JWTSigner.rs256(privateKey: privateKeyData)
+        var request = URLRequest(url: URL(string: "https://oauth2.googleapis.com/token")!)
+        request.httpMethod = "POST"
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
 
-                do {
-                    let signedJWT = try jwt.sign(using: signer)
+        let body = "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=\(signedJWT)"
+        request.httpBody = body.data(using: .utf8)
 
-                    var request = URLRequest(url: URL(string: "https://oauth2.googleapis.com/token")!)
-                    request.httpMethod = "POST"
-                    request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
 
-                    let body = "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=\(signedJWT)"
-                    request.httpBody = body.data(using: .utf8)
-
-                    let task = URLSession.shared.dataTask(with: request) { data, _, error in
-                        if let error = error {
-                            print("❌ HTTP error:", error)
-                            completion(nil)
-                            return
-                        }
-
-                        guard let data = data,
-                              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                              let accessToken = json["access_token"] as? String else {
-                            print("❌ Failed to parse token response")
-                            completion(nil)
-                            return
-                        }
-
-                        print("✅ Access token:", accessToken)
-                        completion(accessToken)
-                    }
-
-                    task.resume()
-
-                } catch {
-                    print("❌ JWT signing error:", error)
-                    completion(nil)
-                }
-            case .failure(let failure):
-                print(failure)
+            guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let accessToken = json["access_token"] as? String else {
+                print("❌ Failed to parse token response")
+                throw APNSError.failedToParseTokenResponse
             }
+
+            print("✅ Access token:", accessToken)
+            return accessToken
+
+        } catch {
+            print("❌ HTTP error:", error)
+            throw APNSError.httpError
         }
     }
 
-    private func fetchPrivateKeyForOAuth(_ completion: @escaping (Result<String, Error>) -> ()) {
-        Firestore.firestore().collection("settings").document("private-key-for-oauth").getDocument(source: .server) { (document, error) in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                if let document = document, document.exists {
-                    if let documentData = document.data() {
-                        completion(.success(documentData["key"] as! String))
-                    }
-                }
-            }
+    internal func sendRequestToFirestoreForToken() async throws -> DocumentSnapshot {
+        do {
+            let document = try await Firestore.firestore().collection("settings").document("private-key-for-oauth").getDocument(source: .server)
+            return document
+        } catch {
+            throw APNSError.failedToFetchPrivateKeyFromFirestore
         }
+    }
+
+    private func fetchPrivateKeyForOAuth() async throws -> String {
+        let document = try await sendRequestToFirestoreForToken()
+        guard document.exists else {
+            throw FirestoreError.documentDoesNotExist
+        }
+        guard let data = document.data() else {
+            throw FirestoreError.documentHasNoData
+        }
+        guard let key = data["key"] as? String else {
+            throw FirestoreError.failedToGetSpecifiedField
+        }
+        return key
     }
 }

@@ -21,79 +21,43 @@ class DeveloperManager: ObservableObject {
         self.blockedVersions = blockedVersions
         self.blockedVersionsAndroid = blockedVersionsAndroid
         self.adminManager = adminManager
-        
-        updateValues() {}
-    }
-    
-    func updateValues(_ completion: @escaping (() -> Void)) {
-        adminManager.fetchBlockedVersions { result in
-            switch result {
-            case .success(let versions):
-                self.blockedVersions = versions?.sorted()
-                completion()
-            case .failure(_):
-                completion()
-            }
-        }
-        
-        adminManager.fetchBlockedVersionsAndroid { result in
-            switch result {
-            case .success(let versions):
-                self.blockedVersionsAndroid = versions?.sorted()
-                completion()
-            case .failure(_):
-                completion()
-            }
+
+        Task {
+            try await updateValues()
         }
     }
     
-    func changeAppIsUnderMaintenanceValue(to newValue: Bool, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
-        Firestore.firestore().collection("settings").document("maintenance").updateData([
+    func updateValues() async throws {
+        let versions = try await adminManager.fetchBlockedVersions()
+        self.blockedVersions = versions.sorted()
+
+        let versionsAndroid = try await adminManager.fetchBlockedVersionsAndroid()
+        self.blockedVersionsAndroid = versionsAndroid.sorted()
+    }
+    
+    func changeAppIsUnderMaintenanceValue(to newValue: Bool) async throws {
+        try await Firestore.firestore().collection("settings").document("maintenance").updateData([
             "status": newValue
-        ]) { err in
-            if let err = err {
-                completion(.failure(err))
-            } else {
-                completion(.success(true))
-            }
-        }
+        ])
     }
     
-    func changeAppForcesUpdatesValue(to newValue: Bool, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
-        Firestore.firestore().collection("settings").document("force-updates").updateData([
+    func changeAppForcesUpdatesValue(to newValue: Bool) async throws {
+        try await Firestore.firestore().collection("settings").document("force-updates").updateData([
             "status": newValue
-        ]) { err in
-            if let err = err {
-                completion(.failure(err))
-            } else {
-                completion(.success(true))
-            }
-        }
+        ])
     }
     
-    func changeVersionsBlockedValue(to newValue: [String], _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
-        Firestore.firestore().collection("settings").document("versions-blocked").updateData([
+    func changeVersionsBlockedValue(to newValue: [String]) async throws {
+        try await Firestore.firestore().collection("settings").document("versions-blocked").updateData([
             "versions": newValue
-        ]) { err in
-            if let err = err {
-                completion(.failure(err))
-            } else {
-                self.updateValues() {}
-                completion(.success(true))
-            }
-        }
+        ])
+        try await self.updateValues()
     }
     
-    func changeVersionsBlockedValueForAndroid(to newValue: [String], _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
-        Firestore.firestore().collection("settings").document("versions-blocked-android").updateData([
+    func changeVersionsBlockedValueForAndroid(to newValue: [String]) async throws {
+        try await Firestore.firestore().collection("settings").document("versions-blocked-android").updateData([
             "versions": newValue
-        ]) { err in
-            if let err = err {
-                completion(.failure(err))
-            } else {
-                self.updateValues() {}
-                completion(.success(true))
-            }
-        }
+        ])
+        try await self.updateValues()
     }
 }

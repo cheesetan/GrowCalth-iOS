@@ -168,42 +168,38 @@ struct NewAnnouncementView: View {
     }
     
     func createAnnouncement() {
-        adminManager.postAnnouncement(title: title, description: description) { result in
-            switch result {
-            case .success(_):
-                successfullyCreatedPost()
-            case .failure(let failure):
+        Task {
+            do {
+                try await adminManager.postAnnouncement(title: title, description: description)
+                try await successfullyCreatedPost()
+            } catch {
                 alertTitle = "Error"
-                alertDescription = failure.localizedDescription
+                alertDescription = error.localizedDescription
                 showingAlert = true
             }
         }
     }
     
     func createEvent() {
-        adminManager.postEvent(title: title, description: description, eventDate: eventDate, eventVenues: eventVenue) { result in
-            switch result {
-            case .success(_):
-                successfullyCreatedPost()
-            case .failure(let failure):
+        Task {
+            do {
+                try await adminManager.postEvent(title: title, description: description, eventDate: eventDate, eventVenues: eventVenue)
+                try await successfullyCreatedPost()
+            } catch {
                 alertTitle = "Error"
-                alertDescription = failure.localizedDescription
+                alertDescription = error.localizedDescription
                 showingAlert = true
             }
         }
     }
     
-    func successfullyCreatedPost() {
-        apnManager.sendPushNotificationsToEveryone(title: "New \(postType == .announcements ? "Announcement" : "Event")", subtitle: title, body: description)
+    func successfullyCreatedPost() async throws {
+        try await apnManager.sendPushNotificationsToEveryone(title: "New \(postType == .announcements ? "Announcement" : "Event")", subtitle: title, body: description)
         title = ""
         description = ""
         eventDate = Date()
         eventVenue = ""
         dismiss.callAsFunction()
-        announcementManager.retrieveAllPosts() {}
+        try await announcementManager.retrieveAllPosts()
     }
 }
-
-//#Preview {
-//    NewAnnouncementView()
-//}

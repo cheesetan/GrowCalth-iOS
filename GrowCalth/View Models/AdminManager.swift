@@ -8,6 +8,28 @@
 import SwiftUI
 import FirebaseFirestore
 
+enum PostError: LocalizedError {
+    case failedToGetEmail
+    case failedToPostAnnouncement
+    case failedToPostEvent
+    case failedToUpdateAnnouncement
+    case failedToUpdateEvent
+    case failedToDeleteAnnouncement
+    case failedToDeleteEvent
+
+    var errorDescription: String? {
+        switch self {
+        case .failedToGetEmail: "An error has occured while attempting to fetch your account details. Please sign out and sign back in again."
+        case .failedToPostAnnouncement: "An error has occured while attempting to post your announcement. Please try again later."
+        case .failedToPostEvent: "An error has occured while attempting to post your event. Please try again later."
+        case .failedToUpdateAnnouncement: "An error has occured while attempting to update your announcement. Please try again later."
+        case .failedToUpdateEvent: "An error has occured while attempting to update your event. Please try again later."
+        case .failedToDeleteAnnouncement: "An error has occured while attempting to delete your announcement. Please try again later."
+        case .failedToDeleteEvent: "An error has occured while attempting to delete your event. Please try again later."
+        }
+    }
+}
+
 class AdminManager: ObservableObject {
 
     @Published var isUnderMaintenance: Bool?
@@ -19,28 +41,26 @@ class AdminManager: ObservableObject {
         self.isUnderMaintenance = isUnderMaintenance
         self.appForcesUpdates = appForcesUpdates
         self.authManager = authManager
-        checkIfUnderMaintenance() { }
-        checkIfAppForcesUpdates()
+        Task {
+            try await checkIfUnderMaintenance()
+            try await checkIfAppForcesUpdates()
+        }
     }
     
-    func postAnnouncement(
-        title: String,
-        description: String,
-        _ completion: @escaping ((Result<Bool, Error>) -> Void)
-    ) {
+    func postAnnouncement(title: String, description: String) async throws {
         if let email = authManager.email {
-            Firestore.firestore().collection("Announcements").document().setData([
-                "dateAdded": Date(),
-                "header": title,
-                "text": description,
-                "name": email.components(separatedBy: "@")[0].components(separatedBy: "_").joined(separator: " ").uppercased()
-            ]) { err in
-                if let err = err {
-                    completion(.failure(err))
-                } else {
-                    completion(.success(true))
-                }
+            do {
+                try await Firestore.firestore().collection("Announcements").document().setData([
+                    "dateAdded": Date(),
+                    "header": title,
+                    "text": description,
+                    "name": email.components(separatedBy: "@")[0].components(separatedBy: "_").joined(separator: " ").uppercased()
+                ])
+            } catch {
+                throw PostError.failedToPostAnnouncement
             }
+        } else {
+            throw PostError.failedToGetEmail
         }
     }
     
@@ -48,42 +68,34 @@ class AdminManager: ObservableObject {
         title: String,
         description: String,
         eventDate: Date,
-        eventVenues: String,
-        _ completion: @escaping ((Result<Bool, Error>) -> Void)
-    ) {
+        eventVenues: String
+    ) async throws {
         if let email = authManager.email {
-            Firestore.firestore().collection("houseevents").document().setData([
-                "dateAdded": Date(),
-                "header": title,
-                "desc": description,
-                "venue": eventVenues,
-                "date": eventDate.formatted(date: .long, time: .omitted),
-                "name": email.components(separatedBy: "@")[0].components(separatedBy: "_").joined(separator: " ").uppercased()
-            ]) { err in
-                if let err = err {
-                    completion(.failure(err))
-                } else {
-                    completion(.success(true))
-                }
+            do {
+                try await Firestore.firestore().collection("houseevents").document().setData([
+                    "dateAdded": Date(),
+                    "header": title,
+                    "desc": description,
+                    "venue": eventVenues,
+                    "date": eventDate.formatted(date: .long, time: .omitted),
+                    "name": email.components(separatedBy: "@")[0].components(separatedBy: "_").joined(separator: " ").uppercased()
+                ])
+            } catch {
+                throw PostError.failedToPostEvent
             }
+        } else {
+            throw PostError.failedToGetEmail
         }
     }
     
-    func editAnnouncement(
-        announcementUUID: String,
-        title: String,
-        description: String,
-        _ completion: @escaping ((Result<Bool, Error>) -> Void)
-    ) {
-        Firestore.firestore().collection("Announcements").document(announcementUUID).updateData([
-            "header": title,
-            "text": description
-        ]) { err in
-            if let err = err {
-                completion(.failure(err))
-            } else {
-                completion(.success(true))
-            }
+    func editAnnouncement(announcementUUID: String, title: String, description: String) async throws {
+        do {
+            try await Firestore.firestore().collection("Announcements").document(announcementUUID).updateData([
+                "header": title,
+                "text": description
+            ])
+        } catch {
+            throw PostError.failedToUpdateAnnouncement
         }
     }
     
@@ -92,108 +104,93 @@ class AdminManager: ObservableObject {
         title: String,
         description: String,
         eventDate: Date,
-        eventVenues: String,
-        _ completion: @escaping ((Result<Bool, Error>) -> Void)
-    ) {
-        Firestore.firestore().collection("houseevents").document(eventUUID).updateData([
-            "header": title,
-            "desc": description,
-            "venue": eventVenues,
-            "date": eventDate.formatted(date: .long, time: .omitted)
-        ]) { err in
-            if let err = err {
-                completion(.failure(err))
-            } else {
-                completion(.success(true))
-            }
+        eventVenues: String
+    ) async throws {
+        do {
+            try await Firestore.firestore().collection("houseevents").document(eventUUID).updateData([
+                "header": title,
+                "desc": description,
+                "venue": eventVenues,
+                "date": eventDate.formatted(date: .long, time: .omitted)
+            ])
+        } catch {
+            throw PostError.failedToUpdateEvent
         }
     }
     
-    func deleteAnnouncement(
-        announcementUUID: String,
-        _ completion: @escaping ((Result<Bool, Error>) -> Void)
-    ) {
-        Firestore.firestore().collection("Announcements").document(announcementUUID).delete() { err in
-            if let err = err {
-                completion(.failure(err))
-            } else {
-                completion(.success(true))
-            }
+    func deleteAnnouncement(announcementUUID: String) async throws {
+        do {
+            try await Firestore.firestore().collection("Announcements").document(announcementUUID).delete()
+        } catch {
+            throw PostError.failedToDeleteAnnouncement
         }
     }
     
-    func deleteEvent(
-        eventUUID: String,
-        _ completion: @escaping ((Result<Bool, Error>) -> Void)
-    ) {
-        Firestore.firestore().collection("houseevents").document(eventUUID).delete() { err in
-            if let err = err {
-                completion(.failure(err))
-            } else {
-                completion(.success(true))
-            }
+    func deleteEvent(eventUUID: String) async throws {
+        do {
+            try await Firestore.firestore().collection("houseevents").document(eventUUID).delete()
+        } catch {
+            throw PostError.failedToDeleteEvent
         }
     }
     
-    func checkIfUnderMaintenance(_ completion: @escaping (() -> Void)) {
-        Firestore.firestore().collection("settings").document("maintenance").getDocument(source: .server) { (document, error) in
-            if let document = document, document.exists {
-                if let documentData = document.data() {
-                    withAnimation {
-                        self.isUnderMaintenance = documentData["status"] as? Bool
-                        completion()
-                    }
-                }
-            } else {
-                print("Document does not exist")
-                completion()
-            }
+    func checkIfUnderMaintenance() async throws {
+        let document = try await Firestore.firestore().collection("settings").document("maintenance").getDocument(source: .server)
+        guard document.exists else {
+            throw FirestoreError.documentDoesNotExist
+        }
+        guard let data = document.data() else {
+            throw FirestoreError.documentHasNoData
+        }
+        guard let status = data["status"] as? Bool else {
+            throw FirestoreError.failedToGetSpecifiedField
+        }
+        withAnimation {
+            self.isUnderMaintenance = status
         }
     }
     
-    func checkIfAppForcesUpdates() {
-        Firestore.firestore().collection("settings").document("force-updates").getDocument(source: .server) { (document, error) in
-            if let document = document, document.exists {
-                if let documentData = document.data() {
-                    withAnimation {
-                        self.appForcesUpdates = documentData["status"] as? Bool
-                    }
-                }
-            } else {
-                print("Document does not exist")
-            }
+    func checkIfAppForcesUpdates() async throws {
+        let document = try await Firestore.firestore().collection("settings").document("force-updates").getDocument(source: .server)
+        guard document.exists else {
+            throw FirestoreError.documentDoesNotExist
+        }
+        guard let data = document.data() else {
+            throw FirestoreError.documentHasNoData
+        }
+        guard let status = data["status"] as? Bool else {
+            throw FirestoreError.failedToGetSpecifiedField
+        }
+        withAnimation {
+            self.appForcesUpdates = status
         }
     }
     
-    func fetchBlockedVersions(
-        _ completion: @escaping ((Result<[String]?, Error>) -> Void)
-    ) {
-        Firestore.firestore().collection("settings").document("versions-blocked").getDocument(source: .server) { (document, error) in
-            if let document = document, document.exists {
-                if let documentData = document.data() {
-                    withAnimation {
-                        completion(.success(documentData["versions"] as? [String]))
-                    }
-                }
-            } else {
-                print("Document does not exist")
-            }
+    func fetchBlockedVersions() async throws -> [String] {
+        let document = try await Firestore.firestore().collection("settings").document("versions-blocked").getDocument(source: .server)
+        guard document.exists else {
+            throw FirestoreError.documentDoesNotExist
         }
+        guard let data = document.data() else {
+            throw FirestoreError.documentHasNoData
+        }
+        guard let versions = data["versions"] as? [String] else {
+            throw FirestoreError.failedToGetSpecifiedField
+        }
+        return versions
     }
     
-    func fetchBlockedVersionsAndroid(
-        _ completion: @escaping ((Result<[String]?, Error>) -> Void)
-    ) {
-        Firestore.firestore().collection("settings").document("versions-blocked-android").getDocument(source: .server) { (document, error) in
-            if let document = document, document.exists {
-                if let documentData = document.data() {
-                    withAnimation {
-                        completion(.success(documentData["versions"] as? [String]))
-                    }
-                }
-            } else {
-                print("Document does not exist")
-            }
+    func fetchBlockedVersionsAndroid() async throws -> [String] {
+        let document = try await Firestore.firestore().collection("settings").document("versions-blocked-android").getDocument(source: .server)
+        guard document.exists else {
+            throw FirestoreError.documentDoesNotExist
         }
+        guard let data = document.data() else {
+            throw FirestoreError.documentHasNoData
+        }
+        guard let versions = data["versions"] as? [String] else {
+            throw FirestoreError.failedToGetSpecifiedField
+        }
+        return versions
     }
 }

@@ -88,36 +88,44 @@ struct NAPFAView: View {
             }
         }
         .onAppear {
-            adminManager.checkIfAppForcesUpdates()
-            adminManager.checkIfUnderMaintenance() { }
-            isLoading = true
-            napfaManager.fetchAllData(for: napfaManager.year) {
-                isLoading = false
-            }
-        }
-        .refreshable {
-            adminManager.checkIfAppForcesUpdates()
-            adminManager.checkIfUnderMaintenance() { }
-            if !showingNAPFAEditing {
+            Task {
+                try await adminManager.checkIfAppForcesUpdates()
+                try await adminManager.checkIfUnderMaintenance()
                 isLoading = true
                 napfaManager.fetchAllData(for: napfaManager.year) {
                     isLoading = false
                 }
             }
         }
+        .refreshable {
+            Task {
+                try await adminManager.checkIfAppForcesUpdates()
+                try await adminManager.checkIfUnderMaintenance()
+                if !showingNAPFAEditing {
+                    isLoading = true
+                    napfaManager.fetchAllData(for: napfaManager.year) {
+                        isLoading = false
+                    }
+                }
+            }
+        }
         .onChange(of: napfaManager.year) { newYear in
-            adminManager.checkIfAppForcesUpdates()
-            adminManager.checkIfUnderMaintenance() { }
-            napfaManager.fetchAllData(for: newYear) {
-                isLoading = false
+            Task {
+                try await adminManager.checkIfAppForcesUpdates()
+                try await adminManager.checkIfUnderMaintenance()
+                napfaManager.fetchAllData(for: newYear) {
+                    isLoading = false
+                }
             }
         }
         .onChange(of: napfaManager.levelSelection) { _ in
-            adminManager.checkIfAppForcesUpdates()
-            adminManager.checkIfUnderMaintenance() { }
-            isLoading = true
-            napfaManager.fetchAllData(for: napfaManager.year) {
-                isLoading = false
+            Task {
+                try await adminManager.checkIfAppForcesUpdates()
+                try await adminManager.checkIfUnderMaintenance()
+                isLoading = true
+                napfaManager.fetchAllData(for: napfaManager.year) {
+                    isLoading = false
+                }
             }
         }
         .overlay(alignment: .bottomTrailing) {
