@@ -130,19 +130,17 @@ struct ForgotPasswordView: View {
     func sendForgotPasswordRequest() {
         emailFocused = false
         forgotPasswordLoading = true
-        authManager.forgotPassword(email: email) { result in
-            switch result {
-            case .success(_):
-                forgotPasswordLoading = false
+        Task {
+            do {
+                try await authManager.forgotPassword(email: email)
                 alertHeader = "Email sent"
                 alertMessage = "Check your inbox for the password reset link."
-                showingAlert = true
-            case .failure(let failure):
-                forgotPasswordLoading = false
+            } catch {
                 alertHeader = "Error"
-                alertMessage = "\(failure.localizedDescription)"
-                showingErrorAlert = true
+                alertMessage = "\(error.localizedDescription)"
             }
+            forgotPasswordLoading = false
+            showingErrorAlert = true
         }
     }
 }

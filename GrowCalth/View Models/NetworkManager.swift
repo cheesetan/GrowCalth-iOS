@@ -21,14 +21,14 @@ class NetworkManager: ObservableObject {
         monitor.pathUpdateHandler = { path in
             if path.status == .satisfied {
                 print("Internet connection is available.")
-                DispatchQueue.main.async {
+                Task {
                     withAnimation {
                         self.isConnectionAvailable = true
                     }
                 }
             } else {
                 print("Internet connection is not available.")
-                DispatchQueue.main.async {
+                Task {
                     withAnimation {
                         self.isConnectionAvailable = false
                     }

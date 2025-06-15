@@ -283,21 +283,20 @@ struct SignInView: View {
     func signInWithPassword() {
         if !email.isEmpty && !password.isEmpty {
             isLoading = true
-            authManager.signIn(email: email, password: password) { result in
-                switch result {
-                case .success(let success):
-                    isLoading = false
-                    if success == false {
+            Task {
+                do {
+                    let isVerified = try await authManager.signIn(email: email, password: password)
+                    if !isVerified {
                         alertHeader = "Verify account"
                         alertMessage = "A verification email has been sent to your account's email address. Verify your email then try logging in again."
                         showingAlert = true
                     }
-                case .failure(let failure):
-                    isLoading = false
+                } catch {
                     alertHeader = "Error"
-                    alertMessage = "\(failure.localizedDescription)"
+                    alertMessage = "\(error.localizedDescription)"
                     showingAlert = true
                 }
+                isLoading = false
             }
         }
     }

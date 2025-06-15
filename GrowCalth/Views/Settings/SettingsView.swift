@@ -182,13 +182,12 @@ struct SettingsView: View {
             .tint(.red)
             .alert("Sign out", isPresented: $showingSignOutAlert) {
                 Button(role: .destructive) {
-                    authManager.signOut() { result in
-                        switch result {
-                        case .success(_):
-                            break
-                        case .failure(let failure):
+                    Task {
+                        do {
+                            try await authManager.signOut()
+                        } catch {
                             alertHeader = "Error"
-                            alertMessage = "\(failure.localizedDescription)"
+                            alertMessage = "\(error.localizedDescription)"
                             showingAlert = true
                         }
                     }

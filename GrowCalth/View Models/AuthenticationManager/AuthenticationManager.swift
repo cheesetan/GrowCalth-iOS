@@ -22,7 +22,9 @@ class AuthenticationManager: ObservableObject {
     init() {
         verifyAuthenticationState()
         verifyVerificationState()
-        updatePublishedVariables()
+        Task {
+            await updatePublishedVariables()
+        }
     }
     
     internal func verifyAuthenticationState() {
@@ -49,16 +51,11 @@ class AuthenticationManager: ObservableObject {
         }
     }
     
-    internal func updatePublishedVariables() {
+    internal func updatePublishedVariables() async {
         email = Auth.auth().currentUser?.email
 
-        self.fetchUsersHouse { result in
-            switch result {
-            case .success(let success):
-                self.usersHouse = success
-            case .failure(_):
-                break
-            }
+        if let house = try? await self.fetchUsersHouse() {
+            self.usersHouse = house
         }
 
         let year = Calendar.current.component(.year, from: Date())
@@ -85,44 +82,19 @@ class AuthenticationManager: ObservableObject {
         }
     }
     
-    internal func emailProvidedIsSSTEmail(email: String) -> Bool {
+    internal func emailProvidedIsSSTEmail(email: String) throws {
         var returnResult = false
         
         let regexPatternSSTudent = "(.+)@s20\\d\\d.ssts.edu.sg"
         let predicateSSTudent = NSPredicate(format: "SELF MATCHES %@", regexPatternSSTudent)
         returnResult = predicateSSTudent.evaluate(with: email)
-        
-        if returnResult {
-            return returnResult
-        }
-        
+
         let regexPatternSSTaff = "(.+)@sst.edu.sg"
         let predicateSSTaff = NSPredicate(format: "SELF MATCHES %@", regexPatternSSTaff)
         returnResult = predicateSSTaff.evaluate(with: email)
-        return returnResult
-    }
-    
-    func signOut(_ completion: @escaping ((Result<Bool, Error>) -> Void)) {
-        do {
-            try Auth.auth().signOut()
-        } catch let signOutError {
-            print("Error signing out: ", signOutError)
-            completion(.failure(signOutError))
-        }
         
-        updatePublishedVariables()
-        verifyAuthenticationState()
-        verifyVerificationState()
-    }
-    
-    func fetchUsersHouse(_ completion: @escaping ((Result<String, Error>) -> Void)) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        Firestore.firestore().collection("users").document(uid).getDocument { (document, error) in
-            if let document = document, document.exists {
-                if let documentData = document.data() {
-                    completion(.success(documentData["house"] as! String))
-                }
-            }
+        if !returnResult {
+            throw EmailError.emailIsNotSSTEmail
         }
     }
 }

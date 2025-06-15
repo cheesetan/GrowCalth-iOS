@@ -34,7 +34,7 @@ class UpdateManager: ObservableObject {
                 guard let result = (json?["results"] as? [Any])?.first as? [String: Any], let version = result["version"] as? String else {
                     throw UpdateError.invalidResponse
                 }
-                DispatchQueue.main.async {   
+                Task {   
                     let versionSeparated = version.components(separatedBy: ".")
                     let currentVersionSeparated = currentVersion.components(separatedBy: ".")
                    

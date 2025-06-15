@@ -9,40 +9,36 @@ import SwiftUI
 import FirebaseAuth
 
 extension AuthenticationManager {
-    func signIn(
-        email: String,
-        password: String,
-        _ completion: @escaping ((Result<Bool, Error>) -> Void)
-    ) {
-        Auth.auth().signIn(withEmail: email, password: password) { result, error in
-            if error != nil {
-                completion(.failure(SignInError.failedToSignIn))
-            } else {
-                if let user = Auth.auth().currentUser, user.isEmailVerified || email == "appreview@s2021.ssts.edu.sg" || email == "admin@growcalth.com" || email == "growcalth@sst.edu.sg" {
-                    withAnimation {
-                        self.isLoggedIn = true
-                        self.accountVerified = true
-                    }
-                    self.updatePublishedVariables()
-                    completion(.success(true))
-                } else {
-                    self.verifyEmail { result in
-                        switch result {
-                        case .success(_):
-                            completion(.success(false))
-                        case .failure(_):
-                            completion(.failure(VerificationError.failedToSendVerificationEmail))
-                        }
-                        self.signOut { result in
-                            switch result {
-                            case .success(_): break
-                            case .failure(_):
-                                completion(.failure(SignOutError.failedToSignOut))
-                            }
-                        }
-                    }
+    internal func sendSignInRequest(email: String, password: String) async throws -> AuthDataResult {
+        do {
+            return try await Auth.auth().signIn(withEmail: email, password: password)
+        } catch {
+            throw SignInError.failedToSignIn
+        }
+    }
+
+    func signIn(email: String, password: String) async throws -> Bool {
+        do {
+            let result = try await sendSignInRequest(email: email, password: password)
+            let user = try getCurrentUser()
+
+            if user.isEmailVerified ||
+                email == "appreview@s2021.ssts.edu.sg" ||
+                email == "admin@growcalth.com" ||
+                email == "growcalth@sst.edu.sg" {
+                withAnimation {
+                    self.isLoggedIn = true
+                    self.accountVerified = true
                 }
+                await self.updatePublishedVariables()
+                return true
+            } else {
+                try await self.verifyEmail(user: user)
+                try await self.signOut()
+                return false
             }
+        } catch {
+            throw error
         }
     }
 }

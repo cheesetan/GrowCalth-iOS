@@ -10,74 +10,78 @@ import FirebaseAuth
 import FirebaseFirestore
 
 extension AuthenticationManager {
-    func forgotPassword(
-        email: String,
-        _ completion: @escaping ((Result<Bool, Error>) -> Void)
-    ) {
-        if emailProvidedIsSSTEmail(email: email) {
-            Auth.auth().sendPasswordReset(withEmail: email) { error in
-                if error != nil {
-                    completion(.failure(PasswordChangeError.failedToSendPasswordChangeRequestLinkToEmail))
-                } else {
-                    completion(.success(true))
-                }
-            }
-        } else {
-            completion(.failure(EmailError.emailIsNotSSTEmail))
+    internal func sendForgotPasswordRequest(email: String) async throws {
+        do {
+            try await Auth.auth().sendPasswordReset(withEmail: email)
+        } catch {
+            throw PasswordChangeError.failedToSendPasswordChangeRequestLinkToEmail
         }
     }
-    
-    func updatePassword(
-        from oldPassword: String,
-        to newPassword: String,
-        _ completion: @escaping ((Result<Bool, Error>) -> Void)
-    ) {
-        let credential = EmailAuthProvider.credential(withEmail: Auth.auth().currentUser?.email ?? "", password: oldPassword)
-        Auth.auth().currentUser?.reauthenticate(with: credential) { result, error in
-            if error != nil {
-                completion(.failure(ReauthenticationError.failedToReauthenticate))
-            } else {
-                Auth.auth().currentUser?.updatePassword(to: newPassword) { error in
-                    if error != nil {
-                        completion(.failure(PasswordChangeError.failedToChangePassword))
-                    } else {
-                        completion(.success(true))
-                    }
-                }
-            }
+
+    func forgotPassword(email: String) async throws {
+        do {
+            try emailProvidedIsSSTEmail(email: email)
+            try await sendForgotPasswordRequest(email: email)
+        } catch {
+            throw error
         }
     }
-    
-    func deleteAccount(password: String, _ completion: @escaping ((Result<Bool, Error>) -> Void)) {
-        let credential = EmailAuthProvider.credential(withEmail: Auth.auth().currentUser?.email ?? "", password: password)
-        Auth.auth().currentUser?.reauthenticate(with: credential) { result, error in
-            if error != nil {
-                completion(.failure(ReauthenticationError.failedToReauthenticate))
-            } else {
-                if let uid = Auth.auth().currentUser?.uid {
-                    Firestore.firestore().collection("users").document(uid).delete() { err in
-                        if err != nil {
-                            completion(.failure(DeleteAccountError.failedToDeleteFromFirestore))
-                        } else {
-                            let user = Auth.auth().currentUser
-                            user?.delete { error in
-                                if error != nil {
-                                    completion(.failure(DeleteAccountError.failedToDeleteAccount))
-                                } else {
-                                    self.signOut { result in
-                                        switch result {
-                                        case .success(_):
-                                            break
-                                        case .failure(_):
-                                            completion(.failure(SignOutError.failedToSignOut))
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+}
+
+extension AuthenticationManager {
+    internal func sendUpdatePasswordRequest(user: User, to newPassword: String) async throws {
+        do {
+            try await user.updatePassword(to: newPassword)
+        } catch {
+            throw PasswordChangeError.failedToChangePassword
+        }
+    }
+
+    func updatePassword(from oldPassword: String, to newPassword: String) async throws {
+        do {
+            let user = try getCurrentUser()
+            let credential = EmailAuthProvider.credential(
+                withEmail: user.email ?? "",
+                password: oldPassword
+            )
+            try await reauthenticate(user: user, credential: credential)
+            try await sendUpdatePasswordRequest(user: user, to: newPassword)
+        } catch {
+            throw error
+        }
+    }
+}
+
+extension AuthenticationManager {
+    internal func deleteAccountFromFirestore(uid: String) async throws {
+        do {
+            try await Firestore.firestore().collection("users").document(uid).delete()
+        } catch {
+            throw DeleteAccountError.failedToDeleteFromFirestore
+        }
+    }
+
+    internal func sendDeleteAccountRequest(user: User) async throws {
+        do {
+            try await user.delete()
+        } catch {
+            throw DeleteAccountError.failedToDeleteAccount
+        }
+    }
+
+    func deleteAccount(password: String) async throws {
+        do {
+            let user = try getCurrentUser()
+            let credential = EmailAuthProvider.credential(
+                withEmail: user.email ?? "",
+                password: password
+            )
+            try await reauthenticate(user: user, credential: credential)
+            try await deleteAccountFromFirestore(uid: user.uid)
+            try await sendDeleteAccountRequest(user: user)
+            try await signOut()
+        } catch {
+            throw error
         }
     }
 }

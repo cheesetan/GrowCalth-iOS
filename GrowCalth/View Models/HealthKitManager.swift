@@ -100,7 +100,7 @@ class HealthKitManager: ObservableObject {
                             }
                         }
                         
-                        DispatchQueue.main.async {
+                        Task {
                             self.steps = Int(totalStepSumQuantity.doubleValue(for: HKUnit.count())) - stepsToFilterOut
                         }
                     case .failure(let failure):
@@ -153,7 +153,7 @@ class HealthKitManager: ObservableObject {
                             }
                         }
                         
-                        DispatchQueue.main.async {
+                        Task {
                             self.distance = (totalDistanceSumQuantity.doubleValue(for: HKUnit.meter()) - distanceToBeFilteredOut) / 1000
                         }
                     case .failure(let failure):

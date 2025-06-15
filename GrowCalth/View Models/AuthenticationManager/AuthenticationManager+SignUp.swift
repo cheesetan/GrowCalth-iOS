@@ -10,48 +10,42 @@ import FirebaseAuth
 import FirebaseFirestore
 
 extension AuthenticationManager {
-    func createAccount(
-        email: String,
-        password: String,
-        house: Houses,
-        _ completion: @escaping ((Result<Bool, Error>) -> Void)
-    ) {
-        if emailProvidedIsSSTEmail(email: email) {
-            Auth.auth().createUser(withEmail: email, password: password) { result, error in
-                if let error {
-                    if error.localizedDescription == "The password must be 6 characters long or more." {
-                        completion(.failure(CreateAccountError.passwordMustBe6Characters))
-                    } else if error.localizedDescription == "The email address is already in use by another account." {
-                        completion(.failure(CreateAccountError.emailAlreadyInUse))
-                    } else {
-                        completion(.failure(CreateAccountError.genericAccountCreationFailed))
-                    }
-                } else {
-                    if let currentUserUID = Auth.auth().currentUser?.uid {
-                        Firestore.firestore().collection("users").document(currentUserUID).setData([
-                            "email": email,
-                            "house": house.rawValue,
-                            "points": 0,
-                            "steps": 0
-                        ]) { err in
-                            if err != nil {
-                                completion(.failure(CreateAccountError.failedToCreateFirestoreForNewAccount))
-                            } else {
-                                self.verifyEmail { result in
-                                    switch result {
-                                    case .success(_):
-                                        completion(.success(true))
-                                    case .failure(_):
-                                        completion(.failure(VerificationError.failedToSendVerificationEmail))
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+    internal func sendCreateAccountRequest(email: String, password: String) async throws {
+        do {
+            try await Auth.auth().createUser(withEmail: email, password: password)
+        } catch {
+            if error.localizedDescription == "The password must be 6 characters long or more." {
+                throw CreateAccountError.passwordMustBe6Characters
+            } else if error.localizedDescription == "The email address is already in use by another account." {
+                throw CreateAccountError.emailAlreadyInUse
+            } else {
+                throw CreateAccountError.genericAccountCreationFailed
             }
-        } else {
-            completion(.failure(EmailError.emailIsNotSSTEmail))
+        }
+    }
+
+    internal func createFirestoreAccount(email: String, house: Houses, uid: String) async throws {
+        do {
+            try await Firestore.firestore().collection("users").document(uid).setData([
+                "email": email,
+                "house": house.rawValue,
+                "points": 0,
+                "steps": 0
+            ])
+        } catch {
+            throw CreateAccountError.failedToCreateFirestoreForNewAccount
+        }
+    }
+
+    func createAccount(email: String, password: String, house: Houses) async throws {
+        do {
+            try emailProvidedIsSSTEmail(email: email)
+            try await sendCreateAccountRequest(email: email, password: password)
+            let user = try getCurrentUser()
+            try await createFirestoreAccount(email: email, house: house, uid: user.uid)
+            try await verifyEmail(user: user)
+        } catch {
+            throw error
         }
     }
 }

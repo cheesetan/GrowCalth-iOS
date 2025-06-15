@@ -80,7 +80,7 @@ class QuotesManager: ObservableObject {
 //    }
 
     private func setQuote(newQuote: Quote) {
-        DispatchQueue.main.async {
+        Task {
             withAnimation(.default) {
                 self.quote = newQuote
             }

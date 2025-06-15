@@ -8,6 +8,32 @@
 import SwiftUI
 import FirebaseAuth
 
+enum FirestoreError: LocalizedError {
+    case documentDoesNotExist
+    case documentHasNoData
+    case failedToGetSpecifiedField
+
+    var errorDescription: String? {
+        switch self {
+        case .documentDoesNotExist: "Document does not exist."
+        case .documentHasNoData: "Document has no data."
+        case .failedToGetSpecifiedField: "Failed to get specified field within document."
+        }
+    }
+}
+
+enum AuthenticationError: LocalizedError {
+    case failedToGetUserUid
+    case noCurrentUser
+    
+    var errorDescription: String? {
+        switch self {
+        case .failedToGetUserUid: "Failed to retrieve user uid. Please sign out and sign back in again."
+        case .noCurrentUser: "There is no current user. Please sign out and sign back in again."
+        }
+    }
+}
+
 extension AuthenticationManager {
     internal enum EmailError: LocalizedError {
         case emailIsNotSSTEmail
@@ -100,11 +126,10 @@ extension AuthenticationManager {
     
     internal enum ReauthenticationError: LocalizedError {
         case failedToReauthenticate
-        
+
         var errorDescription: String? {
             switch self {
-            case .failedToReauthenticate:
-                return "Failed to reauthenticate account. The password entered may be incorrect."
+            case .failedToReauthenticate: "Failed to reauthenticate account. The password entered may be incorrect."
             }
         }
     }

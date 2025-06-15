@@ -310,24 +310,26 @@ struct SignUpView: View {
     func signUp() {
         if !email.isEmpty && !password.isEmpty && houseSelection != .selectHouse {
             isLoading = true
-            authManager.createAccount(email: email, password: password, house: houseSelection) { result in
-                switch result {
-                case .success(_):
-                    isLoading = false
+            Task {
+                do {
+                    try await authManager.createAccount(
+                        email: email,
+                        password: password,
+                        house: houseSelection
+                    )
                     alertHeader = "Verify account"
                     alertMessage = "A verification email has been sent to your account's email address. Verify your email, then try logging in again."
                     signInView = true
-                    showingAlert = true
-                case .failure(let failure):
-                    isLoading = false
-                    alertMessage = "\(failure.localizedDescription)"
+                } catch {
+                    alertMessage = "\(error.localizedDescription)"
                     if alertMessage == "An account with this email already exists. Please log in instead." {
                         alertHeader = "Account Exists"
                     } else {
                         alertHeader = "Error"
                     }
-                    showingAlert = true
                 }
+                isLoading = false
+                showingAlert = true
             }
         }
     }
