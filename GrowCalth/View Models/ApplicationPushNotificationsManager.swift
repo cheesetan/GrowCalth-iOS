@@ -10,14 +10,6 @@ import SwiftJWT
 import FirebaseFirestore
 import FirebaseMessaging
 
-struct GoogleClaims: Claims {
-    let iss: String
-    let scope: String
-    let aud: String
-    let exp: Int
-    let iat: Int
-}
-
 class ApplicationPushNotificationsManager: ObservableObject {
     static let shared: ApplicationPushNotificationsManager = .init()
     

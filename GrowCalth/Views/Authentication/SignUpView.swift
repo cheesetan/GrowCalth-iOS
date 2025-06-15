@@ -7,15 +7,6 @@
 
 import SwiftUI
 
-enum Houses: String, CaseIterable {
-    case selectHouse = "Select your house"
-    case black = "Black"
-    case blue = "Blue"
-    case green = "Green"
-    case red = "Red"
-    case yellow = "Yellow"
-}
-
 struct SignUpView: View {
     
     @Binding var signInView: Bool

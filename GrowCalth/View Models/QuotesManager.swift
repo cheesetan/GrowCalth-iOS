@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-struct Quote: Codable {
-    var text: String
-    var author: String
-}
-
 class QuotesManager: ObservableObject {
     
     @Published var quote: Quote?

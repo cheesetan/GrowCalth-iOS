@@ -8,34 +8,6 @@
 import SwiftUI
 import FirebaseFirestore
 
-struct NAPFAResults: Identifiable, Codable, Equatable {
-    var id = UUID()
-    var header: String = ""
-    var rank: Int = -1
-    var name: String = ""
-    var className: String = ""
-    var result: String = ""
-}
-
-enum NAPFALevel: String, Codable, CaseIterable {
-    case secondary2 = "Secondary 2"
-    case secondary4 = "Secondary 4"
-    
-    var firebaseCode: String {
-        switch self {
-        case .secondary2: return "s2"
-        case .secondary4: return "s4"
-        }
-    }
-
-    var icon: String {
-        switch self {
-        case .secondary2: return "2.circle.fill"
-        case .secondary4: return "4.circle.fill"
-        }
-    }
-}
-
 class NAPFAManager: ObservableObject {
     
     @AppStorage("levelSelection", store: .standard) var levelSelection: String = NAPFALevel.secondary2.rawValue

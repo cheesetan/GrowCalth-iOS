@@ -5,13 +5,7 @@
 //  Created by Tristan Chay on 7/2/24.
 //
 
-
 import SwiftUI
-
-enum UpdateError: Error {
-    case invalidResponse, invalidBundleInfo
-}
-
 
 class UpdateManager: ObservableObject {
     
@@ -79,3 +73,5 @@ class UpdateManager: ObservableObject {
         task.resume()
     }
 }
+
+

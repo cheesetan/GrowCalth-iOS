@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-enum UnavailableMode {
-    case maintenance, update, network
-}
-
 struct CustomContentUnavailableView: View {
 
     let title: String

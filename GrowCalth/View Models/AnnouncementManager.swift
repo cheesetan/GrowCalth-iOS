@@ -8,34 +8,6 @@
 import SwiftUI
 import FirebaseFirestore
 
-struct Announcement: Identifiable, Equatable, Codable {
-    var id: String
-    var name: String?
-    var title: String
-    var description: String?
-}
-
-struct EventItem: Identifiable, Equatable, Codable {
-    var id: String
-    var name: String?
-    var title: String
-    var description: String?
-    var venue: String
-    var date: String
-}
-
-enum AnnouncementType: String, CaseIterable {
-    case announcements = "Announcements"
-    case events = "Events"
-
-    var icon: String {
-        switch self {
-        case .announcements: "megaphone.fill"
-        case .events: "calendar"
-        }
-    }
-}
-
 class AnnouncementManager: ObservableObject {
 
     @Published var announcements: [Announcement] = [] {

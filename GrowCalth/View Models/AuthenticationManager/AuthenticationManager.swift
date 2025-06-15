@@ -10,32 +10,6 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 
-enum AccountType {
-    case student, alumnus, teacher, special, admin, unknown
-
-    var name: String {
-        switch self {
-        case .student: "Student"
-        case .alumnus: "Alumnus"
-        case .teacher: "Teacher"
-        case .special: "Special"
-        case .admin: "Admin"
-        case .unknown: "Unknown"
-        }
-    }
-
-    var canAddPoints: Bool {
-        switch self {
-        case .student: true
-        case .alumnus: false
-        case .teacher: true
-        case .special: false
-        case .admin: false
-        case .unknown: false
-        }
-    }
-}
-
 class AuthenticationManager: ObservableObject {
     
     // TODO: - doesnt add house if its a new account

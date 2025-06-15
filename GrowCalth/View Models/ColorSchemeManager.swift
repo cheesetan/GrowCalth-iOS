@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-enum PreferredColorScheme: Codable {
-    case light, dark, automatic
-}
-
 class ColorSchemeManager: ObservableObject {
 
     @Published var colorScheme: PreferredColorScheme = .automatic {
