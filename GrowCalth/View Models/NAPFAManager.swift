@@ -58,21 +58,30 @@ class NAPFAManager: ObservableObject {
     func fetchAllData(for year: Int) async throws {
         self.internalData = []
 
-        // Create tasks
-        let sitUpsTask = Task { try await fetchSitUps(for: year) }
-        let sitAndReachTask = Task { try await fetchSitAndReach(for: year) }
-        let sbjTask = Task { try await fetchSBJ(for: year) }
-        let shuttleRunTask = Task { try await fetchShuttleRun(for: year) }
-        let inclinedPullUpsTask = Task { try await fetchInclinedPullUps(for: year) }
-        let twoPointFourKmTask = Task { try await fetchTwoPointFourKm(for: year) }
+        // Execute all main fetches concurrently
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            group.addTask {
+                try await self.fetchSitUps(for: year)
+            }
+            group.addTask {
+                try await self.fetchSitAndReach(for: year)
+            }
+            group.addTask {
+                try await self.fetchSBJ(for: year)
+            }
+            group.addTask {
+                try await self.fetchShuttleRun(for: year)
+            }
+            group.addTask {
+                try await self.fetchInclinedPullUps(for: year)
+            }
+            group.addTask {
+                try await self.fetchTwoPointFourKm(for: year)
+            }
 
-        // Wait for all tasks to complete
-        try await sitUpsTask.value
-        try await sitAndReachTask.value
-        try await sbjTask.value
-        try await shuttleRunTask.value
-        try await inclinedPullUpsTask.value
-        try await twoPointFourKmTask.value
+            // Wait for all tasks to complete
+            for try await _ in group { }
+        }
 
         guard let level = NAPFALevel(rawValue: self.levelSelection) else {
             throw NAPFAError.invalidLevel
