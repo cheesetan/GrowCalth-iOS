@@ -7,19 +7,17 @@
 
 import SwiftUI
 
+@MainActor
 struct GoalsView: View {
-    
-    @State var stepsGoal: Int = 0
-    @State var distanceGoal: Double = 0
-    
+
+    @State private var stepsGoal: Int = 0
+    @State private var distanceGoal: Double = 0
+
     @State private var timer: Timer?
-    
+
     @EnvironmentObject var goalsManager: GoalsManager
-    
-    enum GoalType {
-        case steps, distance
-    }
-    
+
+
     var body: some View {
         VStack(spacing: 30) {
             Spacer()
@@ -30,18 +28,13 @@ struct GoalsView: View {
         .padding(.horizontal)
         .navigationTitle("Goals")
         .refreshable {
-            goalsManager.refreshGoals()
+            await refreshGoals()
         }
         .onAppear {
-            if let stepsGoal = goalsManager.stepsGoal {
-                self.stepsGoal = stepsGoal
-            }
-            if let distanceGoal = goalsManager.distanceGoal {
-                self.distanceGoal = distanceGoal
-            }
+            loadInitialGoals()
         }
     }
-    
+
     var stepsGoalView: some View {
         HStack {
             Spacer()
@@ -55,7 +48,7 @@ struct GoalsView: View {
             Spacer()
         }
     }
-    
+
     var distanceGoalView: some View {
         HStack {
             Spacer()
@@ -69,7 +62,7 @@ struct GoalsView: View {
             Spacer()
         }
     }
-    
+
     var stepsGoalCountView: some View {
         VStack {
             Text("\(Int(stepsGoal))")
@@ -81,7 +74,7 @@ struct GoalsView: View {
                 .fontWeight(.bold)
         }
     }
-    
+
     var distanceGoalCountView: some View {
         VStack {
             Text(String(format: "%.2f", distanceGoal))
@@ -93,25 +86,23 @@ struct GoalsView: View {
                 .fontWeight(.bold)
         }
     }
-    
+
     @ViewBuilder
     func incrementButton(for goalType: GoalType, color: Color) -> some View {
         let releaseGesture = DragGesture(minimumDistance: 0)
             .onEnded { _ in
-                self.timer?.invalidate()
+                invalidateTimer()
             }
-        
-        // a long press gesture to activate timer and start increasing the proteinAmount
+
+        // a long press gesture to activate timer and start increasing the goal
         let longPressGestureIncrease = LongPressGesture(minimumDuration: 0.2)
-            .onEnded { value in
-                self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
-                    increment(for: goalType)
-                })
+            .onEnded { _ in
+                startIncrementTimer(for: goalType)
             }
-        
+
         // a combined gesture that forces the user to long press before releasing for increasing the value
         let combinedIncrease = longPressGestureIncrease.sequenced(before: releaseGesture)
-        
+
         Image(systemName: "plus.circle.fill")
             .resizable()
             .aspectRatio(contentMode: .fit)
@@ -124,23 +115,23 @@ struct GoalsView: View {
             }
             .gesture(combinedIncrease)
     }
-    
+
     @ViewBuilder
     func decrementButton(for goalType: GoalType) -> some View {
         let releaseGesture = DragGesture(minimumDistance: 0)
             .onEnded { _ in
-                self.timer?.invalidate()
+                invalidateTimer()
             }
-        // a long press gesture to activate timer and start decreasing the proteinAmount
+
+        // a long press gesture to activate timer and start decreasing the goal
         let longPressGestureDecrease = LongPressGesture(minimumDuration: 0.2)
-            .onEnded { value in
-                self.timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: { _ in
-                    decrement(for: goalType)
-                })
+            .onEnded { _ in
+                startDecrementTimer(for: goalType)
             }
+
         // a combined gesture that forces the user to long press before releasing for decreasing the value
         let combinedDecrease = longPressGestureDecrease.sequenced(before: releaseGesture)
-        
+
         Image(systemName: "minus.circle.fill")
             .resizable()
             .aspectRatio(contentMode: .fit)
@@ -153,8 +144,53 @@ struct GoalsView: View {
             }
             .gesture(combinedDecrease)
     }
-    
-    func decrementButtonColor(for goalType: GoalType) -> Color {
+
+    // MARK: - Private Methods
+
+    private func loadInitialGoals() {
+        if let stepsGoal = goalsManager.stepsGoal {
+            self.stepsGoal = stepsGoal
+        }
+        if let distanceGoal = goalsManager.distanceGoal {
+            self.distanceGoal = distanceGoal
+        }
+    }
+
+    private func refreshGoals() async {
+        // Assuming goalsManager.refreshGoals() should be async
+        // If it's not async, you can call it directly without await
+        if let refreshMethod = goalsManager.refreshGoals as? () async -> Void {
+            await refreshMethod()
+        } else {
+            goalsManager.refreshGoals()
+        }
+
+        // Update local state after refresh
+        loadInitialGoals()
+    }
+
+    private func invalidateTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+
+    private func startIncrementTimer(for goalType: GoalType) {
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            Task { @MainActor in
+                self.increment(for: goalType)
+            }
+        }
+    }
+
+    private func startDecrementTimer(for goalType: GoalType) {
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            Task { @MainActor in
+                self.decrement(for: goalType)
+            }
+        }
+    }
+
+    private func decrementButtonColor(for goalType: GoalType) -> Color {
         switch goalType {
         case .steps:
             if stepsGoal - 100 <= 0 {
@@ -170,34 +206,42 @@ struct GoalsView: View {
             }
         }
     }
-    
-    func increment(for goalType: GoalType) {
+
+    private func increment(for goalType: GoalType) {
         switch goalType {
         case .steps:
             stepsGoal += 100
-            goalsManager.updateGoal(for: .steps, to: Double(stepsGoal))
+            updateGoalInManager(for: .steps, value: Double(stepsGoal))
         case .distance:
             distanceGoal += 0.5
-            goalsManager.updateGoal(for: .distance, to: distanceGoal)
+            updateGoalInManager(for: .distance, value: distanceGoal)
         }
     }
-    
-    func decrement(for goalType: GoalType) {
+
+    private func decrement(for goalType: GoalType) {
         switch goalType {
         case .steps:
             if stepsGoal - 100 > 0 {
                 stepsGoal -= 100
             }
-            goalsManager.updateGoal(for: .steps, to: Double(stepsGoal))
+            updateGoalInManager(for: .steps, value: Double(stepsGoal))
         case .distance:
             if distanceGoal - 0.5 > 0 {
                 distanceGoal -= 0.5
             }
-            goalsManager.updateGoal(for: .distance, to: distanceGoal)
+            updateGoalInManager(for: .distance, value: distanceGoal)
+        }
+    }
+
+    private func updateGoalInManager(for goalType: GoalType, value: Double) {
+        // Wrap the goal manager update in a task to handle potential async operations
+        Task { @MainActor in
+            goalsManager.updateGoal(for: goalType, to: value)
         }
     }
 }
 
 #Preview {
     GoalsView()
+        .environmentObject(GoalsManager()) // You'll need to provide a mock or real instance
 }

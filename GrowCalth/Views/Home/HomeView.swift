@@ -116,13 +116,15 @@ struct HomeView: View {
         }
         .navigationTitle("Home")
         .refreshable {
-            hkManager.fetchAllDatas()
-            quotesManager.generateNewQuote() { _ in }
+            Task {
+                await hkManager.fetchAllDatas()
+                try await quotesManager.generateNewQuote()
+            }
         }
         .onAppear {
             Task {
-                hkManager.fetchAllDatas()
-                quotesManager.generateNewQuote() { _ in }
+                await hkManager.fetchAllDatas()
+                try await quotesManager.generateNewQuote()
                 try await adminManager.checkIfUnderMaintenance()
                 try await adminManager.checkIfAppForcesUpdates()
                 try await pointsManager.checkAndAddPoints()

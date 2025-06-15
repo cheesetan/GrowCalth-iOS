@@ -46,54 +46,22 @@ struct LeaderboardView: View {
         }
         .alert(alertTitle, isPresented: $showingAlert) {
             Button("Reset", role: .destructive) {
-                lbManager.resetLeaderboards(forHouse: "Black") { result in
-                    switch result {
-                    case .success(_):
-                        lbManager.retrievePoints()
-                    case .failure(_):
+                Task {
+                    do {
+                        try await lbManager.resetLeaderboards(forHouse: "Black")
+                        await lbManager.retrievePoints()
+                        try await lbManager.resetLeaderboards(forHouse: "Blue")
+                        await lbManager.retrievePoints()
+                        try await lbManager.resetLeaderboards(forHouse: "Green")
+                        await lbManager.retrievePoints()
+                        try await lbManager.resetLeaderboards(forHouse: "Red")
+                        await lbManager.retrievePoints()
+                        try await lbManager.resetLeaderboards(forHouse: "Yellow")
+                        await lbManager.retrievePoints()
+                    } catch {
                         showingAlert = true
                         alertTitle = "Error"
                         alertTitle = "An error has occurred while attempting to reset GrowCalth points for Black house. Please try again."
-                    }
-                }
-                lbManager.resetLeaderboards(forHouse: "Blue") { result in
-                    switch result {
-                    case .success(_):
-                        lbManager.retrievePoints()
-                    case .failure(_):
-                        showingAlert = true
-                        alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset GrowCalth points for Blue house. Please try again."
-                    }
-                }
-                lbManager.resetLeaderboards(forHouse: "Green") { result in
-                    switch result {
-                    case .success(_):
-                        lbManager.retrievePoints()
-                    case .failure(_):
-                        showingAlert = true
-                        alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset GrowCalth points for Green house. Please try again."
-                    }
-                }
-                lbManager.resetLeaderboards(forHouse: "Red") { result in
-                    switch result {
-                    case .success(_):
-                        lbManager.retrievePoints()
-                    case .failure(_):
-                        showingAlert = true
-                        alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset GrowCalth points for Red house. Please try again."
-                    }
-                }
-                lbManager.resetLeaderboards(forHouse: "Yellow") { result in
-                    switch result {
-                    case .success(_):
-                        lbManager.retrievePoints()
-                    case .failure(_):
-                        showingAlert = true
-                        alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset GrowCalth points for Yellow house. Please try again."
                     }
                 }
             }
@@ -101,11 +69,13 @@ struct LeaderboardView: View {
             Text(alertMessage)
         }
         .refreshable {
-            lbManager.retrievePoints()
+            Task {
+                await lbManager.retrievePoints()
+            }
         }
         .onAppear {
             Task {
-                lbManager.retrievePoints()
+                await lbManager.retrievePoints()
                 try await adminManager.checkIfUnderMaintenance()
                 try await adminManager.checkIfAppForcesUpdates()
             }

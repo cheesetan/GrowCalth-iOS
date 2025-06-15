@@ -7,16 +7,20 @@
 
 import SwiftUI
 
-class ColorSchemeManager: ObservableObject {
-
+@MainActor
+final class ColorSchemeManager: ObservableObject, Sendable {
     @Published var colorScheme: PreferredColorScheme = .automatic {
         didSet {
-            save()
+            Task {
+                await save()
+            }
         }
     }
 
     init() {
-        load()
+        Task {
+            await load()
+        }
     }
 
     private func getArchiveURL() -> URL {
@@ -28,22 +32,30 @@ class ColorSchemeManager: ObservableObject {
         }
     }
 
-    private func save() {
+    private func save() async {
         let archiveURL = getArchiveURL()
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = .prettyPrinted
 
-        let encodedPreferredColorSchemes = try? jsonEncoder.encode(colorScheme)
-        try? encodedPreferredColorSchemes?.write(to: archiveURL, options: .noFileProtection)
+        do {
+            let encodedData = try jsonEncoder.encode(colorScheme)
+            try encodedData.write(to: archiveURL, options: .noFileProtection)
+        } catch {
+            print("Failed to save color scheme preference: \(error)")
+        }
     }
 
-    private func load() {
+    private func load() async {
         let archiveURL = getArchiveURL()
         let jsonDecoder = JSONDecoder()
 
-        if let retrievedPreferredColorSchemeData = try? Data(contentsOf: archiveURL),
-           let preferredCSsDecoded = try? jsonDecoder.decode(PreferredColorScheme.self, from: retrievedPreferredColorSchemeData) {
-            colorScheme = preferredCSsDecoded
+        do {
+            let data = try Data(contentsOf: archiveURL)
+            let decodedColorScheme = try jsonDecoder.decode(PreferredColorScheme.self, from: data)
+            colorScheme = decodedColorScheme
+        } catch {
+            print("Failed to load color scheme preference: \(error)")
+            // Keep default value (.automatic) if loading fails
         }
     }
 }

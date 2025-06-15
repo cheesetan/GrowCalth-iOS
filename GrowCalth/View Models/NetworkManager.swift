@@ -8,35 +8,40 @@
 import SwiftUI
 import Network
 
+@MainActor
 class NetworkManager: ObservableObject {
-    
+
     @Published var isConnectionAvailable: Bool? = nil
-    
+    private var monitor: NWPathMonitor?
+
     init() {
         beginNetworkMonitoring()
     }
-    
+
+    deinit {
+        monitor?.cancel()
+    }
+
     func beginNetworkMonitoring() {
         let monitor = NWPathMonitor()
-        monitor.pathUpdateHandler = { path in
-            if path.status == .satisfied {
-                print("Internet connection is available.")
-                Task {
-                    await MainActor.run {
-                        withAnimation {
-                            self.isConnectionAvailable = true
-                        }
-                    }
+        self.monitor = monitor
+
+        monitor.pathUpdateHandler = { [weak self] path in
+            Task { @MainActor in
+                guard let self = self else { return }
+
+                withAnimation {
+                    self.isConnectionAvailable = path.status == .satisfied
                 }
-            } else {
-                print("Internet connection is not available.")
-                Task {
-                    withAnimation {
-                        self.isConnectionAvailable = false
-                    }
+
+                if path.status == .satisfied {
+                    print("Internet connection is available.")
+                } else {
+                    print("Internet connection is not available.")
                 }
             }
         }
+
         let queue = DispatchQueue(label: "NetworkMonitor")
         monitor.start(queue: queue)
     }

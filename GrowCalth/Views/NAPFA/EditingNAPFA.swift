@@ -129,20 +129,17 @@ struct EditingNAPFA: View {
             pullUps: self.pullUps,
             twoPointFourKm: self.twoPointFourKm
         )
-        napfaManager.sortAndAddToData {
-            napfaManager.updateCache(for: yearSelection) {
-                napfaManager.updateValuesInFirebase { result in
-                    saveLoading = false
-                    switch result {
-                    case .success(_):
-//                        napfaManager.fetchAllData(for: self.yearSelection) {}
-                        dismiss.callAsFunction()
-                    case .failure(let failure):
-                        alertHeader = "Error"
-                        alertMessage = failure.localizedDescription
-                        showingAlert = true
-                    }
-                }
+        Task {
+            napfaManager.sortAndAddToData()
+            do {
+                try await napfaManager.updateCache(for: yearSelection)
+                try await napfaManager.updateValuesInFirebase()
+                dismiss.callAsFunction()
+                try await napfaManager.fetchAllData(for: yearSelection)
+            } catch {
+                alertHeader = "Error"
+                alertMessage = error.localizedDescription
+                showingAlert = true
             }
         }
     }

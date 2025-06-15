@@ -22,7 +22,7 @@ extension AuthenticationManager {
         verifyVerificationState()
     }
 
-    func verifyEmail(user: User) async throws {
+    nonisolated func verifyEmail(user: User) async throws {
         do {
             try await user.sendEmailVerification()
         } catch {
@@ -30,14 +30,14 @@ extension AuthenticationManager {
         }
     }
 
-    func getCurrentUser() throws -> User {
+    nonisolated func getCurrentUser() throws -> User {
         guard let currentUser = Auth.auth().currentUser else {
             throw AuthenticationError.noCurrentUser
         }
         return currentUser
     }
 
-    func fetchUsersHouse() async throws -> String {
+    nonisolated func fetchUsersHouse() async throws -> String {
         guard let uid = Auth.auth().currentUser?.uid else {
             throw AuthenticationError.failedToGetUserUid
         }
@@ -55,7 +55,7 @@ extension AuthenticationManager {
         return house
     }
 
-    internal func reauthenticate(user: User, credential: AuthCredential) async throws {
+    nonisolated internal func reauthenticate(user: User, credential: AuthCredential) async throws {
         do {
             try await user.reauthenticate(with: credential)
         } catch {

@@ -11,6 +11,7 @@ struct Acknowledgements: View {
 
     @State private var showingScoobert = false
     @State private var scoobertAngle = 0.0
+    @State private var tapCount = 0
 
     var body: some View {
         ZStack {
@@ -49,6 +50,7 @@ struct Acknowledgements: View {
                     Label("Packages & Libraries", systemImage: "shippingbox.fill")
                 }
             }
+
             GeometryReader { geometry in
                 if showingScoobert {
                     Image("scoobert")
@@ -101,19 +103,54 @@ struct Acknowledgements: View {
                     .foregroundColor(.secondary)
             }
         }
-        .onTapGesture(count: 5) {
-            withAnimation {
-                showingScoobert = true
+        .onTapGesture {
+            handleTap()
+        }
+    }
+
+    @MainActor
+    private func handleTap() {
+        tapCount += 1
+
+        // Reset tap count after a delay if not enough taps
+        Task {
+            let currentTapCount = tapCount
+            try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+            if tapCount == currentTapCount && tapCount < 5 {
+                tapCount = 0
             }
-            Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
+        }
+
+        // Trigger animation after 5 taps
+        if tapCount >= 5 {
+            tapCount = 0
+            triggerScoobertAnimation()
+        }
+    }
+
+    @MainActor
+    private func triggerScoobertAnimation() {
+        withAnimation {
+            showingScoobert = true
+        }
+
+        Task {
+            // Wait 0.5 seconds before starting rotation
+            try await Task.sleep(nanoseconds: 500_000_000)
+
+            await MainActor.run {
                 withAnimation(.easeOut(duration: 1)) {
                     scoobertAngle = 360
                 }
-                Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false) { _ in
-                    scoobertAngle = 0
-                    withAnimation {
-                        showingScoobert = false
-                    }
+            }
+
+            // Wait 1.5 seconds then reset
+            try await Task.sleep(nanoseconds: 1_500_000_000)
+
+            await MainActor.run {
+                scoobertAngle = 0
+                withAnimation {
+                    showingScoobert = false
                 }
             }
         }

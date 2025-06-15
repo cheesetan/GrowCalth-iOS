@@ -8,7 +8,7 @@
 import SwiftUI
 import FirebaseAuth
 
-enum FirestoreError: LocalizedError {
+enum FirestoreError: LocalizedError, Sendable {
     case documentDoesNotExist
     case documentHasNoData
     case failedToGetSpecifiedField
@@ -22,10 +22,10 @@ enum FirestoreError: LocalizedError {
     }
 }
 
-enum AuthenticationError: LocalizedError {
+enum AuthenticationError: LocalizedError, Sendable {
     case failedToGetUserUid
     case noCurrentUser
-    
+
     var errorDescription: String? {
         switch self {
         case .failedToGetUserUid: "Failed to retrieve user uid. Please sign out and sign back in again."
@@ -35,7 +35,7 @@ enum AuthenticationError: LocalizedError {
 }
 
 extension AuthenticationManager {
-    internal enum EmailError: LocalizedError {
+    internal enum EmailError: LocalizedError, Sendable {
         case emailIsNotSSTEmail
         var errorDescription: String? {
             switch self {
@@ -44,11 +44,11 @@ extension AuthenticationManager {
             }
         }
     }
-    
-    internal enum DeleteAccountError: LocalizedError {
+
+    internal enum DeleteAccountError: LocalizedError, Sendable {
         case failedToDeleteFromFirestore
         case failedToDeleteAccount
-        
+
         var errorDescription: String? {
             switch self {
             case .failedToDeleteFromFirestore, .failedToDeleteAccount:
@@ -56,10 +56,10 @@ extension AuthenticationManager {
             }
         }
     }
-    
-    internal enum VerificationError: LocalizedError {
+
+    internal enum VerificationError: LocalizedError, Sendable {
         case failedToSendVerificationEmail
-        
+
         var errorDescription: String? {
             switch self {
             case .failedToSendVerificationEmail:
@@ -67,13 +67,13 @@ extension AuthenticationManager {
             }
         }
     }
-    
-    internal enum CreateAccountError: LocalizedError {
+
+    internal enum CreateAccountError: LocalizedError, Sendable {
         case emailAlreadyInUse
         case passwordMustBe6Characters
         case genericAccountCreationFailed
         case failedToCreateFirestoreForNewAccount
-        
+
         var errorDescription: String? {
             switch self {
             case .emailAlreadyInUse:
@@ -87,10 +87,10 @@ extension AuthenticationManager {
             }
         }
     }
-    
-    internal enum SignInError: LocalizedError {
+
+    internal enum SignInError: LocalizedError, Sendable {
         case failedToSignIn
-        
+
         var errorDescription: String? {
             switch self {
             case .failedToSignIn:
@@ -98,10 +98,10 @@ extension AuthenticationManager {
             }
         }
     }
-    
-    internal enum SignOutError: LocalizedError {
+
+    internal enum SignOutError: LocalizedError, Sendable {
         case failedToSignOut
-        
+
         var errorDescription: String? {
             switch self {
             case .failedToSignOut:
@@ -109,11 +109,11 @@ extension AuthenticationManager {
             }
         }
     }
-    
-    internal enum PasswordChangeError: LocalizedError {
+
+    internal enum PasswordChangeError: LocalizedError, Sendable {
         case failedToSendPasswordChangeRequestLinkToEmail
         case failedToChangePassword
-        
+
         var errorDescription: String? {
             switch self {
             case .failedToSendPasswordChangeRequestLinkToEmail:
@@ -123,8 +123,8 @@ extension AuthenticationManager {
             }
         }
     }
-    
-    internal enum ReauthenticationError: LocalizedError {
+
+    internal enum ReauthenticationError: LocalizedError, Sendable {
         case failedToReauthenticate
 
         var errorDescription: String? {

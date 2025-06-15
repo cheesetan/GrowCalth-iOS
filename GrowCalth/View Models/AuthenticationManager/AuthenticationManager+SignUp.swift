@@ -10,7 +10,7 @@ import FirebaseAuth
 import FirebaseFirestore
 
 extension AuthenticationManager {
-    internal func sendCreateAccountRequest(email: String, password: String) async throws {
+    nonisolated internal func sendCreateAccountRequest(email: String, password: String) async throws {
         do {
             try await Auth.auth().createUser(withEmail: email, password: password)
         } catch {
@@ -24,7 +24,7 @@ extension AuthenticationManager {
         }
     }
 
-    internal func createFirestoreAccount(email: String, house: Houses, uid: String) async throws {
+    nonisolated internal func createFirestoreAccount(email: String, house: Houses, uid: String) async throws {
         do {
             try await Firestore.firestore().collection("users").document(uid).setData([
                 "email": email,

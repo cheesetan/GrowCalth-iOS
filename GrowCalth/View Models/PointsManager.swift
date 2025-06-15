@@ -1,19 +1,69 @@
-//
-//  PointsManager.swift
-//  GrowCalth
-//
-//  Created by Tristan Chay on 30/10/23.
-//
-
 import SwiftUI
 import FirebaseFirestore
 import FirebaseAuth
 
+// Sendable struct for log data
+struct LogData: Sendable {
+    let dateLogged: Date
+    let lastPointsAddedDate: Date
+    let useruid: String
+    let email: String
+    let house: String
+    let pointsAdded: String
+    let appVersion: String
+    let approvedBundleIdsUsed: [String]
+
+    func toDictionary() -> [String: Any] {
+        return [
+            "dateLogged": dateLogged,
+            "lastPointsAddedDate": lastPointsAddedDate,
+            "useruid": useruid,
+            "email": email,
+            "house": house,
+            "pointsAdded": pointsAdded,
+            "appVersion": appVersion,
+            "approvedBundleIdsUsed": approvedBundleIdsUsed
+        ]
+    }
+}
+
+@MainActor
 class PointsManager: ObservableObject {
 
     @ObservedObject var adminManager: AdminManager
     @ObservedObject var hkManager: HealthKitManager
     @ObservedObject var authManager: AuthenticationManager
+
+    @Published var lastPointsAwardedDate: Date? = nil {
+        didSet {
+            Task {
+                await save()
+            }
+        }
+    }
+
+    enum PointsError: LocalizedError {
+        case notDueForAdding
+        case fileOperationFailed(Error)
+        case firestoreError(Error)
+        case invalidVersion(String?)
+        case missingUserData
+
+        var errorDescription: String? {
+            switch self {
+            case .notDueForAdding:
+                return "Not due for points adding"
+            case .fileOperationFailed(let error):
+                return "File operation failed: \(error.localizedDescription)"
+            case .firestoreError(let error):
+                return "Firestore error: \(error.localizedDescription)"
+            case .invalidVersion(let version):
+                return "Invalid app version: \(version ?? "unknown")"
+            case .missingUserData:
+                return "Missing user data"
+            }
+        }
+    }
 
     init(adminManager: AdminManager, hkManager: HealthKitManager, authManager: AuthenticationManager, lastPointsAwardedDate: Date? = nil) {
         self.adminManager = adminManager
@@ -21,12 +71,8 @@ class PointsManager: ObservableObject {
         self.authManager = authManager
         self.lastPointsAwardedDate = lastPointsAwardedDate
 
-        load()
-    }
-
-    @Published var lastPointsAwardedDate: Date? = nil {
-        didSet {
-            save()
+        Task {
+            await load()
         }
     }
 
@@ -39,22 +85,29 @@ class PointsManager: ObservableObject {
         }
     }
 
-    private func save() {
+    private func save() async {
         let archiveURL = getArchiveURL()
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = .prettyPrinted
 
-        let encodedlastPointsAwardedDates = try? jsonEncoder.encode(lastPointsAwardedDate)
-        try? encodedlastPointsAwardedDates?.write(to: archiveURL, options: .noFileProtection)
+        do {
+            let encodedlastPointsAwardedDates = try jsonEncoder.encode(lastPointsAwardedDate)
+            try encodedlastPointsAwardedDates.write(to: archiveURL, options: .noFileProtection)
+        } catch {
+            print("Failed to save last points awarded date: \(error)")
+        }
     }
 
-    private func load() {
+    private func load() async {
         let archiveURL = getArchiveURL()
         let jsonDecoder = JSONDecoder()
 
-        if let retrievedDateData = try? Data(contentsOf: archiveURL),
-           let lastPointsAwardedDatesDecoded = try? jsonDecoder.decode(Date.self, from: retrievedDateData) {
+        do {
+            let retrievedDateData = try Data(contentsOf: archiveURL)
+            let lastPointsAwardedDatesDecoded = try jsonDecoder.decode(Date.self, from: retrievedDateData)
             lastPointsAwardedDate = lastPointsAwardedDatesDecoded
+        } catch {
+            print("Failed to load last points awarded date: \(error)")
         }
     }
 
@@ -62,37 +115,24 @@ class PointsManager: ObservableObject {
         try isDueForPointsAwarding()
         let (pointsToAdd, approvedBundleIdsUsed) = try await calculatePoints()
         print("pointsToAdd: \(pointsToAdd)")
+
         if pointsToAdd > 0 {
-            do {
-                try await self.addPointsToFirebase(pointsToAdd: pointsToAdd, approvedBundleIdsUsed: approvedBundleIdsUsed)
-            } catch {
-                print(error.localizedDescription)
-            }
-            self.updateLastPointsAwardedDate()
-        } else {
-            self.updateLastPointsAwardedDate()
+            try await addPointsToFirebase(pointsToAdd: pointsToAdd, approvedBundleIdsUsed: approvedBundleIdsUsed)
         }
 
-    }
-
-    internal enum PointsAddingError: LocalizedError {
-        case notDueForAdding
-        var errorDescription: String? {
-            switch self {
-            case .notDueForAdding: "Not due for points adding."
-            }
-        }
+        updateLastPointsAwardedDate()
     }
 
     private func isDueForPointsAwarding() throws {
-        if authManager.accountType.canAddPoints {
-            if let lastPointsAwardedDate = lastPointsAwardedDate {
-                if lastPointsAwardedDate.addingTimeInterval(86400) <= Date() {
-                    return
-                }
+        guard authManager.accountType.canAddPoints else {
+            throw PointsError.notDueForAdding
+        }
+
+        if let lastPointsAwardedDate = lastPointsAwardedDate {
+            guard lastPointsAwardedDate.addingTimeInterval(86400) <= Date() else {
+                throw PointsError.notDueForAdding
             }
         }
-        throw PointsAddingError.notDueForAdding
     }
 
     private func calculatePoints() async throws -> (Int, [String]) {
@@ -113,15 +153,18 @@ class PointsManager: ObservableObject {
         let info = Bundle.main.infoDictionary
         let currentVersion = info?["CFBundleShortVersionString"] as? String
 
-        if let currentVersion = currentVersion, !versions.contains(currentVersion) {
-            try await Firestore.firestore().collection("HousePoints").document(house).updateData([
-                "points": FieldValue.increment(Double(pointsToAdd))
-            ])
-            try await self.logPoints(
-                points: pointsToAdd,
-                approvedBundleIdsUsed: approvedBundleIdsUsed
-            )
+        guard let currentVersion = currentVersion, !versions.contains(currentVersion) else {
+            throw PointsError.invalidVersion(currentVersion)
         }
+
+        try await Firestore.firestore().collection("HousePoints").document(house).updateData([
+            "points": FieldValue.increment(Double(pointsToAdd))
+        ])
+
+        try await logPoints(
+            points: pointsToAdd,
+            approvedBundleIdsUsed: approvedBundleIdsUsed
+        )
     }
 
     private func updateLastPointsAwardedDate() {
@@ -133,15 +176,29 @@ class PointsManager: ObservableObject {
         points: Int,
         approvedBundleIdsUsed: [String]
     ) async throws {
-        try await Firestore.firestore().collection("logs").document().setData([
-            "dateLogged": Date(),
-            "lastPointsAddedDate": self.lastPointsAwardedDate ?? "LASTPOINTSAWARDEDDATE NOT FOUND (impossible)",
-            "useruid": Auth.auth().currentUser?.uid ?? "UID NOT FOUND",
-            "email": authManager.email ?? "EMAIL NOT FOUND",
-            "house": authManager.usersHouse ?? "HOUSE NOT FOUND",
-            "pointsAdded": "\(points)",
-            "appVersion": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "idk",
-            "approvedBundleIdsUsed": approvedBundleIdsUsed
-        ])
+        guard let uid = Auth.auth().currentUser?.uid,
+              let email = authManager.email,
+              let house = authManager.usersHouse else {
+            throw PointsError.missingUserData
+        }
+
+        // Create Sendable LogData struct
+        let logData = LogData(
+            dateLogged: Date(),
+            lastPointsAddedDate: self.lastPointsAwardedDate ?? Date(),
+            useruid: uid,
+            email: email,
+            house: house,
+            pointsAdded: String(points),
+            appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown",
+            approvedBundleIdsUsed: approvedBundleIdsUsed
+        )
+
+        // Pass the Sendable struct and convert to dictionary within the async context
+        try await performFirestoreLog(logData)
+    }
+
+    private func performFirestoreLog(_ logData: LogData) async throws {
+        try await Firestore.firestore().collection("logs").document().setData(logData.toDictionary())
     }
 }

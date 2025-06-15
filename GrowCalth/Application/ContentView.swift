@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-enum AppStatus {
+enum AppStatus: Sendable {
     case home, login, onboarding, noNetwork, updateAvailable, underMaintenance, loading(String)
 }
 
+@MainActor
 class AppState: ObservableObject {
 
     @AppStorage("onboardingView", store: .standard) var onboardingView = true
@@ -21,7 +22,14 @@ class AppState: ObservableObject {
     @ObservedObject var developerManager: DeveloperManager
     @ObservedObject var networkManager: NetworkManager
 
-    init(onboardingView: Bool = true, authManager: AuthenticationManager, adminManager: AdminManager, updateManager: UpdateManager, developerManager: DeveloperManager, networkManager: NetworkManager) {
+    init(
+        onboardingView: Bool = true,
+        authManager: AuthenticationManager,
+        adminManager: AdminManager,
+        updateManager: UpdateManager,
+        developerManager: DeveloperManager,
+        networkManager: NetworkManager
+    ) {
         self.onboardingView = onboardingView
         self.authManager = authManager
         self.adminManager = adminManager
@@ -31,13 +39,16 @@ class AppState: ObservableObject {
     }
 
     var status: AppStatus {
-        if networkManager.isConnectionAvailable != nil {
-            if networkManager.isConnectionAvailable == true {
-                if adminManager.isUnderMaintenance != nil && updateManager.updateAvailable != nil && adminManager.appForcesUpdates != nil {
-                    if updateManager.updateAvailable == true && adminManager.appForcesUpdates == true && developerManager.bypassed == false {
+        if let isConnectionAvailable = networkManager.isConnectionAvailable {
+            if isConnectionAvailable {
+                if let isUnderMaintenance = adminManager.isUnderMaintenance,
+                   let updateAvailable = updateManager.updateAvailable,
+                   let appForcesUpdates = adminManager.appForcesUpdates {
+
+                    if updateAvailable && appForcesUpdates && !developerManager.bypassed {
                         return .updateAvailable
                     } else {
-                        if adminManager.isUnderMaintenance == true && developerManager.bypassed == false {
+                        if isUnderMaintenance && !developerManager.bypassed {
                             return .underMaintenance
                         } else {
                             if !onboardingView {
@@ -114,15 +125,30 @@ struct ContentView: View {
         let developerManager = DeveloperManager(adminManager: adminManager)
         self.developerManager = developerManager
 
-        self.appState = AppState(authManager: authManager, adminManager: adminManager, updateManager: updateManager, developerManager: developerManager, networkManager: networkManager)
-        self.pointsManager = PointsManager(adminManager: adminManager, hkManager: hkManager, authManager: authManager)
+        self.appState = AppState(
+            authManager: authManager,
+            adminManager: adminManager,
+            updateManager: updateManager,
+            developerManager: developerManager,
+            networkManager: networkManager
+        )
+        self.pointsManager = PointsManager(
+            adminManager: adminManager,
+            hkManager: hkManager,
+            authManager: authManager
+        )
 
+        // Initialize points manager date logic
+        self.initializePointsManagerDate()
+    }
+
+    private func initializePointsManagerDate() {
         if let lastPointsAwardedDate = pointsManager.lastPointsAwardedDate {
             if lastPointsAwardedDate < GLOBAL_GROWCALTH_START_DATE {
                 pointsManager.lastPointsAwardedDate = GLOBAL_GROWCALTH_START_DATE
             }
         } else {
-            let cal = Calendar(identifier: Calendar.Identifier.gregorian)
+            let cal = Calendar(identifier: .gregorian)
             let today = cal.startOfDay(for: Date())
 
             if today < GLOBAL_GROWCALTH_START_DATE {
@@ -137,18 +163,18 @@ struct ContentView: View {
         Group {
             switch appState.status {
             case .home:
-                if #available(iOS 26.0, *) {
+                if #available(iOS 18.0, *) {
                     TabView {
-                        Tab("Home", systemImage: "house.fill"){
+                        Tab("Home", systemImage: "house.fill") {
                             HomeView()
                         }
-                        Tab("Announcements", systemImage: "megaphone"){
+                        Tab("Announcements", systemImage: "megaphone") {
                             AnnouncementsView()
                         }
-                        Tab("NAPFA", systemImage: "figure.run"){
+                        Tab("NAPFA", systemImage: "figure.run") {
                             NAPFAView()
                         }
-                        Tab("Settings", systemImage: "gearshape"){
+                        Tab("Settings", systemImage: "gearshape") {
                             SettingsView()
                         }
                     }

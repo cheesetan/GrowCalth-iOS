@@ -95,16 +95,15 @@ struct QuoteView: View {
 
     func generateNewQuote() {
         isLoading = true
-        quotesManager.generateNewQuote() { result in
-            switch result {
-            case .success(_):
-                isLoading = false
-            case .failure(let failure):
-                isLoading = false
+        Task {
+            do {
+                try await quotesManager.generateNewQuote()
+            } catch {
                 alertTitle = "Error"
-                alertDescription = failure.localizedDescription
+                alertDescription = error.localizedDescription
                 showingAlert = true
             }
+            isLoading = false
         }
     }
 }

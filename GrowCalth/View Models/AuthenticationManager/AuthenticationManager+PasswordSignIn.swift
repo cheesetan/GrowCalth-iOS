@@ -9,7 +9,7 @@ import SwiftUI
 import FirebaseAuth
 
 extension AuthenticationManager {
-    internal func sendSignInRequest(email: String, password: String) async throws {
+    nonisolated internal func sendSignInRequest(email: String, password: String) async throws {
         do {
             try await Auth.auth().signIn(withEmail: email, password: password)
         } catch {

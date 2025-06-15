@@ -92,9 +92,8 @@ struct NAPFAView: View {
                 try await adminManager.checkIfAppForcesUpdates()
                 try await adminManager.checkIfUnderMaintenance()
                 isLoading = true
-                napfaManager.fetchAllData(for: napfaManager.year) {
-                    isLoading = false
-                }
+                try await napfaManager.fetchAllData(for: napfaManager.year)
+                isLoading = false
             }
         }
         .refreshable {
@@ -103,9 +102,8 @@ struct NAPFAView: View {
                 try await adminManager.checkIfUnderMaintenance()
                 if !showingNAPFAEditing {
                     isLoading = true
-                    napfaManager.fetchAllData(for: napfaManager.year) {
-                        isLoading = false
-                    }
+                    try await napfaManager.fetchAllData(for: napfaManager.year)
+                    isLoading = false
                 }
             }
         }
@@ -113,9 +111,8 @@ struct NAPFAView: View {
             Task {
                 try await adminManager.checkIfAppForcesUpdates()
                 try await adminManager.checkIfUnderMaintenance()
-                napfaManager.fetchAllData(for: newYear) {
-                    isLoading = false
-                }
+                try await napfaManager.fetchAllData(for: newYear)
+                isLoading = false
             }
         }
         .onChange(of: napfaManager.levelSelection) { _ in
@@ -123,9 +120,8 @@ struct NAPFAView: View {
                 try await adminManager.checkIfAppForcesUpdates()
                 try await adminManager.checkIfUnderMaintenance()
                 isLoading = true
-                napfaManager.fetchAllData(for: napfaManager.year) {
-                    isLoading = false
-                }
+                try await napfaManager.fetchAllData(for: napfaManager.year)
+                isLoading = false
             }
         }
         .overlay(alignment: .bottomTrailing) {
@@ -285,7 +281,8 @@ struct NAPFAView: View {
                 } actions: {
                     Button {
                         isLoading = true
-                        napfaManager.fetchAllData(for: napfaManager.year) {
+                        Task {
+                            try await napfaManager.fetchAllData(for: napfaManager.year)
                             isLoading = false
                         }
                     } label: {
@@ -308,7 +305,8 @@ struct NAPFAView: View {
                         .multilineTextAlignment(.center)
                     Button {
                         isLoading = true
-                        napfaManager.fetchAllData(for: napfaManager.year) {
+                        Task {
+                            try await napfaManager.fetchAllData(for: napfaManager.year)
                             isLoading = false
                         }
                     } label: {

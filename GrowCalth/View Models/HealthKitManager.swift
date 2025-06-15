@@ -9,42 +9,75 @@ import SwiftUI
 import HealthKit
 import FirebaseFirestore
 
+@MainActor
 class HealthKitManager: ObservableObject {
-    
+
     private var healthStore = HKHealthStore()
     @Published var steps: Int? = nil
     @Published var distance: Double? = nil
-    
+
     init() {
-        requestAuthorization()
+        Task {
+            await requestAuthorization()
+        }
     }
-    
-    func requestAuthorization() {
+
+    enum HealthKitError: LocalizedError {
+        case healthDataNotAvailable
+        case authorizationFailed(Error?)
+        case couldNotFindStepCountType
+        case couldNotFindDistanceType
+        case startDateIsNil
+        case queryFailed(Error?)
+        case noResults
+
+        var errorDescription: String? {
+            switch self {
+            case .healthDataNotAvailable:
+                return "Health data is not available on this device"
+            case .authorizationFailed(let error):
+                return "Authorization failed: \(error?.localizedDescription ?? "Unknown error")"
+            case .couldNotFindStepCountType:
+                return "Could not find Step Count Type"
+            case .couldNotFindDistanceType:
+                return "Could not find Distance Type"
+            case .startDateIsNil:
+                return "Start date is nil"
+            case .queryFailed(let error):
+                return "Query failed: \(error?.localizedDescription ?? "Unknown error")"
+            case .noResults:
+                return "No results found"
+            }
+        }
+    }
+
+    func requestAuthorization() async {
         let toReads = Set([
             HKObjectType.quantityType(forIdentifier: .stepCount)!,
             HKObjectType.quantityType(forIdentifier: .distanceWalkingRunning)!,
         ])
-        
+
         guard HKHealthStore.isHealthDataAvailable() else {
             print("health data not available!")
             return
         }
-        
-        healthStore.requestAuthorization(toShare: nil, read: toReads) {
-            success, error in
-            if success {
-                self.fetchAllDatas()
-            } else {
-                print("\(String(describing: error))")
-            }
+
+        do {
+            try await healthStore.requestAuthorization(toShare: [], read: toReads)
+            await fetchAllDatas()
+        } catch {
+            print("Authorization error: \(error)")
         }
     }
-    
-    func fetchAllDatas() {
-        readSteps()
-        readDistance()
+
+    func fetchAllDatas() async {
+        async let stepsTask = readSteps()
+        async let distanceTask = readDistance()
+
+        await stepsTask
+        await distanceTask
     }
-    
+
     func fetchApprovedBundleIdentifiers() async throws -> [String] {
         let document = try await Firestore.firestore().collection("settings").document("approved-bundleids").getDocument(source: .server)
 
@@ -62,12 +95,21 @@ class HealthKitManager: ObservableObject {
 
         return ids
     }
-    
-    func readSteps() {
+
+    func readSteps() async {
+        do {
+            let steps = try await performStepsQuery()
+            self.steps = steps
+        } catch {
+            print("Failed to read steps: \(error)")
+        }
+    }
+
+    private func performStepsQuery() async throws -> Int {
         guard let stepCountType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
-            return
+            throw HealthKitError.couldNotFindStepCountType
         }
-        
+
         let date = Date()
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         let newDate = cal.startOfDay(for: date)
@@ -76,96 +118,113 @@ class HealthKitManager: ObservableObject {
             NSPredicate(format: "%K >= %@", HKPredicateKeyPathStartDate, newDate as NSDate),
             NSPredicate(format: "%K <= %@", HKPredicateKeyPathEndDate, Date() as NSDate)
         ])
-        
-        let query = HKStatisticsQuery(
-            quantityType: stepCountType, // the data type
-            quantitySamplePredicate: predicate, // the predicate using the set startDate and endDate
-            options: [.cumulativeSum, .separateBySource] // to get the total steps
-        ) {
-            _, hkResult, error in
-            guard let hkResult = hkResult, let totalStepSumQuantity = hkResult.sumQuantity() else {
-                print("failed to read step count: \(error?.localizedDescription ?? "UNKNOWN ERROR")")
-                return
-            }
-            
-            var stepsToFilterOut = 0
-            if let resultSources = hkResult.sources {
-                Task {
-                    let approvedBundleIdentifiers = try await self.fetchApprovedBundleIdentifiers()
-                    resultSources.forEach { source in
-                        if source.bundleIdentifier.contains("com.apple.health") || approvedBundleIdentifiers.contains(source.bundleIdentifier) {
 
-                        } else {
-                            if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
-                                stepsToFilterOut += Int(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.count()))
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKStatisticsQuery(
+                quantityType: stepCountType,
+                quantitySamplePredicate: predicate,
+                options: [.cumulativeSum, .separateBySource]
+            ) { _, hkResult, error in
+                guard let hkResult = hkResult, let totalStepSumQuantity = hkResult.sumQuantity() else {
+                    continuation.resume(throwing: HealthKitError.queryFailed(error))
+                    return
+                }
+
+                var stepsToFilterOut = 0
+                if let resultSources = hkResult.sources {
+                    Task {
+                        do {
+                            let approvedBundleIdentifiers = try await self.fetchApprovedBundleIdentifiers()
+                            resultSources.forEach { source in
+                                if source.bundleIdentifier.contains("com.apple.health") || approvedBundleIdentifiers.contains(source.bundleIdentifier) {
+                                    // Keep these steps
+                                } else {
+                                    if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
+                                        stepsToFilterOut += Int(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.count()))
+                                    }
+                                }
                             }
+
+                            let finalSteps = Int(totalStepSumQuantity.doubleValue(for: HKUnit.count())) - stepsToFilterOut
+                            continuation.resume(returning: finalSteps)
+                        } catch {
+                            continuation.resume(throwing: error)
                         }
                     }
-
-                    self.steps = Int(totalStepSumQuantity.doubleValue(for: HKUnit.count())) - stepsToFilterOut
+                } else {
+                    let finalSteps = Int(totalStepSumQuantity.doubleValue(for: HKUnit.count()))
+                    continuation.resume(returning: finalSteps)
                 }
             }
+
+            healthStore.execute(query)
         }
-        
-        healthStore.execute(query)
     }
-    
-    func readDistance() {
+
+    func readDistance() async {
+        do {
+            let distance = try await performDistanceQuery()
+            self.distance = distance
+        } catch {
+            print("Failed to read distance: \(error)")
+        }
+    }
+
+    private func performDistanceQuery() async throws -> Double {
         guard let type = HKSampleType.quantityType(forIdentifier: .distanceWalkingRunning) else {
-            fatalError("Something went wrong retrieving quantity type distanceWalkingRunning")
+            throw HealthKitError.couldNotFindDistanceType
         }
+
         let date = Date()
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
         let newDate = cal.startOfDay(for: date)
-        
+
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
             NSPredicate(format: "metadata.%K != true", HKMetadataKeyWasUserEntered),
             NSPredicate(format: "%K >= %@", HKPredicateKeyPathStartDate, newDate as NSDate),
             NSPredicate(format: "%K <= %@", HKPredicateKeyPathEndDate, Date() as NSDate)
         ])
 
-        let query = HKStatisticsQuery(
-            quantityType: type,
-            quantitySamplePredicate: predicate,
-            options: [.cumulativeSum, .separateBySource]
-        ) { (_, hkResult, error) in
-            guard let hkResult = hkResult, let totalDistanceSumQuantity = hkResult.sumQuantity() else {
-                print("failed to read distance count: \(error?.localizedDescription ?? "UNKNOWN ERROR")")
-                return
-            }
-            
-            var distanceToBeFilteredOut: Double = 0
-            if let resultSources = hkResult.sources {
-                Task {
-                    let approvedBundleIdentifiers = try await self.fetchApprovedBundleIdentifiers()
+        return try await withCheckedThrowingContinuation { continuation in
+            let query = HKStatisticsQuery(
+                quantityType: type,
+                quantitySamplePredicate: predicate,
+                options: [.cumulativeSum, .separateBySource]
+            ) { _, hkResult, error in
+                guard let hkResult = hkResult, let totalDistanceSumQuantity = hkResult.sumQuantity() else {
+                    continuation.resume(throwing: HealthKitError.queryFailed(error))
+                    return
+                }
 
-                    resultSources.forEach { source in
-                        if source.bundleIdentifier.contains("com.apple.health") || approvedBundleIdentifiers.contains(source.bundleIdentifier) {
-                        } else {
-                            if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
-                                distanceToBeFilteredOut += sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter())
-                                print(sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter()))
+                var distanceToBeFilteredOut: Double = 0
+                if let resultSources = hkResult.sources {
+                    Task {
+                        do {
+                            let approvedBundleIdentifiers = try await self.fetchApprovedBundleIdentifiers()
+
+                            resultSources.forEach { source in
+                                if source.bundleIdentifier.contains("com.apple.health") || approvedBundleIdentifiers.contains(source.bundleIdentifier) {
+                                    // Keep this distance
+                                } else {
+                                    if let sumOfFalseDataFromSpecificSource = hkResult.sumQuantity(for: source) {
+                                        distanceToBeFilteredOut += sumOfFalseDataFromSpecificSource.doubleValue(for: HKUnit.meter())
+                                    }
+                                }
                             }
+
+                            let finalDistance = (totalDistanceSumQuantity.doubleValue(for: HKUnit.meter()) - distanceToBeFilteredOut) / 1000
+                            continuation.resume(returning: finalDistance)
+                        } catch {
+                            continuation.resume(throwing: error)
                         }
                     }
-
-                    self.distance = (totalDistanceSumQuantity.doubleValue(for: HKUnit.meter()) - distanceToBeFilteredOut) / 1000
+                } else {
+                    let finalDistance = totalDistanceSumQuantity.doubleValue(for: HKUnit.meter()) / 1000
+                    continuation.resume(returning: finalDistance)
                 }
             }
-        }
-        
-        healthStore.execute(query)
-    }
 
-    internal enum FetchStepsError: LocalizedError {
-        case couldNotFindStepCountType
-        case startDateIsNil
-
-        var errorDescription: String? {
-            switch self {
-            case .couldNotFindStepCountType: return "Could not find Step Count Type."
-            case .startDateIsNil: return "StartDate is a nil value"
-            }
+            healthStore.execute(query)
         }
     }
 
@@ -174,11 +233,11 @@ class HealthKitManager: ObservableObject {
         endDate: Date
     ) async throws -> (Int, [String]) {
         guard let stepCountType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
-            throw FetchStepsError.couldNotFindStepCountType
+            throw HealthKitError.couldNotFindStepCountType
         }
 
         guard let startDate else {
-            throw FetchStepsError.startDateIsNil
+            throw HealthKitError.startDateIsNil
         }
 
         let cal = Calendar(identifier: Calendar.Identifier.gregorian)
@@ -196,12 +255,7 @@ class HealthKitManager: ObservableObject {
                 options: [.cumulativeSum, .separateBySource]
             ) { _, hkResult, error in
                 guard let hkResult = hkResult, let totalStepSumQuantity = hkResult.sumQuantity() else {
-                    print("failed to read step count: \(error?.localizedDescription ?? "UNKNOWN ERROR")")
-                    if let error = error {
-                        continuation.resume(throwing: error)
-                    } else {
-                        continuation.resume(throwing: NSError(domain: "HealthKitError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unknown HealthKit error"]))
-                    }
+                    continuation.resume(throwing: HealthKitError.queryFailed(error))
                     return
                 }
 
@@ -231,7 +285,6 @@ class HealthKitManager: ObservableObject {
                         }
                     }
                 } else {
-                    // No sources to filter, return total count
                     let finalStepCount = Int(totalStepSumQuantity.doubleValue(for: HKUnit.count()))
                     continuation.resume(returning: (finalStepCount, approvedBundleIdsUsed))
                 }

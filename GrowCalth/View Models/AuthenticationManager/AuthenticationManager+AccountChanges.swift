@@ -10,7 +10,7 @@ import FirebaseAuth
 import FirebaseFirestore
 
 extension AuthenticationManager {
-    internal func sendForgotPasswordRequest(email: String) async throws {
+    nonisolated internal func sendForgotPasswordRequest(email: String) async throws {
         do {
             try await Auth.auth().sendPasswordReset(withEmail: email)
         } catch {
@@ -18,14 +18,14 @@ extension AuthenticationManager {
         }
     }
 
-    func forgotPassword(email: String) async throws {
-        try emailProvidedIsSSTEmail(email: email)
+    nonisolated func forgotPassword(email: String) async throws {
+        try await emailProvidedIsSSTEmail(email: email)
         try await sendForgotPasswordRequest(email: email)
     }
 }
 
 extension AuthenticationManager {
-    internal func sendUpdatePasswordRequest(user: User, to newPassword: String) async throws {
+    nonisolated internal func sendUpdatePasswordRequest(user: User, to newPassword: String) async throws {
         do {
             try await user.updatePassword(to: newPassword)
         } catch {
@@ -33,7 +33,7 @@ extension AuthenticationManager {
         }
     }
 
-    func updatePassword(from oldPassword: String, to newPassword: String) async throws {
+    nonisolated func updatePassword(from oldPassword: String, to newPassword: String) async throws {
         let user = try getCurrentUser()
         let credential = EmailAuthProvider.credential(
             withEmail: user.email ?? "",
@@ -45,7 +45,7 @@ extension AuthenticationManager {
 }
 
 extension AuthenticationManager {
-    internal func deleteAccountFromFirestore(uid: String) async throws {
+    nonisolated internal func deleteAccountFromFirestore(uid: String) async throws {
         do {
             try await Firestore.firestore().collection("users").document(uid).delete()
         } catch {
@@ -53,14 +53,14 @@ extension AuthenticationManager {
         }
     }
 
-    internal func sendDeleteAccountRequest(user: User) async throws {
+    nonisolated internal func sendDeleteAccountRequest(user: User) async throws {
         do {
             try await user.delete()
         } catch {
             throw DeleteAccountError.failedToDeleteAccount
         }
     }
-    
+
     func deleteAccount(password: String) async throws {
         let user = try getCurrentUser()
         let credential = EmailAuthProvider.credential(

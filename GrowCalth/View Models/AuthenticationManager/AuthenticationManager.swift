@@ -10,8 +10,9 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 
+@MainActor
 class AuthenticationManager: ObservableObject {
-    
+
     // TODO: - doesnt add house if its a new account
     @Published var isLoggedIn: Bool = false
     @Published var accountVerified: Bool = false
@@ -26,7 +27,7 @@ class AuthenticationManager: ObservableObject {
             await updatePublishedVariables()
         }
     }
-    
+
     internal func verifyAuthenticationState() {
         if Auth.auth().currentUser != nil {
             withAnimation {
@@ -38,7 +39,7 @@ class AuthenticationManager: ObservableObject {
             }
         }
     }
-    
+
     internal func verifyVerificationState() {
         if let user = Auth.auth().currentUser {
             if user.email == "appreview@s2021.ssts.edu.sg" || user.email == "admin@growcalth.com" || user.email == "growcalth@sst.edu.sg" {
@@ -50,42 +51,33 @@ class AuthenticationManager: ObservableObject {
             self.accountVerified = false
         }
     }
-    
-    internal func updatePublishedVariables() async {
-        email = Auth.auth().currentUser?.email
 
-        if let house = try? await self.fetchUsersHouse() {
-            await MainActor.run {
-                self.usersHouse = house
-            }
+    internal func updatePublishedVariables() async {
+        let currentEmail = Auth.auth().currentUser?.email
+        let house = try? await self.fetchUsersHouse()
+
+        // Update all published properties on MainActor
+        self.email = currentEmail
+        if let house = house {
+            self.usersHouse = house
         }
 
         let year = Calendar.current.component(.year, from: Date())
-        if let email {
-            if email == "appreview@s2021.ssts.edu.sg" || email == "admin@growcalth.com" || email == "growcalth@sst.edu.sg" {
-                await MainActor.run {
-                    self.accountType = .special
-                }
-            } else if GLOBAL_ADMIN_EMAILS.contains(email) {
-                await MainActor.run {
-                    self.accountType = .admin
-                }
+        if let currentEmail = currentEmail {
+            if currentEmail == "appreview@s2021.ssts.edu.sg" || currentEmail == "admin@growcalth.com" || currentEmail == "growcalth@sst.edu.sg" {
+                self.accountType = .special
+            } else if GLOBAL_ADMIN_EMAILS.contains(currentEmail) {
+                self.accountType = .admin
             } else {
-                let domain = email.components(separatedBy: "@")[1]
+                let domain = currentEmail.components(separatedBy: "@")[1]
                 if domain == "sst.edu.sg" {
-                    await MainActor.run {
-                        self.accountType = .teacher
-                    }
+                    self.accountType = .teacher
                 } else {
                     let emailYear = Int(domain.components(separatedBy: ".")[0].suffix(4)) ?? 0
                     if emailYear <= year-4 {
-                        await MainActor.run {
-                            self.accountType = .alumnus
-                        }
+                        self.accountType = .alumnus
                     } else {
-                        await MainActor.run {
-                            self.accountType = .student
-                        }
+                        self.accountType = .student
                     }
                 }
             }
@@ -93,18 +85,18 @@ class AuthenticationManager: ObservableObject {
             self.accountType = .unknown
         }
     }
-    
+
     internal func emailProvidedIsSSTEmail(email: String) throws {
         var returnResult = false
-        
+
         let regexPatternSSTudent = "(.+)@s20\\d\\d.ssts.edu.sg"
         let predicateSSTudent = NSPredicate(format: "SELF MATCHES %@", regexPatternSSTudent)
         returnResult = predicateSSTudent.evaluate(with: email)
 
         let regexPatternSSTaff = "(.+)@sst.edu.sg"
         let predicateSSTaff = NSPredicate(format: "SELF MATCHES %@", regexPatternSSTaff)
-        returnResult = predicateSSTaff.evaluate(with: email)
-        
+        returnResult = returnResult || predicateSSTaff.evaluate(with: email)
+
         if !returnResult {
             throw EmailError.emailIsNotSSTEmail
         }

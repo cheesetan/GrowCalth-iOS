@@ -8,25 +8,38 @@
 import SwiftUI
 import FirebaseFirestore
 
-class AnnouncementManager: ObservableObject {
-
+@MainActor
+final class AnnouncementManager: ObservableObject, Sendable {
     @Published var announcements: [Announcement] = [] {
         didSet {
-            saveAnnouncements()
+            Task {
+                await saveAnnouncements()
+            }
         }
     }
 
     @Published var events: [EventItem] = [] {
         didSet {
-            saveEvents()
+            Task {
+                await saveEvents()
+            }
         }
     }
-    
+
     init() {
         Task {
-            loadEvents()
-            loadAnnouncements()
+            await initializeData()
+        }
+    }
+
+    private func initializeData() async {
+        await loadEvents()
+        await loadAnnouncements()
+
+        do {
             try await retrieveAllPosts()
+        } catch {
+            print("Failed to retrieve posts: \(error)")
         }
     }
 
@@ -48,95 +61,114 @@ class AnnouncementManager: ObservableObject {
         }
     }
 
-    private func saveAnnouncements() {
+    private func saveAnnouncements() async {
         let archiveURL = getAnnouncementArchiveURL()
         let jsonEncoder = JSONEncoder()
         jsonEncoder.outputFormatting = .prettyPrinted
 
-        let encodedAnnouncements = try? jsonEncoder.encode(announcements)
-        try? encodedAnnouncements?.write(to: archiveURL, options: .noFileProtection)
-    }
-
-    private func saveEvents() {
-        let archiveURL = getEventArchiveURL()
-        let jsonEncoder = JSONEncoder()
-        jsonEncoder.outputFormatting = .prettyPrinted
-        
-        let encodedEventItems = try? jsonEncoder.encode(events)
-        try? encodedEventItems?.write(to: archiveURL, options: .noFileProtection)
-    }
-
-    private func loadAnnouncements() {
-        let archiveURL = getAnnouncementArchiveURL()
-        let jsonDecoder = JSONDecoder()
-
-        if let retrievedAnnouncementData = try? Data(contentsOf: archiveURL),
-           let announcementsDecoded = try? jsonDecoder.decode([Announcement].self, from: retrievedAnnouncementData) {
-            announcements = announcementsDecoded
-        }
-    }
-
-    private func loadEvents() {
-        let archiveURL = getEventArchiveURL()
-        let jsonDecoder = JSONDecoder()
-        
-        if let retrievedEventItemData = try? Data(contentsOf: archiveURL),
-           let eventsDecoded = try? jsonDecoder.decode([EventItem].self, from: retrievedEventItemData) {
-            events = eventsDecoded
-        }
-    }
-    
-    func retrieveAllPosts() async throws {
         do {
-            try await retrieveEvents()
-            try await retrieveAnnouncements()
+            let encodedData = try jsonEncoder.encode(announcements)
+            try encodedData.write(to: archiveURL, options: .noFileProtection)
+        } catch {
+            print("Failed to save announcements: \(error)")
+        }
+    }
+
+    private func saveEvents() async {
+        let archiveURL = getEventArchiveURL()
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
+
+        do {
+            let encodedData = try jsonEncoder.encode(events)
+            try encodedData.write(to: archiveURL, options: .noFileProtection)
+        } catch {
+            print("Failed to save events: \(error)")
+        }
+    }
+
+    private func loadAnnouncements() async {
+        let archiveURL = getAnnouncementArchiveURL()
+        let jsonDecoder = JSONDecoder()
+
+        do {
+            let data = try Data(contentsOf: archiveURL)
+            let decodedAnnouncements = try jsonDecoder.decode([Announcement].self, from: data)
+            announcements = decodedAnnouncements
+        } catch {
+            print("Failed to load announcements: \(error)")
+        }
+    }
+
+    private func loadEvents() async {
+        let archiveURL = getEventArchiveURL()
+        let jsonDecoder = JSONDecoder()
+
+        do {
+            let data = try Data(contentsOf: archiveURL)
+            let decodedEvents = try jsonDecoder.decode([EventItem].self, from: data)
+            events = decodedEvents
+        } catch {
+            print("Failed to load events: \(error)")
+        }
+    }
+
+    func retrieveAllPosts() async throws {
+        async let eventsTask = retrieveEvents()
+        async let announcementsTask = retrieveAnnouncements()
+
+        do {
+            _ = try await (eventsTask, announcementsTask)
         } catch {
             throw error
         }
     }
 
     func retrieveEvents() async throws {
-        do {
-            let query = try await Firestore.firestore().collection("houseevents").order(by: "dateAdded", descending: true).getDocuments()
+        let query = try await Firestore.firestore()
+            .collection("houseevents")
+            .order(by: "dateAdded", descending: true)
+            .getDocuments()
 
-            await MainActor.run {
-                self.events = []
-                for document in query.documents {
-                    self.events.append(
-                        EventItem(
-                            id: document.documentID,
-                            name: document.data()["name"] as? String,
-                            title: document.data()["header"] as! String,
-                            description: document.data()["desc"] as! String?,
-                            venue: document.data()["venue"] as! String,
-                            date: document.data()["date"] as! String
-                        )
-                    )
-                }
+        let newEvents = query.documents.compactMap { document -> EventItem? in
+            guard let title = document.data()["header"] as? String,
+                  let venue = document.data()["venue"] as? String,
+                  let date = document.data()["date"] as? String else {
+                return nil
             }
-        } catch {
-            throw error
+
+            return EventItem(
+                id: document.documentID,
+                name: document.data()["name"] as? String,
+                title: title,
+                description: document.data()["desc"] as? String,
+                venue: venue,
+                date: date
+            )
         }
+
+        events = newEvents
     }
-    
+
     func retrieveAnnouncements() async throws {
-        do {
-            let query = try await Firestore.firestore().collection("Announcements").order(by: "dateAdded", descending: true).getDocuments()
-            await MainActor.run {
-                self.announcements = []
-                for document in query.documents {
-                    self.announcements.append(
-                        Announcement(
-                            id: document.documentID,
-                            name: document.data()["name"] as? String,
-                            title: document.data()["header"] as! String,
-                            description: document.data()["text"] as! String?
-                        )
-                    )
-                }
+        let query = try await Firestore.firestore()
+            .collection("Announcements")
+            .order(by: "dateAdded", descending: true)
+            .getDocuments()
+
+        let newAnnouncements = query.documents.compactMap { document -> Announcement? in
+            guard let title = document.data()["header"] as? String else {
+                return nil
             }
-        } catch {
-            throw error
+
+            return Announcement(
+                id: document.documentID,
+                name: document.data()["name"] as? String,
+                title: title,
+                description: document.data()["text"] as? String
+            )
         }
+
+        announcements = newAnnouncements
     }
 }
