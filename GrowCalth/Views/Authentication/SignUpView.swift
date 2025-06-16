@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct SignUpView: View {
-    
+
+    let verify_account_alert_title = "Verify Account"
+    let account_exists_alert_title = "Account Exists"
+
     @Binding var signInView: Bool
     
     @State var isLoading = false
@@ -79,11 +82,24 @@ struct SignUpView: View {
         }
         .padding(.horizontal)
         .alert(alertHeader, isPresented: $showingAlert) {
-            if alertMessage == "An account with this email already exists. Please log in instead." {
+            if alertHeader == account_exists_alert_title || alertHeader == verify_account_alert_title {
                 if #available(iOS 26.0, *) {
-                    Button("Proceed to Login", role: .confirm) { signInView = true }
+                    Button(
+                        alertHeader == verify_account_alert_title ? "OK" : "Proceed to Login",
+                        role: .confirm
+                    ) {
+                        withAnimation {
+                            signInView = true
+                        }
+                    }
                 } else {
-                    Button("Proceed to Login") { signInView = true }
+                    Button(
+                        alertHeader == verify_account_alert_title ? "OK" : "Proceed to Login"
+                    ) {
+                        withAnimation {
+                            signInView = true
+                        }
+                    }
                 }
             } else {
                 if #available(iOS 26.0, *) {
@@ -317,13 +333,12 @@ struct SignUpView: View {
                         password: password,
                         house: houseSelection
                     )
-                    alertHeader = "Verify account"
+                    alertHeader = verify_account_alert_title
                     alertMessage = "A verification email has been sent to your account's email address. Verify your email, then try logging in again."
-                    signInView = true
                 } catch {
                     alertMessage = "\(error.localizedDescription)"
                     if alertMessage == "An account with this email already exists. Please log in instead." {
-                        alertHeader = "Account Exists"
+                        alertHeader = account_exists_alert_title
                     } else {
                         alertHeader = "Error"
                     }
