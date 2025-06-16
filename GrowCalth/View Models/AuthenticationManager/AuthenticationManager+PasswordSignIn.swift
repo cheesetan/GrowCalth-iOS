@@ -32,7 +32,6 @@ extension AuthenticationManager {
             await self.updatePublishedVariables()
             return true
         } else {
-            try await self.verifyEmail(user: user)
             try await self.signOut()
             return false
         }

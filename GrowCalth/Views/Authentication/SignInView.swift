@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct SignInView: View {
-    
+
+    let verify_account_alert_header = "Verify Account"
+
     @Binding var signInView: Bool
     
     @State var isLoading = false
-    
+    @State var alertIsLoading = false
+
     @State var email = ""
     @State var password = ""
     @State var showingPassword = false
@@ -80,7 +83,33 @@ struct SignInView: View {
         }
         .padding(.horizontal)
         .alert(alertHeader, isPresented: $showingAlert) {
-            Button("OK", role: .cancel) {}
+            if alertHeader == verify_account_alert_header {
+                if #available(iOS 26.0, *) {
+                    Button("Close", role: .close) {}
+                    Button(role: .confirm) {
+                        sendVerificationEmail()
+                    } label: {
+                        if alertIsLoading {
+                            ProgressView()
+                        } else {
+                            Text("Send Again")
+                        }
+                    }
+                } else {
+                    Button("Cancel", role: .cancel) {}
+                    Button {
+                        sendVerificationEmail()
+                    } label: {
+                        if alertIsLoading {
+                            ProgressView()
+                        } else {
+                            Text("Send Again")
+                        }
+                    }
+                }
+            } else {
+                Button("OK", role: .cancel) {}
+            }
         } message: {
             Text(alertMessage)
         }
@@ -279,27 +308,6 @@ struct SignInView: View {
             return false
         }
     }
-
-    func signInWithPassword() {
-        if !email.isEmpty && !password.isEmpty {
-            isLoading = true
-            Task {
-                do {
-                    let isVerified = try await authManager.signIn(email: email, password: password)
-                    if !isVerified {
-                        alertHeader = "Verify account"
-                        alertMessage = "A verification email has been sent to your account's email address. Verify your email then try logging in again."
-                        showingAlert = true
-                    }
-                } catch {
-                    alertHeader = "Error"
-                    alertMessage = "\(error.localizedDescription)"
-                    showingAlert = true
-                }
-                isLoading = false
-            }
-        }
-    }
     
     var bottomText: some View {
         VStack {
@@ -318,6 +326,42 @@ struct SignInView: View {
                 }
                 .buttonStyle(.plain)
             }
+        }
+    }
+
+    func signInWithPassword() {
+        if !email.isEmpty && !password.isEmpty {
+            isLoading = true
+            Task {
+                do {
+                    let isVerified = try await authManager.signIn(email: email, password: password)
+                    if !isVerified {
+                        alertHeader = verify_account_alert_header
+                        alertMessage = "We've sent a verification email to your registered email address. Please verify your email before logging in again, and don’t forget to check your junk or spam folder. If you didn’t receive the email, click \"Send Again\" to resend it."
+                        showingAlert = true
+                    }
+                } catch {
+                    alertHeader = "Error"
+                    alertMessage = "\(error.localizedDescription)"
+                    showingAlert = true
+                }
+                isLoading = false
+            }
+        }
+    }
+
+    func sendVerificationEmail() {
+        alertIsLoading = true
+        Task {
+            do {
+                let user = try authManager.getCurrentUser()
+                try await authManager.verifyEmail(user: user)
+            } catch {
+                alertHeader = "Error"
+                alertMessage = "\(error.localizedDescription)"
+                showingAlert = true
+            }
+            alertIsLoading = false
         }
     }
 }
