@@ -146,16 +146,9 @@ struct GrowCalth_iOSApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
-    @StateObject var csManager = ColorSchemeManager()
-
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(csManager)
-                .preferredColorScheme(
-                    csManager.colorScheme == .automatic ? .none :
-                        csManager.colorScheme == .dark ? .dark : .light
-                )
         }
     }
 }

@@ -90,6 +90,7 @@ struct ContentView: View {
     @ObservedObject var napfaManager: NAPFAManager
     @ObservedObject var quotesManager: QuotesManager
     @ObservedObject var announcementManager: AnnouncementManager
+    @ObservedObject var csManager: ColorSchemeManager
 
     @ObservedObject var pointsManager: PointsManager
     @ObservedObject var developerManager: DeveloperManager
@@ -106,7 +107,8 @@ struct ContentView: View {
         lbManager: LeaderboardsManager = .init(),
         napfaManager: NAPFAManager = .init(),
         quotesManager: QuotesManager = .init(),
-        announcementManager: AnnouncementManager = .init()
+        announcementManager: AnnouncementManager = .init(),
+        csManager: ColorSchemeManager = .init()
     ) {
         self.authManager = authManager
         self.updateManager = updateManager
@@ -118,6 +120,7 @@ struct ContentView: View {
         self.napfaManager = napfaManager
         self.quotesManager = quotesManager
         self.announcementManager = announcementManager
+        self.csManager = csManager
 
         let adminManager = AdminManager(authManager: authManager)
         self.adminManager = adminManager
@@ -240,10 +243,15 @@ struct ContentView: View {
         .environmentObject(napfaManager)
         .environmentObject(quotesManager)
         .environmentObject(announcementManager)
+        .environmentObject(csManager)
         .environmentObject(pointsManager)
         .environmentObject(developerManager)
         .environmentObject(adminManager)
         .environmentObject(appState)
+        .preferredColorScheme(
+            csManager.colorScheme == .automatic ? .none :
+                csManager.colorScheme == .dark ? .dark : .light
+        )
     }
 }
 
