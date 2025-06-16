@@ -334,7 +334,7 @@ struct SignUpView: View {
                         house: houseSelection
                     )
                     alertHeader = verify_account_alert_title
-                    alertMessage = "A verification email has been sent to your account's email address. Verify your email, then try logging in again."
+                    alertMessage = "We've sent a verification email to your SST email address. Please verify your email before logging in again. and don’t forget to check your junk or spam folder."
                 } catch {
                     alertMessage = "\(error.localizedDescription)"
                     if alertMessage == "An account with this email already exists. Please log in instead." {

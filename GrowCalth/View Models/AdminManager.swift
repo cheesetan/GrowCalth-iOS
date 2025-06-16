@@ -20,19 +20,19 @@ enum PostError: LocalizedError, Sendable {
     var errorDescription: String? {
         switch self {
         case .failedToGetEmail:
-            "An error has occured while attempting to fetch your account details. Please sign out and sign back in again."
+            "An error has occurred while attempting to fetch your account details. Please sign out and sign back in again."
         case .failedToPostAnnouncement:
-            "An error has occured while attempting to post your announcement. Please try again later."
+            "An error has occurred while attempting to post your announcement. Please try again later."
         case .failedToPostEvent:
-            "An error has occured while attempting to post your event. Please try again later."
+            "An error has occurred while attempting to post your event. Please try again later."
         case .failedToUpdateAnnouncement:
-            "An error has occured while attempting to update your announcement. Please try again later."
+            "An error has occurred while attempting to update your announcement. Please try again later."
         case .failedToUpdateEvent:
-            "An error has occured while attempting to update your event. Please try again later."
+            "An error has occurred while attempting to update your event. Please try again later."
         case .failedToDeleteAnnouncement:
-            "An error has occured while attempting to delete your announcement. Please try again later."
+            "An error has occurred while attempting to delete your announcement. Please try again later."
         case .failedToDeleteEvent:
-            "An error has occured while attempting to delete your event. Please try again later."
+            "An error has occurred while attempting to delete your event. Please try again later."
         }
     }
 }

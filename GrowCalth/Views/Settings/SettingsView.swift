@@ -182,7 +182,7 @@ struct SettingsView: View {
                 Text("Sign out")
             }
             .tint(.red)
-            .alert("Sign out", isPresented: $showingSignOutAlert) {
+            .alert("Sign Out", isPresented: $showingSignOutAlert) {
                 Button(role: .destructive) {
                     Task {
                         do {

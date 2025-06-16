@@ -88,21 +88,21 @@ struct AccountInfo: View {
             }
             
             Section {
-                Button {
+                Button(role: .destructive) {
                     showingDeleteAccountAlert.toggle()
                 } label: {
                     if isDeletingAccount {
                         ProgressView()
                     } else {
                         Text("Delete account")
+                            .tint(.red)
                     }
                 }
-                .tint(.red)
                 .disabled(isDeletingAccount)
             }
         }
         .navigationTitle("Account")
-        .alert("Delete account", isPresented: $showingDeleteAccountAlert) {
+        .alert("Delete Account", isPresented: $showingDeleteAccountAlert) {
             SecureField("Current Password", text: $deleteAccountPassword)
             Button("Delete", role: .destructive) {
                 isDeletingAccount = true

@@ -63,7 +63,7 @@ extension AuthenticationManager {
         var errorDescription: String? {
             switch self {
             case .failedToSendVerificationEmail:
-                return "An error has occurred while attempting to send verification link to your account's email address. Please try again."
+                return "We've already sent you a verification email. To prevent multiple requests in a short time, please try again later."
             }
         }
     }

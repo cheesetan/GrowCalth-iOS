@@ -336,8 +336,9 @@ struct SignInView: View {
                 do {
                     let isVerified = try await authManager.signIn(email: email, password: password)
                     if !isVerified {
+                        try await authManager.signOut()
                         alertHeader = verify_account_alert_header
-                        alertMessage = "We've sent a verification email to your registered email address. Please verify your email before logging in again, and don’t forget to check your junk or spam folder. If you didn’t receive the email, click \"Send Again\" to resend it."
+                        alertMessage = "We've sent a verification email to your SST email address. Please verify your email before logging in again, and don’t forget to check your junk or spam folder. If you didn’t receive the email, click \"Send Again\" to resend it."
                         showingAlert = true
                     }
                 } catch {
@@ -354,6 +355,7 @@ struct SignInView: View {
         alertIsLoading = true
         Task {
             do {
+                let _ = try await authManager.signIn(email: email, password: password)
                 let user = try authManager.getCurrentUser()
                 try await authManager.verifyEmail(user: user)
             } catch {
@@ -361,6 +363,7 @@ struct SignInView: View {
                 alertMessage = "\(error.localizedDescription)"
                 showingAlert = true
             }
+            try await authManager.signOut()
             alertIsLoading = false
         }
     }
