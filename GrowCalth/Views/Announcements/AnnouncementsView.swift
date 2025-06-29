@@ -287,7 +287,7 @@ struct AnnouncementsView: View {
     }
     
     var picker: some View {
-        Picker("Filters", selection: $selection) {
+        Picker("Filter Posts", selection: $selection) {
             ForEach(AnnouncementType.allCases, id: \.hashValue) { type in
                 Label(type.rawValue, systemImage: type.icon)
                     .tag(type)

@@ -219,7 +219,7 @@ struct SignUpView: View {
     var housePicker: some View {
         Group {
             if #available(iOS 26.0, *) {
-                Picker("Select your house", selection: $houseSelection) {
+                Picker("House Selection", selection: $houseSelection) {
                     ForEach(Houses.allCases, id: \.hashValue) { house in
                         if house != .selectHouse {
                             Text(house.rawValue)
@@ -238,7 +238,7 @@ struct SignUpView: View {
                 .frame(maxWidth: .infinity)
                 .glassEffect()
             } else {
-                Picker("Select your house", selection: $houseSelection) {
+                Picker("House Selection", selection: $houseSelection) {
                     ForEach(Houses.allCases, id: \.hashValue) { house in
                         if house != .selectHouse {
                             Text(house.rawValue)
@@ -259,7 +259,6 @@ struct SignUpView: View {
                 .mask(RoundedRectangle(cornerRadius: 16))
             }
         }
-        .accessibilityLabel("House")
     }
 
     var signUpButton: some View {

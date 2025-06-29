@@ -50,6 +50,7 @@ struct NewAnnouncementView: View {
 
             TextField("\(postType == .announcements ? "Announcement" : "Event") Title", text: $title)
                 .font(.largeTitle.weight(.heavy))
+                .accessibilityLabel("Title")
 
             if postType == .events {
                 eventItems
@@ -58,11 +59,14 @@ struct NewAnnouncementView: View {
             Divider()
                 .padding(.vertical, 10)
 
-            if #available(iOS 16.0, *) {
-                TextField("\(postType == .announcements ? "Announcement" : "Event") Description", text: $description, axis: .vertical)
-            } else {
-                TextEditor(text: $description)
+            Group {
+                if #available(iOS 16.0, *) {
+                    TextField("\(postType == .announcements ? "Announcement" : "Event") Description", text: $description, axis: .vertical)
+                } else {
+                    TextEditor(text: $description)
+                }
             }
+            .accessibilityLabel("Description")
 
             Spacer()
 
@@ -115,8 +119,10 @@ struct NewAnnouncementView: View {
                 Label("Event Date", systemImage: "calendar")
                     .foregroundColor(.secondary)
             }
-            
+            .accessibilityLabel("Date")
+
             TextField(LocalizedStringKey("\(Image(systemName: "mappin.and.ellipse")) Event Venue(s)"), text: $eventVenue)
+                .accessibilityLabel("Venues")
         }
     }
     
