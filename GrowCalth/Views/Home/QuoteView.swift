@@ -77,7 +77,7 @@ struct QuoteView: View {
                         .padding()
                         .frame(maxWidth: .infinity)
                         .frame(height: 50)
-                        .background(.blue)
+                        .background(.accent)
                         .foregroundColor(isLoading ? .clear : .white)
                         .font(.body.weight(.bold))
                         .mask(RoundedRectangle(cornerRadius: 16))
