@@ -58,6 +58,7 @@ struct HomeView: View {
                                     .matchedTransitionSource(id: "leaderboard", in: namespace)
                             }
                             .buttonStyle(.plain)
+                            .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
                         } else {
                             NavigationLink {
                                 LeaderboardView()
@@ -65,6 +66,7 @@ struct HomeView: View {
                                 leaderboards
                             }
                             .buttonStyle(.plain)
+                            .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
                         }
 
                         housePointsProgress
@@ -82,6 +84,7 @@ struct HomeView: View {
                                 .matchedTransitionSource(id: "quote", in: namespace)
                         }
                         .buttonStyle(.plain)
+                        .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
                     } else {
                         NavigationLink {
                             QuoteView()
@@ -89,6 +92,7 @@ struct HomeView: View {
                             quotes
                         }
                         .buttonStyle(.plain)
+                        .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
                     }
 
                     if #available(iOS 18.0, *) {
@@ -100,6 +104,7 @@ struct HomeView: View {
                                 .matchedTransitionSource(id: "goals", in: namespace)
                         }
                         .buttonStyle(.plain)
+                        .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
                     } else {
                         NavigationLink {
                             GoalsView()
@@ -107,6 +112,7 @@ struct HomeView: View {
                             goals
                         }
                         .buttonStyle(.plain)
+                        .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
                     }
                 }
                 .padding(.top, 8)
@@ -179,7 +185,6 @@ struct HomeView: View {
         RoundedRectangle(cornerRadius: 16)
             .frame(width: halfUIWidth, height: halfUIWidth - 15)
             .foregroundColor(.black)
-            .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
             .overlay {
                 Image("Leaderboard")
                     .resizable()
@@ -285,7 +290,6 @@ struct HomeView: View {
             .frame(maxWidth: .infinity)
             .frame(height: 150)
             .foregroundColor(Color(hex: 0xC2CFDE))
-            .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
             .overlay {
                 VStack {
                     HStack {
@@ -340,7 +344,6 @@ struct HomeView: View {
             .frame(maxWidth: .infinity)
             .frame(height: halfUIWidth - 30)
             .foregroundColor(Color(hex: 0x7B5B66))
-            .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
             .overlay {
                 VStack(spacing: 10) {
                     ProgressBar(text: "Steps", color: .red, height: 35, value: stepsGoalFloat)
