@@ -202,7 +202,7 @@ struct EventDetailView: View {
                 Label("Delete Event", systemImage: "trash")
             }
         } label: {
-            Label("Post Options", systemImage: "ellipsis.circle")
+            Label("Options", systemImage: "ellipsis.circle")
         }
     }
     

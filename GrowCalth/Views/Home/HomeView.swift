@@ -197,6 +197,7 @@ struct HomeView: View {
                         .stroke(.white, lineWidth: 2)
                 }
             }
+            .accessibilityLabel("Leaderboard")
     }
     
     var distance: some View {
@@ -315,6 +316,7 @@ struct HomeView: View {
                         .stroke(.white, lineWidth: 2)
                 }
             }
+            .accessibilityLabel("Quotes")
     }
     
     var stepsGoalFloat: Binding<Double> {
@@ -359,6 +361,7 @@ struct HomeView: View {
                         .stroke(.white, lineWidth: 2)
                 }
             }
+            .accessibilityLabel("Goals")
     }
     
     @ViewBuilder

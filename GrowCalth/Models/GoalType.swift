@@ -7,6 +7,7 @@
 
 import Foundation
 
-enum GoalType: Sendable {
-    case steps, distance
+enum GoalType: String, Sendable {
+    case steps = "Steps"
+    case distance = "Distance"
 }

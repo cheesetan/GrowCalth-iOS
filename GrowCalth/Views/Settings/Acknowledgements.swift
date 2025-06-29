@@ -72,6 +72,9 @@ struct Acknowledgements: View {
                 if image == "scoobert" {
                     Image(image)
                         .resizable()
+                        .accessibilityAction(named: "Scoobert") {
+                            handleTap()
+                        }
                 } else {
                     Image(systemName: image)
                         .resizable()
@@ -104,7 +107,9 @@ struct Acknowledgements: View {
             }
         }
         .onTapGesture {
-            handleTap()
+            if image == "scoobert" {
+                handleTap()
+            }
         }
     }
 

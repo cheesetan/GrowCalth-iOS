@@ -155,6 +155,7 @@ struct AnnouncementsView: View {
                         description: item.description.wrappedValue
                     )
                 }
+                .accessibilityLabel("\(announcementManager.announcements.firstIndex(where: { $0.id == item.id })! + 1)")
                 .swipeActions {
                     if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
                         Button(role: .destructive) {
@@ -185,6 +186,7 @@ struct AnnouncementsView: View {
                         venue: item.venue.wrappedValue
                     )
                 }
+                .accessibilityLabel("\(announcementManager.events.firstIndex(where: { $0.id == item.id })! + 1)")
                 .swipeActions {
                     if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
                         Button(role: .destructive) {

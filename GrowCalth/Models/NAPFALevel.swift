@@ -24,4 +24,11 @@ enum NAPFALevel: String, Codable, CaseIterable {
         case .secondary4: return "4.circle.fill"
         }
     }
+
+    var accessibilityLabel: String {
+        switch self {
+        case .secondary2: return "2"
+        case .secondary4: return "4"
+        }
+    }
 }

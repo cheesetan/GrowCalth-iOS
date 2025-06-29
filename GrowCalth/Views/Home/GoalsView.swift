@@ -114,6 +114,7 @@ struct GoalsView: View {
                 increment(for: goalType)
             }
             .gesture(combinedIncrease)
+            .accessibilityLabel("Increment \(goalType.rawValue)")
     }
 
     @ViewBuilder
@@ -143,6 +144,7 @@ struct GoalsView: View {
                 decrement(for: goalType)
             }
             .gesture(combinedDecrease)
+            .accessibilityLabel("Decrement \(goalType.rawValue)")
     }
 
     // MARK: - Private Methods

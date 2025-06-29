@@ -103,6 +103,7 @@ struct SettingsView: View {
                 .font(.system(size: 30.0).weight(.semibold))
                 .foregroundColor(.white)
             }
+            .accessibilityLabel("Account")
     }
     
     var appearance: some View {

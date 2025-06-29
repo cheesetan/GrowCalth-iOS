@@ -148,6 +148,7 @@ struct SignInView: View {
                 .textInputAutocapitalization(.never)
             }
         }
+        .accessibilityLabel("Email")
     }
 
     var passwordField: some View {
@@ -198,6 +199,7 @@ struct SignInView: View {
                     signInWithPassword()
                 }
             }
+            .accessibilityLabel("Password")
 
             Button {
                 showingPassword.toggle()
@@ -212,6 +214,7 @@ struct SignInView: View {
             .onChange(of: showingPassword) { result in
                 isFieldFocus = showingPassword ? .textField : .secureField
             }
+            .accessibilityLabel(showingPassword ? "Hide" : "Show")
         }
     }
     

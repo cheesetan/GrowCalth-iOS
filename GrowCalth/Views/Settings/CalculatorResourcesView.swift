@@ -13,6 +13,7 @@ struct CalculatorResourcesView: View {
             Section("Mass Calculators") {
                 resource(
                     "Body Mass Index (BMI)",
+                    accessibilityLabel: "BMI",
                     subtitle: "Singapore Heart Foundation",
                     link: "https://www.myheart.org.sg/tools-resources/bmi-calculator/"
                 )
@@ -21,11 +22,13 @@ struct CalculatorResourcesView: View {
             Section("Calorie Calculators") {
                 resource(
                     "Basal Metabolic Rate (BMR)",
+                    accessibilityLabel: "BMR",
                     subtitle: "calculator.net",
                     link: "https://www.calculator.net/bmr-calculator.html"
                 )
                 resource(
                     "Daily Calorie Intake",
+                    accessibilityLabel: "Calorie",
                     subtitle: "yourhealthcalculator.com",
                     link: "https://yourhealthcalculator.com/calculate-calories/"
                 )
@@ -35,7 +38,7 @@ struct CalculatorResourcesView: View {
     }
     
     @ViewBuilder
-    func resource(_ title: String, subtitle: String, link: String) -> some View {
+    func resource(_ title: String, accessibilityLabel: String, subtitle: String, link: String) -> some View {
         Link(destination: URL(string: link)!) {
             CustomLabeledContent {
                 Image(systemName: "arrow.up.forward.square.fill")
@@ -47,6 +50,7 @@ struct CalculatorResourcesView: View {
             }
         }
         .padding(.vertical, 5)
+        .accessibilityLabel(accessibilityLabel)
     }
 }
 

@@ -156,7 +156,7 @@ struct AnnouncementDetailView: View {
                 Label("Delete Announcement", systemImage: "trash")
             }
         } label: {
-            Label("Post Options", systemImage: "ellipsis.circle")
+            Label("Options", systemImage: "ellipsis.circle")
         }
     }
     

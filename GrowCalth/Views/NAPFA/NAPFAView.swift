@@ -249,9 +249,10 @@ struct NAPFAView: View {
             ForEach(NAPFALevel.allCases, id: \.rawValue) { level in
                 Label(level.rawValue, systemImage: level.icon)
                     .tag(level.rawValue)
+                    .accessibilityLabel(level.accessibilityLabel)
             }
         } label: {
-            Text("NAPFA Secondary Level")
+            Text("Year")
         }
     }
 
