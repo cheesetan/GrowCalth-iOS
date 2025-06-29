@@ -139,8 +139,7 @@ struct NewAnnouncementView: View {
                         .foregroundColor(.white)
                         .font(.body.weight(.bold))
                 }
-                .buttonStyle(.borderedProminent)
-                .glassEffect()
+                .buttonStyle(.glassProminent)
             } else {
                 Button {
                     if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {

@@ -207,7 +207,29 @@ struct AnnouncementsView: View {
     @ViewBuilder
     func noContentView(keyword: String, systemImage: String) -> some View {
         VStack {
-            if #available(iOS 17, *) {
+            if #available(iOS 26.0, *) {
+                ContentUnavailableView {
+                    Label("No \(keyword)", systemImage: systemImage)
+                } description: {
+                    Text("There are no \(keyword) available at the moment.")
+                } actions: {
+                    Button {
+                        isLoading = true
+                        Task {
+                            try await announcementManager.retrieveAllPosts()
+                            isLoading = false
+                        }
+                    } label: {
+                        if isLoading {
+                            ProgressView()
+                        } else {
+                            Label("Refresh", systemImage: "arrow.clockwise")
+                                .fontWeight(.bold)
+                        }
+                    }
+                    .buttonStyle(.glassProminent)
+                }
+            } else if #available(iOS 17, *) {
                 ContentUnavailableView {
                     Label("No \(keyword)", systemImage: systemImage)
                 } description: {

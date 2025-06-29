@@ -271,7 +271,7 @@ struct SignUpView: View {
                     Text("Sign Up")
                         .padding(8)
                         .frame(maxWidth: .infinity)
-                        .foregroundColor(isLoading ? .clear : buttonDisabled ? .primary : .white)
+                        .foregroundColor(isLoading ? .clear : .white)
                         .font(.body.weight(.semibold))
                         .overlay {
                             if isLoading {
@@ -280,9 +280,8 @@ struct SignUpView: View {
                         }
                 }
                 .buttonBorderShape(.capsule)
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.glassProminent)
                 .disabled(buttonDisabled)
-                .glassEffect()
 
             } else {
                 Button {

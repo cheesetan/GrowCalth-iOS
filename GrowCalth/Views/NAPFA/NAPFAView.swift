@@ -73,7 +73,7 @@ struct NAPFAView: View {
                     sitUps: napfaManager.sitUps,
                     sbj: napfaManager.sbj
                 )
-                .navigationTransition(.zoom(sourceID: "napfaediting", in: namespace))
+//                .navigationTransition(.zoom(sourceID: "napfaediting", in: namespace))
             } else {
                 EditingNAPFA(
                     yearSelection: napfaManager.year,
@@ -126,25 +126,30 @@ struct NAPFAView: View {
         }
         .overlay(alignment: .bottomTrailing) {
             if #available(iOS 26.0, *) {
-                HStack {
-                    showNAPFAEditButton
-                        .matchedTransitionSource(id: "napfaediting", in: namespace)
-
+                GlassEffectContainer {
                     HStack {
-                        previousButton
-                            .padding(8)
-                        title
-                            .frame(maxWidth: .infinity)
-                        nextButton
-                            .padding(8)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .glassEffect()
+                        napfaEditButton
+//                            .matchedTransitionSource(id: "napfaediting", in: namespace)
 
-                    picker
-                        .padding(8)
-                        .pickerStyle(.menu)
+                        HStack {
+                            previousButton
+                                .padding(8)
+                                .buttonStyle(.plain)
+                            title
+                                .padding(8)
+                                .frame(maxWidth: .infinity)
+                            nextButton
+                                .padding(8)
+                                .buttonStyle(.plain)
+                        }
+                        .frame(maxWidth: .infinity)
                         .glassEffect()
+
+                        picker
+                            .padding(8)
+                            .pickerStyle(.menu)
+                            .glassEffect()
+                    }
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -154,7 +159,7 @@ struct NAPFAView: View {
         }
     }
 
-    var showNAPFAEditButton: some View {
+    var napfaEditButton: some View {
         Group {
             if #available(iOS 26.0, *) {
                 Button {
@@ -274,7 +279,29 @@ struct NAPFAView: View {
     @ViewBuilder
     func noDataAvailable(year: Int) -> some View {
         VStack {
-            if #available(iOS 17, *) {
+            if #available(iOS 26.0, *) {
+                ContentUnavailableView {
+                    Label("No Data", systemImage: "questionmark.square.dashed")
+                } description: {
+                    Text("There is no data available for \(String(year)) \(napfaManager.levelSelection) NAPFA at the moment.")
+                } actions: {
+                    Button {
+                        isLoading = true
+                        Task {
+                            try await napfaManager.fetchAllData(for: napfaManager.year)
+                            isLoading = false
+                        }
+                    } label: {
+                        if isLoading {
+                            ProgressView()
+                        } else {
+                            Label("Refresh", systemImage: "arrow.clockwise")
+                                .fontWeight(.bold)
+                        }
+                    }
+                    .buttonStyle(.glassProminent)
+                }
+            } else if #available(iOS 17, *) {
                 ContentUnavailableView {
                     Label("No Data", systemImage: "questionmark.square.dashed")
                 } description: {

@@ -98,7 +98,7 @@ struct ForgotPasswordView: View {
                     Text("Reset Password")
                         .padding(8)
                         .frame(maxWidth: .infinity)
-                        .foregroundColor(forgotPasswordLoading ? .clear : buttonDisabled ? .primary : .white)
+                        .foregroundColor(forgotPasswordLoading ? .clear : .white)
                         .font(.body.weight(.semibold))
                         .overlay {
                             if forgotPasswordLoading {
@@ -106,10 +106,8 @@ struct ForgotPasswordView: View {
                             }
                         }
                 }
-                .buttonBorderShape(.capsule)
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.glassProminent)
                 .disabled(buttonDisabled)
-                .glassEffect()
             } else {
                 Button {
                     sendForgotPasswordRequest()

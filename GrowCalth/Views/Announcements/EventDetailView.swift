@@ -207,18 +207,16 @@ struct EventDetailView: View {
     }
     
     var saveEditButton: some View {
-        VStack {
+        Button {
+            confirmEdits()
+        } label: {
             if !saveIsLoading {
-                Button {
-                    confirmEdits()
-                } label: {
-                    Text("Save")
-                }
-                .disabled(editableTitle.isEmpty || editableDescription.isEmpty || editableVenue.isEmpty)
+                Text("Save")
             } else {
                 ProgressView()
             }
         }
+        .disabled(editableTitle.isEmpty || editableDescription.isEmpty || editableVenue.isEmpty)
     }
     
     func confirmEdits() {

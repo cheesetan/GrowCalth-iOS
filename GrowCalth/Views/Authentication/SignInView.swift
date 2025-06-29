@@ -269,7 +269,7 @@ struct SignInView: View {
                     Text("Login")
                         .padding(8)
                         .frame(maxWidth: .infinity)
-                        .foregroundColor(isLoading ? .clear : loginButtonDisabled ? .primary : .white)
+                        .foregroundColor(isLoading ? .clear : .white)
                         .font(.body.weight(.semibold))
                         .overlay {
                             if isLoading {
@@ -278,9 +278,8 @@ struct SignInView: View {
                         }
                 }
                 .buttonBorderShape(.capsule)
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.glassProminent)
                 .disabled(loginButtonDisabled)
-                .glassEffect()
             } else {
                 Button {
                     signInWithPassword()

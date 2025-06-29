@@ -78,6 +78,10 @@ class AppState: ObservableObject {
     }
 }
 
+enum TabSelection {
+    case home, announcements, napfa, settings
+}
+
 struct ContentView: View {
 
     @ObservedObject var authManager: AuthenticationManager
@@ -162,22 +166,24 @@ struct ContentView: View {
         }
     }
 
+    @State private var tabSelected: TabSelection = .home
+
     var body: some View {
         Group {
             switch appState.status {
             case .home:
-                if #available(iOS 18.0, *) {
-                    TabView {
-                        Tab("Home", systemImage: "house.fill") {
+                if #available(iOS 26.0, *) {
+                    TabView(selection: $tabSelected) {
+                        Tab("Home", systemImage: "house.fill", value: .home) {
                             HomeView()
                         }
-                        Tab("Announcements", systemImage: "megaphone") {
+                        Tab("Announcements", systemImage: "megaphone", value: .announcements) {
                             AnnouncementsView()
                         }
-                        Tab("NAPFA", systemImage: "figure.run") {
+                        Tab("NAPFA", systemImage: "figure.run", value: .napfa) {
                             NAPFAView()
                         }
-                        Tab("Settings", systemImage: "gearshape") {
+                        Tab("Settings", systemImage: "gearshape", value: .settings) {
                             SettingsView()
                         }
                     }

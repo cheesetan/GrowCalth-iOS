@@ -66,7 +66,7 @@ struct QuoteView: View {
                             }
                         }
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.glassProminent)
                 .disabled(isLoading)
             } else {
                 Button {
