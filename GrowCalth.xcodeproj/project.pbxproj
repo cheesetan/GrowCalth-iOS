@@ -7,35 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F33939272BE53DE6001E9CF9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F33939262BE53DE6001E9CF9 /* GoogleService-Info.plist */; };
 		F33E282D2BE52B1100777697 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = F33E282C2BE52B1100777697 /* FirebaseFirestore */; };
 		F33E282F2BE52B1100777697 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = F33E282E2BE52B1100777697 /* FirebaseFirestoreCombine-Community */; };
 		F33E28312BE52B1100777697 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F33E28302BE52B1100777697 /* FirebaseFirestoreSwift */; };
-		F33E28332BE52BAC00777697 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = F33E28322BE52BAC00777697 /* FirebaseFirestore */; };
-		F33E28352BE52BAC00777697 /* FirebaseFirestoreCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = F33E28342BE52BAC00777697 /* FirebaseFirestoreCombine-Community */; };
-		F33E28372BE52BAC00777697 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F33E28362BE52BAC00777697 /* FirebaseFirestoreSwift */; };
-		F3474FE12B77BF2F00F65CAC /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E503E92B747DC000E0664E /* WidgetKit.framework */; };
-		F3474FE22B77BF2F00F65CAC /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3E503EB2B747DC000E0664E /* SwiftUI.framework */; };
-		F3474FE52B77BF2F00F65CAC /* GrowCalthWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3474FE42B77BF2F00F65CAC /* GrowCalthWidgetsBundle.swift */; };
-		F3474FE72B77BF2F00F65CAC /* GrowCalthStepsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3474FE62B77BF2F00F65CAC /* GrowCalthStepsWidget.swift */; };
-		F3474FE92B77BF3200F65CAC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F3474FE82B77BF3200F65CAC /* Assets.xcassets */; };
-		F3474FED2B77BF3200F65CAC /* GrowCalthWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F3474FE02B77BF2F00F65CAC /* GrowCalthWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		F3474FF52B77C0E600F65CAC /* GrowCalthDistanceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3474FF42B77C0E600F65CAC /* GrowCalthDistanceWidget.swift */; };
 		F383E25A2AE812FB00C517C2 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = F383E2592AE812FB00C517C2 /* FirebaseAuth */; };
 		F383E25C2AE812FB00C517C2 /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = F383E25B2AE812FB00C517C2 /* FirebaseAuthCombine-Community */; };
 		F38A55D52DAC206E005F5CFC /* SwiftJWT in Frameworks */ = {isa = PBXBuildFile; productRef = F38A55D42DAC206E005F5CFC /* SwiftJWT */; };
 		F3C1885C2B7127F100FD9E2E /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = F3C1885B2B7127F100FD9E2E /* FirebaseMessaging */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		F3474FEB2B77BF3200F65CAC /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F345AB7F2AE62EDE00211FE8 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F3474FDF2B77BF2F00F65CAC;
-			remoteInfo = GrowCalthWidgetsExtension;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		F3E503FA2B747DC200E0664E /* Embed Foundation Extensions */ = {
@@ -44,7 +23,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				F3474FED2B77BF3200F65CAC /* GrowCalthWidgetsExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -52,16 +30,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		F33939262BE53DE6001E9CF9 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "GoogleService-Info.plist"; path = "GrowCalth/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		F345AB872AE62EDE00211FE8 /* GrowCalth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrowCalth.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F3474FE02B77BF2F00F65CAC /* GrowCalthWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GrowCalthWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		F3474FE42B77BF2F00F65CAC /* GrowCalthWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowCalthWidgetsBundle.swift; sourceTree = "<group>"; };
-		F3474FE62B77BF2F00F65CAC /* GrowCalthStepsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowCalthStepsWidget.swift; sourceTree = "<group>"; };
-		F3474FE82B77BF3200F65CAC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		F3474FF42B77C0E600F65CAC /* GrowCalthDistanceWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrowCalthDistanceWidget.swift; sourceTree = "<group>"; };
-		F3474FF62B77C11900F65CAC /* GrowCalthWidgetsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GrowCalthWidgetsExtension.entitlements; sourceTree = "<group>"; };
-		F3474FF92B77C2F900F65CAC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F3E503E92B747DC000E0664E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		F3E503EB2B747DC000E0664E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -73,20 +42,10 @@
 			);
 			target = F345AB862AE62EDE00211FE8 /* GrowCalth */;
 		};
-		F38498AF2D8941EE00F6CB17 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Main/Components/ActivityRingView.swift,
-				"Main/Components/Color+Hex.swift",
-				Main/Managers/GoalsManager.swift,
-				Main/Managers/HealthKitManager.swift,
-			);
-			target = F3474FDF2B77BF2F00F65CAC /* GrowCalthWidgetsExtension */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		F38498722D8941EE00F6CB17 /* GrowCalth */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (F38498AE2D8941EE00F6CB17 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, F38498AF2D8941EE00F6CB17 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = GrowCalth; sourceTree = "<group>"; };
+		F38498722D8941EE00F6CB17 /* GrowCalth */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (F38498AE2D8941EE00F6CB17 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = GrowCalth; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,27 +63,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F3474FDD2B77BF2F00F65CAC /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F33E28372BE52BAC00777697 /* FirebaseFirestoreSwift in Frameworks */,
-				F3474FE22B77BF2F00F65CAC /* SwiftUI.framework in Frameworks */,
-				F33E28352BE52BAC00777697 /* FirebaseFirestoreCombine-Community in Frameworks */,
-				F3474FE12B77BF2F00F65CAC /* WidgetKit.framework in Frameworks */,
-				F33E28332BE52BAC00777697 /* FirebaseFirestore in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		F345AB7E2AE62EDE00211FE8 = {
 			isa = PBXGroup;
 			children = (
-				F3474FF62B77C11900F65CAC /* GrowCalthWidgetsExtension.entitlements */,
 				F38498722D8941EE00F6CB17 /* GrowCalth */,
-				F3474FE32B77BF2F00F65CAC /* GrowCalthWidgets */,
 				F345AB882AE62EDE00211FE8 /* Products */,
 				F3C1885A2B7127F100FD9E2E /* Frameworks */,
 			);
@@ -134,28 +79,13 @@
 			isa = PBXGroup;
 			children = (
 				F345AB872AE62EDE00211FE8 /* GrowCalth.app */,
-				F3474FE02B77BF2F00F65CAC /* GrowCalthWidgetsExtension.appex */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		F3474FE32B77BF2F00F65CAC /* GrowCalthWidgets */ = {
-			isa = PBXGroup;
-			children = (
-				F33939262BE53DE6001E9CF9 /* GoogleService-Info.plist */,
-				F3474FE42B77BF2F00F65CAC /* GrowCalthWidgetsBundle.swift */,
-				F3474FE62B77BF2F00F65CAC /* GrowCalthStepsWidget.swift */,
-				F3474FF42B77C0E600F65CAC /* GrowCalthDistanceWidget.swift */,
-				F3474FF92B77C2F900F65CAC /* Info.plist */,
-				F3474FE82B77BF3200F65CAC /* Assets.xcassets */,
-			);
-			path = GrowCalthWidgets;
 			sourceTree = "<group>";
 		};
 		F3C1885A2B7127F100FD9E2E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F3E503E92B747DC000E0664E /* WidgetKit.framework */,
 				F3E503EB2B747DC000E0664E /* SwiftUI.framework */,
 			);
 			name = Frameworks;
@@ -176,7 +106,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				F3474FEC2B77BF3200F65CAC /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				F38498722D8941EE00F6CB17 /* GrowCalth */,
@@ -195,28 +124,6 @@
 			productReference = F345AB872AE62EDE00211FE8 /* GrowCalth.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F3474FDF2B77BF2F00F65CAC /* GrowCalthWidgetsExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F3474FEE2B77BF3200F65CAC /* Build configuration list for PBXNativeTarget "GrowCalthWidgetsExtension" */;
-			buildPhases = (
-				F3474FDC2B77BF2F00F65CAC /* Sources */,
-				F3474FDD2B77BF2F00F65CAC /* Frameworks */,
-				F3474FDE2B77BF2F00F65CAC /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = GrowCalthWidgetsExtension;
-			packageProductDependencies = (
-				F33E28322BE52BAC00777697 /* FirebaseFirestore */,
-				F33E28342BE52BAC00777697 /* FirebaseFirestoreCombine-Community */,
-				F33E28362BE52BAC00777697 /* FirebaseFirestoreSwift */,
-			);
-			productName = GrowCalthWidgetsExtension;
-			productReference = F3474FE02B77BF2F00F65CAC /* GrowCalthWidgetsExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -225,13 +132,10 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1510;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					F345AB862AE62EDE00211FE8 = {
 						CreatedOnToolsVersion = 15.1;
-					};
-					F3474FDF2B77BF2F00F65CAC = {
-						CreatedOnToolsVersion = 15.2;
 					};
 				};
 			};
@@ -253,7 +157,6 @@
 			projectRoot = "";
 			targets = (
 				F345AB862AE62EDE00211FE8 /* GrowCalth */,
-				F3474FDF2B77BF2F00F65CAC /* GrowCalthWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -263,15 +166,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F3474FDE2B77BF2F00F65CAC /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F3474FE92B77BF3200F65CAC /* Assets.xcassets in Resources */,
-				F33939272BE53DE6001E9CF9 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,25 +179,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F3474FDC2B77BF2F00F65CAC /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F3474FF52B77C0E600F65CAC /* GrowCalthDistanceWidget.swift in Sources */,
-				F3474FE52B77BF2F00F65CAC /* GrowCalthWidgetsBundle.swift in Sources */,
-				F3474FE72B77BF2F00F65CAC /* GrowCalthStepsWidget.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		F3474FEC2B77BF3200F65CAC /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F3474FDF2B77BF2F00F65CAC /* GrowCalthWidgetsExtension */;
-			targetProxy = F3474FEB2B77BF3200F65CAC /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		F345AB932AE62EDF00211FE8 /* Debug */ = {
@@ -341,6 +217,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 7K6ZTDFM48;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -364,6 +241,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -404,6 +282,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 7K6ZTDFM48;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -420,6 +299,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -428,13 +308,12 @@
 		F345AB962AE62EDF00211FE8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = GrowCalth;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GrowCalth/GrowCalth.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 7K6ZTDFM48;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = GrowCalth/Info.plist;
@@ -453,7 +332,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.1.0;
+				MARKETING_VERSION = 4.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -461,7 +340,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -469,13 +348,12 @@
 		F345AB972AE62EDF00211FE8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = GrowCalth;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = GrowCalth/GrowCalth.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 7K6ZTDFM48;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = GrowCalth/Info.plist;
@@ -494,7 +372,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.1.0;
+				MARKETING_VERSION = 4.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -502,79 +380,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Release;
-		};
-		F3474FEF2B77BF3200F65CAC /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = GrowCalthWidgetsExtension.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7K6ZTDFM48;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = GrowCalthWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = GrowCalthWidgets;
-				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth.GrowCalthWidgets;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-			};
-			name = Debug;
-		};
-		F3474FF02B77BF3200F65CAC /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = GrowCalthWidgetsExtension.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7K6ZTDFM48;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = GrowCalthWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = GrowCalthWidgets;
-				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
-				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "GrowCalth needs to access your steps and distance information from the Health app.";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kidcodes.growcalth.GrowCalthWidgets;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -596,15 +402,6 @@
 			buildConfigurations = (
 				F345AB962AE62EDF00211FE8 /* Debug */,
 				F345AB972AE62EDF00211FE8 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F3474FEE2B77BF3200F65CAC /* Build configuration list for PBXNativeTarget "GrowCalthWidgetsExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F3474FEF2B77BF3200F65CAC /* Debug */,
-				F3474FF02B77BF3200F65CAC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -642,21 +439,6 @@
 			productName = "FirebaseFirestoreCombine-Community";
 		};
 		F33E28302BE52B1100777697 /* FirebaseFirestoreSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseFirestoreSwift;
-		};
-		F33E28322BE52BAC00777697 /* FirebaseFirestore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseFirestore;
-		};
-		F33E28342BE52BAC00777697 /* FirebaseFirestoreCombine-Community */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = "FirebaseFirestoreCombine-Community";
-		};
-		F33E28362BE52BAC00777697 /* FirebaseFirestoreSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F383E2562AE812FB00C517C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestoreSwift;
