@@ -239,10 +239,9 @@ struct ContentView: View {
                         if let content = quotesManager.quote?.text {
                             Text(content)
                                 .font(.headline.italic())
-                                .foregroundColor(.black)
                                 .multilineTextAlignment(.center)
                         }
-                        if let author = quotesManager.quote?.author {
+                        if let author = quotesManager.quote?.author, !author.isEmpty {
                             Text(author)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
