@@ -233,10 +233,25 @@ struct ContentView: View {
                     mode: .maintenance
                 )
             case .loading(let string):
-                ProgressView {
-                    Text(string)
+                VStack(spacing: 20) {
+                    Divider().frame(width: 200)
+                    VStack {
+                        if let content = quotesManager.quote?.text {
+                            Text(content)
+                                .font(.headline.italic())
+                                .foregroundColor(.black)
+                                .multilineTextAlignment(.center)
+                        }
+                        if let author = quotesManager.quote?.author {
+                            Text(author)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    Divider().frame(width: 200)
+                    Text(string).font(.subheadline.italic())
                 }
-                .controlSize(.large)
+                .padding()
             }
         }
         .environmentObject(authManager)
@@ -247,7 +262,6 @@ struct ContentView: View {
         .environmentObject(goalsManager)
         .environmentObject(lbManager)
         .environmentObject(napfaManager)
-        .environmentObject(quotesManager)
         .environmentObject(announcementManager)
         .environmentObject(csManager)
         .environmentObject(pointsManager)
