@@ -119,13 +119,81 @@ struct HomeView: View {
 
     var steps: some View {
         activitySquare {
-            Text("Steps")
+            activityInformation(
+                data: Double(hkManager.steps ?? 0),
+                goal: Double(goalsManager.stepsGoal ?? 0),
+                unit: "steps",
+                describer: "Steps"
+            )
         }
     }
 
     var distance: some View {
         activitySquare {
-            Text("Distance")
+            activityInformation(
+                data: hkManager.distance ?? 0.00,
+                goal: Double(goalsManager.distanceGoal ?? 0),
+                unit: "km",
+                describer: "Distance"
+            )
+        }
+    }
+
+    @ViewBuilder
+    func activityInformation(data: Double, goal: Double, unit: String, describer: String) -> some View {
+        VStack {
+            Gauge(
+                value: min(data, goal),
+                in: 0...goal
+            ) {
+                Image(systemName: "gauge.medium")
+            } currentValueLabel: {
+                Group {
+                    if unit == "steps" {
+                        Text("\(Int(data))")
+                    } else {
+                        Text("\(data, specifier: "%.2f")")
+                    }
+                }
+                .contentTransition(.numericText())
+                .font(.system(size: 30, weight: .bold))
+                .foregroundStyle(.accent)
+                .minimumScaleFactor(0.1)
+                .lineLimit(1)
+
+                Text("\(unit)")
+                    .font(.system(size: 14, design: .rounded))
+                    .foregroundStyle(.secondary)
+                    .minimumScaleFactor(0.1)
+                    .lineLimit(1)
+            }
+            .gaugeStyle(ActivityGaugeStyle())
+            .labelStyle(.titleOnly)
+
+            VStack(spacing: 5) {
+                Text("\(describer) left:")
+                    .font(.system(size: 16))
+                    .lineLimit(1)
+
+                Group {
+                    if unit == "steps" {
+                        Text("\(Int(max(goal - data, 0))) \(unit)")
+                    } else {
+                        Text("\(max(goal - data, 0), specifier: "%.2f") \(unit)")
+                    }
+                }
+                .contentTransition(.numericText())
+                .font(.system(size: 16))
+                .lineLimit(1)
+                .padding(4)
+                .frame(maxWidth: .infinity)
+                .mask(Capsule())
+                .background {
+                    Capsule()
+                        .fill(.shadow(.inner(color: Color.activityLeftShadow, radius: 13, x: 0, y: 0)))
+                        .foregroundStyle(Color.background)
+                }
+            }
         }
     }
 
@@ -182,6 +250,8 @@ struct HomeView: View {
                         Text("view more >")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.1)
                     }
                     .padding(.horizontal, 5)
                     .frame(height: 15)
@@ -266,7 +336,6 @@ struct HomeView: View {
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.1)
                                 .foregroundColor(.white)
-                                .padding(.horizontal)
                         }
                         .overlay {
                             Capsule()
@@ -330,8 +399,8 @@ extension UIColor {
 extension Color {
     static let background = Color(
         uiColor: UIColor.dynamicColor(
-            light: UIColor(hex: 0xEBEBF2),
-            dark: UIColor(hex: 0x2B2B2F)
+            light: UIColor(red: 0.92, green: 0.92, blue: 0.95, alpha: 1),
+            dark: UIColor(red: 0.17, green: 0.17, blue: 0.18, alpha: 1)
         )
     )
 
@@ -354,6 +423,13 @@ extension Color {
         uiColor: UIColor(hex: 0x14141F)
     ).opacity(0.1)
 
+    static let activityLeftShadow = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0x2B2B2E).withAlphaComponent(0.2),
+            dark: UIColor(hex: 0x0C0C0D).withAlphaComponent(0.6)
+        )
+    )
+
     static let lbCapsuleBackground = Color(
         uiColor: UIColor.dynamicColor(
             light: UIColor(hex: 0xD4D4D9),
@@ -375,7 +451,45 @@ extension Color {
         )
     )
 
-    static let goalsBackground = Color(hex: 0xBF7069, alpha: 0.8)
+    static let goalsBackground = Color(hex: 0xDB5461, alpha: 0.8)
+}
+
+struct Arc: Shape {
+    var startAngle: Angle
+    var endAngle: Angle
+    var clockwise: Bool
+
+    func path(in rect: CGRect) -> Path {
+        let rotationAdjustment = Angle.degrees(90)
+        let modifiedStart = startAngle - rotationAdjustment
+        let modifiedEnd = endAngle - rotationAdjustment
+
+        var path = Path()
+        path.addArc(center: CGPoint(x: rect.midX, y: rect.midY), radius: rect.width / 2, startAngle: modifiedStart, endAngle: modifiedEnd, clockwise: !clockwise)
+
+        return path
+    }
+}
+
+struct ActivityGaugeStyle: GaugeStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        ZStack {
+            Circle()
+                .trim(from: 0, to: 0.75)
+                .stroke(Color.gray.opacity(0.3), style: StrokeStyle(lineWidth: 12, lineCap: .round, lineJoin: .round))
+                .rotationEffect(.degrees(135))
+
+            Circle()
+                .trim(from: 0, to: 0.75 * configuration.value)
+                .stroke(.accent, style: StrokeStyle(lineWidth: 12, lineCap: .round, lineJoin: .round))
+                .rotationEffect(.degrees(135))
+
+            VStack {
+                configuration.currentValueLabel
+            }
+        }
+    }
+
 }
 
 #Preview {

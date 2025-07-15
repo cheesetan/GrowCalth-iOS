@@ -23,8 +23,10 @@ final class GoalsManager: ObservableObject, Sendable {
     }
 
     func refreshGoals() {
-        stepsGoal = stepsGoalAppStorage
-        distanceGoal = distanceGoalAppStorage
+        withAnimation(.bouncy(extraBounce: 0.3)) {
+            stepsGoal = stepsGoalAppStorage
+            distanceGoal = distanceGoalAppStorage
+        }
     }
 
     func updateGoal(for typeToUpdate: GoalType, to newValue: Double) {

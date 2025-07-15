@@ -240,15 +240,23 @@ struct ContentView: View {
                             Text(content)
                                 .font(.headline.italic())
                                 .multilineTextAlignment(.center)
+                                .minimumScaleFactor(0.1)
                         }
                         if let author = quotesManager.quote?.author, !author.isEmpty {
                             Text(author)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.1)
                         }
                     }
-                    Divider().frame(width: 200)
-                    Text(string).font(.subheadline.italic())
+                    Divider()
+                        .frame(width: 200)
+                    Text(string)
+                        .font(.subheadline.italic())
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.1)
+                        .padding(.horizontal)
                 }
                 .padding()
             }

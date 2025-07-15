@@ -66,6 +66,7 @@ struct GoalsView: View {
     var stepsGoalCountView: some View {
         VStack {
             Text("\(Int(stepsGoal))")
+                .contentTransition(.numericText())
                 .font(.largeTitle)
                 .fontWeight(.heavy)
                 .padding(.horizontal)
@@ -78,6 +79,7 @@ struct GoalsView: View {
     var distanceGoalCountView: some View {
         VStack {
             Text(String(format: "%.2f", distanceGoal))
+                .contentTransition(.numericText())
                 .font(.largeTitle)
                 .fontWeight(.heavy)
                 .padding(.horizontal)
