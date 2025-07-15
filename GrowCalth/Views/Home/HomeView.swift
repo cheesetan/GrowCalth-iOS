@@ -39,7 +39,7 @@ struct HomeView: View {
 
     var main: some View {
         ZStack {
-            Color.offBackground.ignoresSafeArea()
+            Color.background.ignoresSafeArea()
             GeometryReader { geometry in
                 VStack(spacing: geometry.size.height * 0.15 / 3) {
                     housePointsProgress
@@ -104,52 +104,52 @@ struct HomeView: View {
         .padding(.horizontal, 30)
         .padding(.vertical, 5)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.offBackground)
         .mask(Capsule())
-        .shadow(color: Color(hex: 0x2B2B2E).opacity(0.2), radius: 35, x: 0, y: 5)
+        .background {
+            Capsule()
+                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 13, x: 0, y: 0)))
+                .foregroundStyle(Color.background)
+        }
         .overlay {
             Capsule()
-                .stroke(.white, lineWidth: 2)
+                .stroke(Color.outline, lineWidth: 2)
         }
+        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
     }
 
     var steps: some View {
-        VStack {
-            Text("Steps AathiRobo8")
-                .padding()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(
-                            .shadow(.inner(color: Color(red: 197/255, green: 197/255, blue: 197/255).opacity(0.5),radius: 3, x:3, y: 3))
-                            .shadow(.inner(color: .white.opacity(0.5), radius: 3, x: -3, y: -3))
-                        )
-                        .foregroundStyle(.offBackground)
-                }
-                .overlay {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .stroke(LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0), .white.opacity(0.8)], startPoint: .bottomLeading, endPoint: .topTrailing), lineWidth: 2)
-                }
+        activitySquare {
+            Text("Steps")
         }
     }
 
     var distance: some View {
+        activitySquare {
+            Text("Distance")
+        }
+    }
+
+    @ViewBuilder
+    func activitySquare<Content: View>(@ViewBuilder content: @escaping () -> Content) -> some View {
         VStack {
-            Text("Distance AathiRobo8")
+            content()
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .mask(RoundedRectangle(cornerRadius: 24, style: .continuous))
                 .background {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
                         .fill(
-                            .shadow(.inner(color: Color(red: 197/255, green: 197/255, blue: 197/255).opacity(0.5),radius: 3, x:3, y: 3))
-                            .shadow(.inner(color: .white.opacity(0.5), radius: 3, x: -3, y: -3))
+                            .shadow(.inner(color: .white.opacity(0.25), radius: 13, x: 0, y: 0))
+                            .shadow(.inner(color: Color.activityInnerShadow, radius: 10, x: 0, y: 0))
                         )
-                        .foregroundStyle(.offBackground)
+                        .foregroundStyle(Color.background)
                 }
                 .overlay {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .stroke(LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0), .white.opacity(0.8)], startPoint: .bottomLeading, endPoint: .topTrailing), lineWidth: 2)
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .stroke(colorScheme == .dark ? AnyShapeStyle(Color.clear) : AnyShapeStyle(Color.outline), lineWidth: 2)
+                        .foregroundStyle(Color.clear)
                 }
+                .shadow(color: Color.activityOuterShadow, radius: 35, x: 0, y: 4)
         }
     }
 
@@ -211,27 +211,55 @@ struct HomeView: View {
     ) -> some View {
         Capsule()
             .frame(maxHeight: height)
-            .foregroundStyle(Color(hex: 0xD4D4D9))
+            .foregroundStyle(Color.lbCapsuleBackground)
             .overlay {
                 HStack(spacing: 30) {
                     Capsule()
                         .frame(width: placingBubbleWidth*1.2)
-                        .foregroundStyle(.white.opacity(0.8))
+                        .foregroundStyle(Color.lbPlacingBackground)
+                        .background {
+                            Capsule()
+                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 13, x: 0, y: 0)))
+                                .foregroundStyle(Color.lbPlacingBackground)
+                        }
                         .overlay {
                             Text(placing)
                                 .font(.title2.weight(.black).italic())
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.1)
-                                .foregroundColor(.black)
                                 .padding(.horizontal)
                         }
                         .overlay {
                             Capsule()
-                                .stroke(.white, lineWidth: 2)
+                                .stroke(Color.outline, lineWidth: 2)
                         }
+                        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
                     Capsule()
                         .frame(maxWidth: .infinity)
-                        .foregroundStyle(house.color.opacity(0.8))
+                        .foregroundStyle(
+                            LinearGradient(
+                                stops: [
+                                    .init(color: house.color, location: 0.7),
+                                    .init(color: Color.lbHouseColorToFadeTo, location: 1.2)
+                                ],
+                                startPoint: .bottomLeading,
+                                endPoint: .topTrailing
+                            )
+                        )
+                        .background {
+                            Capsule()
+                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 13, x: 0, y: 0)))
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        stops: [
+                                            .init(color: house.color, location: 0.7),
+                                            .init(color: Color.lbHouseColorToFadeTo, location: 1.2)
+                                        ],
+                                        startPoint: .bottomLeading,
+                                        endPoint: .topTrailing
+                                    )
+                                )
+                        }
                         .overlay {
                             Text("\(points) POINTS")
                                 .font(.title3.weight(.black).italic())
@@ -242,8 +270,9 @@ struct HomeView: View {
                         }
                         .overlay {
                             Capsule()
-                                .stroke(LinearGradient(colors: [.white.opacity(0.8), .white.opacity(0), .white.opacity(0.8)], startPoint: .bottomLeading, endPoint: .topTrailing), lineWidth: 2)
+                                .stroke(Color.outline, lineWidth: 2)
                         }
+                        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
                 }
             }
     }
@@ -264,7 +293,7 @@ struct HomeView: View {
     var goalsButtonLabel: some View {
         HStack {
             Text("What's your next goal?")
-                .font(.title3.weight(.semibold))
+                .font(.headline.weight(.semibold))
                 .lineLimit(1)
                 .minimumScaleFactor(0.1)
             Spacer()
@@ -276,14 +305,77 @@ struct HomeView: View {
         .padding(.horizontal, 30)
         .padding(.vertical, 5)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(hex: 0xBF7069).opacity(0.8))
         .mask(Capsule())
-        .shadow(color: Color(hex: 0x2B2B2E).opacity(0.2), radius: 35, x: 0, y: 5)
+        .background {
+            Capsule()
+                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 13, x: 0, y: 0)))
+                .foregroundStyle(Color.goalsBackground)
+        }
         .overlay {
             Capsule()
-                .stroke(.white, lineWidth: 2)
+                .stroke(Color.outline, lineWidth: 2)
+        }
+        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+    }
+}
+
+extension UIColor {
+    static func dynamicColor(light: UIColor, dark: UIColor) -> UIColor {
+        return UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? dark : light
         }
     }
+}
+
+extension Color {
+    static let background = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xEBEBF2),
+            dark: UIColor(hex: 0x2B2B2F)
+        )
+    )
+
+    static let outline = LinearGradient(
+        colors: [.white.opacity(0.8), .white.opacity(0.05), .white.opacity(0.8)],
+        startPoint: .bottomLeading,
+        endPoint: .topTrailing
+    )
+
+    static let shadow = Color(
+        uiColor: UIColor(hex: 0x2B2B2E)
+    ).opacity(0.2)
+
+
+    static let activityInnerShadow = Color(
+        uiColor: UIColor(hex: 0xF4F4F6)
+    ).opacity(0.1)
+
+    static let activityOuterShadow = Color(
+        uiColor: UIColor(hex: 0x14141F)
+    ).opacity(0.1)
+
+    static let lbCapsuleBackground = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xD4D4D9),
+            dark: UIColor(hex: 0x4E4E56)
+        )
+    )
+
+    static let lbPlacingBackground = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xDFDFE5),
+            dark: UIColor(hex: 0x3A3A40)
+        )
+    )
+
+    static let lbHouseColorToFadeTo = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xDFDFE5),
+            dark: UIColor(hex: 0x4F4F52)
+        )
+    )
+
+    static let goalsBackground = Color(hex: 0xBF7069, alpha: 0.8)
 }
 
 #Preview {
