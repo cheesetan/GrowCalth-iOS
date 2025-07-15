@@ -151,12 +151,13 @@ struct HomeView: View {
                 Group {
                     if unit == "steps" {
                         Text("\(Int(data))")
+                            .font(.system(size: 26, weight: .bold))
                     } else {
                         Text("\(data, specifier: "%.2f")")
+                            .font(.system(size: 28, weight: .bold))
                     }
                 }
                 .contentTransition(.numericText())
-                .font(.system(size: 30, weight: .bold))
                 .foregroundStyle(.accent)
                 .minimumScaleFactor(0.1)
                 .lineLimit(1)
@@ -170,29 +171,23 @@ struct HomeView: View {
             .gaugeStyle(ActivityGaugeStyle())
             .labelStyle(.titleOnly)
 
-            VStack(spacing: 5) {
-                Text("\(describer) left:")
-                    .font(.system(size: 16))
-                    .lineLimit(1)
-
-                Group {
-                    if unit == "steps" {
-                        Text("\(Int(max(goal - data, 0))) \(unit)")
-                    } else {
-                        Text("\(max(goal - data, 0), specifier: "%.2f") \(unit)")
-                    }
+            Group {
+                if unit == "steps" {
+                    Text("\(Int(max(goal - data, 0))) \(unit) left")
+                } else {
+                    Text("\(max(goal - data, 0), specifier: "%.2f") \(unit) left")
                 }
-                .contentTransition(.numericText())
-                .font(.system(size: 16))
-                .lineLimit(1)
-                .padding(4)
-                .frame(maxWidth: .infinity)
-                .mask(Capsule())
-                .background {
-                    Capsule()
-                        .fill(.shadow(.inner(color: Color.activityLeftShadow, radius: 13, x: 0, y: 0)))
-                        .foregroundStyle(Color.background)
-                }
+            }
+            .contentTransition(.numericText())
+            .font(.system(size: 14))
+            .lineLimit(1)
+            .padding(4)
+            .frame(maxWidth: .infinity)
+            .mask(Capsule())
+            .background {
+                Capsule()
+                    .fill(.shadow(.inner(color: Color.activityLeftShadow, radius: 13, x: 0, y: 0)))
+                    .foregroundStyle(Color.background)
             }
         }
     }
@@ -332,7 +327,8 @@ struct HomeView: View {
                         }
                         .overlay {
                             Text("\(points) POINTS")
-                                .font(.title3.weight(.black).italic())
+                                .padding(5)
+                                .font(.title.weight(.black).italic())
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.1)
                                 .foregroundColor(.white)
