@@ -150,7 +150,7 @@ struct HomeView: View {
             } currentValueLabel: {
                 Group {
                     if unit == "steps" {
-                        Text("\(Int(data))")
+                        Text("\(String(Int(data)))")
                             .font(.system(size: 26, weight: .bold))
                     } else {
                         Text("\(data, specifier: "%.2f")")
@@ -173,7 +173,7 @@ struct HomeView: View {
 
             Group {
                 if unit == "steps" {
-                    Text("\(Int(max(goal - data, 0))) \(unit) left")
+                    Text("\(String(Int(max(goal - data, 0)))) \(unit) left")
                 } else {
                     Text("\(max(goal - data, 0), specifier: "%.2f") \(unit) left")
                 }
