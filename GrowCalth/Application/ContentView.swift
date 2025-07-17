@@ -233,32 +233,35 @@ struct ContentView: View {
                     mode: .maintenance
                 )
             case .loading(let string):
-                VStack(spacing: 20) {
-                    Divider().frame(width: 200)
-                    VStack {
-                        if let content = quotesManager.quote?.text {
-                            Text(content)
-                                .font(.headline.italic())
-                                .multilineTextAlignment(.center)
-                                .minimumScaleFactor(0.1)
+                ZStack {
+                    Color.background.ignoresSafeArea()
+                    VStack(spacing: 20) {
+                        Divider().frame(width: 200)
+                        VStack {
+                            if let content = quotesManager.quote?.text {
+                                Text(content)
+                                    .font(.headline.italic())
+                                    .multilineTextAlignment(.center)
+                                    .minimumScaleFactor(0.1)
+                            }
+                            if let author = quotesManager.quote?.author, !author.isEmpty {
+                                Text(author)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.1)
+                            }
                         }
-                        if let author = quotesManager.quote?.author, !author.isEmpty {
-                            Text(author)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.1)
-                        }
+                        Divider()
+                            .frame(width: 200)
+                        Text(string)
+                            .font(.subheadline.italic())
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.1)
+                            .padding(.horizontal)
                     }
-                    Divider()
-                        .frame(width: 200)
-                    Text(string)
-                        .font(.subheadline.italic())
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.1)
-                        .padding(.horizontal)
+                    .padding()
                 }
-                .padding()
             }
         }
         .environmentObject(authManager)

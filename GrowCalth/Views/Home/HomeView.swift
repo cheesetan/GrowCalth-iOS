@@ -40,28 +40,31 @@ struct HomeView: View {
     var main: some View {
         ZStack {
             Color.background.ignoresSafeArea()
-            GeometryReader { geometry in
-                VStack(spacing: geometry.size.height * 0.15 / 3) {
-                    housePointsProgress
-                        .frame(height: geometry.size.height * 0.07)
+            VStack(alignment: .leading) {
+                Text("Home")
+                    .font(.largeTitle.bold())
+                GeometryReader { geometry in
+                    VStack(spacing: geometry.size.height * 0.15 / 3) {
+                        housePointsProgress
+                            .frame(height: geometry.size.height * 0.07)
 
-                    HStack {
-                        steps
-                        distance
-                    }
-                    .frame(height: geometry.size.height * 0.35)
-
-                    leaderboardPreview
+                        HStack {
+                            steps
+                            distance
+                        }
                         .frame(height: geometry.size.height * 0.35)
 
-                    goals
-                        .frame(height: geometry.size.height * 0.08)
+                        leaderboardPreview
+                            .frame(height: geometry.size.height * 0.35)
+
+                        goals
+                            .frame(height: geometry.size.height * 0.08)
+                    }
+                    .frame(maxHeight: geometry.size.height)
                 }
-                .frame(maxHeight: geometry.size.height)
             }
-            .padding()
+            .padding(30)
         }
-        .navigationTitle("Home")
         .onAppear {
             Task {
                 await hkManager.fetchAllDatas()
@@ -107,12 +110,12 @@ struct HomeView: View {
         .mask(Capsule())
         .background {
             Capsule()
-                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 13, x: 0, y: 0)))
+                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
                 .foregroundStyle(Color.background)
         }
         .overlay {
             Capsule()
-                .stroke(Color.outline, lineWidth: 2)
+                .stroke(Color.outline, lineWidth: 1)
         }
         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
     }
@@ -194,7 +197,7 @@ struct HomeView: View {
                 .mask(Capsule())
                 .background {
                     Capsule()
-                        .fill(.shadow(.inner(color: Color.activityLeftShadow, radius: 13, x: 0, y: 0)))
+                        .fill(.shadow(.inner(color: Color.activityLeftShadow, radius: 6.5, x: 0, y: 0)))
                         .foregroundStyle(Color.background)
                 }
             }
@@ -213,14 +216,14 @@ struct HomeView: View {
                 .background {
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
                         .fill(
-                            .shadow(.inner(color: .white.opacity(0.25), radius: 13, x: 0, y: 0))
+                            .shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0))
                             .shadow(.inner(color: Color.activityInnerShadow, radius: 10, x: 0, y: 0))
                         )
                         .foregroundStyle(Color.background)
                 }
                 .overlay {
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .stroke(colorScheme == .dark ? AnyShapeStyle(Color.clear) : AnyShapeStyle(Color.outline), lineWidth: 2)
+                        .stroke(colorScheme == .dark ? AnyShapeStyle(Color.clear) : AnyShapeStyle(Color.outline), lineWidth: 1)
                         .foregroundStyle(Color.clear)
                 }
                 .shadow(color: Color.activityOuterShadow, radius: 35, x: 0, y: 4)
@@ -295,7 +298,7 @@ struct HomeView: View {
                         .foregroundStyle(Color.lbPlacingBackground)
                         .background {
                             Capsule()
-                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 13, x: 0, y: 0)))
+                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
                                 .foregroundStyle(Color.lbPlacingBackground)
                         }
                         .overlay {
@@ -307,7 +310,7 @@ struct HomeView: View {
                         }
                         .overlay {
                             Capsule()
-                                .stroke(Color.outline, lineWidth: 2)
+                                .stroke(Color.outline, lineWidth: 1)
                         }
                         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
                     Capsule()
@@ -324,7 +327,7 @@ struct HomeView: View {
                         )
                         .background {
                             Capsule()
-                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 13, x: 0, y: 0)))
+                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
                                 .foregroundStyle(
                                     LinearGradient(
                                         stops: [
@@ -346,7 +349,7 @@ struct HomeView: View {
                         }
                         .overlay {
                             Capsule()
-                                .stroke(Color.outline, lineWidth: 2)
+                                .stroke(Color.outline, lineWidth: 1)
                         }
                         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
                 }
@@ -384,12 +387,12 @@ struct HomeView: View {
         .mask(Capsule())
         .background {
             Capsule()
-                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 13, x: 0, y: 0)))
+                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
                 .foregroundStyle(Color.goalsBackground)
         }
         .overlay {
             Capsule()
-                .stroke(Color.outline, lineWidth: 2)
+                .stroke(Color.outline, lineWidth: 1)
         }
         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
     }

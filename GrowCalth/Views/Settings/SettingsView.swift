@@ -36,18 +36,22 @@ struct SettingsView: View {
     }
 
     var main: some View {
-        List {
-            account
-            appearance
-            //                health
-            permissions
-            resources
-            acknowledgements
-            if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
-                developer
+        ZStack {
+            Color.background.ignoresSafeArea()
+            List {
+                account
+                appearance
+                //                health
+                permissions
+                resources
+                acknowledgements
+                if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
+                    developer
+                }
+                signOutButton
             }
-            signOutButton
         }
+        .scrollContentBackground(.hidden)
         .navigationTitle("Settings")
         .onAppear {
             Task {

@@ -47,21 +47,24 @@ struct AnnouncementDetailView: View {
     }
 
     var main: some View {
-        ScrollView(.vertical, showsIndicators: true) {
-            VStack(alignment: .leading) {
-                VStack(alignment: .leading, spacing: 10) {
-                    title
-                    if let name = announcement.name {
-                        authorName(authorName: name)
+        ZStack {
+            Color.background.ignoresSafeArea()
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        title
+                        if let name = announcement.name {
+                            authorName(authorName: name)
+                        }
                     }
-                }
 
-                Divider()
-                    .padding(.vertical, 5)
-                description
+                    Divider()
+                        .padding(.vertical, 5)
+                    description
+                }
+                .padding(30)
+                .animation(.default, value: isEditing)
             }
-            .padding()
-            .animation(.default, value: isEditing)
         }
         .navigationTitle("Announcement")
         .navigationBarTitleDisplayMode(.inline)

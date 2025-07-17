@@ -54,7 +54,11 @@ extension Color {
     )
 
     static let outline = LinearGradient(
-        colors: [.white.opacity(0.8), .white.opacity(0.05), .white.opacity(0.8)],
+        colors: [
+            .white.opacity(0.8),
+            .white.opacity(0.05),
+            .white.opacity(0.8)
+        ],
         startPoint: .bottomLeading,
         endPoint: .topTrailing
     )
@@ -62,7 +66,6 @@ extension Color {
     static let shadow = Color(
         uiColor: UIColor(hex: 0x2B2B2E)
     ).opacity(0.2)
-
 
     static let activityInnerShadow = Color(
         uiColor: UIColor(hex: 0xF4F4F6)
@@ -120,6 +123,27 @@ extension Color {
         uiColor: UIColor.dynamicColor(
             light: UIColor(hex: 0x4F4F52).withAlphaComponent(0.25),
             dark: UIColor(hex: 0x2B2B2E).withAlphaComponent(0.05)
+        )
+    )
+
+
+    static let pickerOuterShadow = Color(
+        uiColor: UIColor(hex: 0x2B2B2E)
+    ).opacity(0.05)
+
+    static let pickerActiveBackground = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xffffff),
+            dark: UIColor(red: 0.17, green: 0.17, blue: 0.18, alpha: 1)
+        )
+    )
+
+    static let pickerActiveInnerShadow = Color.white.opacity(0.25)
+
+    static let pickerInactiveInnerShadow = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0x2B2B2E).withAlphaComponent(0.1),
+            dark: UIColor(hex: 0x000000).withAlphaComponent(0.4)
         )
     )
 }

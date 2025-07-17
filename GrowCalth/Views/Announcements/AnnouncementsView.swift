@@ -44,36 +44,66 @@ struct AnnouncementsView: View {
     var main: some View {
         ZStack {
             Color.background.ignoresSafeArea()
-            VStack(spacing: 0) {
-                if #unavailable(iOS 26.0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 30) {
+                    Text(selection == .announcements ? "Announcements" : "Events")
+                        .font(.largeTitle.bold())
+                        .contentTransition(.numericText())
                     picker
-                        .pickerStyle(.segmented)
-                        .padding(.horizontal)
-                    Spacer()
-                }
-                switch selection {
-                case .announcements:
-                    if !announcementManager.announcements.isEmpty {
-                        announcementsList
-                    } else {
-                        noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
+                    if #unavailable(iOS 26.0) {
+                        picker
+                            .pickerStyle(.segmented)
+                            .padding(.horizontal)
+                        Spacer()
                     }
-                case .events:
-                    if !announcementManager.events.isEmpty {
-                        eventsList
-                    } else {
-                        noContentView(keyword: "Events", systemImage: "calendar")
+                    switch selection {
+                    case .announcements:
+                        if !announcementManager.announcements.isEmpty {
+                            announcementsList
+                        } else {
+                            noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
+                        }
+                    case .events:
+                        if !announcementManager.events.isEmpty {
+                            eventsList
+                        } else {
+                            noContentView(keyword: "Events", systemImage: "calendar")
+                        }
                     }
                 }
-                if #unavailable(iOS 26.0) {
-                    Spacer()
+                .padding(30)
+            }
+        }
+        .overlay(alignment: .bottomTrailing) {
+            Group {
+                if #available(iOS 26.0, *) {
+                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                        createPostButton
+                            .padding()
+                            .font(.title)
+                            .foregroundColor(.accentColor)
+                            .mask(Circle())
+                            .buttonStyle(.plain)
+                            .glassEffect(.regular.interactive())
+                            .matchedTransitionSource(id: "createpost", in: namespace)
+                    }
+                } else {
+                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                        createPostButton
+                            .padding()
+                            .font(.title)
+                            .foregroundColor(.accentColor)
+                            .background(.thickMaterial)
+                            .mask(Circle())
+                            .buttonStyle(.plain)
+                    }
                 }
             }
+            .padding()
         }
         .animation(.default, value: selection)
         .animation(.default, value: announcementManager.announcements)
         .animation(.default, value: announcementManager.events)
-        .navigationTitle(selection == .announcements ? "Announcements" : "Events")
         .refreshable {
             Task {
                 try await adminManager.checkIfAppForcesUpdates()
@@ -100,22 +130,6 @@ struct AnnouncementsView: View {
                 try await adminManager.checkIfUnderMaintenance()
             }
         }
-        .toolbar {
-            if #available(iOS 26.0, *) {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                        createPostButton
-                    }
-                }
-                .matchedTransitionSource(id: "createpost", in: namespace)
-            } else {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                        createPostButton
-                    }
-                }
-            }
-        }
         .alert(alertHeader, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -136,86 +150,69 @@ struct AnnouncementsView: View {
                 NewAnnouncementView(postType: selection)
             }
         }
-        .overlay(alignment: .bottomTrailing) {
-            if #available(iOS 26.0, *) {
-                picker
-                    .padding(8)
-                    .pickerStyle(.menu)
-                    .labelStyle(.iconOnly)
-                    .glassEffect()
-                    .padding()
-                    .padding(.horizontal, 4)
-            }
-        }
     }
 
     var announcementsList: some View {
-        ScrollView {
-            VStack(spacing: 15) {
-                ForEach($announcementManager.announcements, id: \.id) { item in
-                    NavigationLink {
-                        AnnouncementDetailView(announcement: item)
-                    } label: {
-                        announcementItem(
-                            date: item.date.wrappedValue,
-                            title: item.title.wrappedValue,
-                            description: item.description.wrappedValue
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("\(announcementManager.announcements.firstIndex(where: { $0.id == item.id })! + 1)")
-                    .swipeActions {
-                        if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                            Button(role: .destructive) {
-                                stateUUID = item.id
-                                alertHeader = "Delete Announcement"
-                                alertMessage = "Are you sure you want to delete this Announcement? This action cannot be undone."
-                                showingDeleteAlert = true
-                            } label: {
-                                Label("Delete Announcement", systemImage: "trash")
-                            }
-                            .tint(.red)
+        VStack(spacing: 15) {
+            ForEach($announcementManager.announcements, id: \.id) { item in
+                NavigationLink {
+                    AnnouncementDetailView(announcement: item)
+                } label: {
+                    announcementItem(
+                        date: item.date.wrappedValue,
+                        title: item.title.wrappedValue,
+                        description: item.description.wrappedValue
+                    )
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(announcementManager.announcements.firstIndex(where: { $0.id == item.id })! + 1)")
+                .swipeActions {
+                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                        Button(role: .destructive) {
+                            stateUUID = item.id
+                            alertHeader = "Delete Announcement"
+                            alertMessage = "Are you sure you want to delete this Announcement? This action cannot be undone."
+                            showingDeleteAlert = true
+                        } label: {
+                            Label("Delete Announcement", systemImage: "trash")
                         }
+                        .tint(.red)
                     }
                 }
             }
-            .padding(30)
         }
     }
     
     var eventsList: some View {
-        ScrollView {
-            VStack(spacing: 15) {
-                ForEach($announcementManager.events, id: \.id) { item in
-                    NavigationLink {
-                        EventDetailView(event: item)
-                    } label: {
-                        eventItem(
-                            dateAdded: item.dateAdded.wrappedValue,
-                            title: item.title.wrappedValue,
-                            description: item.description.wrappedValue,
-                            date: item.date.wrappedValue,
-                            venue: item.venue.wrappedValue
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("\(announcementManager.events.firstIndex(where: { $0.id == item.id })! + 1)")
-                    .swipeActions {
-                        if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                            Button(role: .destructive) {
-                                stateUUID = item.id
-                                alertHeader = "Delete Event"
-                                alertMessage = "Are you sure you want to delete this Event? This action cannot be undone."
-                                showingDeleteAlert = true
-                            } label: {
-                                Label("Delete Event", systemImage: "trash")
-                            }
-                            .tint(.red)
+        VStack(spacing: 15) {
+            ForEach($announcementManager.events, id: \.id) { item in
+                NavigationLink {
+                    EventDetailView(event: item)
+                } label: {
+                    eventItem(
+                        dateAdded: item.dateAdded.wrappedValue,
+                        title: item.title.wrappedValue,
+                        description: item.description.wrappedValue,
+                        date: item.date.wrappedValue,
+                        venue: item.venue.wrappedValue
+                    )
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(announcementManager.events.firstIndex(where: { $0.id == item.id })! + 1)")
+                .swipeActions {
+                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                        Button(role: .destructive) {
+                            stateUUID = item.id
+                            alertHeader = "Delete Event"
+                            alertMessage = "Are you sure you want to delete this Event? This action cannot be undone."
+                            showingDeleteAlert = true
+                        } label: {
+                            Label("Delete Event", systemImage: "trash")
                         }
+                        .tint(.red)
                     }
                 }
             }
-            .padding(30)
         }
     }
     
@@ -297,16 +294,81 @@ struct AnnouncementsView: View {
         Button {
             showingNewAnnouncementView.toggle()
         } label: {
-            Label("Create a Post", systemImage: "square.and.pencil")
+            Image(systemName: "square.and.pencil")
         }
     }
     
     var picker: some View {
-        Picker("Filter Posts", selection: $selection) {
-            ForEach(AnnouncementType.allCases, id: \.hashValue) { type in
-                Label(type.rawValue, systemImage: type.icon)
-                    .tag(type)
+        HStack(spacing: 20) {
+            Button {
+                withAnimation {
+                    selection = .announcements
+                }
+            } label: {
+                Text("Announcements")
+                    .fontWeight(.bold)
+                    .padding(10)
+                    .frame(maxWidth: .infinity)
+                    .background {
+                        if selection == .announcements {
+                            Capsule()
+                                .fill(.shadow(.inner(
+                                    color: Color.pickerActiveInnerShadow,
+                                    radius: colorScheme == .dark ? 4.2 : 6.5,
+                                    x: 0,
+                                    y: 4
+                                )))
+                                .foregroundStyle(Color.pickerActiveBackground)
+                        } else {
+                            Capsule()
+                                .fill(.shadow(.inner(color: Color.pickerInactiveInnerShadow, radius: 5)))
+                                .foregroundStyle(Color.announcementEventBackground)
+                        }
+                    }
+                    .overlay {
+                        if selection == .announcements {
+                            Capsule()
+                                .stroke(Color.outline, lineWidth: 1)
+                        }
+                    }
+                    .shadow(color: Color.pickerOuterShadow, radius: 17.5)
             }
+            .buttonStyle(.plain)
+            
+            Button {
+                withAnimation {
+                    selection = .events
+                }
+            } label: {
+                Text("Events")
+                    .fontWeight(.bold)
+                    .padding(10)
+                    .frame(maxWidth: .infinity)
+                    .background {
+                        if selection == .events {
+                            Capsule()
+                                .fill(.shadow(.inner(
+                                    color: Color.pickerActiveInnerShadow,
+                                    radius: colorScheme == .dark ? 4.2 : 6.5,
+                                    x: 0,
+                                    y: 4
+                                )))
+                                .foregroundStyle(Color.pickerActiveBackground)
+                        } else {
+                            Capsule()
+                                .fill(.shadow(.inner(color: Color.pickerInactiveInnerShadow, radius: 5)))
+                                .foregroundStyle(Color.announcementEventBackground)
+                        }
+                    }
+                    .overlay {
+                        if selection == .announcements {
+                            Capsule()
+                                .stroke(Color.outline, lineWidth: 1)
+                        }
+                    }
+                    .shadow(color: Color.pickerOuterShadow, radius: 17.5)
+            }
+            .buttonStyle(.plain)
         }
     }
     
@@ -355,9 +417,9 @@ struct AnnouncementsView: View {
         }
         .overlay {
             RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.outline, lineWidth: 2)
+                .stroke(Color.outline, lineWidth: 1)
         }
-        .shadow(color: Color.announcementEventOuterShadow, radius: 25)
+        .shadow(color: Color.pickerOuterShadow, radius: 17.5, x: 0 , y: 5)
     }
     
     @ViewBuilder
@@ -417,7 +479,7 @@ struct AnnouncementsView: View {
         }
         .overlay {
             RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.outline, lineWidth: 2)
+                .stroke(Color.outline, lineWidth: 1)
         }
         .shadow(color: Color.announcementEventOuterShadow, radius: 25)
     }
