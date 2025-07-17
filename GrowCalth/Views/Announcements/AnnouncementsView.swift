@@ -361,7 +361,7 @@ struct AnnouncementsView: View {
                         }
                     }
                     .overlay {
-                        if selection == .announcements {
+                        if selection == .events {
                             Capsule()
                                 .stroke(Color.outline, lineWidth: 1)
                         }
