@@ -366,7 +366,7 @@ struct AnnouncementsView: View {
                                 .stroke(Color.outline, lineWidth: 1)
                         }
                     }
-                    .shadow(color: Color.pickerOuterShadow, radius: 17.5)
+                    .shadow(color: Color.pickerOuterShadow, radius: 17.5, x: 0 , y: 5)
             }
             .buttonStyle(.plain)
         }
@@ -419,7 +419,7 @@ struct AnnouncementsView: View {
             RoundedRectangle(cornerRadius: 24)
                 .stroke(Color.outline, lineWidth: 1)
         }
-        .shadow(color: Color.pickerOuterShadow, radius: 17.5, x: 0 , y: 5)
+        .shadow(color: Color.announcementEventOuterShadow, radius: 25)
     }
     
     @ViewBuilder
