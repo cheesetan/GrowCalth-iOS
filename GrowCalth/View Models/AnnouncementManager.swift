@@ -141,12 +141,14 @@ final class AnnouncementManager: ObservableObject, Sendable {
         let newEvents = query.documents.compactMap { document -> EventItem? in
             guard let title = document.data()["header"] as? String,
                   let venue = document.data()["venue"] as? String,
-                  let date = document.data()["date"] as? String else {
+                  let date = document.data()["date"] as? String,
+                  let dateAdded = (document.data()["dateAdded"] as? Timestamp)?.dateValue() else {
                 return nil
             }
 
             return EventItem(
                 id: document.documentID,
+                dateAdded: dateAdded,
                 name: document.data()["name"] as? String,
                 title: title,
                 description: document.data()["desc"] as? String,
@@ -165,12 +167,14 @@ final class AnnouncementManager: ObservableObject, Sendable {
             .getDocuments()
 
         let newAnnouncements = query.documents.compactMap { document -> Announcement? in
-            guard let title = document.data()["header"] as? String else {
+            guard let title = document.data()["header"] as? String,
+                  let date = (document.data()["dateAdded"] as? Timestamp)?.dateValue() else {
                 return nil
             }
 
             return Announcement(
                 id: document.documentID,
+                date: date,
                 name: document.data()["name"] as? String,
                 title: title,
                 description: document.data()["text"] as? String

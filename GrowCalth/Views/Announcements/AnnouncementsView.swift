@@ -26,6 +26,8 @@ struct AnnouncementsView: View {
 
     @Namespace private var namespace
 
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         if #available(iOS 16.0, *) {
             NavigationStack {
@@ -40,29 +42,32 @@ struct AnnouncementsView: View {
     }
 
     var main: some View {
-        VStack(spacing: 0) {
-            if #unavailable(iOS 26.0) {
-                picker
-                    .pickerStyle(.segmented)
-                    .padding(.horizontal)
-                Spacer()
-            }
-            switch selection {
-            case .announcements:
-                if !announcementManager.announcements.isEmpty {
-                    announcementsList
-                } else {
-                    noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
+        ZStack {
+            Color.background.ignoresSafeArea()
+            VStack(spacing: 0) {
+                if #unavailable(iOS 26.0) {
+                    picker
+                        .pickerStyle(.segmented)
+                        .padding(.horizontal)
+                    Spacer()
                 }
-            case .events:
-                if !announcementManager.events.isEmpty {
-                    eventsList
-                } else {
-                    noContentView(keyword: "Events", systemImage: "calendar")
+                switch selection {
+                case .announcements:
+                    if !announcementManager.announcements.isEmpty {
+                        announcementsList
+                    } else {
+                        noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
+                    }
+                case .events:
+                    if !announcementManager.events.isEmpty {
+                        eventsList
+                    } else {
+                        noContentView(keyword: "Events", systemImage: "calendar")
+                    }
                 }
-            }
-            if #unavailable(iOS 26.0) {
-                Spacer()
+                if #unavailable(iOS 26.0) {
+                    Spacer()
+                }
             }
         }
         .animation(.default, value: selection)
@@ -145,62 +150,72 @@ struct AnnouncementsView: View {
     }
 
     var announcementsList: some View {
-        List {
-            ForEach($announcementManager.announcements, id: \.id) { item in
-                NavigationLink {
-                    AnnouncementDetailView(announcement: item)
-                } label: {
-                    announcementItem(
-                        title: item.title.wrappedValue,
-                        description: item.description.wrappedValue
-                    )
-                }
-                .accessibilityLabel("\(announcementManager.announcements.firstIndex(where: { $0.id == item.id })! + 1)")
-                .swipeActions {
-                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                        Button(role: .destructive) {
-                            stateUUID = item.id
-                            alertHeader = "Delete Announcement"
-                            alertMessage = "Are you sure you want to delete this Announcement? This action cannot be undone."
-                            showingDeleteAlert = true
-                        } label: {
-                            Label("Delete Announcement", systemImage: "trash")
+        ScrollView {
+            VStack(spacing: 15) {
+                ForEach($announcementManager.announcements, id: \.id) { item in
+                    NavigationLink {
+                        AnnouncementDetailView(announcement: item)
+                    } label: {
+                        announcementItem(
+                            date: item.date.wrappedValue,
+                            title: item.title.wrappedValue,
+                            description: item.description.wrappedValue
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(announcementManager.announcements.firstIndex(where: { $0.id == item.id })! + 1)")
+                    .swipeActions {
+                        if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                            Button(role: .destructive) {
+                                stateUUID = item.id
+                                alertHeader = "Delete Announcement"
+                                alertMessage = "Are you sure you want to delete this Announcement? This action cannot be undone."
+                                showingDeleteAlert = true
+                            } label: {
+                                Label("Delete Announcement", systemImage: "trash")
+                            }
+                            .tint(.red)
                         }
-                        .tint(.red)
                     }
                 }
             }
+            .padding(30)
         }
     }
     
     var eventsList: some View {
-        List {
-            ForEach($announcementManager.events, id: \.id) { item in
-                NavigationLink {
-                    EventDetailView(event: item)
-                } label: {
-                    eventItem(
-                        title: item.title.wrappedValue,
-                        description: item.description.wrappedValue,
-                        date: item.date.wrappedValue,
-                        venue: item.venue.wrappedValue
-                    )
-                }
-                .accessibilityLabel("\(announcementManager.events.firstIndex(where: { $0.id == item.id })! + 1)")
-                .swipeActions {
-                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                        Button(role: .destructive) {
-                            stateUUID = item.id
-                            alertHeader = "Delete Event"
-                            alertMessage = "Are you sure you want to delete this Event? This action cannot be undone."
-                            showingDeleteAlert = true
-                        } label: {
-                            Label("Delete Event", systemImage: "trash")
+        ScrollView {
+            VStack(spacing: 15) {
+                ForEach($announcementManager.events, id: \.id) { item in
+                    NavigationLink {
+                        EventDetailView(event: item)
+                    } label: {
+                        eventItem(
+                            dateAdded: item.dateAdded.wrappedValue,
+                            title: item.title.wrappedValue,
+                            description: item.description.wrappedValue,
+                            date: item.date.wrappedValue,
+                            venue: item.venue.wrappedValue
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(announcementManager.events.firstIndex(where: { $0.id == item.id })! + 1)")
+                    .swipeActions {
+                        if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                            Button(role: .destructive) {
+                                stateUUID = item.id
+                                alertHeader = "Delete Event"
+                                alertMessage = "Are you sure you want to delete this Event? This action cannot be undone."
+                                showingDeleteAlert = true
+                            } label: {
+                                Label("Delete Event", systemImage: "trash")
+                            }
+                            .tint(.red)
                         }
-                        .tint(.red)
                     }
                 }
             }
+            .padding(30)
         }
     }
     
@@ -296,45 +311,117 @@ struct AnnouncementsView: View {
     }
     
     @ViewBuilder
-    func announcementItem(title: String, description: String?) -> some View {
-        VStack(alignment: .leading) {
-            Text(title)
-                .fontWeight(.bold)
-            if let description = description, !description.isEmpty {
-                Text(description.replacingOccurrences(of: "\n", with: " "))
+    func announcementItem(date: Date, title: String, description: String?) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 15) {
+                Text(title)
+                    .fontWeight(.bold)
                     .lineLimit(2)
-                    .foregroundColor(.gray)
+                if let description = description, !description.isEmpty {
+                    Text(description.replacingOccurrences(of: "\n", with: " "))
+                        .lineLimit(2)
+                }
             }
+            .multilineTextAlignment(.leading)
+            .frame(maxWidth: .infinity)
+
+            VStack(alignment: .trailing) {
+                if let daysAgo = Calendar.current.dateComponents([.day], from: date, to: Date()).day {
+                    Text("\(daysAgo)d ago")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.gray)
+                }
+                Spacer()
+                Image(systemName: "arrowtriangle.right.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 10, height: 10)
+                    .foregroundStyle(.gray)
+            }
+            .multilineTextAlignment(.trailing)
         }
-        .padding(.vertical, 5)
+        .padding(20)
+        .frame(maxWidth: .infinity)
+        .mask(RoundedRectangle(cornerRadius: 24))
+        .background {
+            RoundedRectangle(cornerRadius: 24)
+                .fill(.shadow(.inner(
+                    color: Color.announcementEventInnerShadow,
+                    radius: colorScheme == .dark ? 13 : 35,
+                    x: 0,
+                    y: 4
+                )))
+                .foregroundStyle(Color.announcementEventBackground)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 24)
+                .stroke(Color.outline, lineWidth: 2)
+        }
+        .shadow(color: Color.announcementEventOuterShadow, radius: 25)
     }
     
     @ViewBuilder
-    func eventItem(title: String, description: String?, date: String, venue: String) -> some View {
-        VStack(alignment: .leading) {
-            Text(title)
-                .fontWeight(.bold)
-            if let description = description, !description.isEmpty, description != " " {
+    func eventItem(dateAdded: Date, title: String, description: String?, date: String, venue: String) -> some View {
+        VStack(alignment: .leading, spacing: 15) {
+            HStack(alignment: .top) {
+                Text(title)
+                    .fontWeight(.bold)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if let daysAgo = Calendar.current.dateComponents([.day], from: dateAdded, to: Date()).day {
+                    Text("\(daysAgo)d ago")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.gray)
+                        .multilineTextAlignment(.trailing)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.1)
+                }
+            }
+
+            if let description = description, !description.isEmpty {
                 Text(description.replacingOccurrences(of: "\n", with: " "))
                     .lineLimit(2)
-                    .foregroundColor(.gray)
             }
-            HStack {
-                Image(systemName: "calendar")
-                Text(date)
+            
+            HStack(alignment: .bottom) {
+                VStack(alignment: .leading) {
+                    Label(date, systemImage: "calendar")
+                    Label(venue, systemImage: "mappin.and.ellipse")
+                }
+                .font(.subheadline)
+                .foregroundColor(.gray)
+                .lineLimit(2)
+
+                Spacer()
+
+                Image(systemName: "arrowtriangle.right.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 10, height: 10)
+                    .foregroundStyle(.gray)
             }
-            .foregroundColor(.gray)
-            .font(.subheadline)
-            HStack {
-                Image(systemName: "mappin.and.ellipse")
-                Text(venue)
-            }
-            .foregroundColor(.gray)
-            .font(.subheadline)
         }
-        .padding(.vertical, 5)
+        .multilineTextAlignment(.leading)
+        .padding(20)
+        .frame(maxWidth: .infinity)
+        .mask(RoundedRectangle(cornerRadius: 24))
+        .background {
+            RoundedRectangle(cornerRadius: 24)
+                .fill(.shadow(.inner(
+                    color: Color.announcementEventInnerShadow,
+                    radius: colorScheme == .dark ? 13 : 35,
+                    x: 0,
+                    y: 4
+                )))
+                .foregroundStyle(Color.announcementEventBackground)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 24)
+                .stroke(Color.outline, lineWidth: 2)
+        }
+        .shadow(color: Color.announcementEventOuterShadow, radius: 25)
     }
-    
+
     func confirmDelete(uuid: String) {
         switch selection {
         case .announcements:

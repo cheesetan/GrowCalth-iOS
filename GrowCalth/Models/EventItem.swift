@@ -9,6 +9,7 @@ import Foundation
 
 struct EventItem: Identifiable, Equatable, Codable {
     var id: String
+    var dateAdded: Date
     var name: String?
     var title: String
     var description: String?
