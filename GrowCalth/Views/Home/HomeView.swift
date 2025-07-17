@@ -141,54 +141,65 @@ struct HomeView: View {
 
     @ViewBuilder
     func activityInformation(data: Double, goal: Double, unit: String, describer: String) -> some View {
-        VStack {
-            Gauge(
-                value: min(data, goal),
-                in: 0...goal
-            ) {
-                Image(systemName: "gauge.medium")
-            } currentValueLabel: {
+        GeometryReader { activityGeometry in
+            VStack {
+                Gauge(
+                    value: min(data, goal),
+                    in: 0...goal
+                ) {
+                    Image(systemName: "gauge.medium")
+                } currentValueLabel: {
+                    GeometryReader { gaugeGeometry in
+                        VStack {
+                            Group {
+                                if unit == "steps" {
+                                    Text("\(Int(data))")
+                                } else {
+                                    Text("\(data, specifier: "%.2f")")
+                                }
+                            }
+                            .font(.largeTitle.bold())
+                            .minimumScaleFactor(0.1)
+                            .contentTransition(.numericText())
+                            .foregroundStyle(.accent)
+                            .minimumScaleFactor(0.1)
+                            .lineLimit(1)
+
+                            Text("\(unit)")
+                                .font(.system(size: 14, design: .rounded))
+                                .foregroundStyle(.secondary)
+                                .minimumScaleFactor(0.1)
+                                .lineLimit(1)
+                        }
+                        .frame(width: gaugeGeometry.size.width*0.8, height: gaugeGeometry.size.height*0.5)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
+                }
+                .gaugeStyle(ActivityGaugeStyle())
+                .labelStyle(.titleOnly)
+
                 Group {
                     if unit == "steps" {
-                        Text("\(String(Int(data)))")
-                            .font(.system(size: 26, weight: .bold))
+                        Text("\(Int(max(goal - data, 0))) \(unit) left")
                     } else {
-                        Text("\(data, specifier: "%.2f")")
-                            .font(.system(size: 28, weight: .bold))
+                        Text("\(max(goal - data, 0), specifier: "%.2f") \(unit) left")
                     }
                 }
                 .contentTransition(.numericText())
-                .foregroundStyle(.accent)
-                .minimumScaleFactor(0.1)
+                .font(.title)
                 .lineLimit(1)
-
-                Text("\(unit)")
-                    .font(.system(size: 14, design: .rounded))
-                    .foregroundStyle(.secondary)
-                    .minimumScaleFactor(0.1)
-                    .lineLimit(1)
-            }
-            .gaugeStyle(ActivityGaugeStyle())
-            .labelStyle(.titleOnly)
-
-            Group {
-                if unit == "steps" {
-                    Text("\(String(Int(max(goal - data, 0)))) \(unit) left")
-                } else {
-                    Text("\(max(goal - data, 0), specifier: "%.2f") \(unit) left")
+                .minimumScaleFactor(0.1)
+                .padding(activityGeometry.size.width >= 145 ? activityGeometry.size.height*0.15 / 5 : activityGeometry.size.height*0.2 / 5)
+                .frame(width: activityGeometry.size.width, height: activityGeometry.size.width >= 145 ? activityGeometry.size.height*0.15 : activityGeometry.size.height*0.2)
+                .mask(Capsule())
+                .background {
+                    Capsule()
+                        .fill(.shadow(.inner(color: Color.activityLeftShadow, radius: 13, x: 0, y: 0)))
+                        .foregroundStyle(Color.background)
                 }
             }
-            .contentTransition(.numericText())
-            .font(.system(size: 14))
-            .lineLimit(1)
-            .padding(4)
-            .frame(maxWidth: .infinity)
-            .mask(Capsule())
-            .background {
-                Capsule()
-                    .fill(.shadow(.inner(color: Color.activityLeftShadow, radius: 13, x: 0, y: 0)))
-                    .foregroundStyle(Color.background)
-            }
+            .padding(activityGeometry.size.width >= 145 ? activityGeometry.size.width / 11 : 0)
+            .frame(width: activityGeometry.size.width, height: activityGeometry.size.height)
         }
     }
 
@@ -479,10 +490,9 @@ struct ActivityGaugeStyle: GaugeStyle {
                 .trim(from: 0, to: 0.75 * configuration.value)
                 .stroke(.accent, style: StrokeStyle(lineWidth: 12, lineCap: .round, lineJoin: .round))
                 .rotationEffect(.degrees(135))
-
-            VStack {
-                configuration.currentValueLabel
-            }
+        }
+        .overlay {
+            configuration.currentValueLabel
         }
     }
 
