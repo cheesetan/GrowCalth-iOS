@@ -55,17 +55,15 @@ extension Color {
 
     static let outline = LinearGradient(
         colors: [
+            .white.opacity(0.8),
             .white.opacity(0.4),
             .white.opacity(0.4),
             .white.opacity(0.2),
             .white.opacity(0.2),
-            .clear,
-            .clear,
-            .clear,
-            .white.opacity(0.2),
             .white.opacity(0.2),
             .white.opacity(0.4),
             .white.opacity(0.4),
+            .white.opacity(0.8)
         ],
         startPoint: .bottomLeading,
         endPoint: .topTrailing
