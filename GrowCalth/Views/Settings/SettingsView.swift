@@ -136,7 +136,7 @@ struct SettingsView: View {
         } header: {
             Text("Specular Highlights")
         } footer: {
-            Text("Enabling motion-based specular highlights will shift specular highlights based on device rotation. Enabling this feature may use more performance.")
+            Text("Motion-based specular highlights shifts the angle of reflection of light based on device rotation. Enabling this feature might impact performance.")
         }
     }
 

@@ -8,13 +8,11 @@
 import SwiftUI
 
 enum AppStatus: Sendable {
-    case home, login, onboarding, noNetwork, updateAvailable, underMaintenance, loading(String)
+    case home, login, noNetwork, updateAvailable, underMaintenance, loading(String)
 }
 
 @MainActor
 class AppState: ObservableObject {
-
-    @AppStorage("onboardingView", store: .standard) var onboardingView = true
 
     @ObservedObject var authManager: AuthenticationManager
     @ObservedObject var adminManager: AdminManager
@@ -23,14 +21,12 @@ class AppState: ObservableObject {
     @ObservedObject var networkManager: NetworkManager
 
     init(
-        onboardingView: Bool = true,
         authManager: AuthenticationManager,
         adminManager: AdminManager,
         updateManager: UpdateManager,
         developerManager: DeveloperManager,
         networkManager: NetworkManager
     ) {
-        self.onboardingView = onboardingView
         self.authManager = authManager
         self.adminManager = adminManager
         self.updateManager = updateManager
@@ -50,16 +46,10 @@ class AppState: ObservableObject {
                     } else {
                         if isUnderMaintenance && !developerManager.bypassed {
                             return .underMaintenance
+                        } else if authManager.isLoggedIn && authManager.accountVerified {
+                            return .home
                         } else {
-                            if !onboardingView {
-                                if authManager.isLoggedIn && authManager.accountVerified {
-                                    return .home
-                                } else {
-                                    return .login
-                                }
-                            } else {
-                                return .onboarding
-                            }
+                            return .login
                         }
                     }
                 } else {
@@ -215,8 +205,6 @@ struct ContentView: View {
                 }
             case .login:
                 AuthenticationView()
-            case .onboarding:
-                OnboardingView(onboardingView: $appState.onboardingView)
             case .noNetwork:
                 CustomContentUnavailableView(
                     title: "No Network Connection",

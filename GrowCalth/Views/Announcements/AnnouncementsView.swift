@@ -29,8 +29,6 @@ struct AnnouncementsView: View {
     @EnvironmentObject var announcementManager: AnnouncementManager
     @EnvironmentObject var adminManager: AdminManager
 
-    @Namespace private var namespace
-
     @Environment(\.colorScheme) private var colorScheme
 
     let journals: [Journal] = []
@@ -51,34 +49,34 @@ struct AnnouncementsView: View {
     var main: some View {
         ZStack {
             Color.background.ignoresSafeArea()
-            ScrollView {
+            VStack {
                 VStack(alignment: .leading, spacing: 30) {
                     Text(selection == .announcements ? "Announcements" : "Events")
                         .font(.largeTitle.bold())
                         .contentTransition(.numericText())
                     picker
-                    if #unavailable(iOS 26.0) {
-                        picker
-                            .pickerStyle(.segmented)
-                            .padding(.horizontal)
-                        Spacer()
-                    }
-                    switch selection {
-                    case .announcements:
-                        if !announcementManager.announcements.isEmpty {
-                            announcementsList
-                        } else {
-                            noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
-                        }
-                    case .events:
-                        if !announcementManager.events.isEmpty {
-                            eventsList
-                        } else {
-                            noContentView(keyword: "Events", systemImage: "calendar")
-                        }
-                    }
                 }
-                .padding(30)
+                .padding([.horizontal, .top], 30)
+                ScrollView {
+                    VStack {
+                        switch selection {
+                        case .announcements:
+                            if !announcementManager.announcements.isEmpty {
+                                announcementsList
+                            } else {
+                                noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
+                            }
+                        case .events:
+                            if !announcementManager.events.isEmpty {
+                                eventsList
+                            } else {
+                                noContentView(keyword: "Events", systemImage: "calendar")
+                            }
+                        }
+                    }
+                    .padding(30)
+                }
+                .scrollIndicators(.hidden)
             }
         }
         .overlay(alignment: .bottomTrailing) {
@@ -92,7 +90,6 @@ struct AnnouncementsView: View {
                             .mask(Circle())
                             .buttonStyle(.plain)
                             .glassEffect(.regular.interactive())
-                            .matchedTransitionSource(id: "createpost", in: namespace)
                     }
                 } else {
                     if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
@@ -150,12 +147,7 @@ struct AnnouncementsView: View {
             Text(alertMessage)
         }
         .sheet(isPresented: $showingNewAnnouncementView) {
-            if #available(iOS 26.0, *) {
-                NewAnnouncementView(postType: selection)
-                    .navigationTransition(.zoom(sourceID: "createpost", in: namespace))
-            } else {
-                NewAnnouncementView(postType: selection)
-            }
+            NewAnnouncementView(postType: selection)
         }
     }
 
@@ -165,11 +157,25 @@ struct AnnouncementsView: View {
                 NavigationLink {
                     AnnouncementDetailView(announcement: item)
                 } label: {
-                    announcementItem(
-                        date: item.date.wrappedValue,
-                        title: item.title.wrappedValue,
-                        description: item.description.wrappedValue
-                    )
+                    if #available(iOS 17.0, *) {
+                        announcementItem(
+                            date: item.date.wrappedValue,
+                            title: item.title.wrappedValue,
+                            description: item.description.wrappedValue
+                        )
+                        .scrollTransition { content, phase in
+                            content
+                                .opacity(phase.isIdentity ? 1 : 0)
+                                .scaleEffect(phase.isIdentity ? 1 : 0.75)
+                                .blur(radius: phase.isIdentity ? 0 : 10)
+                        }
+                    } else {
+                        announcementItem(
+                            date: item.date.wrappedValue,
+                            title: item.title.wrappedValue,
+                            description: item.description.wrappedValue
+                        )
+                    }
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("\(announcementManager.announcements.firstIndex(where: { $0.id == item.id })! + 1)")
@@ -196,13 +202,29 @@ struct AnnouncementsView: View {
                 NavigationLink {
                     EventDetailView(event: item)
                 } label: {
-                    eventItem(
-                        dateAdded: item.dateAdded.wrappedValue,
-                        title: item.title.wrappedValue,
-                        description: item.description.wrappedValue,
-                        date: item.date.wrappedValue,
-                        venue: item.venue.wrappedValue
-                    )
+                    if #available(iOS 17.0, *) {
+                        eventItem(
+                            dateAdded: item.dateAdded.wrappedValue,
+                            title: item.title.wrappedValue,
+                            description: item.description.wrappedValue,
+                            date: item.date.wrappedValue,
+                            venue: item.venue.wrappedValue
+                        )
+                        .scrollTransition { content, phase in
+                            content
+                                .opacity(phase.isIdentity ? 1 : 0)
+                                .scaleEffect(phase.isIdentity ? 1 : 0.75)
+                                .blur(radius: phase.isIdentity ? 0 : 10)
+                        }
+                    } else {
+                        eventItem(
+                            dateAdded: item.dateAdded.wrappedValue,
+                            title: item.title.wrappedValue,
+                            description: item.description.wrappedValue,
+                            date: item.date.wrappedValue,
+                            venue: item.venue.wrappedValue
+                        )
+                    }
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("\(announcementManager.events.firstIndex(where: { $0.id == item.id })! + 1)")
@@ -321,9 +343,7 @@ struct AnnouncementsView: View {
                             Capsule()
                                 .fill(.shadow(.inner(
                                     color: Color.pickerActiveInnerShadow,
-                                    radius: colorScheme == .dark ? 4.2 : 6.5,
-                                    x: 0,
-                                    y: 4
+                                    radius: colorScheme == .dark ? 2.1 : 3.25
                                 )))
                                 .foregroundStyle(Color.pickerActiveBackground)
                         } else {
@@ -335,10 +355,13 @@ struct AnnouncementsView: View {
                     .overlay {
                         if selection == .announcements {
                             Capsule()
-                                .stroke(Color.outline, lineWidth: 1)
+                                .stroke(
+                                    colorScheme == .dark ? Color.pickerOutlineDark : Color.pickerOutlineLight,
+                                    lineWidth: 1
+                                )
                         }
                     }
-                    .shadow(color: Color.pickerOuterShadow, radius: 17.5)
+                    .shadow(color: Color.pickerOuterShadow, radius: 17.5, x: 0 , y: 5)
             }
             .buttonStyle(.plain)
             
@@ -356,9 +379,7 @@ struct AnnouncementsView: View {
                             Capsule()
                                 .fill(.shadow(.inner(
                                     color: Color.pickerActiveInnerShadow,
-                                    radius: colorScheme == .dark ? 4.2 : 6.5,
-                                    x: 0,
-                                    y: 4
+                                    radius: colorScheme == .dark ? 4.2 : 6.5
                                 )))
                                 .foregroundStyle(Color.pickerActiveBackground)
                         } else {
@@ -370,7 +391,10 @@ struct AnnouncementsView: View {
                     .overlay {
                         if selection == .events {
                             Capsule()
-                                .stroke(Color.outline, lineWidth: 1)
+                                .stroke(
+                                    colorScheme == .dark ? Color.pickerOutlineDark : Color.pickerOutlineLight,
+                                    lineWidth: 1
+                                )
                         }
                     }
                     .shadow(color: Color.pickerOuterShadow, radius: 17.5, x: 0 , y: 5)
@@ -389,6 +413,7 @@ struct AnnouncementsView: View {
                 if let description = description, !description.isEmpty {
                     Text(description.replacingOccurrences(of: "\n", with: " "))
                         .lineLimit(2)
+                        .foregroundColor(.secondary)
                 }
             }
             .multilineTextAlignment(.leading)
@@ -416,7 +441,7 @@ struct AnnouncementsView: View {
             RoundedRectangle(cornerRadius: 24)
                 .fill(.shadow(.inner(
                     color: Color.announcementEventInnerShadow,
-                    radius: colorScheme == .dark ? 13 : 35,
+                    radius: colorScheme == .dark ? 6.5 : 17.5,
                     x: 0,
                     y: 4
                 )))
@@ -424,9 +449,9 @@ struct AnnouncementsView: View {
         }
         .overlay {
             RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.outline, lineWidth: 1)
+                .stroke(Color.announcementEventOutline, lineWidth: 1)
         }
-        .shadow(color: Color.announcementEventOuterShadow, radius: 25)
+        .shadow(color: Color.announcementEventOuterShadow, radius: 12.5)
     }
     
     @ViewBuilder
@@ -458,7 +483,7 @@ struct AnnouncementsView: View {
                     Label(venue, systemImage: "mappin.and.ellipse")
                 }
                 .font(.subheadline)
-                .foregroundColor(.gray)
+                .foregroundColor(.secondary)
                 .lineLimit(2)
 
                 Spacer()
@@ -478,7 +503,7 @@ struct AnnouncementsView: View {
             RoundedRectangle(cornerRadius: 24)
                 .fill(.shadow(.inner(
                     color: Color.announcementEventInnerShadow,
-                    radius: colorScheme == .dark ? 13 : 35,
+                    radius: colorScheme == .dark ? 6.5 : 17.5,
                     x: 0,
                     y: 4
                 )))
@@ -486,9 +511,9 @@ struct AnnouncementsView: View {
         }
         .overlay {
             RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.outline, lineWidth: 1)
+                .stroke(Color.announcementEventOutline, lineWidth: 1)
         }
-        .shadow(color: Color.announcementEventOuterShadow, radius: 25)
+        .shadow(color: Color.announcementEventOuterShadow, radius: 12.5)
     }
 
     func confirmDelete(uuid: String) {

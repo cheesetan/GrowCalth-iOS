@@ -33,55 +33,68 @@ struct SignInView: View {
     }
     
     @EnvironmentObject var authManager: AuthenticationManager
-
-    @Namespace private var namespace
+    @EnvironmentObject var motionManager: MotionManager
 
     var body: some View {
-        VStack(spacing: 30) {
-            if #available(iOS 26.0, *) {
-                Image(systemName: "house.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .padding(30)
-                    .frame(width: 100, height: 100)
-                    .foregroundStyle(.accent)
-                    .glassEffect()
-            } else {
-                Image(systemName: "house.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .padding(30)
-                    .frame(width: 100, height: 100)
-                    .foregroundStyle(.accent)
-                    .background(.ultraThickMaterial)
-                    .mask(RoundedRectangle(cornerRadius: 32))
-            }
-            VStack(spacing: 5) {
-                Text("Welcome Back")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+        ZStack {
+            Color.background.ignoresSafeArea()
+            VStack(spacing: 30) {
+                if #available(iOS 26.0, *) {
+                    Image(systemName: "house.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .padding(30)
+                        .frame(width: 100, height: 100)
+                        .foregroundStyle(.accent)
+                        .glassEffect()
+                        .mask(Circle())
+                        .specularHighlight(
+                            for: .circle,
+                            motionManager: motionManager,
+                            strokeWidth: 2.0
+                        )
+                } else {
+                    Image(systemName: "house.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .padding(30)
+                        .frame(width: 100, height: 100)
+                        .foregroundStyle(.accent)
+                        .background(.thickMaterial)
+                        .mask(Circle())
+                        .specularHighlight(
+                            for: .circle,
+                            motionManager: motionManager,
+                            strokeWidth: 2.0
+                        )
+                }
+                VStack(spacing: 5) {
+                    Text("Welcome Back")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
 
-                Text("The House You Need.")
-                    .fontWeight(.black)
-                    .font(.title)
-                    .multilineTextAlignment(.center)
+                    Text("The House You Need.")
+                        .fontWeight(.black)
+                        .font(.title)
+                        .multilineTextAlignment(.center)
 
-                Text("Sign in to contribute to your House")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                    Text("Sign in to contribute to your House")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                VStack(spacing: 10) {
+                    infoFields
+                    forgotPassword
+                }
+                loginButton
+                bottomText
             }
-            VStack(spacing: 10) {
-                infoFields
-                forgotPassword
-            }
-            loginButton
-            bottomText
+            .padding(30)
         }
-        .padding(.horizontal)
         .alert(alertHeader, isPresented: $showingAlert) {
             if alertHeader == verify_account_alert_header {
                 if #available(iOS 26.0, *) {
@@ -134,14 +147,13 @@ struct SignInView: View {
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
                 .glassEffect()
-
             } else {
                 TextField(text: $email) {
                     Label("School Email", systemImage: "envelope")
                 }
                 .padding()
-                .background(.ultraThickMaterial)
-                .mask(RoundedRectangle(cornerRadius: 16))
+                .background(.thickMaterial)
+                .mask(Capsule())
                 .keyboardType(.emailAddress)
                 .textContentType(.username)
                 .autocorrectionDisabled(true)
@@ -185,8 +197,8 @@ struct SignInView: View {
                         }
                     }
                     .padding()
-                    .background(.ultraThickMaterial)
-                    .mask(RoundedRectangle(cornerRadius: 16))
+                    .background(.thickMaterial)
+                    .mask(Capsule())
                 }
             }
             .textContentType(.password)
@@ -231,29 +243,25 @@ struct SignInView: View {
                 }
                 .buttonStyle(.glass)
                 .buttonBorderShape(.capsule)
-                .matchedTransitionSource(id: "forgotpassword", in: namespace)
             } else {
                 Button {
                     forgottenPasswordEmail = email
                     showingForgotPassword.toggle()
                 } label: {
                     Text("Forgot Password?")
-                        .underline()
+                        .foregroundStyle(.accent)
+                        .padding(5)
+                        .padding(.horizontal, 5)
+                        .background(.thickMaterial)
+                        .mask(Capsule())
                 }
-                .foregroundColor(.accent)
-                .minimumScaleFactor(0.1)
                 .buttonStyle(.plain)
-                .padding(.bottom, 5)
             }
         }
         .sheet(isPresented: $showingForgotPassword) {
-            if #available(iOS 26.0, *) {
+            if #available(iOS 16.0, *) {
                 ForgotPasswordView(email: email, showingForgotPassword: $showingForgotPassword)
                     .presentationDetents([.height(200)])
-                    .navigationTransition(.zoom(sourceID: "forgotpassword", in: namespace))
-            } else if #available(iOS 16.0, *) {
-                ForgotPasswordView(email: email, showingForgotPassword: $showingForgotPassword)
-                    .presentationDetents([.height(300)])
             } else {
                 ForgotPasswordView(email: email, showingForgotPassword: $showingForgotPassword)
             }
@@ -290,7 +298,7 @@ struct SignInView: View {
                         .foregroundColor(isLoading ? .clear : .white)
                         .font(.body.weight(.semibold))
                         .background(.accent)
-                        .mask(RoundedRectangle(cornerRadius: 16))
+                        .mask(Capsule())
                         .overlay {
                             if isLoading {
                                 ProgressView()

@@ -49,20 +49,8 @@ extension Color {
     static let background = Color(
         uiColor: UIColor.dynamicColor(
             light: UIColor(red: 0.92, green: 0.92, blue: 0.95, alpha: 1),
-            dark: UIColor(red: 0.17, green: 0.17, blue: 0.18, alpha: 1)
+            dark: UIColor(hex: 0x17171A)
         )
-    )
-
-    static let outline = LinearGradient(
-        colors: [
-            .white.opacity(0.8),
-            .white.opacity(0.2),
-            .white.opacity(0.2),
-            .white.opacity(0.2),
-            .white.opacity(0.8)
-        ],
-        startPoint: .bottomLeading,
-        endPoint: .topTrailing
     )
 
     static let shadow = Color(
@@ -110,7 +98,7 @@ extension Color {
     static let announcementEventBackground = Color(
         uiColor: UIColor.dynamicColor(
             light: UIColor(hex: 0xDCDCE5),
-            dark: UIColor(red: 0.17, green: 0.17, blue: 0.18, alpha: 1)
+            dark: UIColor(hex: 0x17171A)
         )
     )
 
@@ -128,6 +116,13 @@ extension Color {
         )
     )
 
+    static let announcementEventOutline = LinearGradient(
+        colors: [
+            .white.opacity(0.8)
+        ],
+        startPoint: .bottomLeading,
+        endPoint: .topTrailing
+    )
 
     static let pickerOuterShadow = Color(
         uiColor: UIColor(hex: 0x2B2B2E)
@@ -136,7 +131,7 @@ extension Color {
     static let pickerActiveBackground = Color(
         uiColor: UIColor.dynamicColor(
             light: UIColor(hex: 0xffffff),
-            dark: UIColor(red: 0.17, green: 0.17, blue: 0.18, alpha: 1)
+            dark: UIColor(hex: 0x17171A)
         )
     )
 
@@ -145,8 +140,27 @@ extension Color {
     static let pickerInactiveInnerShadow = Color(
         uiColor: UIColor.dynamicColor(
             light: UIColor(hex: 0x2B2B2E).withAlphaComponent(0.1),
-            dark: UIColor(hex: 0x000000).withAlphaComponent(0.4)
+            dark: UIColor(hex: 0x000000).withAlphaComponent(0.6)
         )
+    )
+
+    static let pickerOutlineLight = LinearGradient(
+        colors: [
+            .white.opacity(0.8),
+            .white.opacity(0.05),
+            .white.opacity(0.8)
+        ],
+        startPoint: .bottomLeading,
+        endPoint: .topTrailing
+    )
+
+    static let pickerOutlineDark = LinearGradient(
+        colors: [
+            .white.opacity(0.8),
+            Color(hex: 0x999999).opacity(0.9)
+        ],
+        startPoint: .bottomLeading,
+        endPoint: .topTrailing
     )
 }
 

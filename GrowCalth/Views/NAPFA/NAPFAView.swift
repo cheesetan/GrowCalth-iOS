@@ -17,8 +17,6 @@ struct NAPFAView: View {
     @EnvironmentObject var authManager: AuthenticationManager
     @EnvironmentObject var napfaManager: NAPFAManager
 
-    @Namespace private var namespace
-
     var body: some View {
         if #available(iOS 26.0, *) {
             NavigationStack {
@@ -73,7 +71,6 @@ struct NAPFAView: View {
                     sitUps: napfaManager.sitUps,
                     sbj: napfaManager.sbj
                 )
-//                .navigationTransition(.zoom(sourceID: "napfaediting", in: namespace))
             } else {
                 EditingNAPFA(
                     yearSelection: napfaManager.year,

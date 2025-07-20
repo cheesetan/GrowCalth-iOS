@@ -22,16 +22,15 @@ struct AnyShape: Shape, @unchecked Sendable {
 }
 
 enum SpecularHighlightShape: Equatable {
-    case roundedRectangle(cornerRadius: CGFloat), capsule
+    case roundedRectangle(cornerRadius: CGFloat), capsule, circle
 
     func getShape() -> AnyShape {
-           switch self {
-           case .roundedRectangle(let cornerRadius):
-               return AnyShape(RoundedRectangle(cornerRadius: cornerRadius))
-           case .capsule:
-               return AnyShape(Capsule())
-           }
-       }
+        switch self {
+        case .roundedRectangle(let cornerRadius): AnyShape(RoundedRectangle(cornerRadius: cornerRadius))
+        case .capsule: AnyShape(Capsule())
+        case .circle: AnyShape(Circle())
+        }
+    }
 }
 
 struct SpecularHighlightModifier: ViewModifier {

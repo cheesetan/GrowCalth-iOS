@@ -198,7 +198,7 @@ struct HomeView: View {
                 .mask(Capsule())
                 .background {
                     Capsule()
-                        .fill(.shadow(.inner(color: Color.activityLeftShadow, radius: 6.5, x: 0, y: 0)))
+                        .fill(.shadow(.inner(color: Color.activityLeftShadow, radius: 6.5)))
                         .foregroundStyle(Color.background)
                 }
             }
@@ -218,7 +218,7 @@ struct HomeView: View {
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
                         .fill(
                             .shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0))
-                            .shadow(.inner(color: Color.activityInnerShadow, radius: 10, x: 0, y: 0))
+                            .shadow(.inner(color: Color.activityInnerShadow, radius: 17.5, x: 0, y: 0))
                         )
                         .foregroundStyle(Color.background)
                 }
@@ -312,7 +312,8 @@ struct HomeView: View {
                         }
                         .specularHighlight(
                             motionManager: motionManager,
-                            strokeWidth: 2.0
+                            strokeWidth: 2.0,
+                            isActive: .constant(placing == "1ST")
                         )
                         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
                     Capsule()
@@ -349,10 +350,6 @@ struct HomeView: View {
                                 .minimumScaleFactor(0.1)
                                 .foregroundColor(.white)
                         }
-                        .specularHighlight(
-                            motionManager: motionManager,
-                            strokeWidth: 2.0
-                        )
                         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
                 }
             }
