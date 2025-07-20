@@ -16,6 +16,7 @@ struct HomeView: View {
     @EnvironmentObject var adminManager: AdminManager
     @EnvironmentObject var authManager: AuthenticationManager
     @EnvironmentObject var lbManager: LeaderboardsManager
+    @EnvironmentObject var motionManager: MotionManager
 
     @State private var showingAlumnusAppreciationAlert = false
     @State private var showingGoalsSetting = false
@@ -113,10 +114,10 @@ struct HomeView: View {
                 .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
                 .foregroundStyle(Color.background)
         }
-        .overlay {
-            Capsule()
-                .stroke(Color.outline, lineWidth: 1)
-        }
+        .specularHighlight(
+            motionManager: motionManager,
+            strokeWidth: 2.0
+        )
         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
     }
 
@@ -221,11 +222,12 @@ struct HomeView: View {
                         )
                         .foregroundStyle(Color.background)
                 }
-                .overlay {
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .stroke(colorScheme == .dark ? AnyShapeStyle(Color.clear) : AnyShapeStyle(Color.outline), lineWidth: 1)
-                        .foregroundStyle(Color.clear)
-                }
+                .specularHighlight(
+                    for: .roundedRectangle(cornerRadius: 24),
+                    motionManager: motionManager,
+                    strokeWidth: 2.0,
+                    isActive: .constant(colorScheme == .light)
+                )
                 .shadow(color: Color.activityOuterShadow, radius: 35, x: 0, y: 4)
         }
     }
@@ -308,10 +310,10 @@ struct HomeView: View {
                                 .minimumScaleFactor(0.1)
                                 .padding(.horizontal)
                         }
-                        .overlay {
-                            Capsule()
-                                .stroke(Color.outline, lineWidth: 1)
-                        }
+                        .specularHighlight(
+                            motionManager: motionManager,
+                            strokeWidth: 2.0
+                        )
                         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
                     Capsule()
                         .frame(maxWidth: .infinity)
@@ -347,10 +349,10 @@ struct HomeView: View {
                                 .minimumScaleFactor(0.1)
                                 .foregroundColor(.white)
                         }
-                        .overlay {
-                            Capsule()
-                                .stroke(Color.outline, lineWidth: 1)
-                        }
+                        .specularHighlight(
+                            motionManager: motionManager,
+                            strokeWidth: 2.0
+                        )
                         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
                 }
             }
@@ -390,10 +392,10 @@ struct HomeView: View {
                 .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
                 .foregroundStyle(Color.goalsBackground)
         }
-        .overlay {
-            Capsule()
-                .stroke(Color.outline, lineWidth: 1)
-        }
+        .specularHighlight(
+            motionManager: motionManager,
+            strokeWidth: 2.0
+        )
         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
     }
 }

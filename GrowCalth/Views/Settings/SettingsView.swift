@@ -18,7 +18,7 @@ struct SettingsView: View {
     @State var showingSignOutAlert = false
     
     @EnvironmentObject var authManager: AuthenticationManager
-    @EnvironmentObject var csManager: ColorSchemeManager
+    @EnvironmentObject var settingsManager: SettingsManager
     @EnvironmentObject var adminManager: AdminManager
     @EnvironmentObject var developerManager: DeveloperManager
 
@@ -41,7 +41,7 @@ struct SettingsView: View {
             List {
                 account
                 appearance
-                //                health
+                specularHighlights
                 permissions
                 resources
                 acknowledgements
@@ -112,7 +112,7 @@ struct SettingsView: View {
     
     var appearance: some View {
         Section {
-            Picker("Preferred Appearance", selection: $csManager.colorScheme) {
+            Picker("Preferred Appearance", selection: $settingsManager.colorScheme) {
                 Text("Light")
                     .tag(PreferredColorScheme.light)
                 Text("Automatic")
@@ -127,7 +127,19 @@ struct SettingsView: View {
             Text("Automatic sets GrowCalth's appearance based on your device's appearance.")
         }
     }
-    
+
+    var specularHighlights: some View {
+        Section {
+            Toggle(isOn: $settingsManager.specularHighlightsEnabled) {
+                Text("Motion-based Specular Highlights")
+            }
+        } header: {
+            Text("Specular Highlights")
+        } footer: {
+            Text("Enabling motion-based specular highlights will shift specular highlights based on device rotation. Enabling this feature may use more performance.")
+        }
+    }
+
     var permissions: some View {
         Section("Permissions") {
             Button {

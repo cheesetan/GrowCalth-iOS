@@ -94,12 +94,13 @@ struct ContentView: View {
     @ObservedObject var napfaManager: NAPFAManager
     @ObservedObject var quotesManager: QuotesManager
     @ObservedObject var announcementManager: AnnouncementManager
-    @ObservedObject var csManager: ColorSchemeManager
+    @ObservedObject var settingsManager: SettingsManager
 
     @ObservedObject var pointsManager: PointsManager
     @ObservedObject var developerManager: DeveloperManager
     @ObservedObject var adminManager: AdminManager
     @ObservedObject var appState: AppState
+    @ObservedObject var motionManager: MotionManager
 
     init(
         authManager: AuthenticationManager = .init(),
@@ -112,7 +113,7 @@ struct ContentView: View {
         napfaManager: NAPFAManager = .init(),
         quotesManager: QuotesManager = .init(),
         announcementManager: AnnouncementManager = .init(),
-        csManager: ColorSchemeManager = .init()
+        settingsManager: SettingsManager = .init()
     ) {
         self.authManager = authManager
         self.updateManager = updateManager
@@ -124,7 +125,8 @@ struct ContentView: View {
         self.napfaManager = napfaManager
         self.quotesManager = quotesManager
         self.announcementManager = announcementManager
-        self.csManager = csManager
+        self.settingsManager = settingsManager
+
 
         let adminManager = AdminManager(authManager: authManager)
         self.adminManager = adminManager
@@ -139,11 +141,15 @@ struct ContentView: View {
             developerManager: developerManager,
             networkManager: networkManager
         )
+        
         self.pointsManager = PointsManager(
             adminManager: adminManager,
             hkManager: hkManager,
             authManager: authManager
         )
+
+        let motionManager = MotionManager(settingsManager: settingsManager)
+        self.motionManager = motionManager
 
         // Initialize points manager date logic
         self.initializePointsManagerDate()
@@ -273,14 +279,15 @@ struct ContentView: View {
         .environmentObject(lbManager)
         .environmentObject(napfaManager)
         .environmentObject(announcementManager)
-        .environmentObject(csManager)
+        .environmentObject(settingsManager)
+        .environmentObject(motionManager)
         .environmentObject(pointsManager)
         .environmentObject(developerManager)
         .environmentObject(adminManager)
         .environmentObject(appState)
         .preferredColorScheme(
-            csManager.colorScheme == .automatic ? .none :
-                csManager.colorScheme == .dark ? .dark : .light
+            settingsManager.colorScheme == .automatic ? .none :
+                settingsManager.colorScheme == .dark ? .dark : .light
         )
     }
 }

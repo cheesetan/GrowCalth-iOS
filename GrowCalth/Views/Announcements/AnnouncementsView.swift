@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+struct Journal: Identifiable {
+    var id = UUID()
+    var title: String
+}
+
 struct AnnouncementsView: View {
 
     @State var showingNewAnnouncementView = false
@@ -27,6 +32,8 @@ struct AnnouncementsView: View {
     @Namespace private var namespace
 
     @Environment(\.colorScheme) private var colorScheme
+
+    let journals: [Journal] = []
 
     var body: some View {
         if #available(iOS 16.0, *) {
