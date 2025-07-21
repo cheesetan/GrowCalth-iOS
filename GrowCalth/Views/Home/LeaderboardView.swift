@@ -20,16 +20,37 @@ struct LeaderboardView: View {
     @EnvironmentObject var authManager: AuthenticationManager
 
     var body: some View {
-        List {
-            Section {
-                ForEach(sortDictionary(for: lbManager.leaderboard), id: \.key) { house in
-                    houseRow(text: house.key, points: house.value)
+        ZStack {
+            Color.background.ignoresSafeArea()
+            VStack(alignment: .leading) {
+                Text("Leaderboard")
+                    .font(.largeTitle.bold())
+                GeometryReader { geometry in
+                    VStack(spacing: 0) {
+                        let sortedDictionary = sortDictionary(for: lbManager.leaderboard)
+                        leaderboardPodium(data: sortedDictionary)
+                            .frame(height: geometry.size.height*0.65)
+                        VStack(spacing: 15) {
+                            houseRow(
+                                placing: "4TH",
+                                height: geometry.size.height*0.1,
+                                text: sortedDictionary[3].key,
+                                points: sortedDictionary[3].value
+                            )
+                            houseRow(
+                                placing: "5TH",
+                                height: geometry.size.height*0.1,
+                                text: sortedDictionary[4].key,
+                                points: sortedDictionary[4].value
+                            )
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .padding(.top, geometry.size.height * 0.02)
                 }
-            } footer: {
-                Text("GrowCalth calculates and updates the Leaderboard upon the first launch of the app every day. \(GLOBAL_STEPS_PER_POINT) steps = 1 point.\(GLOBAL_STEPS_PER_POINT == 2500 ? " (Limited Time Double Points Event!)" : "")\n\nGrowCalth needs to be opened to calculate and add your points, unclaimed points will accumulate and be added to the Leaderboard the next time you open the app.")
             }
+            .padding([.horizontal, .bottom], 30)
         }
-        .navigationTitle("Leaderboard")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
@@ -91,29 +112,145 @@ struct LeaderboardView: View {
             }
         }
     }
-    
+
     @ViewBuilder
-    func houseRow(text: String, points: Int) -> some View {
-        HStack {
-            Image(text)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 64)
-                .mask {
-                    Circle()
-                        .frame(width: 64)
+    func leaderboardPodium(data: Array<(key: String, value: Int)>) -> some View {
+        GeometryReader { geometry in
+            let barWidth = (geometry.size.width-30)/3
+            VStack {
+                HStack {
+                    Spacer()
+                    Image(systemName: "trophy.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: barWidth*0.8, height: barWidth*0.8)
+                        .foregroundStyle(.yellow)
+                        .shadow(color: .yellow, radius: barWidth)
+                    Spacer()
                 }
-            Text(text)
-                .font(.title3)
-                .fontWeight(.bold)
-                .padding(.leading, 10)
-            Spacer()
-            Text("\(points)")
-                .font(.title)
-                .fontWeight(.black)
-                .multilineTextAlignment(.trailing)
-                .padding(.trailing)
+                GeometryReader { geometry2 in
+                    HStack(alignment: .bottom) {
+                        leaderboardRectanglePodium(house: data[2].key, points: data[2].value)
+                            .frame(width: barWidth, height: geometry2.size.height*0.8)
+
+                        leaderboardRectanglePodium(house: data[0].key, points: data[0].value)
+                            .frame(width: barWidth, height: geometry2.size.height)
+
+                        leaderboardRectanglePodium(house: data[1].key, points: data[1].value)
+                            .frame(width: barWidth, height: geometry2.size.height*0.9)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                }
+            }
+            .overlay {
+                LinearGradient(
+                    gradient: Gradient(
+                        stops: [
+                            .init(color: .background, location: 0.1),
+                            .init(color: .clear, location: 0.3),
+                            .init(color: .clear, location: 1)
+                        ]
+                    ),
+                    startPoint: .bottom,
+                    endPoint: .top
+                )
+            }
         }
+        .padding(.horizontal)
+    }
+
+    @ViewBuilder
+    func leaderboardRectanglePodium(house: String, points: Int) -> some View {
+        GeometryReader { geometry in
+            Rectangle()
+                .foregroundStyle(Houses(rawValue: house)!.color)
+                .overlay(alignment: .top) {
+                    VStack(spacing: 10) {
+                        Image(house)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: geometry.size.width * 0.85, height: geometry.size.width * 0.85)
+                            .mask(Circle())
+
+                        Text("\(points)")
+                            .foregroundStyle(.white)
+                            .font(.system(size: geometry.size.width * 0.2).weight(.black).italic())
+                    }
+                    .padding(.top, geometry.size.width * 0.25)
+                }
+        }
+    }
+
+    @ViewBuilder
+    func houseRow(placing: String, height: CGFloat, text: String, points: Int) -> some View {
+        Capsule()
+            .frame(maxHeight: height)
+            .foregroundStyle(Color.lbCapsuleBackground)
+            .overlay {
+                HStack(spacing: 30) {
+                    Capsule()
+                        .frame(width: height*1.2)
+                        .foregroundStyle(Color.lbPlacingBackground)
+                        .background {
+                            Capsule()
+                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
+                                .foregroundStyle(Color.lbPlacingBackground)
+                        }
+                        .overlay {
+                            Text(placing)
+                                .font(.title2.weight(.black).italic())
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.1)
+                                .padding(.horizontal)
+                        }
+                        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+                    Capsule()
+                        .frame(maxWidth: .infinity)
+                        .foregroundStyle(
+                            LinearGradient(
+                                stops: [
+                                    .init(color: Houses(rawValue: text)!.color, location: 0.7),
+                                    .init(color: Color.lbHouseColorToFadeTo, location: 1.2)
+                                ],
+                                startPoint: .bottomLeading,
+                                endPoint: .topTrailing
+                            )
+                        )
+                        .background {
+                            Capsule()
+                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        stops: [
+                                            .init(color: Houses(rawValue: text)!.color, location: 0.7),
+                                            .init(color: Color.lbHouseColorToFadeTo, location: 1.2)
+                                        ],
+                                        startPoint: .bottomLeading,
+                                        endPoint: .topTrailing
+                                    )
+                                )
+                        }
+                        .overlay {
+                            HStack {
+                                Image(text)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: height-6, height: height-6)
+                                    .mask(Circle())
+                                Spacer()
+                                Text("\(points) POINTS")
+                                    .padding(5)
+                                    .font(.title.weight(.black).italic())
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.1)
+                                    .foregroundColor(.white)
+                            }
+                            .padding(.leading, 6)
+                            .padding(.trailing)
+                        }
+                        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+                }
+            }
     }
 }
 
