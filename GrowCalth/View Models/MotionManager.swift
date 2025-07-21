@@ -14,6 +14,7 @@ class MotionManager: ObservableObject {
     private var lastUpdateTime: TimeInterval = 0
     private let updateThreshold: TimeInterval = 0.033 // ~30 FPS limit
     private var isTrackingMotion = true
+    private var onFirstLoad = true
 
     @ObservedObject private var settingsManager: SettingsManager
 
@@ -36,7 +37,16 @@ class MotionManager: ObservableObject {
     }
 
     private func startMotionUpdates() {
-        guard motionManager.isDeviceMotionAvailable, isActive else { return }
+        guard motionManager.isDeviceMotionAvailable else {
+            settingsManager.specularHighlightsEnabled = false
+            return
+        }
+
+        if !onFirstLoad {
+            guard isActive else { return }
+        } else {
+            onFirstLoad = false
+        }
 
         // Optimal update interval - 30Hz for good responsiveness with lower CPU usage
         motionManager.deviceMotionUpdateInterval = 0.033

@@ -21,6 +21,7 @@ struct SettingsView: View {
     @EnvironmentObject var settingsManager: SettingsManager
     @EnvironmentObject var adminManager: AdminManager
     @EnvironmentObject var developerManager: DeveloperManager
+    @EnvironmentObject var motionManager: MotionManager
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -133,6 +134,7 @@ struct SettingsView: View {
             Toggle(isOn: $settingsManager.specularHighlightsEnabled) {
                 Text("Motion-based Specular Highlights")
             }
+            .disabled(!motionManager.motionManager.isDeviceMotionAvailable)
         } header: {
             Text("Specular Highlights")
         } footer: {
