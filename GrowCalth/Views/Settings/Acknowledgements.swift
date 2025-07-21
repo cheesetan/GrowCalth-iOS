@@ -10,8 +10,12 @@ import SwiftUI
 struct Acknowledgements: View {
 
     @State private var showingScoobert = false
+    @State private var showingPibble = false
     @State private var scoobertAngle = 0.0
-    @State private var tapCount = 0
+    @State private var scoobertTapCount = 0
+    @State private var pibblesTapCount = 0
+
+    @EnvironmentObject private var audioManager: AudioManager
 
     var body: some View {
         ZStack {
@@ -67,6 +71,16 @@ struct Acknowledgements: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 }
             }
+
+            GeometryReader { geometry in
+                if showingPibble {
+                    Image("washington")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: geometry.size.width - 50)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                }
+            }
         }
         .navigationTitle("Acknowledgements")
     }
@@ -79,11 +93,14 @@ struct Acknowledgements: View {
                     Image(image)
                         .resizable()
                         .accessibilityAction(named: "Scoobert") {
-                            handleTap()
+                            handleScoobertTap()
                         }
                 } else if image == "washington" {
                     Image(image)
                         .resizable()
+                        .accessibilityAction(named: "Scoobert") {
+                            handlePibblesTap()
+                        }
                 } else {
                     Image(systemName: image)
                         .resizable()
@@ -117,28 +134,51 @@ struct Acknowledgements: View {
         }
         .onTapGesture {
             if image == "scoobert" {
-                handleTap()
+                handleScoobertTap()
+            } else if image == "washington" {
+                handlePibblesTap()
             }
         }
     }
 
     @MainActor
-    private func handleTap() {
-        tapCount += 1
+    private func handleScoobertTap() {
+        scoobertTapCount += 1
 
         // Reset tap count after a delay if not enough taps
         Task {
-            let currentTapCount = tapCount
+            let currentTapCount = scoobertTapCount
             try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
-            if tapCount == currentTapCount && tapCount < 5 {
-                tapCount = 0
+            if scoobertTapCount == currentTapCount && scoobertTapCount < 5 {
+                scoobertTapCount = 0
             }
         }
 
         // Trigger animation after 5 taps
-        if tapCount >= 5 {
-            tapCount = 0
+        if scoobertTapCount >= 5 {
+            scoobertTapCount = 0
             triggerScoobertAnimation()
+        }
+    }
+
+    @MainActor
+    private func handlePibblesTap() {
+        pibblesTapCount += 1
+
+        // Reset tap count after a delay if not enough taps
+        Task {
+            let currentTapCount = pibblesTapCount
+            try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+            if pibblesTapCount == currentTapCount && pibblesTapCount < 5 {
+                pibblesTapCount = 0
+            }
+        }
+
+        // Trigger animation after 5 taps
+        if pibblesTapCount >= 5 {
+            pibblesTapCount = 0
+            audioManager.playSound(named: "washmybellayyyy")
+            triggerPibbleAnimation()
         }
     }
 
@@ -165,6 +205,22 @@ struct Acknowledgements: View {
                 scoobertAngle = 0
                 withAnimation {
                     showingScoobert = false
+                }
+            }
+        }
+    }
+
+    @MainActor
+    private func triggerPibbleAnimation() {
+        withAnimation {
+            showingPibble = true
+        }
+
+        Task {
+            try await Task.sleep(nanoseconds: 6_000_000_000)
+            await MainActor.run {
+                withAnimation {
+                    showingPibble = false
                 }
             }
         }

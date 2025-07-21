@@ -85,6 +85,7 @@ struct ContentView: View {
     @ObservedObject var quotesManager: QuotesManager
     @ObservedObject var announcementManager: AnnouncementManager
     @ObservedObject var settingsManager: SettingsManager
+    @ObservedObject var audioManager: AudioManager
 
     @ObservedObject var pointsManager: PointsManager
     @ObservedObject var developerManager: DeveloperManager
@@ -103,7 +104,8 @@ struct ContentView: View {
         napfaManager: NAPFAManager = .init(),
         quotesManager: QuotesManager = .init(),
         announcementManager: AnnouncementManager = .init(),
-        settingsManager: SettingsManager = .init()
+        settingsManager: SettingsManager = .init(),
+        audioManager: AudioManager = .init()
     ) {
         self.authManager = authManager
         self.updateManager = updateManager
@@ -116,7 +118,7 @@ struct ContentView: View {
         self.quotesManager = quotesManager
         self.announcementManager = announcementManager
         self.settingsManager = settingsManager
-
+        self.audioManager = audioManager
 
         let adminManager = AdminManager(authManager: authManager)
         self.adminManager = adminManager
@@ -268,11 +270,12 @@ struct ContentView: View {
         .environmentObject(napfaManager)
         .environmentObject(announcementManager)
         .environmentObject(settingsManager)
-        .environmentObject(motionManager)
+        .environmentObject(audioManager)
         .environmentObject(pointsManager)
         .environmentObject(developerManager)
         .environmentObject(adminManager)
         .environmentObject(appState)
+        .environmentObject(motionManager)
         .preferredColorScheme(
             settingsManager.colorScheme == .automatic ? .none :
                 settingsManager.colorScheme == .dark ? .dark : .light
