@@ -205,7 +205,7 @@ struct LeaderboardView: View {
                         .foregroundStyle(Color.lbPlacingBackground)
                         .background {
                             Capsule()
-                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
+                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5)))
                                 .foregroundStyle(Color.lbPlacingBackground)
                         }
                         .overlay {
@@ -215,7 +215,7 @@ struct LeaderboardView: View {
                                 .minimumScaleFactor(0.1)
                                 .padding(lbPlacingWidth*0.15)
                         }
-                        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+                        .shadow(color: Color.shadow, radius: 17.5, x: 0, y: 5)
                         .overlay {
                             Capsule()
                                 .stroke(Color.lbPlacingOutline, lineWidth: 2)
@@ -234,7 +234,7 @@ struct LeaderboardView: View {
                         )
                         .background {
                             Capsule()
-                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
+                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5)))
                                 .foregroundStyle(
                                     LinearGradient(
                                         stops: [
@@ -264,7 +264,7 @@ struct LeaderboardView: View {
                             .padding(.leading, 6)
                             .padding(.trailing)
                         }
-                        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+                        .shadow(color: Color.shadow, radius: 17.5, x: 0, y: 5)
                 }
             }
     }

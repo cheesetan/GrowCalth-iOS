@@ -348,7 +348,7 @@ struct AnnouncementsView: View {
                             Capsule()
                                 .fill(.shadow(.inner(
                                     color: Color.pickerActiveInnerShadow,
-                                    radius: colorScheme == .dark ? 2.1 : 3.25
+                                    radius: colorScheme == .dark ? 4.2 : 6.5
                                 )))
                                 .foregroundStyle(Color.pickerActiveBackground)
                         } else {
@@ -448,9 +448,7 @@ struct AnnouncementsView: View {
             RoundedRectangle(cornerRadius: 24)
                 .fill(.shadow(.inner(
                     color: Color.announcementEventInnerShadow,
-                    radius: colorScheme == .dark ? 6.5 : 32.5,
-                    x: 0,
-                    y: 4
+                    radius: colorScheme == .dark ? 6.5 : 32.5
                 )))
                 .foregroundStyle(Color.announcementEventBackground)
         }
@@ -458,7 +456,7 @@ struct AnnouncementsView: View {
             RoundedRectangle(cornerRadius: 24)
                 .stroke(Color.announcementEventOutline, lineWidth: 1)
         }
-        .shadow(color: Color.announcementEventOuterShadow, radius: 12.5)
+        .shadow(color: Color.announcementEventOuterShadow, radius: 12.5, x: 0, y: 5)
     }
     
     @ViewBuilder
@@ -510,9 +508,7 @@ struct AnnouncementsView: View {
             RoundedRectangle(cornerRadius: 24)
                 .fill(.shadow(.inner(
                     color: Color.announcementEventInnerShadow,
-                    radius: colorScheme == .dark ? 6.5 : 17.5,
-                    x: 0,
-                    y: 4
+                    radius: colorScheme == .dark ? 6.5 : 32.5
                 )))
                 .foregroundStyle(Color.announcementEventBackground)
         }
@@ -520,7 +516,7 @@ struct AnnouncementsView: View {
             RoundedRectangle(cornerRadius: 24)
                 .stroke(Color.announcementEventOutline, lineWidth: 1)
         }
-        .shadow(color: Color.announcementEventOuterShadow, radius: 12.5)
+        .shadow(color: Color.announcementEventOuterShadow, radius: 12.5, x: 0, y: 5)
     }
 
     func confirmDelete(uuid: String) {

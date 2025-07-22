@@ -55,11 +55,14 @@ extension Color {
 
     static let shadow = Color(
         uiColor: UIColor(hex: 0x2B2B2E)
-    ).opacity(0.2)
+    ).opacity(0.05)
 
     static let activityInnerShadow = Color(
-        uiColor: UIColor(hex: 0xF4F4F6)
-    ).opacity(0.1)
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xF4F4F6).withAlphaComponent(0.8),
+            dark: UIColor(hex: 0xF4F4F6).withAlphaComponent(0.1)
+        )
+    )
 
     static let activityOuterShadow = Color(
         uiColor: UIColor(hex: 0x14141F)
@@ -67,7 +70,7 @@ extension Color {
 
     static let activityLeftShadow = Color(
         uiColor: UIColor.dynamicColor(
-            light: UIColor(hex: 0x2B2B2E).withAlphaComponent(0.2),
+            light: UIColor(hex: 0x2B2B2E).withAlphaComponent(0.18),
             dark: UIColor(hex: 0x0C0C0D).withAlphaComponent(0.6)
         )
     )

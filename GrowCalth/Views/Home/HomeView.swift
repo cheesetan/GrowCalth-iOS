@@ -111,14 +111,14 @@ struct HomeView: View {
         .mask(Capsule())
         .background {
             Capsule()
-                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
+                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5)))
                 .foregroundStyle(Color.background)
         }
         .specularHighlight(
             motionManager: motionManager,
             strokeWidth: 2.0
         )
-        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+        .shadow(color: Color.shadow, radius: 17.5, x: 0, y: 5)
     }
 
     var steps: some View {
@@ -217,8 +217,8 @@ struct HomeView: View {
                 .background {
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
                         .fill(
-                            .shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0))
-                            .shadow(.inner(color: Color.activityInnerShadow, radius: 17.5, x: 0, y: 0))
+                            .shadow(.inner(color: .white.opacity(0.25), radius: 6.5))
+                            .shadow(.inner(color: Color.activityInnerShadow, radius: 17.5))
                         )
                         .foregroundStyle(Color.background)
                 }
@@ -228,7 +228,7 @@ struct HomeView: View {
                     strokeWidth: 2.0,
                     isActive: .constant(colorScheme == .light)
                 )
-                .shadow(color: Color.activityOuterShadow, radius: 35, x: 0, y: 4)
+                .shadow(color: Color.activityOuterShadow, radius: 17.5, x: 0, y: 4)
         }
     }
 
@@ -316,7 +316,7 @@ struct HomeView: View {
                             strokeWidth: 2.0,
                             isActive: .constant(placing == "1ST")
                         )
-                        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+                        .shadow(color: Color.shadow, radius: 17.5, x: 0, y: 5)
                         .overlay {
                             if placing != "1ST" {
                                 Capsule()
@@ -357,7 +357,7 @@ struct HomeView: View {
                                 .padding(placingBubbleWidth*0.05)
                                 .foregroundColor(.white)
                         }
-                        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+                        .shadow(color: Color.shadow, radius: 17.5, x: 0, y: 5)
                 }
             }
     }
@@ -393,14 +393,14 @@ struct HomeView: View {
         .mask(Capsule())
         .background {
             Capsule()
-                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
+                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5)))
                 .foregroundStyle(Color.goalsBackground)
         }
         .specularHighlight(
             motionManager: motionManager,
             strokeWidth: 2.0
         )
-        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+        .shadow(color: Color.shadow, radius: 17.5, x: 0, y: 5)
     }
 }
 
