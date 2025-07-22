@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-class UpdateManager: ObservableObject {
+@MainActor
+final class UpdateManager: ObservableObject {
 
     @Published var updateAvailable: Bool?
 
@@ -43,8 +44,10 @@ class UpdateManager: ObservableObject {
 
             let isUpdateNeeded = try compareVersions(current: currentVersion, appStore: appStoreVersion)
 
-            withAnimation {
-                self.updateAvailable = isUpdateNeeded
+            await MainActor.run {
+                withAnimation {
+                    self.updateAvailable = isUpdateNeeded
+                }
             }
 
         } catch let error as UpdateError {

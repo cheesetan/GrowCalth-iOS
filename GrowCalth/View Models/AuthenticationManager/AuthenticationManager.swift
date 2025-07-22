@@ -10,7 +10,8 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 
-class AuthenticationManager: ObservableObject {
+@MainActor
+final class AuthenticationManager: ObservableObject {
 
     // TODO: - doesnt add house if its a new account
     @Published var isLoggedIn: Bool = false

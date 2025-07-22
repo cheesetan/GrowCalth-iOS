@@ -37,6 +37,7 @@ enum PostError: LocalizedError, Sendable {
     }
 }
 
+@MainActor
 final class AdminManager: ObservableObject, Sendable {
     @Published var isUnderMaintenance: Bool?
     @Published var appForcesUpdates: Bool?

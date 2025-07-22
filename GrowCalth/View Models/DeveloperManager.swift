@@ -31,7 +31,8 @@ enum DeveloperManagerError: LocalizedError, Sendable {
     }
 }
 
-class DeveloperManager: ObservableObject {
+@MainActor
+final class DeveloperManager: ObservableObject {
 
     @Published var bypassed = false
     @Published var blockedVersions: [String]?

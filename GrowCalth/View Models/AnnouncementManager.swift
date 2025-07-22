@@ -8,6 +8,7 @@
 import SwiftUI
 import FirebaseFirestore
 
+@MainActor
 final class AnnouncementManager: ObservableObject, Sendable {
     @Published var announcements: [Announcement] = [] {
         didSet {

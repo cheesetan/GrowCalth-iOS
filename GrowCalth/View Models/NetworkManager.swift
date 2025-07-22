@@ -8,7 +8,8 @@
 import SwiftUI
 import Network
 
-class NetworkManager: ObservableObject {
+@MainActor
+final class NetworkManager: ObservableObject {
 
     @Published var isConnectionAvailable: Bool? = nil
     private var monitor: NWPathMonitor?

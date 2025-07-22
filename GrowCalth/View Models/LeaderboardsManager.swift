@@ -8,7 +8,8 @@
 import SwiftUI
 import FirebaseFirestore
 
-class LeaderboardsManager: ObservableObject {
+@MainActor
+final class LeaderboardsManager: ObservableObject {
 
     @Published var leaderboard: [String: Int] = [:] {
         didSet {

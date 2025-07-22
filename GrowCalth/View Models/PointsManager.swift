@@ -27,7 +27,8 @@ struct LogData: Sendable {
     }
 }
 
-class PointsManager: ObservableObject {
+@MainActor
+final class PointsManager: ObservableObject {
 
     @ObservedObject var adminManager: AdminManager
     @ObservedObject var hkManager: HealthKitManager

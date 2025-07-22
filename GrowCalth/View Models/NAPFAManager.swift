@@ -8,7 +8,8 @@
 import SwiftUI
 import FirebaseFirestore
 
-class NAPFAManager: ObservableObject {
+@MainActor
+final class NAPFAManager: ObservableObject {
 
     @AppStorage("levelSelection", store: .standard) var levelSelection: String = NAPFALevel.secondary2.rawValue
     @AppStorage("yearSelection", store: .standard) var year: Int = Calendar.current.component(.year, from: Date())

@@ -8,7 +8,8 @@
 import Foundation
 import AVFoundation
 
-class AudioManager: ObservableObject {
+@MainActor
+final class AudioManager: ObservableObject {
     private var audioPlayer: AVAudioPlayer?
 
     var isPlaying: Bool {

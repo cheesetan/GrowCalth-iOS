@@ -51,6 +51,7 @@ internal enum APNSError: LocalizedError, Sendable {
     }
 }
 
+@MainActor
 class ApplicationPushNotificationsManager: ObservableObject {
     static let shared: ApplicationPushNotificationsManager = .init()
 

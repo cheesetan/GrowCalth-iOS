@@ -8,7 +8,8 @@
 import SwiftUI
 import CoreMotion
 
-class MotionManager: ObservableObject {
+@MainActor
+final class MotionManager: ObservableObject {
     let motionManager = CMMotionManager()
     private var lastUpdateTime: TimeInterval = 0
     private let updateThreshold: TimeInterval = 0.033 // ~30 FPS limit

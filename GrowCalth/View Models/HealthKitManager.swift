@@ -9,7 +9,8 @@ import SwiftUI
 import HealthKit
 import FirebaseFirestore
 
-class HealthKitManager: ObservableObject {
+@MainActor
+final class HealthKitManager: ObservableObject {
 
     private var healthStore = HKHealthStore()
     @Published var steps: Int? = nil

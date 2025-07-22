@@ -11,6 +11,7 @@ enum AppStatus: Sendable {
     case home, login, noNetwork, updateAvailable, underMaintenance, loading(String)
 }
 
+@MainActor
 class AppState: ObservableObject {
 
     @ObservedObject var authManager: AuthenticationManager
@@ -71,96 +72,90 @@ enum TabSelection {
     case home, announcements, napfa, settings
 }
 
+
 struct ContentView: View {
 
-    @ObservedObject var authManager: AuthenticationManager
-    @ObservedObject var updateManager: UpdateManager
-    @ObservedObject var networkManager: NetworkManager
-    @ObservedObject var hkManager: HealthKitManager
-    @ObservedObject var apnsManager: ApplicationPushNotificationsManager
-    @ObservedObject var goalsManager: GoalsManager
-    @ObservedObject var lbManager: LeaderboardsManager
-    @ObservedObject var napfaManager: NAPFAManager
-    @ObservedObject var quotesManager: QuotesManager
-    @ObservedObject var announcementManager: AnnouncementManager
-    @ObservedObject var settingsManager: SettingsManager
-    @ObservedObject var audioManager: AudioManager
+    @StateObject private var authManager: AuthenticationManager
+    @StateObject private var updateManager: UpdateManager
+    @StateObject private var networkManager: NetworkManager
+    @StateObject private var hkManager: HealthKitManager
+    @StateObject private var apnsManager: ApplicationPushNotificationsManager
+    @StateObject private var goalsManager: GoalsManager
+    @StateObject private var lbManager: LeaderboardsManager
+    @StateObject private var napfaManager: NAPFAManager
+    @StateObject private var quotesManager: QuotesManager
+    @StateObject private var announcementManager: AnnouncementManager
+    @StateObject private var settingsManager: SettingsManager
+    @StateObject private var audioManager: AudioManager
 
-    @ObservedObject var pointsManager: PointsManager
-    @ObservedObject var developerManager: DeveloperManager
-    @ObservedObject var adminManager: AdminManager
-    @ObservedObject var appState: AppState
-    @ObservedObject var motionManager: MotionManager
+    @StateObject private var adminManager: AdminManager
+    @StateObject private var developerManager: DeveloperManager
+    @StateObject private var appState: AppState
+    @StateObject private var pointsManager: PointsManager
+    @StateObject private var motionManager: MotionManager
 
-    init(
-        authManager: AuthenticationManager = .init(),
-        updateManager: UpdateManager = .init(),
-        networkManager: NetworkManager = .init(),
-        hkManager: HealthKitManager = .init(),
-        apnsManager: ApplicationPushNotificationsManager = .init(),
-        goalsManager: GoalsManager = .init(),
-        lbManager: LeaderboardsManager = .init(),
-        napfaManager: NAPFAManager = .init(),
-        quotesManager: QuotesManager = .init(),
-        announcementManager: AnnouncementManager = .init(),
-        settingsManager: SettingsManager = .init(),
-        audioManager: AudioManager = .init()
-    ) {
-        self.authManager = authManager
-        self.updateManager = updateManager
-        self.networkManager = networkManager
-        self.hkManager = hkManager
-        self.apnsManager = apnsManager
-        self.goalsManager = goalsManager
-        self.lbManager = lbManager
-        self.napfaManager = napfaManager
-        self.quotesManager = quotesManager
-        self.announcementManager = announcementManager
-        self.settingsManager = settingsManager
-        self.audioManager = audioManager
+
+    init() {
+        let authManager = AuthenticationManager()
+        _authManager = StateObject(wrappedValue: authManager)
+
+        let updateManager = UpdateManager()
+        _updateManager = StateObject(wrappedValue: updateManager)
+
+        let networkManager = NetworkManager()
+        _networkManager = StateObject(wrappedValue: networkManager)
+
+        let hkManager = HealthKitManager()
+        _hkManager = StateObject(wrappedValue: hkManager)
+
+        let apnsManager = ApplicationPushNotificationsManager()
+        _apnsManager = StateObject(wrappedValue: apnsManager)
+
+        let goalsManager = GoalsManager()
+        _goalsManager = StateObject(wrappedValue: goalsManager)
+
+        let lbManager = LeaderboardsManager()
+        _lbManager = StateObject(wrappedValue: lbManager)
+
+        let napfaManager = NAPFAManager()
+        _napfaManager = StateObject(wrappedValue: napfaManager)
+
+        let quotesManager = QuotesManager()
+        _quotesManager = StateObject(wrappedValue: quotesManager)
+
+        let announcementManager = AnnouncementManager()
+        _announcementManager = StateObject(wrappedValue: announcementManager)
+
+        let settingsManager = SettingsManager()
+        _settingsManager = StateObject(wrappedValue: settingsManager)
+
+        let audioManager = AudioManager()
+        _audioManager = StateObject(wrappedValue: audioManager)
 
         let adminManager = AdminManager(authManager: authManager)
-        self.adminManager = adminManager
+        _adminManager = StateObject(wrappedValue: adminManager)
 
         let developerManager = DeveloperManager(adminManager: adminManager)
-        self.developerManager = developerManager
+        _developerManager = StateObject(wrappedValue: developerManager)
 
-        self.appState = AppState(
+        let appState = AppState(
             authManager: authManager,
             adminManager: adminManager,
             updateManager: updateManager,
             developerManager: developerManager,
             networkManager: networkManager
         )
-        
-        self.pointsManager = PointsManager(
+        _appState = StateObject(wrappedValue: appState)
+
+        let pointsManager = PointsManager(
             adminManager: adminManager,
             hkManager: hkManager,
             authManager: authManager
         )
+        _pointsManager = StateObject(wrappedValue: pointsManager)
 
         let motionManager = MotionManager(settingsManager: settingsManager)
-        self.motionManager = motionManager
-
-        // Initialize points manager date logic
-        self.initializePointsManagerDate()
-    }
-
-    private func initializePointsManagerDate() {
-        if let lastPointsAwardedDate = pointsManager.lastPointsAwardedDate {
-            if lastPointsAwardedDate < GLOBAL_GROWCALTH_START_DATE {
-                pointsManager.lastPointsAwardedDate = GLOBAL_GROWCALTH_START_DATE
-            }
-        } else {
-            let cal = Calendar(identifier: .gregorian)
-            let today = cal.startOfDay(for: Date())
-
-            if today < GLOBAL_GROWCALTH_START_DATE {
-                pointsManager.lastPointsAwardedDate = GLOBAL_GROWCALTH_START_DATE
-            } else {
-                pointsManager.lastPointsAwardedDate = today
-            }
-        }
+        _motionManager = StateObject(wrappedValue: motionManager)
     }
 
     @State private var tabSelected: TabSelection = .home
@@ -279,6 +274,26 @@ struct ContentView: View {
             settingsManager.colorScheme == .automatic ? .none :
                 settingsManager.colorScheme == .dark ? .dark : .light
         )
+        .onAppear {
+            initializePointsManagerDate()
+        }
+    }
+
+    private func initializePointsManagerDate() {
+        if let lastPointsAwardedDate = pointsManager.lastPointsAwardedDate {
+            if lastPointsAwardedDate < GLOBAL_GROWCALTH_START_DATE {
+                pointsManager.lastPointsAwardedDate = GLOBAL_GROWCALTH_START_DATE
+            }
+        } else {
+            let cal = Calendar(identifier: .gregorian)
+            let today = cal.startOfDay(for: Date())
+
+            if today < GLOBAL_GROWCALTH_START_DATE {
+                pointsManager.lastPointsAwardedDate = GLOBAL_GROWCALTH_START_DATE
+            } else {
+                pointsManager.lastPointsAwardedDate = today
+            }
+        }
     }
 }
 
