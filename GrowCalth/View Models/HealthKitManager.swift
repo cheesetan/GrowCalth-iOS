@@ -9,7 +9,6 @@ import SwiftUI
 import HealthKit
 import FirebaseFirestore
 
-@MainActor
 class HealthKitManager: ObservableObject {
 
     private var healthStore = HKHealthStore()
@@ -81,7 +80,7 @@ class HealthKitManager: ObservableObject {
         }
     }
 
-    func fetchApprovedBundleIdentifiers() async throws -> [String] {
+    nonisolated internal func fetchApprovedBundleIdentifiers() async throws -> [String] {
         let document = try await Firestore.firestore().collection("settings").document("approved-bundleids").getDocument(source: .server)
 
         guard document.exists else {

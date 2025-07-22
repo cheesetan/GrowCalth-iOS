@@ -27,7 +27,6 @@ struct LogData: Sendable {
     }
 }
 
-@MainActor
 class PointsManager: ObservableObject {
 
     @ObservedObject var adminManager: AdminManager
@@ -148,7 +147,7 @@ class PointsManager: ObservableObject {
         approvedBundleIdsUsed: [String]
     ) async throws {
         let house = try await authManager.fetchUsersHouse()
-        let versions = try await adminManager.fetchBlockedVersions()
+        let versions = try await adminManager.checkBlockediOSVersions()
 
         let info = Bundle.main.infoDictionary
         let currentVersion = info?["CFBundleShortVersionString"] as? String

@@ -10,7 +10,6 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 
-@MainActor
 class AuthenticationManager: ObservableObject {
 
     // TODO: - doesnt add house if its a new account

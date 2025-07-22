@@ -8,7 +8,6 @@
 import SwiftUI
 import Network
 
-@MainActor
 class NetworkManager: ObservableObject {
 
     @Published var isConnectionAvailable: Bool? = nil

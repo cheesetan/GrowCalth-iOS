@@ -8,7 +8,6 @@
 import SwiftUI
 import CoreMotion
 
-@MainActor
 class MotionManager: ObservableObject {
     let motionManager = CMMotionManager()
     private var lastUpdateTime: TimeInterval = 0

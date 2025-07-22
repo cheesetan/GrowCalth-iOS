@@ -37,7 +37,6 @@ enum PostError: LocalizedError, Sendable {
     }
 }
 
-@MainActor
 final class AdminManager: ObservableObject, Sendable {
     @Published var isUnderMaintenance: Bool?
     @Published var appForcesUpdates: Bool?
@@ -196,6 +195,16 @@ final class AdminManager: ObservableObject, Sendable {
     }
 
     func checkIfUnderMaintenance() async throws {
+        let status = try await self.fetchMaintenanceStatus()
+
+        await MainActor.run {
+            withAnimation {
+                self.isUnderMaintenance = status
+            }
+        }
+    }
+
+    nonisolated internal func fetchMaintenanceStatus() async throws -> Bool {
         let document = try await Firestore.firestore()
             .collection("settings")
             .document("maintenance")
@@ -213,14 +222,20 @@ final class AdminManager: ObservableObject, Sendable {
             throw FirestoreError.failedToGetSpecifiedField
         }
 
+        return status
+    }
+
+    func checkIfAppForcesUpdates() async throws {
+        let status = try await self.fetchAppForcesUpdatesStatus()
+
         await MainActor.run {
             withAnimation {
-                self.isUnderMaintenance = status
+                self.appForcesUpdates = status
             }
         }
     }
 
-    func checkIfAppForcesUpdates() async throws {
+    nonisolated internal func fetchAppForcesUpdatesStatus() async throws -> Bool {
         let document = try await Firestore.firestore()
             .collection("settings")
             .document("force-updates")
@@ -238,14 +253,14 @@ final class AdminManager: ObservableObject, Sendable {
             throw FirestoreError.failedToGetSpecifiedField
         }
 
-        await MainActor.run {
-            withAnimation {
-                self.appForcesUpdates = status
-            }
-        }
+        return status
     }
 
-    func fetchBlockedVersions() async throws -> [String] {
+    func checkBlockediOSVersions() async throws -> [String] {
+        try await self.fetchBlockediOSVersions()
+    }
+
+    nonisolated internal func fetchBlockediOSVersions() async throws -> [String] {
         let document = try await Firestore.firestore()
             .collection("settings")
             .document("versions-blocked")
@@ -266,7 +281,12 @@ final class AdminManager: ObservableObject, Sendable {
         return versions
     }
 
-    func fetchBlockedVersionsAndroid() async throws -> [String] {
+
+    func checkBlockedAndroidVersions() async throws -> [String] {
+        return try await self.fetchBlockedAndroidVersions()
+    }
+
+    nonisolated internal func fetchBlockedAndroidVersions() async throws -> [String] {
         let document = try await Firestore.firestore()
             .collection("settings")
             .document("versions-blocked-android")

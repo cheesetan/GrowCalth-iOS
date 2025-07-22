@@ -31,7 +31,6 @@ enum DeveloperManagerError: LocalizedError, Sendable {
     }
 }
 
-@MainActor
 class DeveloperManager: ObservableObject {
 
     @Published var bypassed = false
@@ -57,10 +56,10 @@ class DeveloperManager: ObservableObject {
 
     func updateValues() async throws {
         do {
-            let versions = try await adminManager.fetchBlockedVersions()
+            let versions = try await adminManager.fetchBlockediOSVersions()
             self.blockedVersions = versions.sorted()
 
-            let versionsAndroid = try await adminManager.fetchBlockedVersionsAndroid()
+            let versionsAndroid = try await adminManager.fetchBlockedAndroidVersions()
             self.blockedVersionsAndroid = versionsAndroid.sorted()
         } catch {
             throw DeveloperManagerError.failedToFetchBlockedVersions

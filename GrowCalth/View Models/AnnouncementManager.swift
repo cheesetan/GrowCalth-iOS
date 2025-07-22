@@ -8,7 +8,6 @@
 import SwiftUI
 import FirebaseFirestore
 
-@MainActor
 final class AnnouncementManager: ObservableObject, Sendable {
     @Published var announcements: [Announcement] = [] {
         didSet {
@@ -133,6 +132,11 @@ final class AnnouncementManager: ObservableObject, Sendable {
     }
 
     func retrieveEvents() async throws {
+        let events = try await self.fetchEvents()
+        self.events = events
+    }
+
+    nonisolated internal func fetchEvents() async throws -> [EventItem] {
         let query = try await Firestore.firestore()
             .collection("houseevents")
             .order(by: "dateAdded", descending: true)
@@ -157,10 +161,15 @@ final class AnnouncementManager: ObservableObject, Sendable {
             )
         }
 
-        events = newEvents
+        return newEvents
     }
 
     func retrieveAnnouncements() async throws {
+        let announcements = try await self.fetchAnnouncements()
+        self.announcements = announcements
+    }
+
+    nonisolated internal func fetchAnnouncements() async throws -> [Announcement] {
         let query = try await Firestore.firestore()
             .collection("Announcements")
             .order(by: "dateAdded", descending: true)
@@ -181,6 +190,6 @@ final class AnnouncementManager: ObservableObject, Sendable {
             )
         }
 
-        announcements = newAnnouncements
+        return newAnnouncements
     }
 }

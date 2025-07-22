@@ -51,7 +51,6 @@ internal enum APNSError: LocalizedError, Sendable {
     }
 }
 
-@MainActor
 class ApplicationPushNotificationsManager: ObservableObject {
     static let shared: ApplicationPushNotificationsManager = .init()
 
@@ -75,7 +74,7 @@ class ApplicationPushNotificationsManager: ObservableObject {
 
     func sendPushNotificationsToEveryone(title: String, subtitle: String, body: String) async throws {
         let token = try await getOAuthToken()
-        let fcmTokens = try await fetchFCMTokensFromFirebase()
+        let fcmTokens = try await getFCMTokens()
 
         // Use TaskGroup for concurrent execution with proper async handling
         try await withThrowingTaskGroup(of: Void.self) { group in
@@ -100,20 +99,20 @@ class ApplicationPushNotificationsManager: ObservableObject {
         }
     }
 
-    internal func sendFCMTokenFetchRequest() async throws -> QuerySnapshot {
+    private func getFCMTokens() async throws -> [String] {
+        return try await self.fetchFCMTokensFromFirebase()
+    }
+
+    nonisolated internal func fetchFCMTokensFromFirebase() async throws -> [String] {
         do {
-            return try await Firestore.firestore().collection("fcmTokens").getDocuments()
+            let query = try await Firestore.firestore().collection("fcmTokens").getDocuments()
+            let tokenArray = query.documents.compactMap { document in
+                document.data()["token"] as? String
+            }
+            return tokenArray
         } catch {
             throw APNSError.failedToFetchFCMTokensFromFirestore
         }
-    }
-
-    private func fetchFCMTokensFromFirebase() async throws -> [String] {
-        let query = try await Firestore.firestore().collection("fcmTokens").getDocuments()
-        let tokenArray = query.documents.compactMap { document in
-            document.data()["token"] as? String
-        }
-        return tokenArray
     }
 
     func sendPushNotification(accessToken: String, fcmToken: String, title: String, subtitle: String, body: String) async throws {
@@ -184,9 +183,24 @@ class ApplicationPushNotificationsManager: ObservableObject {
         }
     }
 
-    internal func fetchSpecifiedFCMTokenRequest(fcmToken: String) async throws -> QuerySnapshot {
+    private func removeFailedFCMToken(fcmToken: String) async throws {
+        let documentsIds = try await fetchSpecifiedFCMTokenDocumentIdsRequest(fcmToken: fcmToken)
+        for id in documentsIds {
+            try await removeSpecifiedFCMTokenRequest(documentID: id)
+        }
+    }
+
+    nonisolated internal func fetchSpecifiedFCMTokenDocumentIdsRequest(
+        fcmToken: String
+    ) async throws -> [String] {
         do {
-            return try await Firestore.firestore().collection("fcmTokens").whereField("token", isEqualTo: fcmToken).getDocuments()
+            let query = try await Firestore.firestore().collection("fcmTokens").whereField("token", isEqualTo: fcmToken).getDocuments()
+
+            var documentIds: [String] = []
+            for document in query.documents {
+                documentIds.append(document.documentID)
+            }
+            return documentIds
         } catch {
             throw APNSError.errorFindingSpecifiedFCMToken
         }
@@ -200,12 +214,6 @@ class ApplicationPushNotificationsManager: ObservableObject {
         }
     }
 
-    private func removeFailedFCMToken(fcmToken: String) async throws {
-        let query = try await fetchSpecifiedFCMTokenRequest(fcmToken: fcmToken)
-        for document in query.documents {
-            try await removeSpecifiedFCMTokenRequest(documentID: document.documentID)
-        }
-    }
 
     internal func signJWT(jwt: JWT<GoogleClaims>, using signer: JWTSigner) throws -> String {
         do {
@@ -287,26 +295,25 @@ class ApplicationPushNotificationsManager: ObservableObject {
         }
     }
 
-    internal func sendRequestToFirestoreForToken() async throws -> DocumentSnapshot {
+    nonisolated internal func fetchPrivateKeyForOAuth() async throws -> String {
         do {
             let document = try await Firestore.firestore().collection("settings").document("private-key-for-oauth").getDocument(source: .server)
-            return document
+
+            guard document.exists else {
+                throw FirestoreError.documentDoesNotExist
+            }
+
+            guard let data = document.data() else {
+                throw FirestoreError.documentHasNoData
+            }
+
+            guard let key = data["key"] as? String else {
+                throw FirestoreError.failedToGetSpecifiedField
+            }
+
+            return key
         } catch {
             throw APNSError.failedToFetchPrivateKeyFromFirestore
         }
-    }
-
-    private func fetchPrivateKeyForOAuth() async throws -> String {
-        let document = try await sendRequestToFirestoreForToken()
-        guard document.exists else {
-            throw FirestoreError.documentDoesNotExist
-        }
-        guard let data = document.data() else {
-            throw FirestoreError.documentHasNoData
-        }
-        guard let key = data["key"] as? String else {
-            throw FirestoreError.failedToGetSpecifiedField
-        }
-        return key
     }
 }

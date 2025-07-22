@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@MainActor
 final class GoalsManager: ObservableObject, Sendable {
     @Published var stepsGoal: Int?
     @Published var distanceGoal: Double?

@@ -11,7 +11,6 @@ enum AppStatus: Sendable {
     case home, login, noNetwork, updateAvailable, underMaintenance, loading(String)
 }
 
-@MainActor
 class AppState: ObservableObject {
 
     @ObservedObject var authManager: AuthenticationManager

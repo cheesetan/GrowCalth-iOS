@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@MainActor
 class UpdateManager: ObservableObject {
 
     @Published var updateAvailable: Bool?

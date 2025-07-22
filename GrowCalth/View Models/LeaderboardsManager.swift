@@ -8,7 +8,6 @@
 import SwiftUI
 import FirebaseFirestore
 
-@MainActor
 class LeaderboardsManager: ObservableObject {
 
     @Published var leaderboard: [String: Int] = [:] {
@@ -80,21 +79,31 @@ class LeaderboardsManager: ObservableObject {
 
     func retrievePoints() async {
         do {
-            let query = try await Firestore.firestore().collection("HousePoints").getDocuments()
-
-            for document in query.documents {
-                switch document.documentID {
-                case "Black", "Blue", "Green", "Red", "Yellow":
-                    withAnimation {
-                        self.leaderboard[document.documentID] = document.data()["points"] as? Int
-                    }
-                default:
-                    print("Unknown house: \(document.documentID)")
-                }
+            let fetchedData = try await self.fetchPoints()
+            withAnimation {
+                self.leaderboard = fetchedData
             }
         } catch {
             print("Error getting documents: \(error)")
         }
+    }
+
+    nonisolated internal func fetchPoints() async throws -> [String: Int] {
+        var result: [String: Int] = [:]
+        let query = try await Firestore.firestore().collection("HousePoints").getDocuments()
+
+        for document in query.documents {
+            switch document.documentID {
+            case "Black", "Blue", "Green", "Red", "Yellow":
+                if let points = document.data()["points"] as? Int {
+                    result[document.documentID] = points
+                }
+            default:
+                print("Unknown house: \(document.documentID)")
+            }
+        }
+
+        return result
     }
 
     func resetLeaderboards(forHouse house: String) async throws {

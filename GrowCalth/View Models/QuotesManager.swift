@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@MainActor
 class QuotesManager: ObservableObject {
 
     @Published var quote: Quote?

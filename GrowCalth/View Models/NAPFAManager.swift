@@ -8,7 +8,6 @@
 import SwiftUI
 import FirebaseFirestore
 
-@MainActor
 class NAPFAManager: ObservableObject {
 
     @AppStorage("levelSelection", store: .standard) var levelSelection: String = NAPFALevel.secondary2.rawValue
@@ -200,8 +199,12 @@ class NAPFAManager: ObservableObject {
         self.internalData.append(contentsOf: sbj)
     }
 
-    private func fetchDocument(for year: Int) async throws -> DocumentSnapshot {
-        guard let level = NAPFALevel(rawValue: levelSelection) else {
+    func getDocumentData(for year: Int) async throws -> [String : [String]] {
+        return try await self.fetchDocument(for: year)
+    }
+
+    nonisolated internal func fetchDocument(for year: Int) async throws -> [String : [String]] {
+        guard let level = await NAPFALevel(rawValue: levelSelection) else {
             throw NAPFAError.invalidLevel
         }
 
@@ -215,7 +218,11 @@ class NAPFAManager: ObservableObject {
                 throw NAPFAError.documentNotFound
             }
 
-            return document
+            guard let data = document.data() as? [String: [String]] else {
+                throw NAPFAError.invalidDocumentData
+            }
+
+            return data
         } catch {
             if error is NAPFAError {
                 throw error
@@ -249,12 +256,9 @@ class NAPFAManager: ObservableObject {
 
     internal func fetchSitUps(for year: Int) async throws {
         do {
-            let document = try await fetchDocument(for: year)
-            guard let documentData = document.data() else {
-                throw NAPFAError.invalidDocumentData
-            }
+            let documentData = try await getDocumentData(for: year)
 
-            let fieldArray = documentData["situps"] as? [String] ?? []
+            let fieldArray = documentData["situps"] ?? []
             self.sitUps = parseNAPFAResults(from: fieldArray, header: "Sit Ups")
         } catch {
             self.sitUps = []
@@ -267,12 +271,9 @@ class NAPFAManager: ObservableObject {
 
     internal func fetchSitAndReach(for year: Int) async throws {
         do {
-            let document = try await fetchDocument(for: year)
-            guard let documentData = document.data() else {
-                throw NAPFAError.invalidDocumentData
-            }
+            let documentData = try await getDocumentData(for: year)
 
-            let fieldArray = documentData["sitandreach"] as? [String] ?? []
+            let fieldArray = documentData["sitandreach"] ?? []
             self.sitAndReach = parseNAPFAResults(from: fieldArray, header: "Sit And Reach")
         } catch {
             self.sitAndReach = []
@@ -285,12 +286,9 @@ class NAPFAManager: ObservableObject {
 
     internal func fetchSBJ(for year: Int) async throws {
         do {
-            let document = try await fetchDocument(for: year)
-            guard let documentData = document.data() else {
-                throw NAPFAError.invalidDocumentData
-            }
+            let documentData = try await getDocumentData(for: year)
 
-            let fieldArray = documentData["sbj"] as? [String] ?? []
+            let fieldArray = documentData["sbj"] ?? []
             self.sbj = parseNAPFAResults(from: fieldArray, header: "Standing Broad Jump")
         } catch {
             self.sbj = []
@@ -303,12 +301,9 @@ class NAPFAManager: ObservableObject {
 
     internal func fetchShuttleRun(for year: Int) async throws {
         do {
-            let document = try await fetchDocument(for: year)
-            guard let documentData = document.data() else {
-                throw NAPFAError.invalidDocumentData
-            }
+            let documentData = try await getDocumentData(for: year)
 
-            let fieldArray = documentData["shuttle"] as? [String] ?? []
+            let fieldArray = documentData["shuttle"] ?? []
             self.shuttleRun = parseNAPFAResults(from: fieldArray, header: "Shuttle Run")
         } catch {
             self.shuttleRun = []
@@ -321,12 +316,9 @@ class NAPFAManager: ObservableObject {
 
     internal func fetchInclinedPullUps(for year: Int) async throws {
         do {
-            let document = try await fetchDocument(for: year)
-            guard let documentData = document.data() else {
-                throw NAPFAError.invalidDocumentData
-            }
+            let documentData = try await getDocumentData(for: year)
 
-            let fieldArray = documentData["inclinedpullups"] as? [String] ?? []
+            let fieldArray = documentData["inclinedpullups"] ?? []
             let header: String
 
             guard let level = NAPFALevel(rawValue: self.levelSelection) else {
@@ -353,12 +345,9 @@ class NAPFAManager: ObservableObject {
 
     internal func fetchPullUps(for year: Int) async throws {
         do {
-            let document = try await fetchDocument(for: year)
-            guard let documentData = document.data() else {
-                throw NAPFAError.invalidDocumentData
-            }
+            let documentData = try await getDocumentData(for: year)
 
-            let fieldArray = documentData["pullups"] as? [String] ?? []
+            let fieldArray = documentData["pullups"] ?? []
             self.pullUps = parseNAPFAResults(from: fieldArray, header: "Pull Ups (Male)")
         } catch {
             self.pullUps = []
@@ -371,12 +360,9 @@ class NAPFAManager: ObservableObject {
 
     internal func fetchTwoPointFourKm(for year: Int) async throws {
         do {
-            let document = try await fetchDocument(for: year)
-            guard let documentData = document.data() else {
-                throw NAPFAError.invalidDocumentData
-            }
+            let documentData = try await getDocumentData(for: year)
 
-            let fieldArray = documentData["2.4km"] as? [String] ?? []
+            let fieldArray = documentData["2.4km"] ?? []
             self.twoPointFourKm = parseNAPFAResults(from: fieldArray, header: "2.4km Run")
         } catch {
             self.twoPointFourKm = []
