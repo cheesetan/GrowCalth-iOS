@@ -48,7 +48,7 @@ extension UIColor {
 extension Color {
     static let background = Color(
         uiColor: UIColor.dynamicColor(
-            light: UIColor(red: 0.92, green: 0.92, blue: 0.95, alpha: 1),
+            light: UIColor(hex: 0xEBEBF2),
             dark: UIColor(hex: 0x17171A)
         )
     )
@@ -86,6 +86,13 @@ extension Color {
         )
     )
 
+    static let lbPlacingOutline = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xBCBCC2),
+            dark: UIColor.clear
+        )
+    )
+
     static let lbHouseColorToFadeTo = Color(
         uiColor: UIColor.dynamicColor(
             light: UIColor(hex: 0xDFDFE5),
@@ -97,14 +104,14 @@ extension Color {
 
     static let announcementEventBackground = Color(
         uiColor: UIColor.dynamicColor(
-            light: UIColor(hex: 0xDCDCE5),
+            light: UIColor(hex: 0xE7E7EF),
             dark: UIColor(hex: 0x17171A)
         )
     )
 
     static let announcementEventInnerShadow = Color(
         uiColor: .dynamicColor(
-            light: UIColor(hex: 0xF4F4F6).withAlphaComponent(0.8),
+            light: UIColor(hex: 0xF4F4F6).withAlphaComponent(0.9),
             dark: UIColor.white.withAlphaComponent(0.25)
         )
     )

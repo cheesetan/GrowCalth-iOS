@@ -18,6 +18,7 @@ struct LeaderboardView: View {
     @EnvironmentObject var lbManager: LeaderboardsManager
     @EnvironmentObject var adminManager: AdminManager
     @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var motionManager: MotionManager
 
     var body: some View {
         ZStack {
@@ -31,18 +32,21 @@ struct LeaderboardView: View {
                         leaderboardPodium(data: sortedDictionary)
                             .frame(height: geometry.size.height*0.65)
                         VStack(spacing: 15) {
-                            houseRow(
-                                placing: "4TH",
-                                height: geometry.size.height*0.1,
-                                text: sortedDictionary[3].key,
-                                points: sortedDictionary[3].value
-                            )
-                            houseRow(
-                                placing: "5TH",
-                                height: geometry.size.height*0.1,
-                                text: sortedDictionary[4].key,
-                                points: sortedDictionary[4].value
-                            )
+                            let height = geometry.size.height*0.1
+                            if height >= 6 {
+                                houseRow(
+                                    placing: "4TH",
+                                    height: height,
+                                    text: sortedDictionary[3].key,
+                                    points: sortedDictionary[3].value
+                                )
+                                houseRow(
+                                    placing: "5TH",
+                                    height: height,
+                                    text: sortedDictionary[4].key,
+                                    points: sortedDictionary[4].value
+                                )
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -116,44 +120,46 @@ struct LeaderboardView: View {
     @ViewBuilder
     func leaderboardPodium(data: Array<(key: String, value: Int)>) -> some View {
         GeometryReader { geometry in
-            let barWidth = (geometry.size.width-30)/3
-            VStack {
-                HStack {
-                    Spacer()
-                    Image(systemName: "trophy.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: barWidth*0.8, height: barWidth*0.8)
-                        .foregroundStyle(.yellow)
-                        .shadow(color: .yellow, radius: barWidth)
-                    Spacer()
-                }
-                GeometryReader { geometry2 in
-                    HStack(alignment: .bottom) {
-                        leaderboardRectanglePodium(house: data[2].key, points: data[2].value)
-                            .frame(width: barWidth, height: geometry2.size.height*0.8)
-
-                        leaderboardRectanglePodium(house: data[0].key, points: data[0].value)
-                            .frame(width: barWidth, height: geometry2.size.height)
-
-                        leaderboardRectanglePodium(house: data[1].key, points: data[1].value)
-                            .frame(width: barWidth, height: geometry2.size.height*0.9)
+            if geometry.size.width >= 30 {
+                let barWidth = (geometry.size.width-30)/3
+                VStack {
+                    HStack {
+                        Spacer()
+                        Image(systemName: "trophy.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: barWidth*0.8, height: barWidth*0.8)
+                            .foregroundStyle(.yellow)
+                            .shadow(color: .yellow, radius: barWidth)
+                        Spacer()
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    GeometryReader { geometry2 in
+                        HStack(alignment: .bottom) {
+                            leaderboardRectanglePodium(house: data[2].key, points: data[2].value)
+                                .frame(width: barWidth, height: geometry2.size.height*0.8)
+
+                            leaderboardRectanglePodium(house: data[0].key, points: data[0].value)
+                                .frame(width: barWidth, height: geometry2.size.height)
+
+                            leaderboardRectanglePodium(house: data[1].key, points: data[1].value)
+                                .frame(width: barWidth, height: geometry2.size.height*0.9)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    }
                 }
-            }
-            .overlay {
-                LinearGradient(
-                    gradient: Gradient(
-                        stops: [
-                            .init(color: .background, location: 0.1),
-                            .init(color: .clear, location: 0.3),
-                            .init(color: .clear, location: 1)
-                        ]
-                    ),
-                    startPoint: .bottom,
-                    endPoint: .top
-                )
+                .overlay {
+                    LinearGradient(
+                        gradient: Gradient(
+                            stops: [
+                                .init(color: .background, location: 0.1),
+                                .init(color: .clear, location: 0.3),
+                                .init(color: .clear, location: 1)
+                            ]
+                        ),
+                        startPoint: .bottom,
+                        endPoint: .top
+                    )
+                }
             }
         }
         .padding(.horizontal)
@@ -171,6 +177,11 @@ struct LeaderboardView: View {
                             .scaledToFit()
                             .frame(width: geometry.size.width * 0.85, height: geometry.size.width * 0.85)
                             .mask(Circle())
+                            .specularHighlight(
+                                for: .circle,
+                                motionManager: motionManager,
+                                strokeWidth: 2.0
+                            )
 
                         Text("\(points)")
                             .foregroundStyle(.white)
@@ -188,8 +199,9 @@ struct LeaderboardView: View {
             .foregroundStyle(Color.lbCapsuleBackground)
             .overlay {
                 HStack(spacing: 30) {
+                    let lbPlacingWidth = height*1.2
                     Capsule()
-                        .frame(width: height*1.2)
+                        .frame(width: lbPlacingWidth)
                         .foregroundStyle(Color.lbPlacingBackground)
                         .background {
                             Capsule()
@@ -201,9 +213,13 @@ struct LeaderboardView: View {
                                 .font(.title2.weight(.black).italic())
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.1)
-                                .padding(.horizontal)
+                                .padding(lbPlacingWidth*0.15)
                         }
                         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+                        .overlay {
+                            Capsule()
+                                .stroke(Color.lbPlacingOutline, lineWidth: 2)
+                        }
                     Capsule()
                         .frame(maxWidth: .infinity)
                         .foregroundStyle(
@@ -239,10 +255,10 @@ struct LeaderboardView: View {
                                     .mask(Circle())
                                 Spacer()
                                 Text("\(points) POINTS")
-                                    .padding(5)
-                                    .font(.title.weight(.black).italic())
+                                    .font(.title2.weight(.black).italic())
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.1)
+                                    .padding(lbPlacingWidth*0.15)
                                     .foregroundColor(.white)
                             }
                             .padding(.leading, 6)

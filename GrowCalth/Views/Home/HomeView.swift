@@ -238,9 +238,10 @@ struct HomeView: View {
         } label: {
             GeometryReader { geometry in
                 VStack(spacing: 5) {
-                    VStack(spacing: 15) {
-                        let tallHeight: Double = abs(Double((geometry.size.height - 50) / 7 * 3))
-                        let normalHeight: Double = abs(Double((geometry.size.height - 50) / 7 * 2))
+                    let spacing = geometry.size.height * 0.05
+                    VStack(spacing: spacing) {
+                        let tallHeight: Double = abs(Double((geometry.size.height - (spacing*2+5)) / 7 * 3))
+                        let normalHeight: Double = abs(Double((geometry.size.height - (spacing*2+5)) / 7 * 2))
                         let data = sortDictionary(for: lbManager.leaderboard)
 
                         ForEach(data.prefix(3), id: \.key) { house in
@@ -308,7 +309,7 @@ struct HomeView: View {
                                 .font(.title2.weight(.black).italic())
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.1)
-                                .padding(.horizontal)
+                                .padding(placingBubbleWidth*0.05)
                         }
                         .specularHighlight(
                             motionManager: motionManager,
@@ -316,6 +317,12 @@ struct HomeView: View {
                             isActive: .constant(placing == "1ST")
                         )
                         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+                        .overlay {
+                            if placing != "1ST" {
+                                Capsule()
+                                    .stroke(Color.lbPlacingOutline, lineWidth: 2)
+                            }
+                        }
                     Capsule()
                         .frame(maxWidth: .infinity)
                         .foregroundStyle(
@@ -344,10 +351,10 @@ struct HomeView: View {
                         }
                         .overlay {
                             Text("\(points) POINTS")
-                                .padding(5)
-                                .font(.title.weight(.black).italic())
+                                .font(.title2.weight(.black).italic())
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.1)
+                                .padding(placingBubbleWidth*0.05)
                                 .foregroundColor(.white)
                         }
                         .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)

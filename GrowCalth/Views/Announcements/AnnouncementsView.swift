@@ -49,34 +49,37 @@ struct AnnouncementsView: View {
     var main: some View {
         ZStack {
             Color.background.ignoresSafeArea()
-            VStack {
-                VStack(alignment: .leading, spacing: 30) {
-                    Text(selection == .announcements ? "Announcements" : "Events")
-                        .font(.largeTitle.bold())
-                        .contentTransition(.numericText())
-                    picker
-                }
-                .padding([.horizontal, .top], 30)
-                ScrollView {
-                    VStack {
-                        switch selection {
-                        case .announcements:
-                            if !announcementManager.announcements.isEmpty {
-                                announcementsList
-                            } else {
-                                noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
-                            }
-                        case .events:
-                            if !announcementManager.events.isEmpty {
-                                eventsList
-                            } else {
-                                noContentView(keyword: "Events", systemImage: "calendar")
+            GeometryReader { geometry in
+                VStack {
+                    VStack(alignment: .leading, spacing: geometry.size.height*0.02) {
+                        Text(selection == .announcements ? "Announcements" : "Events")
+                            .font(.largeTitle.bold())
+                            .contentTransition(.numericText())
+                        picker
+                    }
+                    .padding([.horizontal, .top], 30)
+                    ScrollView {
+                        VStack {
+                            switch selection {
+                            case .announcements:
+                                if !announcementManager.announcements.isEmpty {
+                                    announcementsList
+                                } else {
+                                    noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
+                                }
+                            case .events:
+                                if !announcementManager.events.isEmpty {
+                                    eventsList
+                                } else {
+                                    noContentView(keyword: "Events", systemImage: "calendar")
+                                }
                             }
                         }
+                        .padding([.horizontal, .bottom], 30)
+                        .padding(.top, geometry.size.height*0.02)
                     }
-                    .padding(30)
+                    .scrollIndicators(.hidden)
                 }
-                .scrollIndicators(.hidden)
             }
         }
         .overlay(alignment: .bottomTrailing) {
@@ -335,6 +338,8 @@ struct AnnouncementsView: View {
                 }
             } label: {
                 Text("Announcements")
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.1)
                     .fontWeight(.bold)
                     .padding(10)
                     .frame(maxWidth: .infinity)
@@ -371,6 +376,8 @@ struct AnnouncementsView: View {
                 }
             } label: {
                 Text("Events")
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.1)
                     .fontWeight(.bold)
                     .padding(10)
                     .frame(maxWidth: .infinity)
@@ -441,7 +448,7 @@ struct AnnouncementsView: View {
             RoundedRectangle(cornerRadius: 24)
                 .fill(.shadow(.inner(
                     color: Color.announcementEventInnerShadow,
-                    radius: colorScheme == .dark ? 6.5 : 17.5,
+                    radius: colorScheme == .dark ? 6.5 : 32.5,
                     x: 0,
                     y: 4
                 )))
