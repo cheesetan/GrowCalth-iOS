@@ -26,7 +26,8 @@ struct SignUpView: View {
     @State var showingAlert = false
     
     @EnvironmentObject var authManager: AuthenticationManager
-    
+    @EnvironmentObject var motionManager: MotionManager
+
     @FocusState var isFieldFocus: FieldToFocus?
     
     internal enum FieldToFocus {
@@ -38,49 +39,63 @@ struct SignUpView: View {
     }
 
     var body: some View {
-        VStack(spacing: 30) {
-            if #available(iOS 26.0, *) {
-                Image(systemName: "person.and.person.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .padding(30)
-                    .frame(width: 100, height: 100)
-                    .foregroundStyle(.accent)
-                    .glassEffect()
-            } else {
-                Image(systemName: "person.and.person.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .padding(30)
-                    .frame(width: 100, height: 100)
-                    .foregroundStyle(.accent)
-                    .background(.ultraThickMaterial)
-                    .mask(RoundedRectangle(cornerRadius: 32))
+        ZStack {
+            Color.background.ignoresSafeArea()
+            VStack(spacing: 30) {
+                if #available(iOS 26.0, *) {
+                    Image(systemName: "person.and.person.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .padding(30)
+                        .frame(width: 100, height: 100)
+                        .foregroundStyle(.accent)
+                        .glassEffect()
+                        .mask(Circle())
+                        .specularHighlight(
+                            for: .circle,
+                            motionManager: motionManager,
+                            strokeWidth: 2.0
+                        )
+                } else {
+                    Image(systemName: "person.and.person.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .padding(30)
+                        .frame(width: 100, height: 100)
+                        .foregroundStyle(.accent)
+                        .background(.thickMaterial)
+                        .mask(Circle())
+                        .specularHighlight(
+                            for: .circle,
+                            motionManager: motionManager,
+                            strokeWidth: 2.0
+                        )
+                }
+                VStack(spacing: 5) {
+                    Text("Create Account")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+
+                    Text("Join The House Today.")
+                        .fontWeight(.black)
+                        .font(.title)
+                        .multilineTextAlignment(.center)
+
+                    Text("Sign up to be part of the community")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+
+                infoFields
+                signUpButton
+                bottomText
             }
-            VStack(spacing: 5) {
-                Text("Create Account")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-
-                Text("Join The House Today.")
-                    .fontWeight(.black)
-                    .font(.title)
-                    .multilineTextAlignment(.center)
-
-                Text("Sign up to be part of the community")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-
-            infoFields
-            signUpButton
-            bottomText
+            .padding(30)
         }
-        .padding(.horizontal)
         .alert(alertHeader, isPresented: $showingAlert) {
             if alertHeader == account_exists_alert_title || alertHeader == verify_account_alert_title {
                 if #available(iOS 26.0, *) {
@@ -138,8 +153,8 @@ struct SignUpView: View {
                     Label("School Email", systemImage: "envelope")
                 }
                 .padding()
-                .background(.ultraThickMaterial)
-                .mask(RoundedRectangle(cornerRadius: 16))
+                .background(.thickMaterial)
+                .mask(Capsule())
                 .keyboardType(.emailAddress)
                 .textContentType(.username)
                 .autocorrectionDisabled(true)
@@ -183,8 +198,8 @@ struct SignUpView: View {
                         }
                     }
                     .padding()
-                    .background(.ultraThickMaterial)
-                    .mask(RoundedRectangle(cornerRadius: 16))
+                    .background(.thickMaterial)
+                    .mask(Capsule())
                 }
             }
             .textContentType(.password)
@@ -255,8 +270,8 @@ struct SignUpView: View {
                 }
                 .padding(10)
                 .frame(maxWidth: .infinity)
-                .background(.ultraThickMaterial)
-                .mask(RoundedRectangle(cornerRadius: 16))
+                .background(.thickMaterial)
+                .mask(Capsule())
             }
         }
     }
@@ -292,7 +307,7 @@ struct SignUpView: View {
                         .foregroundColor(isLoading ? .clear : .white)
                         .font(.body.weight(.semibold))
                         .background(.accent)
-                        .mask(RoundedRectangle(cornerRadius: 16))
+                        .mask(Capsule())
                         .overlay {
                             if isLoading {
                                 ProgressView()

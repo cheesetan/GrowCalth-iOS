@@ -10,7 +10,7 @@ import SwiftUI
 extension Color {
     init(hex: UInt, alpha: Double = 1) {
         self.init(
-            .sRGB,
+            .displayP3,
             red: Double((hex >> 16) & 0xff) / 255,
             green: Double((hex >> 08) & 0xff) / 255,
             blue: Double((hex >> 00) & 0xff) / 255,
@@ -18,3 +18,156 @@ extension Color {
         )
     }
 }
+
+extension UIColor {
+   convenience init(red: Int, green: Int, blue: Int) {
+       assert(red >= 0 && red <= 255, "Invalid red component")
+       assert(green >= 0 && green <= 255, "Invalid green component")
+       assert(blue >= 0 && blue <= 255, "Invalid blue component")
+
+       self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
+   }
+
+   convenience init(hex: Int) {
+       self.init(
+           red: (hex >> 16) & 0xFF,
+           green: (hex >> 8) & 0xFF,
+           blue: hex & 0xFF
+       )
+   }
+}
+
+extension UIColor {
+    static func dynamicColor(light: UIColor, dark: UIColor) -> UIColor {
+        return UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? dark : light
+        }
+    }
+}
+
+extension Color {
+    static let background = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xEBEBF2),
+            dark: UIColor(hex: 0x17171A)
+        )
+    )
+
+    static let shadow = Color(
+        uiColor: UIColor(hex: 0x2B2B2E)
+    ).opacity(0.2)
+
+    static let activityInnerShadow = Color(
+        uiColor: UIColor(hex: 0xF4F4F6)
+    ).opacity(0.1)
+
+    static let activityOuterShadow = Color(
+        uiColor: UIColor(hex: 0x14141F)
+    ).opacity(0.1)
+
+    static let activityLeftShadow = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0x2B2B2E).withAlphaComponent(0.2),
+            dark: UIColor(hex: 0x0C0C0D).withAlphaComponent(0.6)
+        )
+    )
+
+    static let lbCapsuleBackground = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xD4D4D9),
+            dark: UIColor(hex: 0x4E4E56)
+        )
+    )
+
+    static let lbPlacingBackground = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xDFDFE5),
+            dark: UIColor(hex: 0x3A3A40)
+        )
+    )
+
+    static let lbPlacingOutline = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xBCBCC2),
+            dark: UIColor.clear
+        )
+    )
+
+    static let lbHouseColorToFadeTo = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xDFDFE5),
+            dark: UIColor(hex: 0x4F4F52)
+        )
+    )
+
+    static let goalsBackground = Color(hex: 0xDB5461, alpha: 0.8)
+
+    static let announcementEventBackground = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xE7E7EF),
+            dark: UIColor(hex: 0x17171A)
+        )
+    )
+
+    static let announcementEventInnerShadow = Color(
+        uiColor: .dynamicColor(
+            light: UIColor(hex: 0xF4F4F6).withAlphaComponent(0.9),
+            dark: UIColor.white.withAlphaComponent(0.25)
+        )
+    )
+
+    static let announcementEventOuterShadow = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0x4F4F52).withAlphaComponent(0.25),
+            dark: UIColor(hex: 0x2B2B2E).withAlphaComponent(0.05)
+        )
+    )
+
+    static let announcementEventOutline = LinearGradient(
+        colors: [
+            .white.opacity(0.8)
+        ],
+        startPoint: .bottomLeading,
+        endPoint: .topTrailing
+    )
+
+    static let pickerOuterShadow = Color(
+        uiColor: UIColor(hex: 0x2B2B2E)
+    ).opacity(0.05)
+
+    static let pickerActiveBackground = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0xffffff),
+            dark: UIColor(hex: 0x17171A)
+        )
+    )
+
+    static let pickerActiveInnerShadow = Color.white.opacity(0.25)
+
+    static let pickerInactiveInnerShadow = Color(
+        uiColor: UIColor.dynamicColor(
+            light: UIColor(hex: 0x2B2B2E).withAlphaComponent(0.1),
+            dark: UIColor(hex: 0x000000).withAlphaComponent(0.6)
+        )
+    )
+
+    static let pickerOutlineLight = LinearGradient(
+        colors: [
+            .white.opacity(0.8),
+            .white.opacity(0.05),
+            .white.opacity(0.8)
+        ],
+        startPoint: .bottomLeading,
+        endPoint: .topTrailing
+    )
+
+    static let pickerOutlineDark = LinearGradient(
+        colors: [
+            .white.opacity(0.8),
+            Color(hex: 0x999999).opacity(0.9)
+        ],
+        startPoint: .bottomLeading,
+        endPoint: .topTrailing
+    )
+}
+

@@ -36,70 +36,74 @@ struct AccountInfo: View {
     @EnvironmentObject var authManager: AuthenticationManager
     
     var body: some View {
-        List {
-            Section("Personal Information") {
-                CustomLabeledContent("Name") {
-                    VStack {
-                        if let email = authManager.email {
-                            Text(email.components(separatedBy: "@")[0].components(separatedBy: "_").joined(separator: " ").uppercased())
-                        } else {
-                            Text("?")
+        ZStack {
+            Color.background.ignoresSafeArea()
+            List {
+                Section("Personal Information") {
+                    CustomLabeledContent("Name") {
+                        VStack {
+                            if let email = authManager.email {
+                                Text(email.components(separatedBy: "@")[0].components(separatedBy: "_").joined(separator: " ").uppercased())
+                            } else {
+                                Text("?")
+                            }
                         }
+                        .multilineTextAlignment(.trailing)
                     }
-                    .multilineTextAlignment(.trailing)
+
+                    CustomLabeledContent("Email") {
+                        VStack {
+                            if let email = authManager.email {
+                                Text(email)
+                            } else {
+                                Text("?")
+                            }
+                        }
+                        .multilineTextAlignment(.trailing)
+                    }
+
+                    CustomLabeledContent("House") {
+                        VStack {
+                            if let house = authManager.usersHouse {
+                                Text(house)
+                            } else {
+                                Text("?")
+                            }
+                        }
+                        .multilineTextAlignment(.trailing)
+                    }
+
+                    CustomLabeledContent("Account Type") {
+                        VStack {
+                            Text(authManager.accountType.name)
+                        }
+                        .multilineTextAlignment(.trailing)
+                    }
                 }
 
-                CustomLabeledContent("Email") {
-                    VStack {
-                        if let email = authManager.email {
-                            Text(email)
-                        } else {
-                            Text("?")
-                        }
+                Section("Sign In & Security") {
+                    NavigationLink {
+                        changePassword
+                    } label: {
+                        Text("Change Password")
                     }
-                    .multilineTextAlignment(.trailing)
                 }
 
-                CustomLabeledContent("House") {
-                    VStack {
-                        if let house = authManager.usersHouse {
-                            Text(house)
+                Section {
+                    Button(role: .destructive) {
+                        showingDeleteAccountAlert.toggle()
+                    } label: {
+                        if isDeletingAccount {
+                            ProgressView()
                         } else {
-                            Text("?")
+                            Text("Delete account")
+                                .tint(.red)
                         }
                     }
-                    .multilineTextAlignment(.trailing)
-                }
-
-                CustomLabeledContent("Account Type") {
-                    VStack {
-                        Text(authManager.accountType.name)
-                    }
-                    .multilineTextAlignment(.trailing)
+                    .disabled(isDeletingAccount)
                 }
             }
-            
-            Section("Sign In & Security") {
-                NavigationLink {
-                    changePassword
-                } label: {
-                    Text("Change Password")
-                }
-            }
-            
-            Section {
-                Button(role: .destructive) {
-                    showingDeleteAccountAlert.toggle()
-                } label: {
-                    if isDeletingAccount {
-                        ProgressView()
-                    } else {
-                        Text("Delete account")
-                            .tint(.red)
-                    }
-                }
-                .disabled(isDeletingAccount)
-            }
+            .scrollContentBackground(.hidden)
         }
         .navigationTitle("Account")
         .alert("Delete Account", isPresented: $showingDeleteAccountAlert) {
@@ -149,7 +153,8 @@ struct AccountInfo: View {
     }
     
     var changePassword: some View {
-        VStack {
+        ZStack {
+            Color.background.ignoresSafeArea()
             List {
                 Section {
                     VStack {
@@ -214,6 +219,7 @@ struct AccountInfo: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
             .navigationTitle("Change Password")
         }
     }

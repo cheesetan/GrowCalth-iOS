@@ -9,30 +9,34 @@ import SwiftUI
 
 struct CalculatorResourcesView: View {
     var body: some View {
-        List {
-            Section("Mass Calculators") {
-                resource(
-                    "Body Mass Index (BMI)",
-                    accessibilityLabel: "BMI",
-                    subtitle: "Singapore Heart Foundation",
-                    link: "https://www.myheart.org.sg/tools-resources/bmi-calculator/"
-                )
+        ZStack {
+            Color.background.ignoresSafeArea()
+            List {
+                Section("Mass Calculators") {
+                    resource(
+                        "Body Mass Index (BMI)",
+                        accessibilityLabel: "BMI",
+                        subtitle: "Singapore Heart Foundation",
+                        link: "https://www.myheart.org.sg/tools-resources/bmi-calculator/"
+                    )
+                }
+
+                Section("Calorie Calculators") {
+                    resource(
+                        "Basal Metabolic Rate (BMR)",
+                        accessibilityLabel: "BMR",
+                        subtitle: "calculator.net",
+                        link: "https://www.calculator.net/bmr-calculator.html"
+                    )
+                    resource(
+                        "Daily Calorie Intake",
+                        accessibilityLabel: "Calorie",
+                        subtitle: "yourhealthcalculator.com",
+                        link: "https://yourhealthcalculator.com/calculate-calories/"
+                    )
+                }
             }
-            
-            Section("Calorie Calculators") {
-                resource(
-                    "Basal Metabolic Rate (BMR)",
-                    accessibilityLabel: "BMR",
-                    subtitle: "calculator.net",
-                    link: "https://www.calculator.net/bmr-calculator.html"
-                )
-                resource(
-                    "Daily Calorie Intake",
-                    accessibilityLabel: "Calorie",
-                    subtitle: "yourhealthcalculator.com",
-                    link: "https://yourhealthcalculator.com/calculate-calories/"
-                )
-            }
+            .scrollContentBackground(.hidden)
         }
         .navigationTitle("Calculators")
     }

@@ -8,7 +8,8 @@
 import SwiftUI
 
 @MainActor
-final class ColorSchemeManager: ObservableObject, Sendable {
+final class SettingsManager: ObservableObject, Sendable {
+    @AppStorage("specularHighlightsEnabled", store: .standard) var specularHighlightsEnabled: Bool = true
     @Published var colorScheme: PreferredColorScheme = .automatic {
         didSet {
             Task {

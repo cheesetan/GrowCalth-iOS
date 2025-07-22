@@ -25,102 +25,106 @@ struct DeveloperView: View {
     @EnvironmentObject var developerManager: DeveloperManager
     
     var body: some View {
-        List {
-            Section("App Controls") {
-                Toggle("App Forces Updates", isOn: $appForcesUpdates)
-                Toggle("App Under Maintenance", isOn: $appIsUnderMaintenance)
-                Toggle("Bypass Restrictions", isOn: Binding(get: {
-                    developerManager.bypassed
-                }, set: { value in
-                    withAnimation {
-                        developerManager.bypassed = value
-                    }
-                }))
-            }
-            
-            Section {
-                if let blockedVersions = blockedVersions {
-                    ForEach(blockedVersions, id: \.self) { version in
-                        Text(version)
-                    }
-                    .onDelete { indexSet in
+        ZStack {
+            Color.background.ignoresSafeArea()
+            List {
+                Section("App Controls") {
+                    Toggle("App Forces Updates", isOn: $appForcesUpdates)
+                    Toggle("App Under Maintenance", isOn: $appIsUnderMaintenance)
+                    Toggle("Bypass Restrictions", isOn: Binding(get: {
+                        developerManager.bypassed
+                    }, set: { value in
                         withAnimation {
-                            self.blockedVersions?.remove(atOffsets: indexSet)
+                            developerManager.bypassed = value
+                        }
+                    }))
+                }
+
+                Section {
+                    if let blockedVersions = blockedVersions {
+                        ForEach(blockedVersions, id: \.self) { version in
+                            Text(version)
+                        }
+                        .onDelete { indexSet in
+                            withAnimation {
+                                self.blockedVersions?.remove(atOffsets: indexSet)
+                            }
+                        }
+                    }
+                } header: {
+                    HStack {
+                        Text("Blocked Versions (iOS)")
+                        Button {
+                            isLoading = true
+                            Task {
+                                try await developerManager.updateValues()
+                                isLoading = false
+                            }
+                        } label: {
+                            if isLoading {
+                                ProgressView()
+                                    .controlSize(.small)
+                                    .padding(.leading, 2.5)
+                            } else {
+                                Image(systemName: "arrow.clockwise")
+                            }
+                        }
+                        .disabled(isLoading)
+                        Spacer()
+                        EditButton()
+                            .textCase(nil)
+                            .disabled(blockedVersions == nil || blockedVersions?.count == 0)
+                        Button {
+                            showAlert.toggle()
+                        } label: {
+                            Image(systemName: "plus")
                         }
                     }
                 }
-            } header: {
-                HStack {
-                    Text("Blocked Versions (iOS)")
-                    Button {
-                        isLoading = true
-                        Task {
-                            try await developerManager.updateValues()
-                            isLoading = false
+
+                Section {
+                    if let blockedVersionsAndroid = blockedVersionsAndroid {
+                        ForEach(blockedVersionsAndroid, id: \.self) { version in
+                            Text(version)
                         }
-                    } label: {
-                        if isLoading {
-                            ProgressView()
-                                .controlSize(.small)
-                                .padding(.leading, 2.5)
-                        } else {
-                            Image(systemName: "arrow.clockwise")
+                        .onDelete { indexSet in
+                            withAnimation {
+                                self.blockedVersionsAndroid?.remove(atOffsets: indexSet)
+                            }
                         }
                     }
-                    .disabled(isLoading)
-                    Spacer()
-                    EditButton()
-                        .textCase(nil)
-                        .disabled(blockedVersions == nil || blockedVersions?.count == 0)
-                    Button {
-                        showAlert.toggle()
-                    } label: {
-                        Image(systemName: "plus")
+                } header: {
+                    HStack {
+                        Text("Blocked Versions (Android)")
+                        Button {
+                            isLoading = true
+                            Task {
+                                try await developerManager.updateValues()
+                                isLoading = false
+                            }
+                        } label: {
+                            if isLoading {
+                                ProgressView()
+                                    .controlSize(.small)
+                                    .padding(.leading, 2.5)
+                            } else {
+                                Image(systemName: "arrow.clockwise")
+                            }
+                        }
+                        .disabled(isLoading)
+                        Spacer()
+                        EditButton()
+                            .textCase(nil)
+                            .disabled(blockedVersionsAndroid == nil || blockedVersionsAndroid?.count == 0)
+                        Button {
+                            showAlertAndroid.toggle()
+                        } label: {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
-            
-            Section {
-                if let blockedVersionsAndroid = blockedVersionsAndroid {
-                    ForEach(blockedVersionsAndroid, id: \.self) { version in
-                        Text(version)
-                    }
-                    .onDelete { indexSet in
-                        withAnimation {
-                            self.blockedVersionsAndroid?.remove(atOffsets: indexSet)
-                        }
-                    }
-                }
-            } header: {
-                HStack {
-                    Text("Blocked Versions (Android)")
-                    Button {
-                        isLoading = true
-                        Task {
-                            try await developerManager.updateValues()
-                            isLoading = false
-                        }
-                    } label: {
-                        if isLoading {
-                            ProgressView()
-                                .controlSize(.small)
-                                .padding(.leading, 2.5)
-                        } else {
-                            Image(systemName: "arrow.clockwise")
-                        }
-                    }
-                    .disabled(isLoading)
-                    Spacer()
-                    EditButton()
-                        .textCase(nil)
-                        .disabled(blockedVersionsAndroid == nil || blockedVersionsAndroid?.count == 0)
-                    Button {
-                        showAlertAndroid.toggle()
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                }
-            }
+            .scrollContentBackground(.hidden)
         }
         .navigationTitle("Developer Controls")
         .alert("Add Version (iOS)", isPresented: $showAlert) {

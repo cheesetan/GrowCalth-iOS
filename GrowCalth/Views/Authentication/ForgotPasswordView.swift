@@ -73,8 +73,8 @@ struct ForgotPasswordView: View {
             } else {
                 TextField("Email Address", text: $email)
                     .padding()
-                    .background(.ultraThickMaterial)
-                    .mask(RoundedRectangle(cornerRadius: 16))
+                    .background(.thickMaterial)
+                    .mask(Capsule())
             }
         }
         .keyboardType(.emailAddress)
@@ -118,7 +118,7 @@ struct ForgotPasswordView: View {
                         .foregroundColor(forgotPasswordLoading ? .clear : .white)
                         .font(.body.weight(.semibold))
                         .background(.accent)
-                        .mask(RoundedRectangle(cornerRadius: 16))
+                        .mask(Capsule())
                         .overlay {
                             if forgotPasswordLoading {
                                 ProgressView()

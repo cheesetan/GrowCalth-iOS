@@ -10,16 +10,16 @@ import HealthKitUI
 
 struct HomeView: View {
 
-    let halfUIWidth = (UIScreen.main.bounds.width / 2) - 20
-    
     @EnvironmentObject var hkManager: HealthKitManager
-    @EnvironmentObject var quotesManager: QuotesManager
     @EnvironmentObject var goalsManager: GoalsManager
     @EnvironmentObject var pointsManager: PointsManager
     @EnvironmentObject var adminManager: AdminManager
     @EnvironmentObject var authManager: AuthenticationManager
+    @EnvironmentObject var lbManager: LeaderboardsManager
+    @EnvironmentObject var motionManager: MotionManager
 
     @State private var showingAlumnusAppreciationAlert = false
+    @State private var showingGoalsSetting = false
 
     @Environment(\.colorScheme) var colorScheme
 
@@ -39,98 +39,36 @@ struct HomeView: View {
     }
 
     var main: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack {
-                HStack(alignment: .top, spacing: 15) {
-                    VStack(spacing: 15) {
-                        steps
-                        distance
-                    }
-                    .frame(maxWidth: .infinity)
-
-                    VStack(spacing: 15) {
-                        if #available(iOS 18.0, *) {
-                            NavigationLink {
-                                LeaderboardView()
-                                    .navigationTransition(.zoom(sourceID: "leaderboard", in: namespace))
-                            } label: {
-                                leaderboards
-                                    .matchedTransitionSource(id: "leaderboard", in: namespace)
-                            }
-                            .buttonStyle(.plain)
-                            .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
-                        } else {
-                            NavigationLink {
-                                LeaderboardView()
-                            } label: {
-                                leaderboards
-                            }
-                            .buttonStyle(.plain)
-                            .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
-                        }
-
+        ZStack {
+            Color.background.ignoresSafeArea()
+            VStack(alignment: .leading) {
+                Text("Home")
+                    .font(.largeTitle.bold())
+                GeometryReader { geometry in
+                    VStack(spacing: geometry.size.height * 0.15 / 3) {
                         housePointsProgress
-                    }
-                    .frame(maxWidth: .infinity)
-                }
+                            .frame(height: geometry.size.height * 0.07)
 
-                VStack(spacing: 15) {
-                    if #available(iOS 18.0, *) {
-                        NavigationLink {
-                            QuoteView()
-                                .navigationTransition(.zoom(sourceID: "quote", in: namespace))
-                        } label: {
-                            quotes
-                                .matchedTransitionSource(id: "quote", in: namespace)
+                        HStack {
+                            steps
+                            distance
                         }
-                        .buttonStyle(.plain)
-                        .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
-                    } else {
-                        NavigationLink {
-                            QuoteView()
-                        } label: {
-                            quotes
-                        }
-                        .buttonStyle(.plain)
-                        .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
-                    }
+                        .frame(height: geometry.size.height * 0.35)
 
-                    if #available(iOS 18.0, *) {
-                        NavigationLink {
-                            GoalsView()
-                                .navigationTransition(.zoom(sourceID: "goals", in: namespace))
-                        } label: {
-                            goals
-                                .matchedTransitionSource(id: "goals", in: namespace)
-                        }
-                        .buttonStyle(.plain)
-                        .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
-                    } else {
-                        NavigationLink {
-                            GoalsView()
-                        } label: {
-                            goals
-                        }
-                        .buttonStyle(.plain)
-                        .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
+                        leaderboardPreview
+                            .frame(height: geometry.size.height * 0.35)
+
+                        goals
+                            .frame(height: geometry.size.height * 0.08)
                     }
+                    .frame(maxHeight: geometry.size.height)
                 }
-                .padding(.top, 8)
             }
-            .padding(.horizontal)
-            .padding(.vertical, 20)
-        }
-        .navigationTitle("Home")
-        .refreshable {
-            Task {
-                await hkManager.fetchAllDatas()
-                try await quotesManager.generateNewQuote()
-            }
+            .padding(30)
         }
         .onAppear {
             Task {
                 await hkManager.fetchAllDatas()
-                try await quotesManager.generateNewQuote()
                 try await adminManager.checkIfUnderMaintenance()
                 try await adminManager.checkIfAppForcesUpdates()
                 try await pointsManager.checkAndAddPoints()
@@ -147,256 +85,360 @@ struct HomeView: View {
         }
     }
 
-    var steps: some View {
-        RoundedRectangle(cornerRadius: 16)
-            .frame(width: halfUIWidth, height: halfUIWidth + 30)
-            .foregroundColor(Color(uiColor: .systemBackground))
-            .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
-            .overlay {
-                circularBackground(frame1: halfUIWidth - 55, frame2: halfUIWidth - 70)
-                    .overlay {
-                        VStack {
-                            Text("\(hkManager.steps ?? 0)")
-                                .foregroundColor(.black)
-                                .fontWeight(.black)
-                                .font(.system(size: 28.0))
-                                .multilineTextAlignment(.center)
-                                .minimumScaleFactor(0.1)
-                                .lineLimit(1)
-                            Text("steps")
-                                .foregroundColor(.gray)
-                                .font(.system(size: 15.0))
-                        }
-                        .padding()
-                    }
-            }
-            .overlay {
-                rectangleHeader(text: "Steps")
-            }
-            .overlay {
-                if colorScheme == .dark {
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(.white, lineWidth: 2)
-                }
-            }
-    }
-    
-    var leaderboards: some View {
-        RoundedRectangle(cornerRadius: 16)
-            .frame(width: halfUIWidth, height: halfUIWidth - 15)
-            .foregroundColor(.black)
-            .overlay {
-                Image("Leaderboard")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: halfUIWidth / 1.75)
-                    .offset(y: 10)
-            }
-            .overlay {
-                rectangleHeader(text: "Leaderboards")
-                    .foregroundColor(.white)
-            }
-            .overlay {
-                if colorScheme == .dark {
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(.white, lineWidth: 2)
-                }
-            }
-            .accessibilityLabel("Leaderboard")
-    }
-    
-    var distance: some View {
-        RoundedRectangle(cornerRadius: 16)
-            .frame(width: halfUIWidth, height: halfUIWidth)
-            .foregroundColor(Color(uiColor: .systemBackground))
-            .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
-            .overlay {
-                circularBackground(frame1: halfUIWidth - 65, frame2: halfUIWidth - 80)
-                    .overlay {
-                        VStack {
-                            Text("\(hkManager.distance ?? 0.00, specifier: "%.2f")")
-                                .foregroundColor(.black)
-                                .fontWeight(.black)
-                                .font(.system(size: 28.0))
-                                .multilineTextAlignment(.center)
-                                .minimumScaleFactor(0.1)
-                                .lineLimit(1)
-                            Text("km")
-                                .foregroundColor(.gray)
-                                .font(.system(size: 15.0))
-                        }
-                        .padding()
-                    }
-            }
-            .overlay {
-                rectangleHeader(text: "Distance")
-            }
-            .overlay {
-                if colorScheme == .dark {
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(.white, lineWidth: 2)
-                }
-            }
-    }
-    
     var housePointsProgress: some View {
-        RoundedRectangle(cornerRadius: 16)
-            .frame(width: halfUIWidth, height: halfUIWidth + 45)
-            .foregroundColor(Color(uiColor: .systemBackground))
-            .shadow(color: .black.opacity(0.8), radius: 4, x: 0, y: 0)
-            .overlay {
-                let housePointsEarnedToday = Int(floor(Double((hkManager.steps ?? 0) / GLOBAL_STEPS_PER_POINT)))
-                VStack {
-                    Spacer()
-                    Text(authManager.accountType.canAddPoints ? "\(housePointsEarnedToday)" : "-" )
-                        .font(.system(size: 50))
-                        .fontWeight(.bold)
-                    VStack {
-                        if authManager.accountType.canAddPoints && housePointsEarnedToday == 1 {
-                            Text("GrowCalth point earned today")
-                        } else {
-                            Text("GrowCalth points earned today")
-                        }
-                    }
-                    .font(.title3.weight(.medium))
-                    .multilineTextAlignment(.center)
-                    .minimumScaleFactor(0.1)
-                    .lineLimit(2)
-                    Spacer()
+        VStack {
+            let housePointsEarnedToday = Int(floor(Double((hkManager.steps ?? 0) / GLOBAL_STEPS_PER_POINT)))
+            HStack {
+                HStack(spacing: 0) {
                     if authManager.accountType.canAddPoints {
-                        Text("\(GLOBAL_STEPS_PER_POINT - ((hkManager.steps ?? 0) - (housePointsEarnedToday * GLOBAL_STEPS_PER_POINT))) more steps to another point!")
-                            .font(.title3)
-                            .fontWeight(.medium)
-                            .multilineTextAlignment(.center)
+                        Text("You have earned ")
+                        Text("^[\(housePointsEarnedToday) points](inflect: true)")
+                            .fontWeight(.bold)
+                            .foregroundStyle(.accent)
+                        Text(" today.")
+                    } else {
+                        Text("You are unable to earn GrowCalth points.")
+                    }
+                }
+            }
+            .font(.title3.weight(.medium))
+            .lineLimit(1)
+            .minimumScaleFactor(0.1)
+        }
+        .padding(.horizontal, 30)
+        .padding(.vertical, 5)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .mask(Capsule())
+        .background {
+            Capsule()
+                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
+                .foregroundStyle(Color.background)
+        }
+        .specularHighlight(
+            motionManager: motionManager,
+            strokeWidth: 2.0
+        )
+        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+    }
+
+    var steps: some View {
+        activitySquare {
+            activityInformation(
+                data: Double(hkManager.steps ?? 0),
+                goal: Double(goalsManager.stepsGoal ?? 0),
+                unit: "steps",
+                describer: "Steps"
+            )
+        }
+    }
+
+    var distance: some View {
+        activitySquare {
+            activityInformation(
+                data: hkManager.distance ?? 0.00,
+                goal: Double(goalsManager.distanceGoal ?? 0),
+                unit: "km",
+                describer: "Distance"
+            )
+        }
+    }
+
+    @ViewBuilder
+    func activityInformation(data: Double, goal: Double, unit: String, describer: String) -> some View {
+        GeometryReader { activityGeometry in
+            VStack {
+                Gauge(
+                    value: min(data, goal),
+                    in: 0...goal
+                ) {
+                    Image(systemName: "gauge.medium")
+                } currentValueLabel: {
+                    GeometryReader { gaugeGeometry in
+                        VStack {
+                            Group {
+                                if unit == "steps" {
+                                    Text("\(Int(data))")
+                                } else {
+                                    Text("\(data, specifier: "%.2f")")
+                                }
+                            }
+                            .font(.largeTitle.bold())
+                            .minimumScaleFactor(0.1)
+                            .contentTransition(.numericText())
+                            .foregroundStyle(.accent)
                             .minimumScaleFactor(0.1)
                             .lineLimit(1)
-                    }
-                }
-                .padding()
-            }
-            .overlay {
-                rectangleHeader(text: "Progress")
-            }
-            .overlay {
-                if colorScheme == .dark {
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(.white, lineWidth: 2)
-                }
-            }
-    }
-    
-    var quotes: some View {
-        RoundedRectangle(cornerRadius: 16)
-            .frame(maxWidth: .infinity)
-            .frame(height: 150)
-            .foregroundColor(Color(hex: 0xC2CFDE))
-            .overlay {
-                VStack {
-                    HStack {
-                        if let content = quotesManager.quote?.text {
-                            Text(content)
-                                .foregroundColor(.black)
-                                .font(.title3)
-                                .fontWeight(.semibold)
+
+                            Text("\(unit)")
+                                .font(.system(size: 14, design: .rounded))
+                                .foregroundStyle(.secondary)
+                                .minimumScaleFactor(0.1)
+                                .lineLimit(1)
                         }
-                        Spacer()
-                    }
-                    Spacer()
-                    if let author = quotesManager.quote?.author {
-                        HStack {
-                            Spacer()
-                            Text(author)
-                                .foregroundColor(.black)
-                                .font(.subheadline)
-                                .fontWeight(.bold)
-                        }
+                        .frame(width: gaugeGeometry.size.width*0.8, height: gaugeGeometry.size.height*0.5)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                 }
-                .padding()
-            }
-            .overlay {
-                if colorScheme == .dark {
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(.white, lineWidth: 2)
+                .gaugeStyle(ActivityGaugeStyle())
+                .labelStyle(.titleOnly)
+
+                Group {
+                    if unit == "steps" {
+                        Text("\(Int(max(goal - data, 0))) \(unit) left")
+                    } else {
+                        Text("\(max(goal - data, 0), specifier: "%.2f") \(unit) left")
+                    }
+                }
+                .contentTransition(.numericText())
+                .font(.title)
+                .lineLimit(1)
+                .minimumScaleFactor(0.1)
+                .padding(activityGeometry.size.width >= 145 ? activityGeometry.size.height*0.15 / 5 : activityGeometry.size.height*0.2 / 5)
+                .frame(width: activityGeometry.size.width, height: activityGeometry.size.width >= 145 ? activityGeometry.size.height*0.15 : activityGeometry.size.height*0.2)
+                .mask(Capsule())
+                .background {
+                    Capsule()
+                        .fill(.shadow(.inner(color: Color.activityLeftShadow, radius: 6.5)))
+                        .foregroundStyle(Color.background)
                 }
             }
-            .accessibilityLabel("Quotes")
-    }
-    
-    var stepsGoalFloat: Binding<Double> {
-        if let stepsGoal = goalsManager.stepsGoal, let steps = hkManager.steps {
-            return .constant(Double(steps) / Double(stepsGoal))
-        } else {
-            return .constant(0)
+            .padding(activityGeometry.size.width >= 145 ? activityGeometry.size.width / 11 : 0)
+            .frame(width: activityGeometry.size.width, height: activityGeometry.size.height)
         }
     }
-    
-    var distanceGoalFloat: Binding<Double> {
-        if let distanceGoal = goalsManager.distanceGoal, let distance = hkManager.distance {
-            return .constant(Double(distance) / Double(distanceGoal))
-        } else {
-            return .constant(0)
-        }
-    }
-    
-    var goals: some View {
-        RoundedRectangle(cornerRadius: 16)
-            .frame(maxWidth: .infinity)
-            .frame(height: halfUIWidth - 30)
-            .foregroundColor(Color(hex: 0x7B5B66))
-            .overlay {
-                VStack(spacing: 10) {
-                    ProgressBar(text: "Steps", color: .red, height: 35, value: stepsGoalFloat)
-                    ProgressBar(text: "Distance", color: .green, height: 35, value: distanceGoalFloat)
-                }
-                .font(.headline.weight(.semibold))
-                .foregroundColor(.white)
-                .padding([.horizontal, .top])
-            }
-            .overlay {
-                rectangleHeader(text: "Goals", font: .large)
-                    .font(.title)
-                    .foregroundColor(.white)
-            }
-            .overlay {
-                if colorScheme == .dark {
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(.white, lineWidth: 2)
-                }
-            }
-            .accessibilityLabel("Goals")
-    }
-    
+
     @ViewBuilder
-    func circularBackground(frame1: CGFloat, frame2: CGFloat) -> some View {
+    func activitySquare<Content: View>(@ViewBuilder content: @escaping () -> Content) -> some View {
+        VStack {
+            content()
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .mask(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                .background {
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(
+                            .shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0))
+                            .shadow(.inner(color: Color.activityInnerShadow, radius: 17.5, x: 0, y: 0))
+                        )
+                        .foregroundStyle(Color.background)
+                }
+                .specularHighlight(
+                    for: .roundedRectangle(cornerRadius: 24),
+                    motionManager: motionManager,
+                    strokeWidth: 2.0,
+                    isActive: .constant(colorScheme == .light)
+                )
+                .shadow(color: Color.activityOuterShadow, radius: 35, x: 0, y: 4)
+        }
+    }
+
+    var leaderboardPreview: some View {
+        NavigationLink {
+            LeaderboardView()
+        } label: {
+            GeometryReader { geometry in
+                VStack(spacing: 5) {
+                    let spacing = geometry.size.height * 0.05
+                    VStack(spacing: spacing) {
+                        let tallHeight: Double = abs(Double((geometry.size.height - (spacing*2+5)) / 7 * 3))
+                        let normalHeight: Double = abs(Double((geometry.size.height - (spacing*2+5)) / 7 * 2))
+                        let data = sortDictionary(for: lbManager.leaderboard)
+
+                        ForEach(data.prefix(3), id: \.key) { house in
+                            let placing: Int = data.firstIndex(where: { $0.key == house.key }) ?? -1
+                            if let houses = Houses.init(rawValue: house.key) {
+                                leaderboardPreviewRow(
+                                    placing: Houses.getPlacingFrom(int: placing + 1),
+                                    house: houses,
+                                    points: house.value,
+                                    height: placing == 0 ? tallHeight : normalHeight,
+                                    placingBubbleWidth: tallHeight
+                                )
+                            }
+                        }
+                    }
+                    HStack {
+                        Spacer()
+                        Text("view more >")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.1)
+                    }
+                    .padding(.horizontal, 5)
+                    .frame(height: 15)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func sortDictionary(for dictionary: [String : Int]) -> Array<(key: String, value: Int)> {
+        return dictionary.sorted { $0.value > $1.value }.sorted { first, second in
+            if first.value == second.value {
+                first.key < second.key
+            } else {
+                first.key == second.key
+            }
+        }
+    }
+
+    @ViewBuilder
+    func leaderboardPreviewRow(
+        placing: String,
+        house: Houses,
+        points: Int,
+        height: CGFloat,
+        placingBubbleWidth: CGFloat
+    ) -> some View {
+        Capsule()
+            .frame(maxHeight: height)
+            .foregroundStyle(Color.lbCapsuleBackground)
+            .overlay {
+                HStack(spacing: 30) {
+                    Capsule()
+                        .frame(width: placingBubbleWidth*1.2)
+                        .foregroundStyle(Color.lbPlacingBackground)
+                        .background {
+                            Capsule()
+                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
+                                .foregroundStyle(Color.lbPlacingBackground)
+                        }
+                        .overlay {
+                            Text(placing)
+                                .font(.title2.weight(.black).italic())
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.1)
+                                .padding(placingBubbleWidth*0.05)
+                        }
+                        .specularHighlight(
+                            motionManager: motionManager,
+                            strokeWidth: 2.0,
+                            isActive: .constant(placing == "1ST")
+                        )
+                        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+                        .overlay {
+                            if placing != "1ST" {
+                                Capsule()
+                                    .stroke(Color.lbPlacingOutline, lineWidth: 2)
+                            }
+                        }
+                    Capsule()
+                        .frame(maxWidth: .infinity)
+                        .foregroundStyle(
+                            LinearGradient(
+                                stops: [
+                                    .init(color: house.color, location: 0.7),
+                                    .init(color: Color.lbHouseColorToFadeTo, location: 1.2)
+                                ],
+                                startPoint: .bottomLeading,
+                                endPoint: .topTrailing
+                            )
+                        )
+                        .background {
+                            Capsule()
+                                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        stops: [
+                                            .init(color: house.color, location: 0.7),
+                                            .init(color: Color.lbHouseColorToFadeTo, location: 1.2)
+                                        ],
+                                        startPoint: .bottomLeading,
+                                        endPoint: .topTrailing
+                                    )
+                                )
+                        }
+                        .overlay {
+                            Text("\(points) POINTS")
+                                .font(.title2.weight(.black).italic())
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.1)
+                                .padding(placingBubbleWidth*0.05)
+                                .foregroundColor(.white)
+                        }
+                        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+                }
+            }
+    }
+
+    var goals: some View {
+        Button {
+            showingGoalsSetting.toggle()
+        } label: {
+            goalsButtonLabel
+        }
+        .buttonStyle(.plain)
+        .sheet(isPresented: $showingGoalsSetting) {
+            GoalsView()
+                .presentationDetents([.height(300)])
+        }
+    }
+
+    var goalsButtonLabel: some View {
+        HStack {
+            Text("What's your next goal?")
+                .font(.headline.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.1)
+            Spacer()
+            Image(systemName: "plus")
+                .font(.title3.weight(.semibold))
+        }
+        .foregroundStyle(.white)
+        .lineLimit(1)
+        .padding(.horizontal, 30)
+        .padding(.vertical, 5)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .mask(Capsule())
+        .background {
+            Capsule()
+                .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5, x: 0, y: 0)))
+                .foregroundStyle(Color.goalsBackground)
+        }
+        .specularHighlight(
+            motionManager: motionManager,
+            strokeWidth: 2.0
+        )
+        .shadow(color: Color.shadow, radius: 35, x: 0, y: 5)
+    }
+}
+
+struct Arc: Shape {
+    var startAngle: Angle
+    var endAngle: Angle
+    var clockwise: Bool
+
+    func path(in rect: CGRect) -> Path {
+        let rotationAdjustment = Angle.degrees(90)
+        let modifiedStart = startAngle - rotationAdjustment
+        let modifiedEnd = endAngle - rotationAdjustment
+
+        var path = Path()
+        path.addArc(center: CGPoint(x: rect.midX, y: rect.midY), radius: rect.width / 2, startAngle: modifiedStart, endAngle: modifiedEnd, clockwise: !clockwise)
+
+        return path
+    }
+}
+
+struct ActivityGaugeStyle: GaugeStyle {
+    func makeBody(configuration: Configuration) -> some View {
         ZStack {
             Circle()
-                .foregroundColor(colorScheme == .light ? .black : .secondary)
-                .frame(width: frame1, height: frame1)
+                .trim(from: 0, to: 0.75)
+                .stroke(Color.gray.opacity(0.3), style: StrokeStyle(lineWidth: 12, lineCap: .round, lineJoin: .round))
+                .rotationEffect(.degrees(135))
+
             Circle()
-                .foregroundColor(Color(hex: 0xF1EEE9))
-                .frame(width: frame2, height: frame2)
+                .trim(from: 0, to: 0.75 * configuration.value)
+                .stroke(.accent, style: StrokeStyle(lineWidth: 12, lineCap: .round, lineJoin: .round))
+                .rotationEffect(.degrees(135))
+        }
+        .overlay {
+            configuration.currentValueLabel
         }
     }
-    
-    enum FontSize {
-        case small, large
-    }
-    
-    @ViewBuilder
-    func rectangleHeader(text: String, font: FontSize = .small) -> some View {
-        VStack {
-            HStack {
-                Text(text)
-                    .minimumScaleFactor(0.1)
-                    .font(.system(size: font == .small ? 15.0 : 20.0).weight(.bold))
-                    .lineLimit(1)
-                Spacer()
-            }
-            Spacer()
-        }
-        .padding([.top, .leading])
-    }
+
 }
 
 #Preview {

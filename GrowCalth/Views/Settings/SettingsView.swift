@@ -18,9 +18,10 @@ struct SettingsView: View {
     @State var showingSignOutAlert = false
     
     @EnvironmentObject var authManager: AuthenticationManager
-    @EnvironmentObject var csManager: ColorSchemeManager
+    @EnvironmentObject var settingsManager: SettingsManager
     @EnvironmentObject var adminManager: AdminManager
     @EnvironmentObject var developerManager: DeveloperManager
+    @EnvironmentObject var motionManager: MotionManager
 
     var body: some View {
         if #available(iOS 16.0, *) {
@@ -36,18 +37,22 @@ struct SettingsView: View {
     }
 
     var main: some View {
-        List {
-            account
-            appearance
-            //                health
-            permissions
-            resources
-            acknowledgements
-            if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
-                developer
+        ZStack {
+            Color.background.ignoresSafeArea()
+            List {
+                account
+                appearance
+                specularHighlights
+                permissions
+                resources
+                acknowledgements
+                if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
+                    developer
+                }
+                signOutButton
             }
-            signOutButton
         }
+        .scrollContentBackground(.hidden)
         .navigationTitle("Settings")
         .onAppear {
             Task {
@@ -108,7 +113,7 @@ struct SettingsView: View {
     
     var appearance: some View {
         Section {
-            Picker("Preferred Appearance", selection: $csManager.colorScheme) {
+            Picker("Preferred Appearance", selection: $settingsManager.colorScheme) {
                 Text("Light")
                     .tag(PreferredColorScheme.light)
                 Text("Automatic")
@@ -123,7 +128,20 @@ struct SettingsView: View {
             Text("Automatic sets GrowCalth's appearance based on your device's appearance.")
         }
     }
-    
+
+    var specularHighlights: some View {
+        Section {
+            Toggle(isOn: $settingsManager.specularHighlightsEnabled) {
+                Text("Motion-based Specular Highlights")
+            }
+            .disabled(!motionManager.motionManager.isDeviceMotionAvailable)
+        } header: {
+            Text("Specular Highlights")
+        } footer: {
+            Text("Motion-based specular highlights shifts the angle of reflection of light based on device rotation. Enabling this feature might impact performance.")
+        }
+    }
+
     var permissions: some View {
         Section("Permissions") {
             Button {

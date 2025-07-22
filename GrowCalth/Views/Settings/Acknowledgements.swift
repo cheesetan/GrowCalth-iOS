@@ -10,11 +10,17 @@ import SwiftUI
 struct Acknowledgements: View {
 
     @State private var showingScoobert = false
+    @State private var showingPibble = false
     @State private var scoobertAngle = 0.0
-    @State private var tapCount = 0
+    @State private var scoobertTapCount = 0
+    @State private var pibblesTapCount = 0
+
+    @EnvironmentObject private var audioManager: AudioManager
 
     var body: some View {
         ZStack {
+            Color.background.ignoresSafeArea()
+
             List {
                 Section {
                     Text(LocalizedStringKey("GrowCalth is a one stop platform that allows SST Students to participate in house challenges and further fosters house spirit among their house members. Through the app, students are able to be notified of house announcements and events, which encourages house participation and involvement."))
@@ -23,12 +29,15 @@ struct Acknowledgements: View {
                 }
 
                 Section {
-                    acknowledgement(title: "Han Jeong Seu, **Caleb** - Lead Developer of GrowCalth", description: "Class of 2024", image: "person.bust.fill")
-                    acknowledgement(title: "Chay Yu Hung **Tristan** - Lead Developer of GrowCalth (iOS)", description: "Class of 2024", image: "hammer.fill")
-                    acknowledgement(title: "**Felix** Forbes Dimjati - User Experience (UX) Specialist of GrowCalth", description: "Class of 2024", image: "hammer.fill")
-                    acknowledgement(title: "Bellam Nandakumar **Aravind** - GrowCalth's Marketing and Communications IC", description: "Class of 2024", image: "text.bubble.fill")
-                    acknowledgement(title: "**Darryan** Lim Yuan Sheng - GrowCalth's Designer", description: "Class of 2024", image: "paintbrush.pointed.fill")
+                    acknowledgement(title: "Han Jeong Seu, **Caleb** - CEO of GrowCalth / Lead Android Developer at GrowCalth", description: "Class of 2024", image: "person.bust.fill")
+                    acknowledgement(title: "Chay Yu Hung **Tristan** - Lead iOS Developer at GrowCalth", description: "Class of 2024", image: "hammer.fill")
+                    acknowledgement(title: "**Felix** Forbes Dimjati - Social Entrepreneurship Lead at GrowCalth", description: "Class of 2024", image: "person.3.fill")
+                    acknowledgement(title: "Bellam Nandakumar **Aravind** - Communications Lead at GrowCalth", description: "Class of 2024", image: "text.bubble.fill")
+                    acknowledgement(title: "**Darryan** Lim Yuan Sheng - Marketing and Design Lead at GrowCalth", description: "Class of 2024", image: "paintbrush.pointed.fill")
+                    acknowledgement(title: "**Aathithya** Jegatheesan - Outreach and Relational Lead at GrowCalth", description: "Class of 2024", image: "person.line.dotted.person.fill")
+                    acknowledgement(title: "**Ayaan** Jain - Financial Lead at GrowCalth", description: "Class of 2024", image: "dollarsign.circle.fill")
                     acknowledgement(title: "**Scoobert** - GrowCalth's Mascot", description: "Loves to exercise. Will do a backflip if you tap him 5 times.", image: "scoobert")
+                    acknowledgement(title: "**Washington** - GrowCalth's Mascot", description: "Tiny little pibble. Will demand you to wash his bellayyyy if you tap him 5 times.", image: "washington")
                 } header: {
                     Label("Development Team", systemImage: "person.3.fill")
                 }
@@ -50,6 +59,7 @@ struct Acknowledgements: View {
                     Label("Packages & Libraries", systemImage: "shippingbox.fill")
                 }
             }
+            .scrollContentBackground(.hidden)
 
             GeometryReader { geometry in
                 if showingScoobert {
@@ -58,6 +68,16 @@ struct Acknowledgements: View {
                         .scaledToFit()
                         .frame(width: geometry.size.width - 50)
                         .rotationEffect(.degrees(scoobertAngle))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                }
+            }
+
+            GeometryReader { geometry in
+                if showingPibble {
+                    Image("washington")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: geometry.size.width - 50)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 }
             }
@@ -73,7 +93,13 @@ struct Acknowledgements: View {
                     Image(image)
                         .resizable()
                         .accessibilityAction(named: "Scoobert") {
-                            handleTap()
+                            handleScoobertTap()
+                        }
+                } else if image == "washington" {
+                    Image(image)
+                        .resizable()
+                        .accessibilityAction(named: "Scoobert") {
+                            handlePibblesTap()
                         }
                 } else {
                     Image(systemName: image)
@@ -108,28 +134,51 @@ struct Acknowledgements: View {
         }
         .onTapGesture {
             if image == "scoobert" {
-                handleTap()
+                handleScoobertTap()
+            } else if image == "washington" {
+                handlePibblesTap()
             }
         }
     }
 
     @MainActor
-    private func handleTap() {
-        tapCount += 1
+    private func handleScoobertTap() {
+        scoobertTapCount += 1
 
         // Reset tap count after a delay if not enough taps
         Task {
-            let currentTapCount = tapCount
+            let currentTapCount = scoobertTapCount
             try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
-            if tapCount == currentTapCount && tapCount < 5 {
-                tapCount = 0
+            if scoobertTapCount == currentTapCount && scoobertTapCount < 5 {
+                scoobertTapCount = 0
             }
         }
 
         // Trigger animation after 5 taps
-        if tapCount >= 5 {
-            tapCount = 0
+        if scoobertTapCount >= 5 {
+            scoobertTapCount = 0
             triggerScoobertAnimation()
+        }
+    }
+
+    @MainActor
+    private func handlePibblesTap() {
+        pibblesTapCount += 1
+
+        // Reset tap count after a delay if not enough taps
+        Task {
+            let currentTapCount = pibblesTapCount
+            try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+            if pibblesTapCount == currentTapCount && pibblesTapCount < 5 {
+                pibblesTapCount = 0
+            }
+        }
+
+        // Trigger animation after 5 taps
+        if pibblesTapCount >= 5 {
+            pibblesTapCount = 0
+            audioManager.playSound(named: "washmybellayyyy")
+            triggerPibbleAnimation()
         }
     }
 
@@ -156,6 +205,22 @@ struct Acknowledgements: View {
                 scoobertAngle = 0
                 withAnimation {
                     showingScoobert = false
+                }
+            }
+        }
+    }
+
+    @MainActor
+    private func triggerPibbleAnimation() {
+        withAnimation {
+            showingPibble = true
+        }
+
+        Task {
+            try await Task.sleep(nanoseconds: 6_000_000_000)
+            await MainActor.run {
+                withAnimation {
+                    showingPibble = false
                 }
             }
         }

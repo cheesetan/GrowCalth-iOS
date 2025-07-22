@@ -8,13 +8,11 @@
 import SwiftUI
 
 enum AppStatus: Sendable {
-    case home, login, onboarding, noNetwork, updateAvailable, underMaintenance, loading(String)
+    case home, login, noNetwork, updateAvailable, underMaintenance, loading(String)
 }
 
 @MainActor
 class AppState: ObservableObject {
-
-    @AppStorage("onboardingView", store: .standard) var onboardingView = true
 
     @ObservedObject var authManager: AuthenticationManager
     @ObservedObject var adminManager: AdminManager
@@ -23,14 +21,12 @@ class AppState: ObservableObject {
     @ObservedObject var networkManager: NetworkManager
 
     init(
-        onboardingView: Bool = true,
         authManager: AuthenticationManager,
         adminManager: AdminManager,
         updateManager: UpdateManager,
         developerManager: DeveloperManager,
         networkManager: NetworkManager
     ) {
-        self.onboardingView = onboardingView
         self.authManager = authManager
         self.adminManager = adminManager
         self.updateManager = updateManager
@@ -50,16 +46,10 @@ class AppState: ObservableObject {
                     } else {
                         if isUnderMaintenance && !developerManager.bypassed {
                             return .underMaintenance
+                        } else if authManager.isLoggedIn && authManager.accountVerified {
+                            return .home
                         } else {
-                            if !onboardingView {
-                                if authManager.isLoggedIn && authManager.accountVerified {
-                                    return .home
-                                } else {
-                                    return .login
-                                }
-                            } else {
-                                return .onboarding
-                            }
+                            return .login
                         }
                     }
                 } else {
@@ -94,12 +84,14 @@ struct ContentView: View {
     @ObservedObject var napfaManager: NAPFAManager
     @ObservedObject var quotesManager: QuotesManager
     @ObservedObject var announcementManager: AnnouncementManager
-    @ObservedObject var csManager: ColorSchemeManager
+    @ObservedObject var settingsManager: SettingsManager
+    @ObservedObject var audioManager: AudioManager
 
     @ObservedObject var pointsManager: PointsManager
     @ObservedObject var developerManager: DeveloperManager
     @ObservedObject var adminManager: AdminManager
     @ObservedObject var appState: AppState
+    @ObservedObject var motionManager: MotionManager
 
     init(
         authManager: AuthenticationManager = .init(),
@@ -112,7 +104,8 @@ struct ContentView: View {
         napfaManager: NAPFAManager = .init(),
         quotesManager: QuotesManager = .init(),
         announcementManager: AnnouncementManager = .init(),
-        csManager: ColorSchemeManager = .init()
+        settingsManager: SettingsManager = .init(),
+        audioManager: AudioManager = .init()
     ) {
         self.authManager = authManager
         self.updateManager = updateManager
@@ -124,7 +117,8 @@ struct ContentView: View {
         self.napfaManager = napfaManager
         self.quotesManager = quotesManager
         self.announcementManager = announcementManager
-        self.csManager = csManager
+        self.settingsManager = settingsManager
+        self.audioManager = audioManager
 
         let adminManager = AdminManager(authManager: authManager)
         self.adminManager = adminManager
@@ -139,11 +133,15 @@ struct ContentView: View {
             developerManager: developerManager,
             networkManager: networkManager
         )
+        
         self.pointsManager = PointsManager(
             adminManager: adminManager,
             hkManager: hkManager,
             authManager: authManager
         )
+
+        let motionManager = MotionManager(settingsManager: settingsManager)
+        self.motionManager = motionManager
 
         // Initialize points manager date logic
         self.initializePointsManagerDate()
@@ -209,8 +207,6 @@ struct ContentView: View {
                 }
             case .login:
                 AuthenticationView()
-            case .onboarding:
-                OnboardingView(onboardingView: $appState.onboardingView)
             case .noNetwork:
                 CustomContentUnavailableView(
                     title: "No Network Connection",
@@ -233,10 +229,35 @@ struct ContentView: View {
                     mode: .maintenance
                 )
             case .loading(let string):
-                ProgressView {
-                    Text(string)
+                ZStack {
+                    Color.background.ignoresSafeArea()
+                    VStack(spacing: 20) {
+                        Divider().frame(width: 200)
+                        VStack {
+                            if let content = quotesManager.quote?.text {
+                                Text(content)
+                                    .font(.headline.italic())
+                                    .multilineTextAlignment(.center)
+                                    .minimumScaleFactor(0.1)
+                            }
+                            if let author = quotesManager.quote?.author, !author.isEmpty {
+                                Text(author)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.1)
+                            }
+                        }
+                        Divider()
+                            .frame(width: 200)
+                        Text(string)
+                            .font(.subheadline.italic())
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.1)
+                            .padding(.horizontal)
+                    }
+                    .padding()
                 }
-                .controlSize(.large)
             }
         }
         .environmentObject(authManager)
@@ -247,16 +268,17 @@ struct ContentView: View {
         .environmentObject(goalsManager)
         .environmentObject(lbManager)
         .environmentObject(napfaManager)
-        .environmentObject(quotesManager)
         .environmentObject(announcementManager)
-        .environmentObject(csManager)
+        .environmentObject(settingsManager)
+        .environmentObject(audioManager)
         .environmentObject(pointsManager)
         .environmentObject(developerManager)
         .environmentObject(adminManager)
         .environmentObject(appState)
+        .environmentObject(motionManager)
         .preferredColorScheme(
-            csManager.colorScheme == .automatic ? .none :
-                csManager.colorScheme == .dark ? .dark : .light
+            settingsManager.colorScheme == .automatic ? .none :
+                settingsManager.colorScheme == .dark ? .dark : .light
         )
     }
 }

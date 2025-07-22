@@ -33,8 +33,6 @@ struct MultiColumnTable: View {
         return filteredData
     }
 
-    @EnvironmentObject var csManager: ColorSchemeManager
-
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
