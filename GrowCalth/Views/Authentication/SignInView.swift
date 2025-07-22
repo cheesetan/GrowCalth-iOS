@@ -48,11 +48,7 @@ struct SignInView: View {
 //                        .foregroundStyle(.accent)
 //                        .glassEffect()
 //                        .mask(Circle())
-//                        .specularHighlight(
-//                            for: .circle,
-//                            motionManager: motionManager,
-//                            strokeWidth: 2.0
-//                        )
+//                        .specularHighlight(for: .circle, motionManager: motionManager)
 //                } else {
                     Image(systemName: "house.fill")
                         .resizable()
@@ -62,11 +58,7 @@ struct SignInView: View {
                         .foregroundStyle(.accent)
                         .background(.thickMaterial)
                         .mask(Circle())
-                        .specularHighlight(
-                            for: .circle,
-                            motionManager: motionManager,
-                            strokeWidth: 2.0
-                        )
+                        .specularHighlight(for: .circle, motionManager: motionManager)
 //                }
                 VStack(spacing: 5) {
                     Text("Welcome Back")

@@ -177,11 +177,7 @@ struct LeaderboardView: View {
                             .scaledToFit()
                             .frame(width: geometry.size.width * 0.85, height: geometry.size.width * 0.85)
                             .mask(Circle())
-                            .specularHighlight(
-                                for: .circle,
-                                motionManager: motionManager,
-                                strokeWidth: 2.0
-                            )
+                            .specularHighlight(for: .circle, motionManager: motionManager)
 
                         Text("\(points)")
                             .foregroundStyle(.white)

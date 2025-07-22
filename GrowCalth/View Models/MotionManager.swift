@@ -22,8 +22,8 @@ final class MotionManager: ObservableObject {
         if settingsManager.specularHighlightsEnabled {
             return isTrackingMotion
         } else {
-            self.roll = -0.007943875685558606
-            self.pitch = 0.0186287793618111
+            self.roll = -0.5800947190161628
+            self.pitch = 0.40591020065639155
             return false
         }
     }
@@ -82,6 +82,5 @@ final class MotionManager: ObservableObject {
     deinit {
         // Set isActive to false to prevent any pending callbacks from executing
         isTrackingMotion = false
-        // CMMotionManager will clean up automatically when deallocated
     }
 }

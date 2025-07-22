@@ -35,9 +35,7 @@ enum SpecularHighlightShape: Equatable {
 
 struct SpecularHighlightModifier: ViewModifier {
     let shape: SpecularHighlightShape
-    let highlightColor: Color
     let strokeWidth: CGFloat
-    let glowRadius: CGFloat
     @Binding var isActive: Bool
 
     @ObservedObject var motionManager: MotionManager
@@ -45,16 +43,12 @@ struct SpecularHighlightModifier: ViewModifier {
     init(
         shape: SpecularHighlightShape,
         motionManager: MotionManager,
-        highlightColor: Color = .white,
-        strokeWidth: CGFloat = 4.0,
-        glowRadius: CGFloat = 8.0,
+        strokeWidth: CGFloat = 2.0,
         isActive: Binding<Bool>
     ) {
         self.shape = shape
         self.motionManager = motionManager
-        self.highlightColor = highlightColor
         self.strokeWidth = strokeWidth
-        self.glowRadius = glowRadius
         self._isActive = isActive
     }
 

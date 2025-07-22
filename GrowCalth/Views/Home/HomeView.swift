@@ -114,10 +114,7 @@ struct HomeView: View {
                 .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5)))
                 .foregroundStyle(Color.background)
         }
-        .specularHighlight(
-            motionManager: motionManager,
-            strokeWidth: 2.0
-        )
+        .specularHighlight(motionManager: motionManager, lineWidth: 1.0)
         .shadow(color: Color.shadow, radius: 17.5, x: 0, y: 5)
     }
 
@@ -225,7 +222,6 @@ struct HomeView: View {
                 .specularHighlight(
                     for: .roundedRectangle(cornerRadius: 24),
                     motionManager: motionManager,
-                    strokeWidth: 2.0,
                     isActive: .constant(colorScheme == .light)
                 )
                 .shadow(color: Color.activityOuterShadow, radius: 17.5, x: 0, y: 4)
@@ -313,7 +309,6 @@ struct HomeView: View {
                         }
                         .specularHighlight(
                             motionManager: motionManager,
-                            strokeWidth: 2.0,
                             isActive: .constant(placing == "1ST")
                         )
                         .shadow(color: Color.shadow, radius: 17.5, x: 0, y: 5)
@@ -396,10 +391,7 @@ struct HomeView: View {
                 .fill(.shadow(.inner(color: .white.opacity(0.25), radius: 6.5)))
                 .foregroundStyle(Color.goalsBackground)
         }
-        .specularHighlight(
-            motionManager: motionManager,
-            strokeWidth: 2.0
-        )
+        .specularHighlight(motionManager: motionManager, lineWidth: 1.0)
         .shadow(color: Color.shadow, radius: 17.5, x: 0, y: 5)
     }
 }
