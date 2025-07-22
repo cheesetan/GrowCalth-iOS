@@ -1,5 +1,5 @@
 import SwiftUI
-import FirebaseFirestore
+@preconcurrency import FirebaseFirestore
 import FirebaseAuth
 
 // Sendable struct for log data

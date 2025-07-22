@@ -7,7 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
-import FirebaseFirestore
+@preconcurrency import FirebaseFirestore
 
 extension AuthenticationManager {
     nonisolated internal func sendCreateAccountRequest(email: String, password: String) async throws {

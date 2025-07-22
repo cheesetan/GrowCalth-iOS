@@ -39,21 +39,21 @@ struct SignInView: View {
         ZStack {
             Color.background.ignoresSafeArea()
             VStack(spacing: 30) {
-                if #available(iOS 26.0, *) {
-                    Image(systemName: "house.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .padding(30)
-                        .frame(width: 100, height: 100)
-                        .foregroundStyle(.accent)
-                        .glassEffect()
-                        .mask(Circle())
-                        .specularHighlight(
-                            for: .circle,
-                            motionManager: motionManager,
-                            strokeWidth: 2.0
-                        )
-                } else {
+//                if #available(iOS 26.0, *) {
+//                    Image(systemName: "house.fill")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .padding(30)
+//                        .frame(width: 100, height: 100)
+//                        .foregroundStyle(.accent)
+//                        .glassEffect()
+//                        .mask(Circle())
+//                        .specularHighlight(
+//                            for: .circle,
+//                            motionManager: motionManager,
+//                            strokeWidth: 2.0
+//                        )
+//                } else {
                     Image(systemName: "house.fill")
                         .resizable()
                         .scaledToFit()
@@ -67,7 +67,7 @@ struct SignInView: View {
                             motionManager: motionManager,
                             strokeWidth: 2.0
                         )
-                }
+//                }
                 VStack(spacing: 5) {
                     Text("Welcome Back")
                         .font(.subheadline)
@@ -97,18 +97,18 @@ struct SignInView: View {
         }
         .alert(alertHeader, isPresented: $showingAlert) {
             if alertHeader == verify_account_alert_header {
-                if #available(iOS 26.0, *) {
-                    Button("Close", role: .close) {}
-                    Button(role: .confirm) {
-                        sendVerificationEmail()
-                    } label: {
-                        if alertIsLoading {
-                            ProgressView()
-                        } else {
-                            Text("Send Again")
-                        }
-                    }
-                } else {
+//                if #available(iOS 26.0, *) {
+//                    Button("Close", role: .close) {}
+//                    Button(role: .confirm) {
+//                        sendVerificationEmail()
+//                    } label: {
+//                        if alertIsLoading {
+//                            ProgressView()
+//                        } else {
+//                            Text("Send Again")
+//                        }
+//                    }
+//                } else {
                     Button("Cancel", role: .cancel) {}
                     Button {
                         sendVerificationEmail()
@@ -119,7 +119,7 @@ struct SignInView: View {
                             Text("Send Again")
                         }
                     }
-                }
+//                }
             } else {
                 Button("OK", role: .cancel) {}
             }
@@ -137,17 +137,17 @@ struct SignInView: View {
 
     var emailField: some View {
         Group {
-            if #available(iOS 26.0, *) {
-                TextField(text: $email) {
-                    Label("School Email", systemImage: "envelope")
-                }
-                .padding()
-                .keyboardType(.emailAddress)
-                .textContentType(.username)
-                .autocorrectionDisabled(true)
-                .textInputAutocapitalization(.never)
-                .glassEffect()
-            } else {
+//            if #available(iOS 26.0, *) {
+//                TextField(text: $email) {
+//                    Label("School Email", systemImage: "envelope")
+//                }
+//                .padding()
+//                .keyboardType(.emailAddress)
+//                .textContentType(.username)
+//                .autocorrectionDisabled(true)
+//                .textInputAutocapitalization(.never)
+//                .glassEffect()
+//            } else {
                 TextField(text: $email) {
                     Label("School Email", systemImage: "envelope")
                 }
@@ -158,7 +158,7 @@ struct SignInView: View {
                 .textContentType(.username)
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
-            }
+//            }
         }
         .accessibilityLabel("Email")
     }
@@ -166,23 +166,23 @@ struct SignInView: View {
     var passwordField: some View {
         ZStack(alignment: .trailing) {
             Group {
-                if #available(iOS 26.0, *) {
-                    Group {
-                        if showingPassword {
-                            TextField(text: $password) {
-                                Label("Password", systemImage: "lock")
-                            }
-                            .focused($isFieldFocus, equals: .textField)
-                        } else {
-                            SecureField(text: $password) {
-                                Label("Password", systemImage: "lock")
-                            }
-                            .focused($isFieldFocus, equals: .secureField)
-                        }
-                    }
-                    .padding()
-                    .glassEffect()
-                } else {
+//                if #available(iOS 26.0, *) {
+//                    Group {
+//                        if showingPassword {
+//                            TextField(text: $password) {
+//                                Label("Password", systemImage: "lock")
+//                            }
+//                            .focused($isFieldFocus, equals: .textField)
+//                        } else {
+//                            SecureField(text: $password) {
+//                                Label("Password", systemImage: "lock")
+//                            }
+//                            .focused($isFieldFocus, equals: .secureField)
+//                        }
+//                    }
+//                    .padding()
+//                    .glassEffect()
+//                } else {
                     Group {
                         if showingPassword {
                             TextField(text: $password) {
@@ -199,7 +199,7 @@ struct SignInView: View {
                     .padding()
                     .background(.thickMaterial)
                     .mask(Capsule())
-                }
+//                }
             }
             .textContentType(.password)
             .keyboardType(.alphabet)
@@ -233,17 +233,17 @@ struct SignInView: View {
     var forgotPassword: some View {
         HStack {
             Spacer()
-            if #available(iOS 26.0, *) {
-                Button {
-                    forgottenPasswordEmail = email
-                    showingForgotPassword.toggle()
-                } label: {
-                    Text("Forgot Password?")
-                        .foregroundStyle(.accent)
-                }
-                .buttonStyle(.glass)
-                .buttonBorderShape(.capsule)
-            } else {
+//            if #available(iOS 26.0, *) {
+//                Button {
+//                    forgottenPasswordEmail = email
+//                    showingForgotPassword.toggle()
+//                } label: {
+//                    Text("Forgot Password?")
+//                        .foregroundStyle(.accent)
+//                }
+//                .buttonStyle(.glass)
+//                .buttonBorderShape(.capsule)
+//            } else {
                 Button {
                     forgottenPasswordEmail = email
                     showingForgotPassword.toggle()
@@ -256,7 +256,7 @@ struct SignInView: View {
                         .mask(Capsule())
                 }
                 .buttonStyle(.plain)
-            }
+//            }
         }
         .sheet(isPresented: $showingForgotPassword) {
             if #available(iOS 16.0, *) {
@@ -270,25 +270,25 @@ struct SignInView: View {
     
     var loginButton: some View {
         Group {
-            if #available(iOS 26.0, *) {
-                Button {
-                    signInWithPassword()
-                } label: {
-                    Text("Login")
-                        .padding(8)
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(isLoading ? .clear : .white)
-                        .font(.body.weight(.semibold))
-                        .overlay {
-                            if isLoading {
-                                ProgressView()
-                            }
-                        }
-                }
-                .buttonBorderShape(.capsule)
-                .buttonStyle(.glassProminent)
-                .disabled(loginButtonDisabled)
-            } else {
+//            if #available(iOS 26.0, *) {
+//                Button {
+//                    signInWithPassword()
+//                } label: {
+//                    Text("Login")
+//                        .padding(8)
+//                        .frame(maxWidth: .infinity)
+//                        .foregroundColor(isLoading ? .clear : .white)
+//                        .font(.body.weight(.semibold))
+//                        .overlay {
+//                            if isLoading {
+//                                ProgressView()
+//                            }
+//                        }
+//                }
+//                .buttonBorderShape(.capsule)
+//                .buttonStyle(.glassProminent)
+//                .disabled(loginButtonDisabled)
+//            } else {
                 Button {
                     signInWithPassword()
                 } label: {
@@ -307,7 +307,7 @@ struct SignInView: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(loginButtonDisabled)
-            }
+//            }
         }
     }
 

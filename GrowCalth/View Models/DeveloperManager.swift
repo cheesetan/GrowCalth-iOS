@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
+@preconcurrency import FirebaseFirestore
 
 enum DeveloperManagerError: LocalizedError, Sendable {
     case failedToUpdateMaintenance

@@ -8,7 +8,7 @@
 import SwiftUI
 import Firebase
 import FirebaseAuth
-import FirebaseFirestore
+@preconcurrency import FirebaseFirestore
 
 @MainActor
 class AuthenticationManager: ObservableObject {

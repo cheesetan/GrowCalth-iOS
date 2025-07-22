@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
+@preconcurrency import FirebaseFirestore
 
 struct NAPFAView: View {
 
@@ -18,12 +18,12 @@ struct NAPFAView: View {
     @EnvironmentObject var napfaManager: NAPFAManager
 
     var body: some View {
-        if #available(iOS 26.0, *) {
-            NavigationStack {
-                main
-                    .navigationTitle("NAPFA")
-            }
-        } else if #available(iOS 16.0, *) {
+//        if #available(iOS 26.0, *) {
+//            NavigationStack {
+//                main
+//                    .navigationTitle("NAPFA")
+//            }
+        /*} else */if #available(iOS 16.0, *) {
             NavigationStack {
                 main
                     .navigationBarTitleDisplayMode(.inline)
@@ -49,40 +49,27 @@ struct NAPFAView: View {
     
     var main: some View {
         VStack {
-            if #unavailable(iOS 26.0) {
-                picker
-                    .pickerStyle(.segmented)
-                    .padding([.horizontal, .top])
-            }
+//            if #unavailable(iOS 26.0) {
+//                picker
+//                    .pickerStyle(.segmented)
+//                    .padding([.horizontal, .top])
+//            }
             table
         }
         .animation(.default, value: napfaManager.year)
         .animation(.default, value: napfaManager.levelSelection)
         .animation(.default, value: napfaManager.data)
         .sheet(isPresented: $showingNAPFAEditing) {
-            if #available(iOS 26.0, *) {
-                EditingNAPFA(
-                    yearSelection: napfaManager.year,
-                    twoPointFourKm: napfaManager.twoPointFourKm,
-                    inclinedPullUps: napfaManager.inclinedPullUps,
-                    pullUps: napfaManager.pullUps,
-                    shuttleRun: napfaManager.shuttleRun,
-                    sitAndReach: napfaManager.sitAndReach,
-                    sitUps: napfaManager.sitUps,
-                    sbj: napfaManager.sbj
-                )
-            } else {
-                EditingNAPFA(
-                    yearSelection: napfaManager.year,
-                    twoPointFourKm: napfaManager.twoPointFourKm,
-                    inclinedPullUps: napfaManager.inclinedPullUps,
-                    pullUps: napfaManager.pullUps,
-                    shuttleRun: napfaManager.shuttleRun,
-                    sitAndReach: napfaManager.sitAndReach,
-                    sitUps: napfaManager.sitUps,
-                    sbj: napfaManager.sbj
-                )
-            }
+            EditingNAPFA(
+                yearSelection: napfaManager.year,
+                twoPointFourKm: napfaManager.twoPointFourKm,
+                inclinedPullUps: napfaManager.inclinedPullUps,
+                pullUps: napfaManager.pullUps,
+                shuttleRun: napfaManager.shuttleRun,
+                sitAndReach: napfaManager.sitAndReach,
+                sitUps: napfaManager.sitUps,
+                sbj: napfaManager.sbj
+            )
         }
         .onAppear {
             Task {
@@ -121,56 +108,55 @@ struct NAPFAView: View {
                 isLoading = false
             }
         }
-        .overlay(alignment: .bottomTrailing) {
-            if #available(iOS 26.0, *) {
-                GlassEffectContainer {
-                    HStack {
-                        napfaEditButton
-//                            .matchedTransitionSource(id: "napfaediting", in: namespace)
-
-                        HStack {
-                            previousButton
-                                .padding(8)
-                                .buttonStyle(.plain)
-                            title
-                                .padding(8)
-                                .frame(maxWidth: .infinity)
-                            nextButton
-                                .padding(8)
-                                .buttonStyle(.plain)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .glassEffect()
-
-                        picker
-                            .padding(8)
-                            .pickerStyle(.menu)
-                            .glassEffect()
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .padding(.horizontal, 4)
-                .labelStyle(.iconOnly)
-            }
-        }
+//        .overlay(alignment: .bottomTrailing) {
+//            if #available(iOS 26.0, *) {
+//                GlassEffectContainer {
+//                    HStack {
+//                        napfaEditButton
+//
+//                        HStack {
+//                            previousButton
+//                                .padding(8)
+//                                .buttonStyle(.plain)
+//                            title
+//                                .padding(8)
+//                                .frame(maxWidth: .infinity)
+//                            nextButton
+//                                .padding(8)
+//                                .buttonStyle(.plain)
+//                        }
+//                        .frame(maxWidth: .infinity)
+//                        .glassEffect()
+//
+//                        picker
+//                            .padding(8)
+//                            .pickerStyle(.menu)
+//                            .glassEffect()
+//                    }
+//                }
+//                .frame(maxWidth: .infinity)
+//                .padding()
+//                .padding(.horizontal, 4)
+//                .labelStyle(.iconOnly)
+//            }
+//        }
     }
 
     var napfaEditButton: some View {
         Group {
-            if #available(iOS 26.0, *) {
-                Button {
-                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                        showingNAPFAEditing.toggle()
-                    }
-                } label: {
-                    Label("Create a Post", systemImage: "square.and.pencil")
-                        .padding(8)
-                        .foregroundStyle(.accent)
-                        .font(.headline.weight(.bold))
-                }
-                .buttonStyle(.glass)
-            }
+//            if #available(iOS 26.0, *) {
+//                Button {
+//                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+//                        showingNAPFAEditing.toggle()
+//                    }
+//                } label: {
+//                    Label("Create a Post", systemImage: "square.and.pencil")
+//                        .padding(8)
+//                        .foregroundStyle(.accent)
+//                        .font(.headline.weight(.bold))
+//                }
+//                .buttonStyle(.glass)
+//            }
         }
     }
 
@@ -181,13 +167,13 @@ struct NAPFAView: View {
             }
         } label: {
             Group {
-                if #available(iOS 26.0, *) {
-                    Label("Previous year", systemImage: "chevron.left")
-                        .padding(8)
-                        .foregroundStyle(napfaManager.year <= 2023 ? Color.secondary : .accentColor)
-                } else {
+//                if #available(iOS 26.0, *) {
+//                    Label("Previous year", systemImage: "chevron.left")
+//                        .padding(8)
+//                        .foregroundStyle(napfaManager.year <= 2023 ? Color.secondary : .accentColor)
+//                } else {
                     Label("Previous year", systemImage: "chevron.left.circle.fill")
-                }
+//                }
             }
             .font(.body.weight(.bold))
         }
@@ -196,10 +182,10 @@ struct NAPFAView: View {
     
     var title: some View {
         VStack {
-            if #available(iOS 26.0, *) {
-                Text("\(String(napfaManager.year))")
-                    .font(.headline)
-            } else {
+//            if #available(iOS 26.0, *) {
+//                Text("\(String(napfaManager.year))")
+//                    .font(.headline)
+//            } else {
                 if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
                     Button {
                         if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
@@ -222,7 +208,7 @@ struct NAPFAView: View {
                     Text("NAPFA \(String(napfaManager.year))")
                         .font(.headline)
                 }
-            }
+//            }
         }
     }
     
@@ -233,13 +219,13 @@ struct NAPFAView: View {
             }
         } label: {
             Group {
-                if #available(iOS 26.0, *) {
-                    Label("Next year", systemImage: "chevron.right")
-                        .padding(8)
-                        .foregroundStyle(napfaManager.year >= Calendar.current.component(.year, from: Date()) ? Color.secondary : .accentColor)
-                } else {
+//                if #available(iOS 26.0, *) {
+//                    Label("Next year", systemImage: "chevron.right")
+//                        .padding(8)
+//                        .foregroundStyle(napfaManager.year >= Calendar.current.component(.year, from: Date()) ? Color.secondary : .accentColor)
+//                } else {
                     Label("Next year", systemImage: "chevron.right.circle.fill")
-                }
+//                }
             }
             .font(.body.weight(.bold))
         }
@@ -261,12 +247,12 @@ struct NAPFAView: View {
     var table: some View {
         VStack {
             if let cachedDataForYear = napfaManager.data["\(NAPFALevel(rawValue: napfaManager.levelSelection)!.firebaseCode)-\(String(napfaManager.year))"], !cachedDataForYear.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
-                if #available(iOS 26.0, *) {
-                    MultiColumnTable(headers: ["Rank", "Name", "Class", "Result"], data: .constant(cachedDataForYear))
-                } else {
+//                if #available(iOS 26.0, *) {
+//                    MultiColumnTable(headers: ["Rank", "Name", "Class", "Result"], data: .constant(cachedDataForYear))
+//                } else {
                     MultiColumnTable(headers: ["Rank", "Name", "Class", "Result"], data: .constant(cachedDataForYear))
                         .padding(.top)
-                }
+//                }
             } else {
                 noDataAvailable(year: napfaManager.year)
             }
@@ -276,29 +262,29 @@ struct NAPFAView: View {
     @ViewBuilder
     func noDataAvailable(year: Int) -> some View {
         VStack {
-            if #available(iOS 26.0, *) {
-                ContentUnavailableView {
-                    Label("No Data", systemImage: "questionmark.square.dashed")
-                } description: {
-                    Text("There is no data available for \(String(year)) \(napfaManager.levelSelection) NAPFA at the moment.")
-                } actions: {
-                    Button {
-                        isLoading = true
-                        Task {
-                            try await napfaManager.fetchAllData(for: napfaManager.year)
-                            isLoading = false
-                        }
-                    } label: {
-                        if isLoading {
-                            ProgressView()
-                        } else {
-                            Label("Refresh", systemImage: "arrow.clockwise")
-                                .fontWeight(.bold)
-                        }
-                    }
-                    .buttonStyle(.glassProminent)
-                }
-            } else if #available(iOS 17, *) {
+//            if #available(iOS 26.0, *) {
+//                ContentUnavailableView {
+//                    Label("No Data", systemImage: "questionmark.square.dashed")
+//                } description: {
+//                    Text("There is no data available for \(String(year)) \(napfaManager.levelSelection) NAPFA at the moment.")
+//                } actions: {
+//                    Button {
+//                        isLoading = true
+//                        Task {
+//                            try await napfaManager.fetchAllData(for: napfaManager.year)
+//                            isLoading = false
+//                        }
+//                    } label: {
+//                        if isLoading {
+//                            ProgressView()
+//                        } else {
+//                            Label("Refresh", systemImage: "arrow.clockwise")
+//                                .fontWeight(.bold)
+//                        }
+//                    }
+//                    .buttonStyle(.glassProminent)
+//                }
+            /*} else */if #available(iOS 17, *) {
                 ContentUnavailableView {
                     Label("No Data", systemImage: "questionmark.square.dashed")
                 } description: {

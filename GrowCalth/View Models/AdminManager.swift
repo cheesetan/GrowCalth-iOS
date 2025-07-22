@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
+@preconcurrency import FirebaseFirestore
 
 enum PostError: LocalizedError, Sendable {
     case failedToGetEmail

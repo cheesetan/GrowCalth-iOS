@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
+@preconcurrency import FirebaseFirestore
 
 @MainActor
 final class AnnouncementManager: ObservableObject, Sendable {

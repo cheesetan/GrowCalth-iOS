@@ -7,7 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
-import FirebaseFirestore
+@preconcurrency import FirebaseFirestore
 
 extension AuthenticationManager {
     nonisolated internal func sendForgotPasswordRequest(email: String) async throws {
