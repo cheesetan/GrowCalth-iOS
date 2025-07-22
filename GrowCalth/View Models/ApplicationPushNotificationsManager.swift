@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SwiftJWT
-@preconcurrency import FirebaseFirestore
+import FirebaseFirestore
 import FirebaseMessaging
 
 internal enum APNSError: LocalizedError, Sendable {

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-@preconcurrency import FirebaseFirestore
+import FirebaseFirestore
 import FirebaseAuth
 
 struct SettingsView: View {

@@ -7,7 +7,7 @@
 
 import Foundation
 import FirebaseAuth
-@preconcurrency import FirebaseFirestore
+import FirebaseFirestore
 
 extension AuthenticationManager {
     func signOut() async throws {

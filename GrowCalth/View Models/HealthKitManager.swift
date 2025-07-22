@@ -7,7 +7,7 @@
 
 import SwiftUI
 import HealthKit
-@preconcurrency import FirebaseFirestore
+import FirebaseFirestore
 
 @MainActor
 class HealthKitManager: ObservableObject {

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-@preconcurrency import FirebaseFirestore
+import FirebaseFirestore
 
 @MainActor
 class LeaderboardsManager: ObservableObject {
