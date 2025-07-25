@@ -51,6 +51,7 @@ struct SettingsView: View {
                 }
                 signOutButton
             }
+            .scrollIndicators(.hidden)
         }
         .scrollContentBackground(.hidden)
         .navigationTitle("Settings")
@@ -68,7 +69,7 @@ struct SettingsView: View {
     }
 
     var account: some View {
-        Section("Account") {
+        Section {
             NavigationLink {
                 AccountInfo()
             } label: {
@@ -89,6 +90,11 @@ struct SettingsView: View {
                 }
                 .padding(.all, 10)
             }
+        } header: {
+            Text("Account")
+                .textCase(.none)
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(.gray)
         }
     }
     
@@ -124,6 +130,9 @@ struct SettingsView: View {
             .pickerStyle(.segmented)
         } header: {
             Text("Appearance")
+                .textCase(.none)
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(.gray)
         } footer: {
             Text("Automatic sets GrowCalth's appearance based on your device's appearance.")
         }
@@ -137,13 +146,16 @@ struct SettingsView: View {
             .disabled(!motionManager.motionManager.isDeviceMotionAvailable)
         } header: {
             Text("Specular Highlights")
+                .textCase(.none)
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(.gray)
         } footer: {
             Text("Motion-based specular highlights shifts the angle of reflection of light based on device rotation. Enabling this feature might impact performance.")
         }
     }
 
     var permissions: some View {
-        Section("Permissions") {
+        Section {
             Button {
                 if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
                     UIApplication.shared.open(url)
@@ -151,11 +163,16 @@ struct SettingsView: View {
             } label: {
                 Text("Open GrowCalth Notification Settings")
             }
+        } header: {
+            Text("Permissions")
+                .textCase(.none)
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(.gray)
         }
     }
     
     var developer: some View {
-        Section("Developer") {
+        Section {
             NavigationLink {
                 if let appForcesUpdates = adminManager.appForcesUpdates, let appIsUnderMaintenance = adminManager.isUnderMaintenance, let blockedVersions = developerManager.blockedVersions, let blockedVersionsAndroid = developerManager.blockedVersionsAndroid {
                     DeveloperView(
@@ -168,16 +185,26 @@ struct SettingsView: View {
             } label: {
                 Text("Developer Controls")
             }
+        } header: {
+            Text("Developer")
+                .textCase(.none)
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(.gray)
         }
     }
     
     var resources: some View {
-        Section("Resources") {
+        Section {
             NavigationLink {
                 CalculatorResourcesView()
             } label: {
                 Text("Calculators")
             }
+        } header: {
+            Text("Resources")
+                .textCase(.none)
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(.gray)
         }
     }
     

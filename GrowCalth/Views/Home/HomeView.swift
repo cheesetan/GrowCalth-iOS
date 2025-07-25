@@ -17,6 +17,8 @@ struct HomeView: View {
     @EnvironmentObject var authManager: AuthenticationManager
     @EnvironmentObject var lbManager: LeaderboardsManager
     @EnvironmentObject var motionManager: MotionManager
+    @EnvironmentObject var tabBarManager: TabBarManager
+    @EnvironmentObject var appState: AppState
 
     @State private var showingAlumnusAppreciationAlert = false
     @State private var showingGoalsSetting = false
@@ -26,15 +28,17 @@ struct HomeView: View {
     @Namespace private var namespace
 
     var body: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                main
+        Group {
+            if #available(iOS 16.0, *) {
+                NavigationStack {
+                    main
+                }
+            } else {
+                NavigationView {
+                    main
+                }
+                .navigationViewStyle(.stack)
             }
-        } else {
-            NavigationView {
-                main
-            }
-            .navigationViewStyle(.stack)
         }
     }
 
@@ -64,7 +68,7 @@ struct HomeView: View {
                     .frame(maxHeight: geometry.size.height)
                 }
             }
-            .padding(30)
+            .padding(appState.padding)
         }
         .onAppear {
             Task {
@@ -365,8 +369,14 @@ struct HomeView: View {
         }
         .buttonStyle(.plain)
         .sheet(isPresented: $showingGoalsSetting) {
-            GoalsView()
-                .presentationDetents([.height(300)])
+            if #available(iOS 16.4, *) {
+                GoalsView()
+                    .presentationDetents([.height(300)])
+                    .presentationCornerRadius(24)
+            } else {
+                GoalsView()
+                    .presentationDetents([.height(300)])
+            }
         }
     }
 

@@ -28,6 +28,8 @@ struct AnnouncementsView: View {
     @EnvironmentObject var authManager: AuthenticationManager
     @EnvironmentObject var announcementManager: AnnouncementManager
     @EnvironmentObject var adminManager: AdminManager
+    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var tabBarManager: TabBarManager
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -57,7 +59,7 @@ struct AnnouncementsView: View {
                             .contentTransition(.numericText())
                         picker
                     }
-                    .padding([.horizontal, .top], 30)
+                    .padding([.horizontal, .top], appState.padding)
                     ScrollView {
                         VStack {
                             switch selection {
@@ -75,7 +77,7 @@ struct AnnouncementsView: View {
                                 }
                             }
                         }
-                        .padding([.horizontal, .bottom], 30)
+                        .padding([.horizontal, .bottom], appState.padding)
                         .padding(.top, geometry.size.height*0.02)
                     }
                     .scrollIndicators(.hidden)
@@ -170,7 +172,6 @@ struct AnnouncementsView: View {
                             content
                                 .opacity(phase.isIdentity ? 1 : 0)
                                 .scaleEffect(phase.isIdentity ? 1 : 0.75)
-                                .blur(radius: phase.isIdentity ? 0 : 10)
                         }
                     } else {
                         announcementItem(
@@ -217,7 +218,6 @@ struct AnnouncementsView: View {
                             content
                                 .opacity(phase.isIdentity ? 1 : 0)
                                 .scaleEffect(phase.isIdentity ? 1 : 0.75)
-                                .blur(radius: phase.isIdentity ? 0 : 10)
                         }
                     } else {
                         eventItem(

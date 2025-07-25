@@ -25,7 +25,8 @@ struct AnnouncementDetailView: View {
     @EnvironmentObject var authManager: AuthenticationManager
     @EnvironmentObject var announcementManager: AnnouncementManager
     @EnvironmentObject var adminManager: AdminManager
-    
+    @EnvironmentObject var appState: AppState
+
     @Environment(\.dismiss) var dismiss
 
     init(announcement: Binding<Announcement>) {
@@ -62,7 +63,7 @@ struct AnnouncementDetailView: View {
                         .padding(.vertical, 5)
                     description
                 }
-                .padding(30)
+                .padding(appState.padding)
                 .animation(.default, value: isEditing)
             }
         }

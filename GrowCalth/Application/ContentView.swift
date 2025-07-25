@@ -7,74 +7,7 @@
 
 import SwiftUI
 
-enum AppStatus: Sendable {
-    case home, login, noNetwork, updateAvailable, underMaintenance, loading(String)
-}
-
-@MainActor
-class AppState: ObservableObject {
-
-    @ObservedObject var authManager: AuthenticationManager
-    @ObservedObject var adminManager: AdminManager
-    @ObservedObject var updateManager: UpdateManager
-    @ObservedObject var developerManager: DeveloperManager
-    @ObservedObject var networkManager: NetworkManager
-
-    init(
-        authManager: AuthenticationManager,
-        adminManager: AdminManager,
-        updateManager: UpdateManager,
-        developerManager: DeveloperManager,
-        networkManager: NetworkManager
-    ) {
-        self.authManager = authManager
-        self.adminManager = adminManager
-        self.updateManager = updateManager
-        self.developerManager = developerManager
-        self.networkManager = networkManager
-    }
-
-    var status: AppStatus {
-        if let isConnectionAvailable = networkManager.isConnectionAvailable {
-            if isConnectionAvailable {
-                if let isUnderMaintenance = adminManager.isUnderMaintenance,
-                   let updateAvailable = updateManager.updateAvailable,
-                   let appForcesUpdates = adminManager.appForcesUpdates {
-
-                    if updateAvailable && appForcesUpdates && !developerManager.bypassed {
-                        return .updateAvailable
-                    } else {
-                        if isUnderMaintenance && !developerManager.bypassed {
-                            return .underMaintenance
-                        } else if authManager.isLoggedIn && authManager.accountVerified {
-                            return .home
-                        } else {
-                            return .login
-                        }
-                    }
-                } else {
-                    if updateManager.updateAvailable == nil {
-                        return .loading("Checking For Updates...")
-                    } else {
-                        return .loading("Checking System Health...")
-                    }
-                }
-            } else {
-                return .noNetwork
-            }
-        } else {
-            return .loading("Checking Internet Connection...")
-        }
-    }
-}
-
-enum TabSelection {
-    case home, announcements, challenges, napfa, settings
-}
-
-
 struct ContentView: View {
-
     @StateObject private var authManager: AuthenticationManager
     @StateObject private var updateManager: UpdateManager
     @StateObject private var networkManager: NetworkManager
@@ -87,6 +20,7 @@ struct ContentView: View {
     @StateObject private var announcementManager: AnnouncementManager
     @StateObject private var settingsManager: SettingsManager
     @StateObject private var audioManager: AudioManager
+    @StateObject private var tabBarManager: TabBarManager
 
     @StateObject private var adminManager: AdminManager
     @StateObject private var developerManager: DeveloperManager
@@ -133,6 +67,9 @@ struct ContentView: View {
         let audioManager = AudioManager()
         _audioManager = StateObject(wrappedValue: audioManager)
 
+        let tabBarManager = TabBarManager()
+        _tabBarManager = StateObject(wrappedValue: tabBarManager)
+
         let adminManager = AdminManager(authManager: authManager)
         _adminManager = StateObject(wrappedValue: adminManager)
 
@@ -159,119 +96,85 @@ struct ContentView: View {
         _motionManager = StateObject(wrappedValue: motionManager)
     }
 
-    @State private var tabSelected: TabSelection = .home
-
     var body: some View {
-        Group {
-            switch appState.status {
-            case .home:
-                if #available(iOS 18.0, *) {
-                    TabView(selection: $tabSelected) {
-                        Tab("Home", systemImage: "house.fill", value: .home) {
-                            HomeView()
+        GeometryReader { mainGeo in
+            Group {
+                switch appState.status {
+                case .home:
+                    ZStack {
+                        Color.background.ignoresSafeArea()
+
+                        VStack(spacing: 0) {
+                            switch tabBarManager.tabSelected {
+                            case .home: HomeView()
+                            case .announcements: AnnouncementsView()
+                            case .challenges: Text("Challenges")
+                            case .napfa: NAPFAView()
+                            case .settings: SettingsView()
+                            }
+
+                            TabBar()
                         }
-                        Tab("Announcements", systemImage: "megaphone", value: .announcements) {
-                            AnnouncementsView()
-                        }
-                        Tab("NAPFA", systemImage: "figure.run", value: .napfa) {
-                            NAPFAView()
-                        }
-                        Tab("Settings", systemImage: "gearshape", value: .settings) {
-                            SettingsView()
-                        }
+                        .ignoresSafeArea(edges: .bottom)
                     }
-                } else {
-                    TabView {
-                        HomeView()
-                            .tabItem {
-                                Label("Home", systemImage: "house.fill")
+
+                case .login:
+                    AuthenticationView()
+                case .noNetwork:
+                    CustomContentUnavailableView(
+                        title: "No Network Connection",
+                        systemImage: "pc",
+                        description: "You seem to be offline! GrowCalth requires a network connection to work. If available, turn on your Mobile Data or WiFi and connect to a network.",
+                        mode: .network
+                    )
+                case .updateAvailable:
+                    CustomContentUnavailableView(
+                        title: "New Update Available",
+                        systemImage: "app.dashed",
+                        description: "There's a new update available on the App Store! Install the latest update to continue using GrowCalth.",
+                        mode: .update
+                    )
+                case .underMaintenance:
+                    CustomContentUnavailableView(
+                        title: "Under Maintenance",
+                        systemImage: "hammer.fill",
+                        description: "GrowCalth is currently undergoing maintenance, please check back again later.",
+                        mode: .maintenance
+                    )
+                case .loading(let string):
+                    ZStack {
+                        Color.background.ignoresSafeArea()
+                        VStack(spacing: 20) {
+                            Divider().frame(width: 200)
+                            VStack {
+                                if let content = quotesManager.quote?.text {
+                                    Text(content)
+                                        .font(.headline.italic())
+                                        .multilineTextAlignment(.center)
+                                        .minimumScaleFactor(0.1)
+                                }
+                                if let author = quotesManager.quote?.author, !author.isEmpty {
+                                    Text(author)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.1)
+                                }
                             }
-                        AnnouncementsView()
-                            .tabItem {
-                                Label("Announcements", systemImage: "megaphone")
-                            }
-                        NAPFAView()
-                            .tabItem {
-                                Label("NAPFA", systemImage: "figure.run")
-                            }
-                        SettingsView()
-                            .tabItem {
-                                Label("Settings", systemImage: "gearshape")
-                            }
+                            Divider()
+                                .frame(width: 200)
+                            Text(string)
+                                .font(.subheadline.italic())
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.1)
+                                .padding(.horizontal)
+                        }
+                        .padding()
                     }
                 }
-//                GeometryReader { geometry in
-//                    ZStack {
-//                        Color.background.ignoresSafeArea()
-//                        VStack {
-//                            switch tabSelected {
-//                            case .home: HomeView()
-//                            case .announcements: AnnouncementsView()
-//                            case .challenges: Text("Challenges")
-//                            case .napfa: NAPFAView()
-//                            case .settings: SettingsView()
-//                            }
-//                        }
-//                        .padding(.bottom, geometry.size.height * 0.08 + geometry.size.height * 0.03)
-//
-//                        TabBar(height: geometry.size.height, tabSelected: $tabSelected)
-//                    }
-//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                    .ignoresSafeArea()
-//                }
-            case .login:
-                AuthenticationView()
-            case .noNetwork:
-                CustomContentUnavailableView(
-                    title: "No Network Connection",
-                    systemImage: "pc",
-                    description: "You seem to be offline! GrowCalth requires a network connection to work. If available, turn on your Mobile Data or WiFi and connect to a network.",
-                    mode: .network
-                )
-            case .updateAvailable:
-                CustomContentUnavailableView(
-                    title: "New Update Available",
-                    systemImage: "app.dashed",
-                    description: "There's a new update available on the App Store! Install the latest update to continue using GrowCalth.",
-                    mode: .update
-                )
-            case .underMaintenance:
-                CustomContentUnavailableView(
-                    title: "Under Maintenance",
-                    systemImage: "hammer.fill",
-                    description: "GrowCalth is currently undergoing maintenance, please check back again later.",
-                    mode: .maintenance
-                )
-            case .loading(let string):
-                ZStack {
-                    Color.background.ignoresSafeArea()
-                    VStack(spacing: 20) {
-                        Divider().frame(width: 200)
-                        VStack {
-                            if let content = quotesManager.quote?.text {
-                                Text(content)
-                                    .font(.headline.italic())
-                                    .multilineTextAlignment(.center)
-                                    .minimumScaleFactor(0.1)
-                            }
-                            if let author = quotesManager.quote?.author, !author.isEmpty {
-                                Text(author)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.1)
-                            }
-                        }
-                        Divider()
-                            .frame(width: 200)
-                        Text(string)
-                            .font(.subheadline.italic())
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.1)
-                            .padding(.horizontal)
-                    }
-                    .padding()
-                }
+            }
+            .onAppear {
+                appState.deviceWidth = mainGeo.size.width
             }
         }
         .environmentObject(authManager)
@@ -285,6 +188,7 @@ struct ContentView: View {
         .environmentObject(announcementManager)
         .environmentObject(settingsManager)
         .environmentObject(audioManager)
+        .environmentObject(tabBarManager)
         .environmentObject(pointsManager)
         .environmentObject(developerManager)
         .environmentObject(adminManager)
@@ -314,87 +218,6 @@ struct ContentView: View {
                 pointsManager.lastPointsAwardedDate = today
             }
         }
-    }
-}
-
-struct TabBar: View {
-
-    @State var height: CGFloat
-    @Binding var tabSelected: TabSelection
-
-    @EnvironmentObject private var motionManager: MotionManager
-
-    var body: some View {
-        Capsule()
-            .fill(.shadow(.inner(
-                color: Color.tabBarInnerShadow,
-                radius: 6.5
-            )))
-            .foregroundStyle(Color.background)
-            .frame(maxWidth: .infinity)
-            .frame(height: height * 0.08)
-            .specularHighlight(motionManager: motionManager)
-            .shadow(color: Color.tabBarOuterShadow, radius: 17.5, x: 0, y: 5)
-            .overlay {
-                GeometryReader { geometry in
-                    LazyVGrid(
-                        columns: [
-                            GridItem(.fixed(20)),
-                            GridItem(.flexible()),
-                            GridItem(.fixed(20)),
-                            GridItem(.fixed(20)),
-                            GridItem(.fixed(20))
-                        ],
-                        spacing: 0
-                    ) {
-                        tabButton("Home", systemImage: "house.fill", value: .home)
-                        tabButton("Announcements", systemImage: "megaphone.fill", value: .announcements)
-                        tabButton("Challenges", systemImage: "flag.checkered", value: .challenges)
-                        tabButton("NAPFA", systemImage: "figure.run", value: .napfa)
-                        tabButton("Settings", systemImage: "gearshape.fill", value: .settings)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                }
-                .padding(.horizontal, height*0.08*0.2)
-                .padding(.vertical, height*0.08*0.14)
-            }
-            .mask(Capsule())
-            .padding(.bottom, height * 0.03)
-            .padding(.horizontal, height * 0.025)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-    }
-
-    @ViewBuilder
-    func tabButton(
-        _ title: String,
-        systemImage image: String,
-        value tab: TabSelection
-    ) -> some View {
-        let isActive = tabSelected == tab
-        Button {
-            withAnimation {
-                tabSelected = tab
-            }
-        } label: {
-            VStack(spacing: height*0.08*0.01) {
-                Image(systemName: image)
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundStyle(isActive ? .accent : .primary)
-                    .padding(height*0.08*0.07)
-
-                Text(title)
-                    .font(.system(size: height*0.08*0.12))
-                    .foregroundStyle(isActive ? .accent : .primary)
-                    .lineLimit(1)
-            }
-            .shadow(
-                color: isActive ? Color.accent.opacity(0.8) : .clear,
-                radius: height*0.08*0.25
-            )
-        }
-        .buttonStyle(.plain)
-        .border(.red)
     }
 }
 

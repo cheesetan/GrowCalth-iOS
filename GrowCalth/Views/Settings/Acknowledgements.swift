@@ -25,6 +25,9 @@ struct Acknowledgements: View {
                     Text(LocalizedStringKey("GrowCalth is a one stop platform that allows SST Students to participate in house challenges and further fosters house spirit among their house members. Through the app, students are able to be notified of house announcements and events, which encourages house participation and involvement."))
                 } header: {
                     Label("About GrowCalth", systemImage: "questionmark.circle.fill")
+                        .textCase(.none)
+                        .font(.headline.weight(.semibold))
+                        .foregroundStyle(.gray)
                 }
 
                 Section {
@@ -39,6 +42,9 @@ struct Acknowledgements: View {
                     acknowledgement(title: "**Washington** - GrowCalth's Mascot", description: "Tiny little pibble. Will demand you to wash his bellayyyy if you tap him 5 times.", image: "washington")
                 } header: {
                     Label("Development Team", systemImage: "person.3.fill")
+                        .textCase(.none)
+                        .font(.headline.weight(.semibold))
+                        .foregroundStyle(.gray)
                 }
 
                 Section {
@@ -47,6 +53,9 @@ struct Acknowledgements: View {
                     acknowledgement(title: "Mr **Wade** Wang", description: "Sports and Wellness Department", image: "figure.run")
                 } header: {
                     Label("Special Thanks", systemImage: "star.fill")
+                        .textCase(.none)
+                        .font(.headline.weight(.semibold))
+                        .foregroundStyle(.gray)
                 }
 
                 Section {
@@ -56,8 +65,12 @@ struct Acknowledgements: View {
                     }
                 } header: {
                     Label("Packages & Libraries", systemImage: "shippingbox.fill")
+                        .textCase(.none)
+                        .font(.headline.weight(.semibold))
+                        .foregroundStyle(.gray)
                 }
             }
+            .scrollIndicators(.hidden)
             .scrollContentBackground(.hidden)
 
             GeometryReader { geometry in

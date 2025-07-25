@@ -19,6 +19,8 @@ struct LeaderboardView: View {
     @EnvironmentObject var adminManager: AdminManager
     @EnvironmentObject var authManager: AuthenticationManager
     @EnvironmentObject var motionManager: MotionManager
+    @EnvironmentObject var tabBarManager: TabBarManager
+    @EnvironmentObject var appState: AppState
 
     var body: some View {
         ZStack {
@@ -30,7 +32,7 @@ struct LeaderboardView: View {
                     VStack(spacing: 0) {
                         let sortedDictionary = sortDictionary(for: lbManager.leaderboard)
                         leaderboardPodium(data: sortedDictionary)
-                            .frame(height: geometry.size.height*0.65)
+                            .frame(height: geometry.size.height*0.7)
                         VStack(spacing: 15) {
                             let height = geometry.size.height*0.1
                             if height >= 6 {
@@ -53,7 +55,7 @@ struct LeaderboardView: View {
                     .padding(.top, geometry.size.height * 0.02)
                 }
             }
-            .padding([.horizontal, .bottom], 30)
+            .padding(.horizontal, appState.padding)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -120,8 +122,8 @@ struct LeaderboardView: View {
     @ViewBuilder
     func leaderboardPodium(data: Array<(key: String, value: Int)>) -> some View {
         GeometryReader { geometry in
-            if geometry.size.width >= 30 {
-                let barWidth = (geometry.size.width-30)/3
+            if geometry.size.width >= appState.padding {
+                let barWidth = (geometry.size.width-appState.padding)/3
                 VStack {
                     HStack {
                         Spacer()
