@@ -20,7 +20,6 @@ struct Acknowledgements: View {
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea()
-
             List {
                 Section {
                     Text(LocalizedStringKey("GrowCalth is a one stop platform that allows SST Students to participate in house challenges and further fosters house spirit among their house members. Through the app, students are able to be notified of house announcements and events, which encourages house participation and involvement."))
