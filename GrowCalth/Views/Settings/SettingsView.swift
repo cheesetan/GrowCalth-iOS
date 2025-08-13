@@ -24,7 +24,12 @@ struct SettingsView: View {
     @EnvironmentObject var motionManager: MotionManager
 
     var body: some View {
-        if #available(iOS 16.0, *) {
+        if #available(iOS 17.0, *) {
+            NavigationStack {
+                main
+                    .toolbarTitleDisplayMode(.inlineLarge)
+            }
+        } else if #available(iOS 16.0, *) {
             NavigationStack {
                 main
             }

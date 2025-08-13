@@ -85,7 +85,7 @@ struct SignInView: View {
                 loginButton
                 bottomText
             }
-            .padding(30)
+            .padding(AppState.padding)
         }
         .alert(alertHeader, isPresented: $showingAlert) {
             if alertHeader == verify_account_alert_header {

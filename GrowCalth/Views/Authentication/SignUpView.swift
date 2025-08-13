@@ -86,7 +86,7 @@ struct SignUpView: View {
                 signUpButton
                 bottomText
             }
-            .padding(30)
+            .padding(AppState.padding)
         }
         .alert(alertHeader, isPresented: $showingAlert) {
             if alertHeader == account_exists_alert_title || alertHeader == verify_account_alert_title {

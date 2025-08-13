@@ -23,37 +23,35 @@ struct LeaderboardView: View {
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea()
-            VStack(alignment: .leading) {
-                Text("Leaderboard")
-                    .font(.largeTitle.bold())
-                GeometryReader { geometry in
-                    VStack(spacing: 0) {
-                        let sortedDictionary = sortDictionary(for: lbManager.leaderboard)
-                        leaderboardPodium(data: sortedDictionary)
-                            .frame(height: geometry.size.height*0.65)
-                        VStack(spacing: 15) {
-                            let height = geometry.size.height*0.1
-                            if height >= 6 {
-                                houseRow(
-                                    placing: "4TH",
-                                    height: height,
-                                    text: sortedDictionary[3].key,
-                                    points: sortedDictionary[3].value
-                                )
-                                houseRow(
-                                    placing: "5TH",
-                                    height: height,
-                                    text: sortedDictionary[4].key,
-                                    points: sortedDictionary[4].value
-                                )
-                            }
+            GeometryReader { geometry in
+                VStack(spacing: 0) {
+                    let sortedDictionary = sortDictionary(for: lbManager.leaderboard)
+                    leaderboardPodium(data: sortedDictionary)
+                        .frame(height: geometry.size.height*0.65)
+                    VStack(spacing: 15) {
+                        let height = geometry.size.height*0.1
+                        if height >= 6 {
+                            houseRow(
+                                placing: "4TH",
+                                height: height,
+                                text: sortedDictionary[3].key,
+                                points: sortedDictionary[3].value
+                            )
+                            houseRow(
+                                placing: "5TH",
+                                height: height,
+                                text: sortedDictionary[4].key,
+                                points: sortedDictionary[4].value
+                            )
                         }
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .padding(.top, geometry.size.height * 0.02)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .padding(.top, geometry.size.height * 0.02)
             }
-            .padding([.horizontal, .bottom], 30)
+            .padding([.horizontal, .bottom], AppState.padding)
+            .navigationTitle("Leaderboard")
+            .navigationBarTitleDisplayMode(.inline)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -121,7 +119,7 @@ struct LeaderboardView: View {
     func leaderboardPodium(data: Array<(key: String, value: Int)>) -> some View {
         GeometryReader { geometry in
             if geometry.size.width >= 30 {
-                let barWidth = (geometry.size.width-30)/3
+                let barWidth = (geometry.size.width-AppState.padding)/3
                 VStack {
                     HStack {
                         Spacer()

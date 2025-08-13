@@ -85,7 +85,7 @@ struct NewAnnouncementView: View {
         .navigationTitle("Create a Post")
         .navigationBarTitleDisplayMode(.inline)
         .padding(.top)
-        .padding(.horizontal, 30)
+        .padding(.horizontal, AppState.padding)
         .alert(alertTitle, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -166,7 +166,7 @@ struct NewAnnouncementView: View {
                 .buttonStyle(.borderedProminent)
             }
         }
-        .padding(.bottom, 30)
+        .padding(.bottom, AppState.padding)
         .disabled(title.isEmpty)
         .disabled(description.isEmpty)
         .disabled(postType == .events ? eventVenue.isEmpty : false)

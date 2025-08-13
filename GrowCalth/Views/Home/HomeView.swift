@@ -26,7 +26,12 @@ struct HomeView: View {
     @Namespace private var namespace
 
     var body: some View {
-        if #available(iOS 16.0, *) {
+        if #available(iOS 17.0, *) {
+            NavigationStack {
+                main
+                    .toolbarTitleDisplayMode(.inlineLarge)
+            }
+        } else if #available(iOS 16.0, *) {
             NavigationStack {
                 main
             }
@@ -41,31 +46,28 @@ struct HomeView: View {
     var main: some View {
         ZStack {
             Color.background.ignoresSafeArea()
-            VStack(alignment: .leading) {
-                Text("Home")
-                    .font(.largeTitle.bold())
-                GeometryReader { geometry in
-                    VStack(spacing: geometry.size.height * 0.15 / 3) {
-                        housePointsProgress
-                            .frame(height: geometry.size.height * 0.07)
+            GeometryReader { geometry in
+                VStack(spacing: geometry.size.height * 0.15 / 3) {
+                    housePointsProgress
+                        .frame(height: geometry.size.height * 0.08)
 
-                        HStack {
-                            steps
-                            distance
-                        }
-                        .frame(height: geometry.size.height * 0.35)
-
-                        leaderboardPreview
-                            .frame(height: geometry.size.height * 0.35)
-
-                        goals
-                            .frame(height: geometry.size.height * 0.08)
+                    HStack(spacing: 15) {
+                        steps
+                        distance
                     }
-                    .frame(maxHeight: geometry.size.height)
+                    .frame(height: geometry.size.height * 0.35)
+
+                    leaderboardPreview
+                        .frame(height: geometry.size.height * 0.30)
+
+                    goals
+                        .frame(height: geometry.size.height * 0.08)
                 }
+                .frame(maxHeight: geometry.size.height, alignment: .top)
             }
-            .padding(30)
+            .padding(AppState.padding)
         }
+        .navigationTitle("Home")
         .onAppear {
             Task {
                 await hkManager.fetchAllDatas()
@@ -105,7 +107,7 @@ struct HomeView: View {
             .lineLimit(1)
             .minimumScaleFactor(0.1)
         }
-        .padding(.horizontal, 30)
+        .padding(.horizontal, AppState.padding)
         .padding(.vertical, 5)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .mask(Capsule())

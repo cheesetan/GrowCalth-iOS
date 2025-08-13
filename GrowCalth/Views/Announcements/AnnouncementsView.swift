@@ -34,7 +34,12 @@ struct AnnouncementsView: View {
     let journals: [Journal] = []
 
     var body: some View {
-        if #available(iOS 16.0, *) {
+        if #available(iOS 17.0, *) {
+            NavigationStack {
+                main
+                    .toolbarTitleDisplayMode(.inlineLarge)
+            }
+        } else if #available(iOS 16.0, *) {
             NavigationStack {
                 main
             }
@@ -51,13 +56,8 @@ struct AnnouncementsView: View {
             Color.background.ignoresSafeArea()
             GeometryReader { geometry in
                 VStack {
-                    VStack(alignment: .leading, spacing: geometry.size.height*0.02) {
-                        Text(selection == .announcements ? "Announcements" : "Events")
-                            .font(.largeTitle.bold())
-                            .contentTransition(.numericText())
-                        picker
-                    }
-                    .padding([.horizontal, .top], 30)
+                    picker
+                        .padding([.horizontal, .top], AppState.padding)
                     ScrollView {
                         VStack {
                             switch selection {
@@ -75,13 +75,14 @@ struct AnnouncementsView: View {
                                 }
                             }
                         }
-                        .padding([.horizontal, .bottom], 30)
+                        .padding([.horizontal, .bottom], AppState.padding)
                         .padding(.top, geometry.size.height*0.02)
                     }
                     .scrollIndicators(.hidden)
                 }
             }
         }
+        .navigationTitle(selection == .announcements ? "Announcements" : "Events")
         .overlay(alignment: .bottomTrailing) {
             Group {
                 if #available(iOS 26.0, *) {
@@ -168,9 +169,7 @@ struct AnnouncementsView: View {
                         )
                         .scrollTransition { content, phase in
                             content
-                                .opacity(phase.isIdentity ? 1 : 0)
-                                .scaleEffect(phase.isIdentity ? 1 : 0.75)
-                                .blur(radius: phase.isIdentity ? 0 : 10)
+                                .scaleEffect(phase.isIdentity ? 1 : 0.8)
                         }
                     } else {
                         announcementItem(
@@ -215,9 +214,7 @@ struct AnnouncementsView: View {
                         )
                         .scrollTransition { content, phase in
                             content
-                                .opacity(phase.isIdentity ? 1 : 0)
-                                .scaleEffect(phase.isIdentity ? 1 : 0.75)
-                                .blur(radius: phase.isIdentity ? 0 : 10)
+                                .scaleEffect(phase.isIdentity ? 1 : 0.8)
                         }
                     } else {
                         eventItem(
@@ -413,7 +410,7 @@ struct AnnouncementsView: View {
     @ViewBuilder
     func announcementItem(date: Date, title: String, description: String?) -> some View {
         HStack {
-            VStack(alignment: .leading, spacing: 15) {
+            VStack(alignment: .leading) {
                 Text(title)
                     .fontWeight(.bold)
                     .lineLimit(2)
@@ -429,6 +426,7 @@ struct AnnouncementsView: View {
             VStack(alignment: .trailing) {
                 if let daysAgo = Calendar.current.dateComponents([.day], from: date, to: Date()).day {
                     Text("\(daysAgo)d ago")
+                        .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundStyle(.gray)
                 }
@@ -461,7 +459,7 @@ struct AnnouncementsView: View {
     
     @ViewBuilder
     func eventItem(dateAdded: Date, title: String, description: String?, date: String, venue: String) -> some View {
-        VStack(alignment: .leading, spacing: 15) {
+        VStack(alignment: .leading) {
             HStack(alignment: .top) {
                 Text(title)
                     .fontWeight(.bold)

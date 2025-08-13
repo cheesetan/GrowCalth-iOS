@@ -62,7 +62,7 @@ struct AnnouncementDetailView: View {
                         .padding(.vertical, 5)
                     description
                 }
-                .padding(30)
+                .padding(AppState.padding)
                 .animation(.default, value: isEditing)
             }
         }

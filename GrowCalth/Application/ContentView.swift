@@ -34,6 +34,8 @@ class AppState: ObservableObject {
         self.networkManager = networkManager
     }
 
+    static let padding: CGFloat = 20
+
     var status: AppStatus {
         if let isConnectionAvailable = networkManager.isConnectionAvailable {
             if isConnectionAvailable {
@@ -69,7 +71,7 @@ class AppState: ObservableObject {
 }
 
 enum TabSelection {
-    case home, announcements, napfa, settings
+    case home, updates, challenges, napfa, settings
 }
 
 
@@ -169,13 +171,16 @@ struct ContentView: View {
                         Tab("Home", systemImage: "house.fill", value: .home) {
                             HomeView()
                         }
-                        Tab("Announcements", systemImage: "megaphone", value: .announcements) {
+                        Tab("Updates", systemImage: "bell.fill", value: .updates) {
                             AnnouncementsView()
+                        }
+                        Tab("Challenges", systemImage: "flag.pattern.checkered", value: .challenges) {
+                            Text("Challenges")
                         }
                         Tab("NAPFA", systemImage: "figure.run", value: .napfa) {
                             NAPFAView()
                         }
-                        Tab("Settings", systemImage: "gearshape", value: .settings) {
+                        Tab("Settings", systemImage: "gearshape.fill", value: .settings) {
                             SettingsView()
                         }
                     }
@@ -187,7 +192,11 @@ struct ContentView: View {
                             }
                         AnnouncementsView()
                             .tabItem {
-                                Label("Announcements", systemImage: "megaphone")
+                                Label("Updates", systemImage: "bell.fill")
+                            }
+                        Text("Challenges")
+                            .tabItem {
+                                Label("Challenges", systemImage: "flag.pattern.checkered")
                             }
                         NAPFAView()
                             .tabItem {
@@ -195,7 +204,7 @@ struct ContentView: View {
                             }
                         SettingsView()
                             .tabItem {
-                                Label("Settings", systemImage: "gearshape")
+                                Label("Settings", systemImage: "gearshape.fill")
                             }
                     }
                 }

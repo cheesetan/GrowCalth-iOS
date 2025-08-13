@@ -29,13 +29,13 @@ struct Acknowledgements: View {
                 }
 
                 Section {
-                    acknowledgement(title: "Han Jeong Seu, **Caleb** - CEO of GrowCalth / Lead Android Developer at GrowCalth", description: "Class of 2024", image: "person.bust.fill")
-                    acknowledgement(title: "Chay Yu Hung **Tristan** - Lead iOS Developer at GrowCalth", description: "Class of 2024", image: "hammer.fill")
-                    acknowledgement(title: "**Felix** Forbes Dimjati - Social Entrepreneurship Lead at GrowCalth", description: "Class of 2024", image: "person.3.fill")
-                    acknowledgement(title: "Bellam Nandakumar **Aravind** - Communications Lead at GrowCalth", description: "Class of 2024", image: "text.bubble.fill")
-                    acknowledgement(title: "**Darryan** Lim Yuan Sheng - Marketing and Design Lead at GrowCalth", description: "Class of 2024", image: "paintbrush.pointed.fill")
-                    acknowledgement(title: "**Aathithya** Jegatheesan - Outreach and Relational Lead at GrowCalth", description: "Class of 2024", image: "person.line.dotted.person.fill")
-                    acknowledgement(title: "**Ayaan** Jain - Financial Lead at GrowCalth", description: "Class of 2024", image: "dollarsign.circle.fill")
+                    acknowledgement(title: "Han Jeong Seu, **Caleb** - Founder and CEO", description: "Class of 2024", image: "person.bust.fill")
+                    acknowledgement(title: "Chay Yu Hung **Tristan** - Lead iOS Developer", description: "Class of 2024", image: "hammer.fill")
+                    acknowledgement(title: "**Felix** Forbes Dimjati - Social Entrepreneurship Lead", description: "Class of 2024", image: "person.3.fill")
+                    acknowledgement(title: "Bellam Nandakumar **Aravind** - Lead Android Developer", description: "Class of 2024", image: "hammer.fill")
+                    acknowledgement(title: "**Darryan** Lim Yuan Sheng - Marketing and Design Lead", description: "Class of 2024", image: "paintbrush.pointed.fill")
+                    acknowledgement(title: "**Aathithya** Jegatheesan - Outreach and Communications Lead, Android Developer", description: "Class of 2024", image: "text.bubble.fill")
+                    acknowledgement(title: "**Ayaan** Jain - Finance Lead", description: "Class of 2024", image: "dollarsign.circle.fill")
                     acknowledgement(title: "**Scoobert** - GrowCalth's Mascot", description: "Loves to exercise. Will do a backflip if you tap him 5 times.", image: "scoobert")
                     acknowledgement(title: "**Washington** - GrowCalth's Mascot", description: "Tiny little pibble. Will demand you to wash his bellayyyy if you tap him 5 times.", image: "washington")
                 } header: {

@@ -22,6 +22,7 @@ struct NAPFAView: View {
             NavigationStack {
                 main
                     .navigationTitle("NAPFA")
+                    .toolbarTitleDisplayMode(.inlineLarge)
             }
         } else if #available(iOS 16.0, *) {
             NavigationStack {
@@ -48,13 +49,16 @@ struct NAPFAView: View {
     }
     
     var main: some View {
-        VStack {
-            if #unavailable(iOS 26.0) {
-                picker
-                    .pickerStyle(.segmented)
-                    .padding([.horizontal, .top])
+        ZStack {
+            Color.background.ignoresSafeArea()
+            VStack {
+                if #unavailable(iOS 26.0) {
+                    picker
+                        .pickerStyle(.segmented)
+                        .padding([.horizontal, .top])
+                }
+                table
             }
-            table
         }
         .animation(.default, value: napfaManager.year)
         .animation(.default, value: napfaManager.levelSelection)
@@ -262,10 +266,18 @@ struct NAPFAView: View {
         VStack {
             if let cachedDataForYear = napfaManager.data["\(NAPFALevel(rawValue: napfaManager.levelSelection)!.firebaseCode)-\(String(napfaManager.year))"], !cachedDataForYear.filter( { $0.rank != -1 && !$0.className.isEmpty && !$0.name.isEmpty && !$0.result.isEmpty }).isEmpty {
                 if #available(iOS 26.0, *) {
-                    MultiColumnTable(headers: ["Rank", "Name", "Class", "Result"], data: .constant(cachedDataForYear))
+                    MultiColumnTable(
+                        headers: ["Rank", "Name", "Class", "Result"],
+                        data: .constant(cachedDataForYear)
+                    )
+                    .scrollContentBackground(.hidden)
                 } else {
-                    MultiColumnTable(headers: ["Rank", "Name", "Class", "Result"], data: .constant(cachedDataForYear))
-                        .padding(.top)
+                    MultiColumnTable(
+                        headers: ["Rank", "Name", "Class", "Result"],
+                        data: .constant(cachedDataForYear)
+                    )
+                    .padding(.top)
+                    .scrollContentBackground(.hidden)
                 }
             } else {
                 noDataAvailable(year: napfaManager.year)

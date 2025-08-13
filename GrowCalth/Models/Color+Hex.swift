@@ -49,7 +49,7 @@ extension Color {
     static let background = Color(
         uiColor: UIColor.dynamicColor(
             light: UIColor(hex: 0xEBEBF2),
-            dark: UIColor(hex: 0x17171A)
+            dark: UIColor(hex: 0x121212)
         )
     )
 
