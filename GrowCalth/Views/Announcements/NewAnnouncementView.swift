@@ -128,25 +128,25 @@ struct NewAnnouncementView: View {
     
     var createButton: some View {
         Group {
-//            if #available(iOS 26.0, *) {
-//                Button {
-//                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-//                        switch postType {
-//                        case .announcements:
-//                            createAnnouncement()
-//                        case .events:
-//                            createEvent()
-//                        }
-//                    }
-//                } label: {
-//                    Text("Create \(postType == .announcements ? "Announcement" : "Event")")
-//                        .padding(8)
-//                        .frame(maxWidth: .infinity)
-//                        .foregroundColor(.white)
-//                        .font(.body.weight(.bold))
-//                }
-//                .buttonStyle(.glassProminent)
-//            } else {
+            if #available(iOS 26.0, *) {
+                Button {
+                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                        switch postType {
+                        case .announcements:
+                            createAnnouncement()
+                        case .events:
+                            createEvent()
+                        }
+                    }
+                } label: {
+                    Text("Create \(postType == .announcements ? "Announcement" : "Event")")
+                        .padding(8)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.white)
+                        .font(.body.weight(.bold))
+                }
+                .buttonStyle(.glassProminent)
+            } else {
                 Button {
                     if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
                         switch postType {
@@ -164,7 +164,7 @@ struct NewAnnouncementView: View {
                         .font(.body.weight(.bold))
                 }
                 .buttonStyle(.borderedProminent)
-//            }
+            }
         }
         .padding(.bottom, 30)
         .disabled(title.isEmpty)

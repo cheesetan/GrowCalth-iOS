@@ -66,16 +66,16 @@ struct ForgotPasswordView: View {
 
     var emailField: some View {
         Group {
-//            if #available(iOS 26.0, *) {
-//                TextField("Email Address", text: $email)
-//                    .padding()
-//                    .glassEffect()
-//            } else {
+            if #available(iOS 26.0, *) {
+                TextField("Email Address", text: $email)
+                    .padding()
+                    .glassEffect()
+            } else {
                 TextField("Email Address", text: $email)
                     .padding()
                     .background(.thickMaterial)
                     .mask(Capsule())
-//            }
+            }
         }
         .keyboardType(.emailAddress)
         .textContentType(.username)
@@ -91,24 +91,24 @@ struct ForgotPasswordView: View {
 
     var resetPasswordButton: some View {
         Group {
-//            if #available(iOS 26.0, *) {
-//                Button {
-//                    sendForgotPasswordRequest()
-//                } label: {
-//                    Text("Reset Password")
-//                        .padding(8)
-//                        .frame(maxWidth: .infinity)
-//                        .foregroundColor(forgotPasswordLoading ? .clear : .white)
-//                        .font(.body.weight(.semibold))
-//                        .overlay {
-//                            if forgotPasswordLoading {
-//                                ProgressView()
-//                            }
-//                        }
-//                }
-//                .buttonStyle(.glassProminent)
-//                .disabled(buttonDisabled)
-//            } else {
+            if #available(iOS 26.0, *) {
+                Button {
+                    sendForgotPasswordRequest()
+                } label: {
+                    Text("Reset Password")
+                        .padding(8)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(forgotPasswordLoading ? .clear : .white)
+                        .font(.body.weight(.semibold))
+                        .overlay {
+                            if forgotPasswordLoading {
+                                ProgressView()
+                            }
+                        }
+                }
+                .buttonStyle(.glassProminent)
+                .disabled(buttonDisabled)
+            } else {
                 Button {
                     sendForgotPasswordRequest()
                 } label: {
@@ -127,7 +127,7 @@ struct ForgotPasswordView: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(buttonDisabled)
-//            }
+            }
         }
     }
 

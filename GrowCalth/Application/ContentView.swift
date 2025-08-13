@@ -164,7 +164,7 @@ struct ContentView: View {
         Group {
             switch appState.status {
             case .home:
-                if #available(iOS 18.0, *) {
+                if #available(iOS 26.0, *) {
                     TabView(selection: $tabSelected) {
                         Tab("Home", systemImage: "house.fill", value: .home) {
                             HomeView()

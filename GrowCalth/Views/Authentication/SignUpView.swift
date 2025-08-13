@@ -42,17 +42,17 @@ struct SignUpView: View {
         ZStack {
             Color.background.ignoresSafeArea()
             VStack(spacing: 30) {
-//                if #available(iOS 26.0, *) {
-//                    Image(systemName: "person.and.person.fill")
-//                        .resizable()
-//                        .scaledToFit()
-//                        .padding(30)
-//                        .frame(width: 100, height: 100)
-//                        .foregroundStyle(.accent)
-//                        .glassEffect()
-//                        .mask(Circle())
-//                        .specularHighlight(for: .circle, motionManager: motionManager)
-//                } else {
+               if #available(iOS 26.0, *) {
+                   Image(systemName: "person.and.person.fill")
+                       .resizable()
+                       .scaledToFit()
+                       .padding(30)
+                       .frame(width: 100, height: 100)
+                       .foregroundStyle(.accent)
+                       .glassEffect()
+                       .mask(Circle())
+                       .specularHighlight(for: .circle, motionManager: motionManager)
+               } else {
                     Image(systemName: "person.and.person.fill")
                         .resizable()
                         .scaledToFit()
@@ -62,7 +62,7 @@ struct SignUpView: View {
                         .background(.thickMaterial)
                         .mask(Circle())
                         .specularHighlight(for: .circle, motionManager: motionManager)
-//                }
+               }
                 VStack(spacing: 5) {
                     Text("Create Account")
                         .font(.subheadline)
@@ -90,16 +90,16 @@ struct SignUpView: View {
         }
         .alert(alertHeader, isPresented: $showingAlert) {
             if alertHeader == account_exists_alert_title || alertHeader == verify_account_alert_title {
-//                if #available(iOS 26.0, *) {
-//                    Button(
-//                        alertHeader == verify_account_alert_title ? "OK" : "Proceed to Login",
-//                        role: .confirm
-//                    ) {
-//                        withAnimation {
-//                            signInView = true
-//                        }
-//                    }
-//                } else {
+                if #available(iOS 26.0, *) {
+                    Button(
+                        alertHeader == verify_account_alert_title ? "OK" : "Proceed to Login",
+                        role: .confirm
+                    ) {
+                        withAnimation {
+                            signInView = true
+                        }
+                    }
+                } else {
                     Button(
                         alertHeader == verify_account_alert_title ? "OK" : "Proceed to Login"
                     ) {
@@ -107,13 +107,13 @@ struct SignUpView: View {
                             signInView = true
                         }
                     }
-//                }
+                }
             } else {
-//                if #available(iOS 26.0, *) {
-//                    Button("OK", role: .close) {}
-//                } else {
+                if #available(iOS 26.0, *) {
+                    Button("OK", role: .close) {}
+                } else {
                     Button("OK", role: .cancel) {}
-//                }
+                }
             }
         } message: {
             Text(alertMessage)
@@ -130,17 +130,17 @@ struct SignUpView: View {
 
     var emailField: some View {
         Group {
-//            if #available(iOS 26.0, *) {
-//                TextField(text: $email) {
-//                    Label("School Email", systemImage: "envelope")
-//                }
-//                .padding()
-//                .keyboardType(.emailAddress)
-//                .textContentType(.username)
-//                .autocorrectionDisabled(true)
-//                .textInputAutocapitalization(.never)
-//                .glassEffect()
-//            } else {
+            if #available(iOS 26.0, *) {
+                TextField(text: $email) {
+                    Label("School Email", systemImage: "envelope")
+                }
+                .padding()
+                .keyboardType(.emailAddress)
+                .textContentType(.username)
+                .autocorrectionDisabled(true)
+                .textInputAutocapitalization(.never)
+                .glassEffect()
+            } else {
                 TextField(text: $email) {
                     Label("School Email", systemImage: "envelope")
                 }
@@ -151,7 +151,7 @@ struct SignUpView: View {
                 .textContentType(.username)
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
-//            }
+            }
         }
         .accessibilityLabel("Email")
     }
@@ -159,23 +159,23 @@ struct SignUpView: View {
     var passwordField: some View {
         ZStack(alignment: .trailing) {
             Group {
-//                if #available(iOS 26.0, *) {
-//                    Group {
-//                        if showingPassword {
-//                            TextField(text: $password) {
-//                                Label("Password", systemImage: "lock")
-//                            }
-//                            .focused($isFieldFocus, equals: .textField)
-//                        } else {
-//                            SecureField(text: $password) {
-//                                Label("Password", systemImage: "lock")
-//                            }
-//                            .focused($isFieldFocus, equals: .secureField)
-//                        }
-//                    }
-//                    .padding()
-//                    .glassEffect()
-//                } else {
+                if #available(iOS 26.0, *) {
+                    Group {
+                        if showingPassword {
+                            TextField(text: $password) {
+                                Label("Password", systemImage: "lock")
+                            }
+                            .focused($isFieldFocus, equals: .textField)
+                        } else {
+                            SecureField(text: $password) {
+                                Label("Password", systemImage: "lock")
+                            }
+                            .focused($isFieldFocus, equals: .secureField)
+                        }
+                    }
+                    .padding()
+                    .glassEffect()
+                } else {
                     Group {
                         if showingPassword {
                             TextField(text: $password) {
@@ -192,7 +192,7 @@ struct SignUpView: View {
                     .padding()
                     .background(.thickMaterial)
                     .mask(Capsule())
-//                }
+                }
             }
             .textContentType(.password)
             .keyboardType(.alphabet)
@@ -225,26 +225,26 @@ struct SignUpView: View {
 
     var housePicker: some View {
         Group {
-//            if #available(iOS 26.0, *) {
-//                Picker("House Selection", selection: $houseSelection) {
-//                    ForEach(Houses.allCases, id: \.hashValue) { house in
-//                        if house != .selectHouse {
-//                            Text(house.rawValue)
-//                                .minimumScaleFactor(0.1)
-//                                .tag(house)
-//                        } else {
-//                            if houseSelection == .selectHouse {
-//                                Text(house.rawValue)
-//                                    .tag(house)
-//                                Divider()
-//                            }
-//                        }
-//                    }
-//                }
-//                .padding(10)
-//                .frame(maxWidth: .infinity)
-//                .glassEffect()
-//            } else {
+            if #available(iOS 26.0, *) {
+                Picker("House Selection", selection: $houseSelection) {
+                    ForEach(Houses.allCases, id: \.hashValue) { house in
+                        if house != .selectHouse {
+                            Text(house.rawValue)
+                                .minimumScaleFactor(0.1)
+                                .tag(house)
+                        } else {
+                            if houseSelection == .selectHouse {
+                                Text(house.rawValue)
+                                    .tag(house)
+                                Divider()
+                            }
+                        }
+                    }
+                }
+                .padding(10)
+                .frame(maxWidth: .infinity)
+                .glassEffect()
+            } else {
                 Picker("House Selection", selection: $houseSelection) {
                     ForEach(Houses.allCases, id: \.hashValue) { house in
                         if house != .selectHouse {
@@ -264,32 +264,32 @@ struct SignUpView: View {
                 .frame(maxWidth: .infinity)
                 .background(.thickMaterial)
                 .mask(Capsule())
-//            }
+            }
         }
     }
 
     var signUpButton: some View {
         Group {
-//            if #available(iOS 26.0, *) {
-//                Button {
-//                    signUp()
-//                } label: {
-//                    Text("Sign Up")
-//                        .padding(8)
-//                        .frame(maxWidth: .infinity)
-//                        .foregroundColor(isLoading ? .clear : .white)
-//                        .font(.body.weight(.semibold))
-//                        .overlay {
-//                            if isLoading {
-//                                ProgressView()
-//                            }
-//                        }
-//                }
-//                .buttonBorderShape(.capsule)
-//                .buttonStyle(.glassProminent)
-//                .disabled(buttonDisabled)
-//
-//            } else {
+            if #available(iOS 26.0, *) {
+                Button {
+                    signUp()
+                } label: {
+                    Text("Sign Up")
+                        .padding(8)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(isLoading ? .clear : .white)
+                        .font(.body.weight(.semibold))
+                        .overlay {
+                            if isLoading {
+                                ProgressView()
+                            }
+                        }
+                }
+                .buttonBorderShape(.capsule)
+                .buttonStyle(.glassProminent)
+                .disabled(buttonDisabled)
+
+            } else {
                 Button {
                     signUp()
                 } label: {
@@ -308,7 +308,7 @@ struct SignUpView: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(buttonDisabled)
-//            }
+            }
         }
     }
     
