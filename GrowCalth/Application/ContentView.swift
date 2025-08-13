@@ -69,7 +69,7 @@ class AppState: ObservableObject {
 }
 
 enum TabSelection {
-    case home, announcements, challenges, napfa, settings
+    case home, announcements, napfa, settings
 }
 
 
@@ -94,7 +94,6 @@ struct ContentView: View {
     @StateObject private var pointsManager: PointsManager
     @StateObject private var motionManager: MotionManager
 
-    @Environment(\.colorScheme) private var colorScheme
 
     init() {
         let authManager = AuthenticationManager()
@@ -200,25 +199,6 @@ struct ContentView: View {
                             }
                     }
                 }
-//                GeometryReader { geometry in
-//                    ZStack {
-//                        Color.background.ignoresSafeArea()
-//                        VStack {
-//                            switch tabSelected {
-//                            case .home: HomeView()
-//                            case .announcements: AnnouncementsView()
-//                            case .challenges: Text("Challenges")
-//                            case .napfa: NAPFAView()
-//                            case .settings: SettingsView()
-//                            }
-//                        }
-//                        .padding(.bottom, geometry.size.height * 0.08 + geometry.size.height * 0.03)
-//
-//                        TabBar(height: geometry.size.height, tabSelected: $tabSelected)
-//                    }
-//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                    .ignoresSafeArea()
-//                }
             case .login:
                 AuthenticationView()
             case .noNetwork:
@@ -314,87 +294,6 @@ struct ContentView: View {
                 pointsManager.lastPointsAwardedDate = today
             }
         }
-    }
-}
-
-struct TabBar: View {
-
-    @State var height: CGFloat
-    @Binding var tabSelected: TabSelection
-
-    @EnvironmentObject private var motionManager: MotionManager
-
-    var body: some View {
-        Capsule()
-            .fill(.shadow(.inner(
-                color: Color.tabBarInnerShadow,
-                radius: 6.5
-            )))
-            .foregroundStyle(Color.background)
-            .frame(maxWidth: .infinity)
-            .frame(height: height * 0.08)
-            .specularHighlight(motionManager: motionManager)
-            .shadow(color: Color.tabBarOuterShadow, radius: 17.5, x: 0, y: 5)
-            .overlay {
-                GeometryReader { geometry in
-                    LazyVGrid(
-                        columns: [
-                            GridItem(.fixed(20)),
-                            GridItem(.flexible()),
-                            GridItem(.fixed(20)),
-                            GridItem(.fixed(20)),
-                            GridItem(.fixed(20))
-                        ],
-                        spacing: 0
-                    ) {
-                        tabButton("Home", systemImage: "house.fill", value: .home)
-                        tabButton("Announcements", systemImage: "megaphone.fill", value: .announcements)
-                        tabButton("Challenges", systemImage: "flag.checkered", value: .challenges)
-                        tabButton("NAPFA", systemImage: "figure.run", value: .napfa)
-                        tabButton("Settings", systemImage: "gearshape.fill", value: .settings)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                }
-                .padding(.horizontal, height*0.08*0.2)
-                .padding(.vertical, height*0.08*0.14)
-            }
-            .mask(Capsule())
-            .padding(.bottom, height * 0.03)
-            .padding(.horizontal, height * 0.025)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-    }
-
-    @ViewBuilder
-    func tabButton(
-        _ title: String,
-        systemImage image: String,
-        value tab: TabSelection
-    ) -> some View {
-        let isActive = tabSelected == tab
-        Button {
-            withAnimation {
-                tabSelected = tab
-            }
-        } label: {
-            VStack(spacing: height*0.08*0.01) {
-                Image(systemName: image)
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundStyle(isActive ? .accent : .primary)
-                    .padding(height*0.08*0.07)
-
-                Text(title)
-                    .font(.system(size: height*0.08*0.12))
-                    .foregroundStyle(isActive ? .accent : .primary)
-                    .lineLimit(1)
-            }
-            .shadow(
-                color: isActive ? Color.accent.opacity(0.8) : .clear,
-                radius: height*0.08*0.25
-            )
-        }
-        .buttonStyle(.plain)
-        .border(.red)
     }
 }
 

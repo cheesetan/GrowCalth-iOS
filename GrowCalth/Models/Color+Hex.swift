@@ -172,11 +172,5 @@ extension Color {
         startPoint: .bottomLeading,
         endPoint: .topTrailing
     )
-
-    static let tabBarInnerShadow = Color.white.opacity(0.25)
-
-    static let tabBarOuterShadow = Color(
-        uiColor: UIColor(hex: 0x2B2B2E).withAlphaComponent(0.15)
-    )
 }
 
