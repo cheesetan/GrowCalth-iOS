@@ -27,8 +27,7 @@ struct EventDetailView: View {
     @EnvironmentObject var authManager: AuthenticationManager
     @EnvironmentObject var announcementManager: AnnouncementManager
     @EnvironmentObject var adminManager: AdminManager
-    @EnvironmentObject var appState: AppState
-
+    
     @Environment(\.dismiss) var dismiss
 
     init(event: Binding<EventItem>) {
@@ -68,7 +67,7 @@ struct EventDetailView: View {
 
                     description
                 }
-                .padding(appState.padding)
+                .padding(30)
                 .animation(.default, value: isEditing)
             }
         }

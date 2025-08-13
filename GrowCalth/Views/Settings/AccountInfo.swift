@@ -39,7 +39,7 @@ struct AccountInfo: View {
         ZStack {
             Color.background.ignoresSafeArea()
             List {
-                Section {
+                Section("Personal Information") {
                     CustomLabeledContent("Name") {
                         VStack {
                             if let email = authManager.email {
@@ -79,24 +79,14 @@ struct AccountInfo: View {
                         }
                         .multilineTextAlignment(.trailing)
                     }
-                } header: {
-                    Text("Personal Information")
-                        .textCase(.none)
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(.gray)
                 }
 
-                Section {
+                Section("Sign In & Security") {
                     NavigationLink {
                         changePassword
                     } label: {
                         Text("Change Password")
                     }
-                } header: {
-                    Text("Sign In & Security")
-                        .textCase(.none)
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(.gray)
                 }
 
                 Section {
@@ -208,9 +198,6 @@ struct AccountInfo: View {
                     .autocapitalization(.none)
                 } header: {
                     Text("Password")
-                        .textCase(.none)
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(.gray)
                 } footer: {
                     Text("Your new password must be at least 6 characters long.")
                 }

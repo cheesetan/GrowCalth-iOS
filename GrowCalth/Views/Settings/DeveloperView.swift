@@ -28,7 +28,7 @@ struct DeveloperView: View {
         ZStack {
             Color.background.ignoresSafeArea()
             List {
-                Section {
+                Section("App Controls") {
                     Toggle("App Forces Updates", isOn: $appForcesUpdates)
                     Toggle("App Under Maintenance", isOn: $appIsUnderMaintenance)
                     Toggle("Bypass Restrictions", isOn: Binding(get: {
@@ -38,11 +38,6 @@ struct DeveloperView: View {
                             developerManager.bypassed = value
                         }
                     }))
-                } header: {
-                    Text("App Controls")
-                        .textCase(.none)
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(.gray)
                 }
 
                 Section {
@@ -59,9 +54,6 @@ struct DeveloperView: View {
                 } header: {
                     HStack {
                         Text("Blocked Versions (iOS)")
-                            .textCase(.none)
-                            .font(.headline.weight(.semibold))
-                            .foregroundStyle(.gray)
                         Button {
                             isLoading = true
                             Task {
@@ -80,7 +72,7 @@ struct DeveloperView: View {
                         .disabled(isLoading)
                         Spacer()
                         EditButton()
-                            .textCase(.none)
+                            .textCase(nil)
                             .disabled(blockedVersions == nil || blockedVersions?.count == 0)
                         Button {
                             showAlert.toggle()
@@ -104,9 +96,6 @@ struct DeveloperView: View {
                 } header: {
                     HStack {
                         Text("Blocked Versions (Android)")
-                            .textCase(.none)
-                            .font(.headline.weight(.semibold))
-                            .foregroundStyle(.gray)
                         Button {
                             isLoading = true
                             Task {
@@ -125,7 +114,7 @@ struct DeveloperView: View {
                         .disabled(isLoading)
                         Spacer()
                         EditButton()
-                            .textCase(.none)
+                            .textCase(nil)
                             .disabled(blockedVersionsAndroid == nil || blockedVersionsAndroid?.count == 0)
                         Button {
                             showAlertAndroid.toggle()
@@ -135,7 +124,6 @@ struct DeveloperView: View {
                     }
                 }
             }
-            .scrollIndicators(.hidden)
             .scrollContentBackground(.hidden)
         }
         .navigationTitle("Developer Controls")

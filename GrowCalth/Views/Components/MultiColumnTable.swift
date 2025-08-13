@@ -55,6 +55,7 @@ struct MultiColumnTable: View {
                     }
                 }
             }
+            Section { Spacer().listRowBackground(Color.clear) }
         }
     }
 }

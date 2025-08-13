@@ -24,9 +24,9 @@ struct NewAnnouncementView: View {
     @EnvironmentObject var authManager: AuthenticationManager
     @EnvironmentObject var announcementManager: AnnouncementManager
     @EnvironmentObject var adminManager: AdminManager
+    
     @EnvironmentObject var apnManager: ApplicationPushNotificationsManager
-    @EnvironmentObject var appState: AppState
-
+    
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -85,7 +85,7 @@ struct NewAnnouncementView: View {
         .navigationTitle("Create a Post")
         .navigationBarTitleDisplayMode(.inline)
         .padding(.top)
-        .padding(.horizontal, appState.padding)
+        .padding(.horizontal, 30)
         .alert(alertTitle, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -166,7 +166,7 @@ struct NewAnnouncementView: View {
                 .buttonStyle(.borderedProminent)
 //            }
         }
-        .padding(.bottom, appState.padding)
+        .padding(.bottom, 30)
         .disabled(title.isEmpty)
         .disabled(description.isEmpty)
         .disabled(postType == .events ? eventVenue.isEmpty : false)

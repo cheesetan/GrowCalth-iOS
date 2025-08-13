@@ -12,21 +12,16 @@ struct CalculatorResourcesView: View {
         ZStack {
             Color.background.ignoresSafeArea()
             List {
-                Section {
+                Section("Mass Calculators") {
                     resource(
                         "Body Mass Index (BMI)",
                         accessibilityLabel: "BMI",
                         subtitle: "Singapore Heart Foundation",
                         link: "https://www.myheart.org.sg/tools-resources/bmi-calculator/"
                     )
-                } header: {
-                    Text("Mass Calculators")
-                        .textCase(.none)
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(.gray)
                 }
 
-                Section {
+                Section("Calorie Calculators") {
                     resource(
                         "Basal Metabolic Rate (BMR)",
                         accessibilityLabel: "BMR",
@@ -39,11 +34,6 @@ struct CalculatorResourcesView: View {
                         subtitle: "yourhealthcalculator.com",
                         link: "https://yourhealthcalculator.com/calculate-calories/"
                     )
-                } header: {
-                    Text("Calorie Calculators")
-                        .textCase(.none)
-                        .font(.headline.weight(.semibold))
-                        .foregroundStyle(.gray)
                 }
             }
             .scrollContentBackground(.hidden)
