@@ -19,6 +19,7 @@ struct CustomContentUnavailableView: View {
     @EnvironmentObject private var authManager: AuthenticationManager
     @EnvironmentObject private var adminManager: AdminManager
     @EnvironmentObject private var developerManager: DeveloperManager
+    @EnvironmentObject private var motionManager: MotionManager
 
     var body: some View {
         ZStack {
@@ -26,7 +27,20 @@ struct CustomContentUnavailableView: View {
             VStack {
                 if #available(iOS 26.0, *) {
                     ContentUnavailableView {
-                        Label(title, systemImage: systemImage)
+                        VStack {
+                            Image(systemName: systemImage)
+                                .resizable()
+                                .scaledToFit()
+                                .padding(30)
+                                .frame(width: 100, height: 100)
+                                .foregroundStyle(.accent)
+                                .glassEffect()
+                                .mask(Circle())
+                                .specularHighlight(for: .circle, motionManager: motionManager)
+                            Text(title)
+                                .fontWeight(.bold)
+                                .font(.title)
+                        }
                     } description: {
                         Text(description)
                     } actions: {
@@ -87,7 +101,20 @@ struct CustomContentUnavailableView: View {
                     }
                 } else if #available(iOS 17.0, *) {
                     ContentUnavailableView {
-                        Label(title, systemImage: systemImage)
+                        VStack {
+                            Image(systemName: systemImage)
+                                .resizable()
+                                .scaledToFit()
+                                .padding(30)
+                                .frame(width: 100, height: 100)
+                                .foregroundStyle(.accent)
+                                .background(.thickMaterial)
+                                .mask(Circle())
+                                .specularHighlight(for: .circle, motionManager: motionManager)
+                            Text(title)
+                                .fontWeight(.bold)
+                                .font(.title)
+                        }
                     } description: {
                         Text(description)
                     } actions: {
@@ -149,9 +176,20 @@ struct CustomContentUnavailableView: View {
                 } else {
                     VStack(spacing: 15) {
                         Spacer()
-                        Image(systemName: systemImage)
-                            .font(.system(size: 70))
-                            .foregroundColor(.secondary)
+                        VStack {
+                            Image(systemName: systemImage)
+                                .resizable()
+                                .scaledToFit()
+                                .padding(30)
+                                .frame(width: 100, height: 100)
+                                .foregroundStyle(.accent)
+                                .background(.thickMaterial)
+                                .mask(Circle())
+                                .specularHighlight(for: .circle, motionManager: motionManager)
+                            Text(title)
+                                .fontWeight(.bold)
+                                .font(.title)
+                        }
                         Text(description)
                             .multilineTextAlignment(.center)
                         switch mode {
