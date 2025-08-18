@@ -29,7 +29,7 @@ struct LeaderboardView: View {
                     leaderboardPodium(data: sortedDictionary)
                         .frame(height: geometry.size.height*0.65)
                     VStack(spacing: 15) {
-                        let height = geometry.size.height*0.1
+                        let height = geometry.size.height*0.08
                         if height >= 6 {
                             houseRow(
                                 placing: "4TH",
