@@ -274,7 +274,7 @@ struct SignUpView: View {
                 Button {
                     signUp()
                 } label: {
-                    Text("Sign Up")
+                    Text("Create Account")
                         .padding(8)
                         .frame(maxWidth: .infinity)
                         .foregroundColor(isLoading ? .clear : .white)
@@ -293,7 +293,7 @@ struct SignUpView: View {
                 Button {
                     signUp()
                 } label: {
-                    Text("Sign Up")
+                    Text("Create Account")
                         .padding()
                         .frame(maxWidth: .infinity)
                         .foregroundColor(isLoading ? .clear : .white)

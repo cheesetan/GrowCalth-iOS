@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum Houses: String, CaseIterable {
-    case selectHouse = "Select your house"
+    case selectHouse = "Select your House"
     case black = "Black"
     case blue = "Blue"
     case green = "Green"
