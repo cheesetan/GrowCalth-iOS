@@ -47,7 +47,7 @@ struct HomeView: View {
         ZStack {
             Color.background.ignoresSafeArea()
             GeometryReader { geometry in
-                VStack(spacing: geometry.size.height * 0.15 / 3) {
+                VStack(spacing: geometry.size.height * 0.12 / 3) {
                     housePointsProgress
                         .frame(height: geometry.size.height * 0.08)
 
@@ -106,6 +106,7 @@ struct HomeView: View {
             .font(.title3.weight(.medium))
             .lineLimit(1)
             .minimumScaleFactor(0.1)
+            .padding(.horizontal, 5)
         }
         .padding(.horizontal, AppState.padding)
         .padding(.vertical, 5)
