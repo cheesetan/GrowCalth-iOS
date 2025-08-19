@@ -129,8 +129,9 @@ struct NAPFAView: View {
             if #available(iOS 26.0, *) {
                 GlassEffectContainer {
                     HStack {
-                        napfaEditButton
-//                            .matchedTransitionSource(id: "napfaediting", in: namespace)
+                        if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                            napfaEditButton
+                        }
 
                         HStack {
                             previousButton
