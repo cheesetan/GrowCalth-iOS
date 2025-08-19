@@ -175,7 +175,7 @@ struct HomeView: View {
                                 .minimumScaleFactor(0.1)
                                 .lineLimit(1)
                         }
-                        .frame(width: gaugeGeometry.size.width*0.8, height: gaugeGeometry.size.height*0.5)
+                        .frame(width: gaugeGeometry.size.width*0.7, height: gaugeGeometry.size.height*0.5)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                 }
@@ -205,6 +205,7 @@ struct HomeView: View {
             .padding(activityGeometry.size.width >= 145 ? activityGeometry.size.width / 11 : 0)
             .frame(width: activityGeometry.size.width, height: activityGeometry.size.height)
         }
+        .padding(8)
     }
 
     @ViewBuilder
