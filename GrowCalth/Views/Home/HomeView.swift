@@ -192,7 +192,7 @@ struct HomeView: View {
                     }
                 }
                 .contentTransition(.numericText())
-                .font(.title)
+                .font(.title3)
                 .lineLimit(1)
                 .minimumScaleFactor(0.1)
                 .padding(activityGeometry.size.width >= 145 ? activityGeometry.size.height*0.15 / 5 : activityGeometry.size.height*0.2 / 5)

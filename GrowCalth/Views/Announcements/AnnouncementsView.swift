@@ -57,7 +57,8 @@ struct AnnouncementsView: View {
             GeometryReader { geometry in
                 VStack {
                     picker
-                        .padding([.horizontal, .top], AppState.padding)
+                        .padding(.horizontal, AppState.padding)
+//                        .padding([.horizontal, .top], AppState.padding)
                     ScrollView {
                         VStack {
                             switch selection {
@@ -326,8 +327,18 @@ struct AnnouncementsView: View {
             Image(systemName: "square.and.pencil")
         }
     }
-    
+
     var picker: some View {
+        Picker("Update Type", selection: $selection) {
+            ForEach(AnnouncementType.allCases, id: \.rawValue) { type in
+                Text(type.rawValue)
+                    .tag(type)
+            }
+        }
+        .pickerStyle(.segmented)
+    }
+
+    var customPicker: some View {
         HStack(spacing: 20) {
             Button {
                 withAnimation {

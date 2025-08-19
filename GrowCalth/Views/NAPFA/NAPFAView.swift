@@ -135,17 +135,17 @@ struct NAPFAView: View {
 
                         HStack {
                             previousButton
-                                .padding(8)
+//                                .padding(8)
                                 .buttonStyle(.plain)
                             title
                                 .padding(8)
                                 .frame(maxWidth: .infinity)
                             nextButton
-                                .padding(8)
+//                                .padding(8)
                                 .buttonStyle(.plain)
                         }
                         .frame(maxWidth: .infinity)
-                        .glassEffect()
+                        .glassEffect(.regular.interactive())
 
                         picker
                             .padding(8)
@@ -188,7 +188,7 @@ struct NAPFAView: View {
             Group {
                 if #available(iOS 26.0, *) {
                     Label("Previous year", systemImage: "chevron.left")
-                        .padding(8)
+                        .padding(16)
                         .foregroundStyle(napfaManager.year <= 2023 ? Color.secondary : .accentColor)
                 } else {
                     Label("Previous year", systemImage: "chevron.left.circle.fill")
@@ -240,7 +240,7 @@ struct NAPFAView: View {
             Group {
                 if #available(iOS 26.0, *) {
                     Label("Next year", systemImage: "chevron.right")
-                        .padding(8)
+                        .padding(16)
                         .foregroundStyle(napfaManager.year >= Calendar.current.component(.year, from: Date()) ? Color.secondary : .accentColor)
                 } else {
                     Label("Next year", systemImage: "chevron.right.circle.fill")

@@ -76,18 +76,27 @@ struct EditingNAPFA: View {
             }
 
             ToolbarItem(placement: .confirmationAction) {
-                Button {
-                    save()
-                } label: {
-                    if saveLoading {
-                        ProgressView()
-                    } else {
-                        Text("Save")
-                    }
+                if #available(iOS 26.0, *) {
+                    saveEditButton
+                        .buttonStyle(.glassProminent)
+                } else {
+                    saveEditButton
                 }
-                .disabled(saveButtonDisabled)
             }
         }
+    }
+
+    var saveEditButton: some View {
+        Button {
+            save()
+        } label: {
+            if saveLoading {
+                ProgressView()
+            } else {
+                Text("Save")
+            }
+        }
+        .disabled(saveButtonDisabled)
     }
 
     var twoPointFourKmView: some View {

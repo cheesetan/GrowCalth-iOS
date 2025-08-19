@@ -92,7 +92,12 @@ struct EventDetailView: View {
                 if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
                     VStack {
                         if isEditing {
-                            saveEditButton
+                            if #available(iOS 26.0, *) {
+                                saveEditButton
+                                    .buttonStyle(.glassProminent)
+                            } else {
+                                saveEditButton
+                            }
                         } else {
                             menuOptions
                         }
