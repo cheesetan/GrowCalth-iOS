@@ -18,6 +18,7 @@ struct HomeView: View {
     @EnvironmentObject var lbManager: LeaderboardsManager
     @EnvironmentObject var motionManager: MotionManager
 
+    @State private var alumnusAlertShown = false
     @State private var showingAlumnusAppreciationAlert = false
     @State private var showingGoalsSetting = false
 
@@ -76,8 +77,9 @@ struct HomeView: View {
                 try await pointsManager.checkAndAddPoints()
             }
 
-            if authManager.accountType == .alumnus {
+            if authManager.accountType == .alumnus && !alumnusAlertShown {
                 self.showingAlumnusAppreciationAlert = true
+                self.alumnusAlertShown = true
             }
         }
         .alert("Thank you.", isPresented: $showingAlumnusAppreciationAlert) {
