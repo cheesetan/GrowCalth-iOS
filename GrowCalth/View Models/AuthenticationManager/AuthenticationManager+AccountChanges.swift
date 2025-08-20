@@ -47,7 +47,9 @@ extension AuthenticationManager {
 extension AuthenticationManager {
     nonisolated internal func deleteAccountFromFirestore(uid: String) async throws {
         do {
-            try await Firestore.firestore().collection("users").document(uid).delete()
+            try await Firestore.firestore()
+                .collection("schools")
+                .document("sst").collection("users").document(uid).delete()
         } catch {
             throw DeleteAccountError.failedToDeleteFromFirestore
         }

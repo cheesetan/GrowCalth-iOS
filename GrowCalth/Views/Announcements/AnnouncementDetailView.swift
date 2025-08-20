@@ -51,12 +51,7 @@ struct AnnouncementDetailView: View {
             Color.background.ignoresSafeArea()
             ScrollView(.vertical, showsIndicators: true) {
                 VStack(alignment: .leading) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        title
-                        if let name = announcement.name {
-                            authorName(authorName: name)
-                        }
-                    }
+                    title
 
                     Divider()
                         .padding(.vertical, 5)
@@ -70,9 +65,7 @@ struct AnnouncementDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             editableTitle = announcement.title
-            if let description = announcement.description {
-                editableDescription = description
-            }
+            editableDescription = announcement.description
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -120,16 +113,6 @@ struct AnnouncementDetailView: View {
         }
     }
     
-    @ViewBuilder
-    func authorName(authorName: String) -> some View {
-        HStack {
-            Image(systemName: "pencil.line")
-            Text(authorName)
-        }
-        .font(.headline)
-        .foregroundColor(.gray)
-    }
-    
     var description: some View {
         VStack {
             if isEditing {
@@ -139,9 +122,7 @@ struct AnnouncementDetailView: View {
                     TextEditor(text: $editableDescription)
                 }
             } else {
-                if let description = announcement.description {
-                    Text(LocalizedStringKey(description))
-                }
+                Text(LocalizedStringKey(announcement.description))
             }
         }
     }

@@ -71,20 +71,20 @@ struct LeaderboardView: View {
             Button("Reset", role: .destructive) {
                 Task {
                     do {
-                        try await lbManager.resetLeaderboards(forHouse: "Black")
+                        try await lbManager.resetLeaderboards(forHouse: "black")
                         await lbManager.retrievePoints()
-                        try await lbManager.resetLeaderboards(forHouse: "Blue")
+                        try await lbManager.resetLeaderboards(forHouse: "blue")
                         await lbManager.retrievePoints()
-                        try await lbManager.resetLeaderboards(forHouse: "Green")
+                        try await lbManager.resetLeaderboards(forHouse: "green")
                         await lbManager.retrievePoints()
-                        try await lbManager.resetLeaderboards(forHouse: "Red")
+                        try await lbManager.resetLeaderboards(forHouse: "red")
                         await lbManager.retrievePoints()
-                        try await lbManager.resetLeaderboards(forHouse: "Yellow")
+                        try await lbManager.resetLeaderboards(forHouse: "yellow")
                         await lbManager.retrievePoints()
                     } catch {
                         showingAlert = true
                         alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset GrowCalth points for Black house. Please try again."
+                        alertTitle = "An error has occurred while attempting to reset GrowCalth points for the houses. Please try again."
                     }
                 }
             }
@@ -167,10 +167,10 @@ struct LeaderboardView: View {
     func leaderboardRectanglePodium(house: String, points: Int) -> some View {
         GeometryReader { geometry in
             Rectangle()
-                .foregroundStyle(Houses(rawValue: house)!.color)
+                .foregroundStyle(Houses(rawValue: house.capitalized)!.color)
                 .overlay(alignment: .top) {
                     VStack(spacing: 10) {
-                        Image(house)
+                        Image(house.capitalized)
                             .resizable()
                             .scaledToFit()
                             .frame(width: geometry.size.width * 0.85, height: geometry.size.width * 0.85)
@@ -219,7 +219,7 @@ struct LeaderboardView: View {
                         .foregroundStyle(
                             LinearGradient(
                                 stops: [
-                                    .init(color: Houses(rawValue: text)!.color, location: 0.7),
+                                    .init(color: Houses(rawValue: text.capitalized)!.color, location: 0.7),
                                     .init(color: Color.lbHouseColorToFadeTo, location: 1.2)
                                 ],
                                 startPoint: .bottomLeading,
@@ -232,7 +232,7 @@ struct LeaderboardView: View {
                                 .foregroundStyle(
                                     LinearGradient(
                                         stops: [
-                                            .init(color: Houses(rawValue: text)!.color, location: 0.7),
+                                            .init(color: Houses(rawValue: text.capitalized)!.color, location: 0.7),
                                             .init(color: Color.lbHouseColorToFadeTo, location: 1.2)
                                         ],
                                         startPoint: .bottomLeading,
@@ -242,7 +242,7 @@ struct LeaderboardView: View {
                         }
                         .overlay {
                             HStack {
-                                Image(text)
+                                Image(text.capitalized)
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: height-6, height: height-6)

@@ -175,7 +175,7 @@ struct ContentView: View {
                             AnnouncementsView()
                         }
                         Tab("Challenges", systemImage: "flag.pattern.checkered", value: .challenges) {
-                            Text("Challenges")
+                            ChallengesView()
                         }
                         Tab("NAPFA", systemImage: "figure.run", value: .napfa) {
                             NAPFAView()

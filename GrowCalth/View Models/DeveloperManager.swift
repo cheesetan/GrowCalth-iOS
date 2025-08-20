@@ -69,9 +69,10 @@ final class DeveloperManager: ObservableObject {
 
     func changeAppIsUnderMaintenanceValue(to newValue: Bool) async throws {
         do {
-            try await Firestore.firestore().collection("settings").document("maintenance").updateData([
-                "status": newValue
-            ])
+            try await Firestore.firestore()
+                .collection("settings").document("maintenance").updateData([
+                    "status": newValue
+                ])
         } catch {
             throw DeveloperManagerError.failedToUpdateMaintenance
         }
@@ -79,9 +80,10 @@ final class DeveloperManager: ObservableObject {
 
     func changeAppForcesUpdatesValue(to newValue: Bool) async throws {
         do {
-            try await Firestore.firestore().collection("settings").document("force-updates").updateData([
-                "status": newValue
-            ])
+            try await Firestore.firestore()
+                .collection("settings").document("force-updates").updateData([
+                    "status": newValue
+                ])
         } catch {
             throw DeveloperManagerError.failedToUpdateForceUpdates
         }
@@ -89,9 +91,10 @@ final class DeveloperManager: ObservableObject {
 
     func changeVersionsBlockedValue(to newValue: [String]) async throws {
         do {
-            try await Firestore.firestore().collection("settings").document("versions-blocked").updateData([
-                "versions": newValue
-            ])
+            try await Firestore.firestore()
+                .collection("settings").document("versions-blocked").updateData([
+                    "versions": newValue
+                ])
             try await self.updateValues()
         } catch let error as DeveloperManagerError {
             throw error
@@ -102,9 +105,10 @@ final class DeveloperManager: ObservableObject {
 
     func changeVersionsBlockedValueForAndroid(to newValue: [String]) async throws {
         do {
-            try await Firestore.firestore().collection("settings").document("versions-blocked-android").updateData([
-                "versions": newValue
-            ])
+            try await Firestore.firestore()
+                .collection("settings").document("versions-blocked-android").updateData([
+                    "versions": newValue
+                ])
             try await self.updateValues()
         } catch let error as DeveloperManagerError {
             throw error

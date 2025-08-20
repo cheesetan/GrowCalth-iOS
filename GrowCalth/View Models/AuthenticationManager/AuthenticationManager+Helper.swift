@@ -41,8 +41,12 @@ extension AuthenticationManager {
         guard let uid = Auth.auth().currentUser?.uid else {
             throw AuthenticationError.failedToGetUserUid
         }
-
-        let document = try await Firestore.firestore().collection("users").document(uid).getDocument()
+        
+        let document = try await Firestore.firestore()
+            .collection("schools")
+            .document("sst")
+            .collection("users")
+            .document(uid).getDocument()
         guard document.exists else {
             throw FirestoreError.documentDoesNotExist
         }

@@ -10,9 +10,8 @@ import Foundation
 struct EventItem: Identifiable, Equatable, Codable {
     var id: String
     var dateAdded: Date
-    var name: String?
     var title: String
-    var description: String?
+    var description: String
     var venue: String
-    var date: String
+    var eventDate: Date
 }

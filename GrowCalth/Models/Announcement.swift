@@ -10,7 +10,6 @@ import Foundation
 struct Announcement: Identifiable, Equatable, Codable {
     var id: String
     var date: Date
-    var name: String?
     var title: String
-    var description: String?
+    var description: String
 }

@@ -140,6 +140,9 @@ let GLOBAL_ADMIN_EMAILS: [String] = [
     "han_jeong_seu_caleb@s2021.ssts.edu.sg"
 ]
 
+import Firebase
+import FirebaseFirestore
+
 @main
 struct GrowCalth_iOSApp: App {
 
@@ -148,6 +151,48 @@ struct GrowCalth_iOSApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+            //            sigmaview()
+        }
+    }
+}
+
+struct sigmaview: View {
+    var body: some View {
+        VStack {
+            Button("Migrate") {
+                Task {
+                    do {
+                        try await self.migrate()
+                    } catch {
+                        print("vat")
+                    }
+                }
+            }
+        }
+    }
+
+    nonisolated internal func migrate() async throws {
+        let query = try await Firestore.firestore()
+            .collection("schools")
+            .document("sst")
+            .collection("users")
+            .getDocuments()
+
+        query.documents.forEach { document in
+            Task {
+                do {
+                    try await Firestore.firestore()
+                        .collection("schools")
+                        .document("sst")
+                        .collection("schools").document("sst").collection("users")
+                        .document(document.documentID).setData([
+                            "email" : document.data()["email"] as! String,
+                            "house" : (document.data()["house"] as! String).lowercased()
+                        ])
+                } catch {
+                    throw PostError.failedToPostEvent
+                }
+            }
         }
     }
 }

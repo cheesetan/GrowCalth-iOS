@@ -26,12 +26,16 @@ extension AuthenticationManager {
 
     nonisolated internal func createFirestoreAccount(email: String, house: Houses, uid: String) async throws {
         do {
-            try await Firestore.firestore().collection("users").document(uid).setData([
-                "email": email,
-                "house": house.rawValue,
-                "points": 0,
-                "steps": 0
-            ])
+            try await Firestore.firestore()
+                .collection("schools")
+                .document("sst")
+                .collection("users")
+                .document(uid).setData([
+                    "email": email,
+                    "house": house.rawValue,
+                    "points": 0,
+                    "steps": 0
+                ])
         } catch {
             throw CreateAccountError.failedToCreateFirestoreForNewAccount
         }

@@ -157,9 +157,11 @@ final class PointsManager: ObservableObject {
             throw PointsError.invalidVersion(currentVersion)
         }
 
-        try await Firestore.firestore().collection("HousePoints").document(house).updateData([
-            "points": FieldValue.increment(Double(pointsToAdd))
-        ])
+        try await Firestore.firestore()
+            .collection("schools")
+            .document("sst").collection("leaderboard").document(house).updateData([
+                "points": FieldValue.increment(Double(pointsToAdd))
+            ])
 
         try await logPoints(
             points: pointsToAdd,
@@ -199,6 +201,8 @@ final class PointsManager: ObservableObject {
     }
 
     private func performFirestoreLog(_ logData: LogData) async throws {
-        try await Firestore.firestore().collection("logs").document().setData(logData.toDictionary())
+        try await Firestore.firestore()
+            .collection("schools")
+            .document("sst").collection("logs").document().setData(logData.toDictionary())
     }
 }

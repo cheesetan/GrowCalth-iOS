@@ -91,11 +91,13 @@ final class LeaderboardsManager: ObservableObject {
 
     nonisolated internal func fetchPoints() async throws -> [String: Int] {
         var result: [String: Int] = [:]
-        let query = try await Firestore.firestore().collection("HousePoints").getDocuments()
+        let query = try await Firestore.firestore()
+            .collection("schools")
+            .document("sst").collection("leaderboard").getDocuments()
 
         for document in query.documents {
             switch document.documentID {
-            case "Black", "Blue", "Green", "Red", "Yellow":
+            case "black", "blue", "green", "red", "yellow":
                 if let points = document.data()["points"] as? Int {
                     result[document.documentID] = points
                 }
@@ -108,14 +110,16 @@ final class LeaderboardsManager: ObservableObject {
     }
 
     func resetLeaderboards(forHouse house: String) async throws {
-        guard ["Black", "Blue", "Green", "Red", "Yellow"].contains(house) else {
+        guard ["black", "blue", "green", "red", "yellow"].contains(house) else {
             throw LeaderboardError.invalidHouseName(house)
         }
 
         do {
-            try await Firestore.firestore().collection("HousePoints").document(house).updateData([
-                "points": 0
-            ])
+            try await Firestore.firestore()
+                .collection("schools")
+                .document("sst").collection("leaderboard").document(house).updateData([
+                    "points": 0
+                ])
         } catch {
             throw LeaderboardError.firestoreError(error)
         }

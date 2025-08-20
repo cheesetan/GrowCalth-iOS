@@ -65,7 +65,7 @@ struct AccountInfo: View {
                     CustomLabeledContent("House") {
                         VStack {
                             if let house = authManager.usersHouse {
-                                Text(house)
+                                Text(house.capitalized)
                             } else {
                                 Text("?")
                             }

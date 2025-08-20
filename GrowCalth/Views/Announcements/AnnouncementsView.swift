@@ -210,7 +210,7 @@ struct AnnouncementsView: View {
                             dateAdded: item.dateAdded.wrappedValue,
                             title: item.title.wrappedValue,
                             description: item.description.wrappedValue,
-                            date: item.date.wrappedValue,
+                            date: item.eventDate.wrappedValue,
                             venue: item.venue.wrappedValue
                         )
                         .scrollTransition { content, phase in
@@ -222,7 +222,7 @@ struct AnnouncementsView: View {
                             dateAdded: item.dateAdded.wrappedValue,
                             title: item.title.wrappedValue,
                             description: item.description.wrappedValue,
-                            date: item.date.wrappedValue,
+                            date: item.eventDate.wrappedValue,
                             venue: item.venue.wrappedValue
                         )
                     }
@@ -469,7 +469,7 @@ struct AnnouncementsView: View {
     }
     
     @ViewBuilder
-    func eventItem(dateAdded: Date, title: String, description: String?, date: String, venue: String) -> some View {
+    func eventItem(dateAdded: Date, title: String, description: String, date: Date, venue: String) -> some View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {
                 Text(title)
@@ -486,14 +486,14 @@ struct AnnouncementsView: View {
                 }
             }
 
-            if let description = description, !description.isEmpty {
+            if !description.isEmpty {
                 Text(description.replacingOccurrences(of: "\n", with: " "))
                     .lineLimit(2)
             }
             
             HStack(alignment: .bottom) {
                 VStack(alignment: .leading) {
-                    Label(date, systemImage: "calendar")
+                    Label(date.formatted(date: .long, time: .shortened), systemImage: "calendar")
                     Label(venue, systemImage: "mappin.and.ellipse")
                 }
                 .font(.subheadline)

@@ -55,9 +55,6 @@ struct EventDetailView: View {
                 VStack(alignment: .leading) {
                     VStack(alignment: .leading, spacing: 10) {
                         title
-                        if let name = event.name {
-                            authorName(authorName: name)
-                        }
                         date
                         venue
                     }
@@ -78,14 +75,10 @@ struct EventDetailView: View {
 
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd/MMMM/yyyy"
-            editableDate = dateFormatter.date(from: event.date) ?? Date()
+            editableDate = event.eventDate
 
             editableVenue = event.venue
-            if let description = event.description {
-                editableDescription = description
-            } else {
-                editableDescription = ""
-            }
+            editableDescription = event.description
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -132,27 +125,17 @@ struct EventDetailView: View {
         }
     }
     
-    @ViewBuilder
-    func authorName(authorName: String) -> some View {
-        HStack {
-            Image(systemName: "pencil.line")
-            Text(authorName)
-        }
-        .font(.headline)
-        .foregroundColor(.gray)
-    }
-    
     var date: some View {
         VStack {
             if isEditing {
-                DatePicker(selection: $editableDate, in: Date()..., displayedComponents: .date) {
+                DatePicker(selection: $editableDate, in: Date()..., displayedComponents: [.date, .hourAndMinute]) {
                     Label("Event Date", systemImage: "calendar")
                         .font(.headline)
                 }
             } else {
                 HStack {
                     Image(systemName: "calendar")
-                    Text(event.date)
+                    Text(event.eventDate.formatted(date: .long, time: .shortened))
                 }
                 .font(.headline)
                 .foregroundColor(.gray)
@@ -185,9 +168,7 @@ struct EventDetailView: View {
                     TextEditor(text: $editableDescription)
                 }
             } else {
-                if let description = event.description {
-                    Text(LocalizedStringKey(description))
-                }
+                Text(LocalizedStringKey(event.description))
             }
         }
     }
@@ -229,7 +210,7 @@ struct EventDetailView: View {
     
     func confirmEdits() {
         if !editableTitle.isEmpty && !editableDescription.isEmpty && !editableVenue.isEmpty {
-            if editableTitle != event.title || editableDate.formatted(date: .long, time: .omitted) != event.date || editableVenue != event.venue || editableDescription != event.description {
+            if editableTitle != event.title || editableDate != event.eventDate || editableVenue != event.venue || editableDescription != event.description {
                 saveIsLoading = true
                 Task {
                     do {

@@ -248,7 +248,7 @@ struct HomeView: View {
 
                         ForEach(data.prefix(3), id: \.key) { house in
                             let placing: Int = data.firstIndex(where: { $0.key == house.key }) ?? -1
-                            if let houses = Houses.init(rawValue: house.key) {
+                            if let houses = Houses.init(rawValue: house.key.capitalized) {
                                 leaderboardPreviewRow(
                                     placing: Houses.getPlacingFrom(int: placing + 1),
                                     house: houses,
