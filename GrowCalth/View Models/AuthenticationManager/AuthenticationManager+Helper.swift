@@ -16,25 +16,28 @@ extension AuthenticationManager {
         } catch {
             throw SignOutError.failedToSignOut
         }
-
-        await updatePublishedVariables()
-        verifyAuthenticationState()
-        verifyVerificationState()
+        self.checkAuthenticationState()
     }
 
-    nonisolated func verifyEmail(user: User) async throws {
-        do {
-            try await user.sendEmailVerification()
-        } catch {
-            throw VerificationError.failedToSendVerificationEmail
+    nonisolated func fetchSchoolCode() async throws -> String {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            throw AuthenticationError.failedToGetUserUid
         }
-    }
 
-    nonisolated func getCurrentUser() throws -> User {
-        guard let currentUser = Auth.auth().currentUser else {
-            throw AuthenticationError.noCurrentUser
+        let document = try await Firestore.firestore()
+            .collection("users")
+            .document(uid)
+            .getDocument()
+        guard document.exists else {
+            throw FirestoreError.documentDoesNotExist
         }
-        return currentUser
+        guard let documentData = document.data() else {
+            throw FirestoreError.documentHasNoData
+        }
+        guard let schoolCode = documentData["schoolCode"] as? String else {
+            throw FirestoreError.failedToGetSpecifiedField
+        }
+        return schoolCode
     }
 
     nonisolated func fetchUsersHouse() async throws -> String {
@@ -43,10 +46,9 @@ extension AuthenticationManager {
         }
         
         let document = try await Firestore.firestore()
-            .collection("schools")
-            .document("sst")
             .collection("users")
-            .document(uid).getDocument()
+            .document(uid)
+            .getDocument()
         guard document.exists else {
             throw FirestoreError.documentDoesNotExist
         }
@@ -59,11 +61,36 @@ extension AuthenticationManager {
         return house
     }
 
-    nonisolated internal func reauthenticate(user: User, credential: AuthCredential) async throws {
-        do {
-            try await user.reauthenticate(with: credential)
-        } catch {
-            throw ReauthenticationError.failedToReauthenticate
+    nonisolated func getSchoolCode(fromReferralCode code: String) async throws {
+        let documents = try await Firestore.firestore()
+            .collection("schools")
+            .whereField("joinCode", isEqualTo: code)
+            .getDocuments()
+
+        let document = documents.documents.first
+        guard let document, document.exists else {
+            throw FirestoreError.documentDoesNotExist
         }
+
+        let documentData = document.data()
+        guard let schoolCode = documentData["schoolCode"] as? String else {
+            throw FirestoreError.failedToGetSpecifiedField
+        }
+
+        try await setUserSchoolCode(code: schoolCode)
+    }
+
+    nonisolated internal func setUserSchoolCode(code: String) async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            throw AuthenticationError.failedToGetUserUid
+        }
+
+        try await Firestore.firestore()
+            .collection("users")
+            .document(uid)
+            .updateData([
+                "schoolCode": code
+            ])
+        await checkAuthenticationState()
     }
 }

@@ -124,15 +124,15 @@ final class PointsManager: ObservableObject {
     }
 
     private func isDueForPointsAwarding() throws {
-        guard authManager.accountType.canAddPoints else {
-            throw PointsError.notDueForAdding
-        }
-
-        if let lastPointsAwardedDate = lastPointsAwardedDate {
-            guard lastPointsAwardedDate.addingTimeInterval(86400) <= Date() else {
-                throw PointsError.notDueForAdding
-            }
-        }
+//        guard authManager.accountType.canAddPoints else {
+//            throw PointsError.notDueForAdding
+//        }
+//
+//        if let lastPointsAwardedDate = lastPointsAwardedDate {
+//            guard lastPointsAwardedDate.addingTimeInterval(86400) <= Date() else {
+//                throw PointsError.notDueForAdding
+//            }
+//        }
     }
 
     private func calculatePoints() async throws -> (Int, [String]) {
@@ -179,8 +179,8 @@ final class PointsManager: ObservableObject {
         approvedBundleIdsUsed: [String]
     ) async throws {
         guard let uid = Auth.auth().currentUser?.uid,
-              let email = authManager.email,
-              let house = authManager.usersHouse else {
+              let email = authManager.email
+              /*let house = authManager.usersHouse*/ else {
             throw PointsError.missingUserData
         }
 
@@ -190,7 +190,7 @@ final class PointsManager: ObservableObject {
             lastPointsAddedDate: self.lastPointsAwardedDate ?? Date(),
             useruid: uid,
             email: email,
-            house: house,
+            house: "house",
             pointsAdded: String(points),
             appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown",
             approvedBundleIdsUsed: approvedBundleIdsUsed

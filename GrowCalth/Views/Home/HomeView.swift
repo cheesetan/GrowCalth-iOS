@@ -77,10 +77,10 @@ struct HomeView: View {
                 try await pointsManager.checkAndAddPoints()
             }
 
-            if authManager.accountType == .alumnus && !alumnusAlertShown {
-                self.showingAlumnusAppreciationAlert = true
-                self.alumnusAlertShown = true
-            }
+//            if authManager.accountType == .alumnus && !alumnusAlertShown {
+//                self.showingAlumnusAppreciationAlert = true
+//                self.alumnusAlertShown = true
+//            }
         }
         .alert("Thank you.", isPresented: $showingAlumnusAppreciationAlert) {
 
@@ -94,15 +94,15 @@ struct HomeView: View {
             let housePointsEarnedToday = Int(floor(Double((hkManager.steps ?? 0) / GLOBAL_STEPS_PER_POINT)))
             HStack {
                 HStack(spacing: 0) {
-                    if authManager.accountType.canAddPoints {
-                        Text("You have earned ")
-                        Text("^[\(housePointsEarnedToday) points](inflect: true)")
-                            .fontWeight(.bold)
-                            .foregroundStyle(.accent)
-                        Text(" today.")
-                    } else {
+//                    if authManager.accountType.canAddPoints {
+//                        Text("You have earned ")
+//                        Text("^[\(housePointsEarnedToday) points](inflect: true)")
+//                            .fontWeight(.bold)
+//                            .foregroundStyle(.accent)
+//                        Text(" today.")
+//                    } else {
                         Text("You are unable to earn GrowCalth points.")
-                    }
+//                    }
                 }
             }
             .font(.title3.weight(.medium))

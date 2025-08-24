@@ -6,205 +6,100 @@
 //
 
 import SwiftUI
-import Firebase
-import FirebaseAuth
-import FirebaseFirestore
-
-@MainActor
-final class AuthenticationManager: ObservableObject {
-
-    // TODO: - doesnt add house if its a new account
-    @Published var isLoggedIn: Bool = false
-    @Published var accountVerified: Bool = false
-    @Published var email: String?
-    @Published var usersHouse: String?
-    @Published var accountType: AccountType = .unknown
-
-    init() {
-        verifyAuthenticationState()
-        verifyVerificationState()
-        Task {
-            await updatePublishedVariables()
-        }
-    }
-
-    internal func verifyAuthenticationState() {
-        if Auth.auth().currentUser != nil {
-            withAnimation {
-                self.isLoggedIn = true
-            }
-        } else {
-            withAnimation {
-                self.isLoggedIn = false
-            }
-        }
-    }
-
-    internal func verifyVerificationState() {
-        if let user = Auth.auth().currentUser {
-            if user.email == "appreview@s2021.ssts.edu.sg" || user.email == "admin@growcalth.com" || user.email == "growcalth@sst.edu.sg" {
-                self.accountVerified = true
-            } else {
-                self.accountVerified = user.isEmailVerified
-            }
-        } else {
-            self.accountVerified = false
-        }
-    }
-
-    internal func updatePublishedVariables() async {
-        let currentEmail = Auth.auth().currentUser?.email
-        let house = try? await self.fetchUsersHouse()
-
-        // Update all published properties on MainActor
-        self.email = currentEmail
-        if let house = house {
-            self.usersHouse = house
-        }
-
-        let year = Calendar.current.component(.year, from: Date())
-        if let currentEmail = currentEmail {
-            if currentEmail == "appreview@s2021.ssts.edu.sg" || currentEmail == "admin@growcalth.com" || currentEmail == "growcalth@sst.edu.sg" {
-                self.accountType = .special
-            } else if GLOBAL_ADMIN_EMAILS.contains(currentEmail) {
-                self.accountType = .admin
-            } else {
-                let domain = currentEmail.components(separatedBy: "@")[1]
-                if domain == "sst.edu.sg" {
-                    self.accountType = .teacher
-                } else {
-                    let emailYear = Int(domain.components(separatedBy: ".")[0].suffix(4)) ?? 0
-                    if emailYear <= year-4 {
-                        self.accountType = .alumnus
-                    } else {
-                        self.accountType = .student
-                    }
-                }
-            }
-        } else {
-            self.accountType = .unknown
-        }
-    }
-
-    internal func emailProvidedIsSSTEmail(email: String) throws {
-        var returnResult = false
-
-        let regexPatternSSTudent = "(.+)@s20\\d\\d.ssts.edu.sg"
-        let predicateSSTudent = NSPredicate(format: "SELF MATCHES %@", regexPatternSSTudent)
-        returnResult = predicateSSTudent.evaluate(with: email)
-
-        let regexPatternSSTaff = "(.+)@sst.edu.sg"
-        let predicateSSTaff = NSPredicate(format: "SELF MATCHES %@", regexPatternSSTaff)
-        returnResult = returnResult || predicateSSTaff.evaluate(with: email)
-
-        if !returnResult {
-            throw EmailError.emailIsNotSSTEmail
-        }
-    }
-}
-
-import SwiftUI
 import FirebaseCore
 import FirebaseAuth
 import GoogleSignIn
 
-class AuthenticationManager: ObservableObject {
+@MainActor
+final class AuthenticationManager: ObservableObject {
 
-    @Published var isLoggedIn: Bool?
+    @Published var isLoggedIn: Bool = false
 
-    @Published var givenName: String?
-    @Published var familyName: String?
-    @Published var fullName: String?
+    @Published var name: String?
     @Published var email: String?
-    @Published var profilePicUrl: String?
-    @Published var errorMessage: String?
+    @Published var house: String?
+    @Published var schoolCode: String?
 
-    private init() {
+//    @Published var accountType: AccountType = .unknown
+
+    init() {
+        checkAuthenticationState()
+
         guard let clientID = FirebaseApp.app()?.options.clientID else { return }
         let signInConfig = GIDConfiguration(clientID: clientID)
 
-        // load the email
-        if let email = UserDefaults.standard.string(forKey: "userEmail") {
-            self.email = email
-        }
-
         GIDSignIn.sharedInstance.configuration = signInConfig
-        restoreSignIn()
     }
 
-    func checkStatus() {
-        guard let user = GIDSignIn.sharedInstance.currentUser else {
-            self.givenName = nil
-            self.familyName = nil
-            self.fullName = nil
-            self.email = nil
-            self.profilePicUrl = nil
-            self.isLoggedIn = false
+    internal func checkAuthenticationState() {
+        guard let user = Auth.auth().currentUser else {
+            withAnimation {
+                self.isLoggedIn = false
+                self.name = nil
+                self.email = nil
+                self.house = nil
+                self.schoolCode = nil
+            }
             return
         }
 
-        let givenName = user.profile?.givenName
-        let familyName = user.profile?.familyName
-        let fullName = user.profile?.name
-        let email = user.profile?.email
-        let profilePicUrl = user.profile!.imageURL(withDimension: 100)!.absoluteString
-        self.givenName = givenName
-        self.familyName = familyName
-        self.fullName = fullName
-        self.email = email
-        self.profilePicUrl = profilePicUrl
-        self.isLoggedIn = true
-
-        // save the email
-        if let email {
-            UserDefaults.standard.set(email, forKey: "userEmail")
+        let name = user.displayName
+        let email = user.email
+        withAnimation {
+            self.name = name
+            self.email = email
         }
-    }
 
-    private func restoreSignIn() {
-        GIDSignIn.sharedInstance.restorePreviousSignIn { _, error in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-                self.errorMessage = "error: \(error.localizedDescription)"
+        Task {
+            do {
+                let schoolCode = try await self.fetchSchoolCode()
+                withAnimation {
+                    self.schoolCode = schoolCode
+                }
+            } catch {
+                throw error
             }
-
-            self.checkStatus()
         }
+
+        Task {
+            do {
+                let house = try await self.fetchUsersHouse()
+                withAnimation {
+                    self.house = house
+                }
+            } catch {
+                throw error
+            }
+        }
+
+        self.isLoggedIn = true
     }
 
-    func signIn() {
+    func signIn() async throws {
         guard let presentingController = getPresenter() else { return }
 
-        GIDSignIn.sharedInstance.signIn(withPresenting: presentingController) { [unowned self] result, error in
-            guard error == nil else {
-                self.errorMessage = "error: \(error.localizedDescription)"
-                return
-            }
+        let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: presentingController)
 
-            guard let user = result?.user,
-                  let idToken = user.idToken?.tokenString
-            else {
-                self.errorMessage = "error: \(error.localizedDescription)"
-                return
-            }
+        let user = result.user
+        guard let idToken = user.idToken?.tokenString else { return }
 
-            let credential = GoogleAuthProvider.credential(withIDToken: idToken,
-                                                           accessToken: user.accessToken.tokenString)
-            Auth.auth().signIn(with: credential) { result, error in
-              // At this point, our user is signed in
-            }
+        let credential = GoogleAuthProvider.credential(
+            withIDToken: idToken,
+            accessToken: user.accessToken.tokenString
+        )
 
-            self.checkStatus()
+        Task {
+            do {
+                try await Auth.auth().signIn(with: credential)
+            } catch {
+                throw error
+            }
+            self.checkAuthenticationState()
         }
+
     }
 
-    func signOut() {
-        GIDSignIn.sharedInstance.signOut()
-        UserDefaults.standard.removeObject(forKey: "userEmail")
-        self.checkStatus()
-    }
-
-    func getPresenter() -> UIViewController? {
+    internal func getPresenter() -> UIViewController? {
         guard let scene = UIApplication.shared.connectedScenes.first,
               let windowSceneDelegate = scene.delegate as? UIWindowSceneDelegate,
               let window = windowSceneDelegate.window,

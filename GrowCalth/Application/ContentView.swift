@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum AppStatus: Sendable {
-    case home, login, noNetwork, updateAvailable, underMaintenance, loading(String)
+    case home, login, enterCode, selectHouse, noNetwork, updateAvailable, underMaintenance, loading(String)
 }
 
 @MainActor
@@ -48,8 +48,14 @@ class AppState: ObservableObject {
                     } else {
                         if isUnderMaintenance && !developerManager.bypassed {
                             return .underMaintenance
-                        } else if authManager.isLoggedIn && authManager.accountVerified {
-                            return .home
+                        } else if authManager.isLoggedIn {
+                            if authManager.schoolCode == nil || authManager.schoolCode == "" {
+                                return .enterCode
+                            } else if authManager.house == nil || authManager.house == "" {
+                                return .selectHouse
+                            } else {
+                                return .home
+                            }
                         } else {
                             return .login
                         }
@@ -210,6 +216,10 @@ struct ContentView: View {
                 }
             case .login:
                 AuthenticationView()
+            case .enterCode:
+                EnterSchoolCodeView()
+            case .selectHouse:
+                SelectHouseView()
             case .noNetwork:
                 CustomContentUnavailableView(
                     title: "No Network Connection",
