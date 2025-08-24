@@ -30,6 +30,8 @@
 	<string>public.app-category.healthcare-fitness</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>GrowCalth requires access to your camera to detect workouts.</string>
 	<key>NSHealthClinicalHealthRecordsShareUsageDescription</key>
 	<string>GrowCalth needs to access your steps and distance information from the Health app.</string>
 	<key>NSHealthShareUsageDescription</key>
