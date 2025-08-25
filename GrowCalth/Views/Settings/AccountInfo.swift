@@ -22,9 +22,12 @@ struct AccountInfo: View {
     @State var showingAlertWithConfirmation = false
     @State var alertHeader = ""
     @State var alertMessage = ""
-    
+
+    @State var showingDeleteAccountAlert = false
+    @State var isDeletingAccount = false
+
     @FocusState var isFieldFocus: FieldToFocus?
-    
+
     internal enum FieldToFocus {
         case currentSecureField, currentTextField, newSecureField, newTextField
     }
@@ -87,10 +90,40 @@ struct AccountInfo: View {
 //                        .multilineTextAlignment(.trailing)
 //                    }
                 }
+
+                Section {
+                    Button(role: .destructive) {
+                        showingDeleteAccountAlert.toggle()
+                    } label: {
+                        if isDeletingAccount {
+                            ProgressView()
+                        } else {
+                            Text("Delete account")
+                                .tint(.red)
+                        }
+                    }
+                    .disabled(isDeletingAccount)
+                }
             }
             .scrollContentBackground(.hidden)
         }
         .navigationTitle("Account")
+        .alert("Delete Account", isPresented: $showingDeleteAccountAlert) {
+            Button("Delete", role: .destructive) {
+                isDeletingAccount = true
+                Task {
+                    do {
+                        try await authManager.deleteAccount()
+                    } catch {
+                        alertHeader = "Error"
+                        alertMessage = error.localizedDescription
+                        showingAlert.toggle()
+                    }
+                }
+            }
+        } message: {
+            Text("Are you sure you want to delete your account? This action cannot be undone.")
+        }
         .alert(alertHeader, isPresented: $showingAlert) {
             Button("OK", role: .cancel) {}
         } message: {

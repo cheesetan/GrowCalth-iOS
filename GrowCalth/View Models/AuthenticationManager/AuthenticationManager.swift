@@ -54,11 +54,22 @@ final class AuthenticationManager: ObservableObject {
 
         Task {
             do {
+                try await self.checkAndCreateAccountInFirestore()
+
                 let schoolCode = try await self.fetchSchoolCode()
                 withAnimation {
                     self.schoolCode = schoolCode
                 }
 
+                let house = try await self.fetchUsersHouse()
+                withAnimation {
+                    self.house = house
+                }
+            } catch {
+                throw error
+            }
+
+            do {
                 let schoolName = try await self.fetchSchoolName()
                 withAnimation {
                     self.schoolName = schoolName
@@ -68,18 +79,9 @@ final class AuthenticationManager: ObservableObject {
             }
         }
 
-        Task {
-            do {
-                let house = try await self.fetchUsersHouse()
-                withAnimation {
-                    self.house = house
-                }
-            } catch {
-                throw error
-            }
+        withAnimation {
+            self.isLoggedIn = true
         }
-
-        self.isLoggedIn = true
     }
 
     func signIn() async throws {

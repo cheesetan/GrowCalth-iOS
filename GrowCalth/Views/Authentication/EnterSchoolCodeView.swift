@@ -11,7 +11,7 @@ struct EnterSchoolCodeView: View {
 
     @State private var isLoading = false
 
-    @State private var referralCode = ""
+    @State private var joinCode = ""
 
     @State private var alertShowing = false
     @State private var alertHeader = ""
@@ -28,7 +28,7 @@ struct EnterSchoolCodeView: View {
                         .fontWeight(.black)
                         .font(.title)
 
-                    Text("Enter the referral code given to you by your school to continue.")
+                    Text("Enter the join code given to you by your school to continue.")
                         .font(.subheadline)
                         .fontWeight(.medium)
                         .foregroundStyle(.secondary)
@@ -52,40 +52,27 @@ struct EnterSchoolCodeView: View {
         Group {
             if #available(iOS 26.0, *) {
                 TextField(text: Binding(get: {
-                    referralCode
+                    joinCode
                 }, set: { value in
                     if value.count <= 8 {
-                        referralCode = value
-                    }
-
-                    if referralCode.count == 8 {
-                        Task {
-                            do {
-                                try await authManager.getSchoolCode(fromReferralCode: referralCode)
-                            } catch {
-                                alertHeader = "Error"
-                                alertMessage = error.localizedDescription
-                                alertShowing = true
-                            }
-                        }
+                        joinCode = value
                     }
                 })) {
-                    Label("Referral Code", systemImage: "abc")
+                    Label("Join Code", systemImage: "abc")
                 }
                 .padding()
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
                 .glassEffect()
+                .onSubmit {
+                    submitCode()
+                }
             } else {
                 TextField(text: Binding(get: {
-                    referralCode
+                    joinCode
                 }, set: { value in
                     if value.count <= 8 {
-                        referralCode = value
-                    }
-
-                    if referralCode.count >= 8 {
-                        submitCode()
+                        joinCode = value
                     }
                 })) {
                     Label("Referral Code", systemImage: "abc")
@@ -95,6 +82,9 @@ struct EnterSchoolCodeView: View {
                 .mask(Capsule())
                 .autocorrectionDisabled(true)
                 .textInputAutocapitalization(.never)
+                .onSubmit {
+                    submitCode()
+                }
             }
         }
         .accessibilityLabel("Referral Code")
@@ -104,7 +94,7 @@ struct EnterSchoolCodeView: View {
         Group {
             if #available(iOS 26.0, *) {
                 Button {
-                    if referralCode.count >= 8 {
+                    if joinCode.count >= 8 {
                         submitCode()
                     }
                 } label: {
@@ -121,10 +111,10 @@ struct EnterSchoolCodeView: View {
                 }
                 .buttonBorderShape(.capsule)
                 .buttonStyle(.glassProminent)
-                .disabled(referralCode.count != 8)
+                .disabled(joinCode.count != 8)
             } else {
                 Button {
-                    if referralCode.count >= 8 {
+                    if joinCode.count >= 8 {
                         submitCode()
                     }
                 } label: {
@@ -142,7 +132,7 @@ struct EnterSchoolCodeView: View {
                         }
                 }
                 .buttonStyle(.plain)
-                .disabled(referralCode.count != 8)
+                .disabled(joinCode.count != 8)
             }
         }
     }
@@ -151,7 +141,11 @@ struct EnterSchoolCodeView: View {
         isLoading = true
         Task {
             do {
-                try await authManager.getSchoolCode(fromReferralCode: referralCode)
+                try await authManager.getSchoolCode(fromJoinCode: joinCode)
+                let schoolName = try await authManager.fetchSchoolName()
+                withAnimation {
+                    authManager.schoolName = schoolName
+                }
             } catch {
                 alertHeader = "Error"
                 alertMessage = error.localizedDescription
