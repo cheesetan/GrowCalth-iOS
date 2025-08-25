@@ -73,15 +73,6 @@ final class AdminManager: ObservableObject, Sendable {
     }
     
     func postAnnouncement(title: String, description: String) async throws {
-        guard let email = authManager.email else {
-            throw PostError.failedToGetEmail
-        }
-        
-        let authorName = email.components(separatedBy: "@")[0]
-            .components(separatedBy: "_")
-            .joined(separator: " ")
-            .uppercased()
-        
         let data: [String: Any] = [
             "dateAdded": Date(),
             "title": title,
@@ -89,9 +80,10 @@ final class AdminManager: ObservableObject, Sendable {
         ]
         
         do {
+            guard let schoolCode = authManager.schoolCode else { throw PostError.failedToPostAnnouncement }
             try await Firestore.firestore()
                 .collection("schools")
-                .document("sst")
+                .document(schoolCode)
                 .collection("announcements")
                 .document()
                 .setData(data)
@@ -106,15 +98,6 @@ final class AdminManager: ObservableObject, Sendable {
         eventDate: Date,
         eventVenues: String
     ) async throws {
-        guard let email = authManager.email else {
-            throw PostError.failedToGetEmail
-        }
-        
-        let authorName = email.components(separatedBy: "@")[0]
-            .components(separatedBy: "_")
-            .joined(separator: " ")
-            .uppercased()
-        
         let data: [String: Any] = [
             "dateAdded": Date(),
             "title": title,
@@ -124,9 +107,10 @@ final class AdminManager: ObservableObject, Sendable {
         ]
         
         do {
+            guard let schoolCode = authManager.schoolCode else { throw PostError.failedToPostEvent }
             try await Firestore.firestore()
                 .collection("schools")
-                .document("sst")
+                .document(schoolCode)
                 .collection("houseEvents")
                 .document()
                 .setData(data)
@@ -142,9 +126,10 @@ final class AdminManager: ObservableObject, Sendable {
         ]
         
         do {
+            guard let schoolCode = authManager.schoolCode else { throw PostError.failedToUpdateAnnouncement }
             try await Firestore.firestore()
                 .collection("schools")
-                .document("sst")
+                .document(schoolCode)
                 .collection("announcements")
                 .document(announcementUUID)
                 .updateData(data)
@@ -168,9 +153,10 @@ final class AdminManager: ObservableObject, Sendable {
         ]
         
         do {
+            guard let schoolCode = authManager.schoolCode else { throw PostError.failedToUpdateEvent }
             try await Firestore.firestore()
                 .collection("schools")
-                .document("sst")
+                .document(schoolCode)
                 .collection("houseEvents")
                 .document(eventUUID)
                 .updateData(data)
@@ -181,9 +167,10 @@ final class AdminManager: ObservableObject, Sendable {
     
     func deleteAnnouncement(announcementUUID: String) async throws {
         do {
+            guard let schoolCode = authManager.schoolCode else { throw PostError.failedToDeleteAnnouncement }
             try await Firestore.firestore()
                 .collection("schools")
-                .document("sst")
+                .document(schoolCode)
                 .collection("announcements")
                 .document(announcementUUID)
                 .delete()
@@ -194,9 +181,10 @@ final class AdminManager: ObservableObject, Sendable {
     
     func deleteEvent(eventUUID: String) async throws {
         do {
+            guard let schoolCode = authManager.schoolCode else { throw PostError.failedToDeleteEvent }
             try await Firestore.firestore()
                 .collection("schools")
-                .document("sst")
+                .document(schoolCode)
                 .collection("houseEvents")
                 .document(eventUUID)
                 .delete()

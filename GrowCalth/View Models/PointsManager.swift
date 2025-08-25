@@ -124,15 +124,11 @@ final class PointsManager: ObservableObject {
     }
 
     private func isDueForPointsAwarding() throws {
-//        guard authManager.accountType.canAddPoints else {
-//            throw PointsError.notDueForAdding
-//        }
-//
-//        if let lastPointsAwardedDate = lastPointsAwardedDate {
-//            guard lastPointsAwardedDate.addingTimeInterval(86400) <= Date() else {
-//                throw PointsError.notDueForAdding
-//            }
-//        }
+        if let lastPointsAwardedDate = lastPointsAwardedDate {
+            guard lastPointsAwardedDate.addingTimeInterval(86400) <= Date() else {
+                throw PointsError.notDueForAdding
+            }
+        }
     }
 
     private func calculatePoints() async throws -> (Int, [String]) {
@@ -157,9 +153,11 @@ final class PointsManager: ObservableObject {
             throw PointsError.invalidVersion(currentVersion)
         }
 
+        guard let schoolCode = authManager.schoolCode else { throw PointsError.missingUserData }
+
         try await Firestore.firestore()
             .collection("schools")
-            .document("sst").collection("leaderboard").document(house).updateData([
+            .document(schoolCode).collection("leaderboard").document(house).updateData([
                 "points": FieldValue.increment(Double(pointsToAdd))
             ])
 
@@ -179,8 +177,8 @@ final class PointsManager: ObservableObject {
         approvedBundleIdsUsed: [String]
     ) async throws {
         guard let uid = Auth.auth().currentUser?.uid,
-              let email = authManager.email
-              /*let house = authManager.usersHouse*/ else {
+              let email = authManager.email,
+              let house = authManager.house else {
             throw PointsError.missingUserData
         }
 
@@ -190,7 +188,7 @@ final class PointsManager: ObservableObject {
             lastPointsAddedDate: self.lastPointsAwardedDate ?? Date(),
             useruid: uid,
             email: email,
-            house: "house",
+            house: house,
             pointsAdded: String(points),
             appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown",
             approvedBundleIdsUsed: approvedBundleIdsUsed
@@ -201,8 +199,9 @@ final class PointsManager: ObservableObject {
     }
 
     private func performFirestoreLog(_ logData: LogData) async throws {
+        guard let schoolCode = authManager.schoolCode else { throw PointsError.missingUserData }
         try await Firestore.firestore()
             .collection("schools")
-            .document("sst").collection("logs").document().setData(logData.toDictionary())
+            .document(schoolCode).collection("logs").document().setData(logData.toDictionary())
     }
 }

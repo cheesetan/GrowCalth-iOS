@@ -44,8 +44,11 @@ final class NAPFAManager: ObservableObject {
             }
         }
     }
-    
-    init() {
+
+    private let authManager: AuthenticationManager
+
+    init(authManager: AuthenticationManager) {
+        self.authManager = authManager
         Task {
             do {
                 try await self.fetchAllData(for: self.year)
@@ -162,9 +165,10 @@ final class NAPFAManager: ObservableObject {
         ]
         
         do {
+            guard let schoolCode = authManager.schoolCode else { throw NAPFAError.documentNotFound }
             try await Firestore.firestore()
                 .collection("schools")
-                .document("sst")
+                .document(schoolCode)
                 .collection("napfa")
                 .document("\(level.firebaseCode)-\(String(year))")
                 .setData(data)
@@ -212,9 +216,11 @@ final class NAPFAManager: ObservableObject {
         }
         
         do {
+            guard let schoolCode = await authManager.schoolCode else { throw NAPFAError.documentNotFound }
+
             let document = try await Firestore.firestore()
                 .collection("schools")
-                .document("sst")
+                .document(schoolCode)
                 .collection("napfa")
                 .document("\(level.firebaseCode)-\(String(year))")
                 .getDocument()

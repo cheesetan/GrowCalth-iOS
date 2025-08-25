@@ -17,24 +17,64 @@ extension Color {
             opacity: alpha
         )
     }
+
+    init?(hex string: String, alpha: Double = 1) {
+        var hexString = string.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Remove `#` prefix if present
+        if hexString.hasPrefix("#") {
+            hexString.removeFirst()
+        }
+
+        guard hexString.count == 6,
+              let hexValue = UInt(hexString, radix: 16) else {
+            return nil
+        }
+
+        self.init(hex: hexValue, alpha: alpha)
+    }
 }
 
 extension UIColor {
-   convenience init(red: Int, green: Int, blue: Int) {
-       assert(red >= 0 && red <= 255, "Invalid red component")
-       assert(green >= 0 && green <= 255, "Invalid green component")
-       assert(blue >= 0 && blue <= 255, "Invalid blue component")
+    convenience init(red: Int, green: Int, blue: Int) {
+        assert(red >= 0 && red <= 255, "Invalid red component")
+        assert(green >= 0 && green <= 255, "Invalid green component")
+        assert(blue >= 0 && blue <= 255, "Invalid blue component")
 
-       self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
-   }
+        self.init(
+            red: CGFloat(red) / 255.0,
+            green: CGFloat(green) / 255.0,
+            blue: CGFloat(blue) / 255.0,
+            alpha: 1.0
+        )
+    }
 
-   convenience init(hex: Int) {
-       self.init(
-           red: (hex >> 16) & 0xFF,
-           green: (hex >> 8) & 0xFF,
-           blue: hex & 0xFF
-       )
-   }
+    convenience init(hex: Int) {
+        self.init(
+            red: (hex >> 16) & 0xFF,
+            green: (hex >> 8) & 0xFF,
+            blue: hex & 0xFF
+        )
+    }
+
+    convenience init?(hex string: String, alpha: CGFloat = 1.0) {
+        var hexString = string.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if hexString.hasPrefix("#") {
+            hexString.removeFirst()
+        }
+
+        guard hexString.count == 6,
+              let hexValue = Int(hexString, radix: 16) else {
+            return nil
+        }
+
+        self.init(
+            red: (hexValue >> 16) & 0xFF,
+            green: (hexValue >> 8) & 0xFF,
+            blue: hexValue & 0xFF
+        )
+    }
 }
 
 extension UIColor {

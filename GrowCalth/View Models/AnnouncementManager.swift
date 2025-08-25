@@ -25,8 +25,11 @@ final class AnnouncementManager: ObservableObject, Sendable {
             }
         }
     }
-    
-    init() {
+
+    private let authManager: AuthenticationManager
+
+    init(authManager: AuthenticationManager) {
+        self.authManager = authManager
         Task {
             await initializeData()
         }
@@ -138,9 +141,10 @@ final class AnnouncementManager: ObservableObject, Sendable {
     }
     
     nonisolated internal func fetchEvents() async throws -> [EventItem] {
+        guard let schoolCode = await authManager.schoolCode else { return [] }
         let query = try await Firestore.firestore()
             .collection("schools")
-            .document("sst")
+            .document(schoolCode)
             .collection("houseEvents")
             .order(by: "dateAdded", descending: true)
             .getDocuments()
@@ -173,9 +177,10 @@ final class AnnouncementManager: ObservableObject, Sendable {
     }
     
     nonisolated internal func fetchAnnouncements() async throws -> [Announcement] {
+        guard let schoolCode = await authManager.schoolCode else { return [] }
         let query = try await Firestore.firestore()
             .collection("schools")
-            .document("sst")
+            .document(schoolCode)
             .collection("announcements")
             .order(by: "dateAdded", descending: true)
             .getDocuments()

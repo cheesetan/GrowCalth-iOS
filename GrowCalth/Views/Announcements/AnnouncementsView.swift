@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-struct Journal: Identifiable {
-    var id = UUID()
-    var title: String
-}
-
 struct AnnouncementsView: View {
 
     @State var showingNewAnnouncementView = false
@@ -30,8 +25,6 @@ struct AnnouncementsView: View {
     @EnvironmentObject var adminManager: AdminManager
 
     @Environment(\.colorScheme) private var colorScheme
-
-    let journals: [Journal] = []
 
     var body: some View {
         if #available(iOS 17.0, *) {
@@ -58,28 +51,23 @@ struct AnnouncementsView: View {
                 VStack {
                     picker
                         .padding(.horizontal, AppState.padding)
-//                        .padding([.horizontal, .top], AppState.padding)
-                    ScrollView {
-                        VStack {
-                            switch selection {
-                            case .announcements:
-                                if !announcementManager.announcements.isEmpty {
-                                    announcementsList
-                                } else {
-                                    noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
-                                }
-                            case .events:
-                                if !announcementManager.events.isEmpty {
-                                    eventsList
-                                } else {
-                                    noContentView(keyword: "Events", systemImage: "calendar")
-                                }
+                    VStack {
+                        switch selection {
+                        case .announcements:
+                            if !announcementManager.announcements.isEmpty {
+                                announcementsList
+                            } else {
+                                noContentView(keyword: "Announcements", systemImage: "megaphone.fill")
+                            }
+                        case .events:
+                            if !announcementManager.events.isEmpty {
+                                eventsList
+                            } else {
+                                noContentView(keyword: "Events", systemImage: "calendar")
                             }
                         }
-                        .padding([.horizontal, .bottom], AppState.padding)
-                        .padding(.top, geometry.size.height*0.02)
                     }
-                    .scrollIndicators(.hidden)
+                    .padding(.top, geometry.size.height*0.02)
                 }
             }
         }
@@ -157,93 +145,101 @@ struct AnnouncementsView: View {
     }
 
     var announcementsList: some View {
-        VStack(spacing: 15) {
-            ForEach($announcementManager.announcements, id: \.id) { item in
-                NavigationLink {
-                    AnnouncementDetailView(announcement: item)
-                } label: {
-                    if #available(iOS 17.0, *) {
-                        announcementItem(
-                            date: item.date.wrappedValue,
-                            title: item.title.wrappedValue,
-                            description: item.description.wrappedValue
-                        )
-                        .scrollTransition { content, phase in
-                            content
-                                .scaleEffect(phase.isIdentity ? 1 : 0.8)
+        ScrollView {
+            VStack(spacing: 15) {
+                ForEach($announcementManager.announcements, id: \.id) { item in
+                    NavigationLink {
+                        AnnouncementDetailView(announcement: item)
+                    } label: {
+                        if #available(iOS 17.0, *) {
+                            announcementItem(
+                                date: item.date.wrappedValue,
+                                title: item.title.wrappedValue,
+                                description: item.description.wrappedValue
+                            )
+                            .scrollTransition { content, phase in
+                                content
+                                    .scaleEffect(phase.isIdentity ? 1 : 0.8)
+                            }
+                        } else {
+                            announcementItem(
+                                date: item.date.wrappedValue,
+                                title: item.title.wrappedValue,
+                                description: item.description.wrappedValue
+                            )
                         }
-                    } else {
-                        announcementItem(
-                            date: item.date.wrappedValue,
-                            title: item.title.wrappedValue,
-                            description: item.description.wrappedValue
-                        )
                     }
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("\(announcementManager.announcements.firstIndex(where: { $0.id == item.id })! + 1)")
-                .swipeActions {
-                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                        Button(role: .destructive) {
-                            stateUUID = item.id
-                            alertHeader = "Delete Announcement"
-                            alertMessage = "Are you sure you want to delete this Announcement? This action cannot be undone."
-                            showingDeleteAlert = true
-                        } label: {
-                            Label("Delete Announcement", systemImage: "trash")
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(announcementManager.announcements.firstIndex(where: { $0.id == item.id })! + 1)")
+                    .swipeActions {
+                        if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                            Button(role: .destructive) {
+                                stateUUID = item.id
+                                alertHeader = "Delete Announcement"
+                                alertMessage = "Are you sure you want to delete this Announcement? This action cannot be undone."
+                                showingDeleteAlert = true
+                            } label: {
+                                Label("Delete Announcement", systemImage: "trash")
+                            }
+                            .tint(.red)
                         }
-                        .tint(.red)
                     }
                 }
             }
+            .padding([.horizontal, .bottom], AppState.padding)
         }
+        .scrollIndicators(.hidden)
     }
     
     var eventsList: some View {
-        VStack(spacing: 15) {
-            ForEach($announcementManager.events, id: \.id) { item in
-                NavigationLink {
-                    EventDetailView(event: item)
-                } label: {
-                    if #available(iOS 17.0, *) {
-                        eventItem(
-                            dateAdded: item.dateAdded.wrappedValue,
-                            title: item.title.wrappedValue,
-                            description: item.description.wrappedValue,
-                            date: item.eventDate.wrappedValue,
-                            venue: item.venue.wrappedValue
-                        )
-                        .scrollTransition { content, phase in
-                            content
-                                .scaleEffect(phase.isIdentity ? 1 : 0.8)
+        ScrollView {
+            VStack(spacing: 15) {
+                ForEach($announcementManager.events, id: \.id) { item in
+                    NavigationLink {
+                        EventDetailView(event: item)
+                    } label: {
+                        if #available(iOS 17.0, *) {
+                            eventItem(
+                                dateAdded: item.dateAdded.wrappedValue,
+                                title: item.title.wrappedValue,
+                                description: item.description.wrappedValue,
+                                date: item.eventDate.wrappedValue,
+                                venue: item.venue.wrappedValue
+                            )
+                            .scrollTransition { content, phase in
+                                content
+                                    .scaleEffect(phase.isIdentity ? 1 : 0.8)
+                            }
+                        } else {
+                            eventItem(
+                                dateAdded: item.dateAdded.wrappedValue,
+                                title: item.title.wrappedValue,
+                                description: item.description.wrappedValue,
+                                date: item.eventDate.wrappedValue,
+                                venue: item.venue.wrappedValue
+                            )
                         }
-                    } else {
-                        eventItem(
-                            dateAdded: item.dateAdded.wrappedValue,
-                            title: item.title.wrappedValue,
-                            description: item.description.wrappedValue,
-                            date: item.eventDate.wrappedValue,
-                            venue: item.venue.wrappedValue
-                        )
                     }
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("\(announcementManager.events.firstIndex(where: { $0.id == item.id })! + 1)")
-                .swipeActions {
-                    if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
-                        Button(role: .destructive) {
-                            stateUUID = item.id
-                            alertHeader = "Delete Event"
-                            alertMessage = "Are you sure you want to delete this Event? This action cannot be undone."
-                            showingDeleteAlert = true
-                        } label: {
-                            Label("Delete Event", systemImage: "trash")
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(announcementManager.events.firstIndex(where: { $0.id == item.id })! + 1)")
+                    .swipeActions {
+                        if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) || email.contains("@sst.edu.sg") {
+                            Button(role: .destructive) {
+                                stateUUID = item.id
+                                alertHeader = "Delete Event"
+                                alertMessage = "Are you sure you want to delete this Event? This action cannot be undone."
+                                showingDeleteAlert = true
+                            } label: {
+                                Label("Delete Event", systemImage: "trash")
+                            }
+                            .tint(.red)
                         }
-                        .tint(.red)
                     }
                 }
             }
+            .padding([.horizontal, .bottom], AppState.padding)
         }
+        .scrollIndicators(.hidden)
     }
     
     @ViewBuilder

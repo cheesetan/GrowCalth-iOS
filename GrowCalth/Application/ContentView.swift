@@ -122,16 +122,16 @@ struct ContentView: View {
         let goalsManager = GoalsManager()
         _goalsManager = StateObject(wrappedValue: goalsManager)
 
-        let lbManager = LeaderboardsManager()
+        let lbManager = LeaderboardsManager(authManager: authManager)
         _lbManager = StateObject(wrappedValue: lbManager)
 
-        let napfaManager = NAPFAManager()
+        let napfaManager = NAPFAManager(authManager: authManager)
         _napfaManager = StateObject(wrappedValue: napfaManager)
 
         let quotesManager = QuotesManager()
         _quotesManager = StateObject(wrappedValue: quotesManager)
 
-        let announcementManager = AnnouncementManager()
+        let announcementManager = AnnouncementManager(authManager: authManager)
         _announcementManager = StateObject(wrappedValue: announcementManager)
 
         let settingsManager = SettingsManager()
@@ -200,7 +200,7 @@ struct ContentView: View {
                             .tabItem {
                                 Label("Updates", systemImage: "bell.fill")
                             }
-                        Text("Challenges")
+                        ChallengesView()
                             .tabItem {
                                 Label("Challenges", systemImage: "flag.pattern.checkered")
                             }

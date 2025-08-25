@@ -244,19 +244,15 @@ struct HomeView: View {
                     VStack(spacing: spacing) {
                         let tallHeight: Double = abs(Double((geometry.size.height - (spacing*2+5)) / 7 * 3))
                         let normalHeight: Double = abs(Double((geometry.size.height - (spacing*2+5)) / 7 * 2))
-                        let data = sortDictionary(for: lbManager.leaderboard)
+                        let data = sortLeaderboard(for: lbManager.leaderboard)
 
-                        ForEach(data.prefix(3), id: \.key) { house in
-                            let placing: Int = data.firstIndex(where: { $0.key == house.key }) ?? -1
-                            if let houses = Houses.init(rawValue: house.key.capitalized) {
-                                leaderboardPreviewRow(
-                                    placing: Houses.getPlacingFrom(int: placing + 1),
-                                    house: houses,
-                                    points: house.value,
-                                    height: placing == 0 ? tallHeight : normalHeight,
-                                    placingBubbleWidth: tallHeight
-                                )
-                            }
+                        ForEach(data.prefix(3).indices, id: \.value) { i in
+                            leaderboardPreviewRow(
+                                placing: House.getPlacingFrom(int: i+1),
+                                house: data[i],
+                                height: i == 0 ? tallHeight : normalHeight,
+                                placingBubbleWidth: tallHeight
+                            )
                         }
                     }
                     HStack {
@@ -275,12 +271,12 @@ struct HomeView: View {
         .buttonStyle(.plain)
     }
 
-    private func sortDictionary(for dictionary: [String : Int]) -> Array<(key: String, value: Int)> {
-        return dictionary.sorted { $0.value > $1.value }.sorted { first, second in
-            if first.value == second.value {
-                first.key < second.key
+    private func sortLeaderboard(for leaderboard: [House]) -> [House] {
+        return leaderboard.sorted { $0.points > $1.points }.sorted { first, second in
+            if first.points == second.points {
+                first.name < second.name
             } else {
-                first.key == second.key
+                first.name == second.name
             }
         }
     }
@@ -288,8 +284,7 @@ struct HomeView: View {
     @ViewBuilder
     func leaderboardPreviewRow(
         placing: String,
-        house: Houses,
-        points: Int,
+        house: House,
         height: CGFloat,
         placingBubbleWidth: CGFloat
     ) -> some View {
@@ -351,7 +346,7 @@ struct HomeView: View {
                                 )
                         }
                         .overlay {
-                            Text("\(points) POINTS")
+                            Text("\(house.points) POINTS")
                                 .font(.title2.weight(.black).italic())
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.1)

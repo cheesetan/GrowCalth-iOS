@@ -10,10 +10,6 @@ import SwiftUI
 struct LeaderboardView: View {
     
     @State var loaded = false
-
-    @State var showingAlert = false
-    @State var alertTitle = ""
-    @State var alertMessage = ""
     
     @EnvironmentObject var lbManager: LeaderboardsManager
     @EnvironmentObject var adminManager: AdminManager
@@ -25,24 +21,21 @@ struct LeaderboardView: View {
             Color.background.ignoresSafeArea()
             GeometryReader { geometry in
                 VStack(spacing: 0) {
-                    let sortedDictionary = sortDictionary(for: lbManager.leaderboard)
-                    leaderboardPodium(data: sortedDictionary)
+                    let sortedLeaderboard = sortLeaderboard(for: lbManager.leaderboard)
+                    leaderboardPodium(data: sortedLeaderboard)
                         .frame(height: geometry.size.height*0.65)
                     VStack(spacing: 15) {
                         let height = geometry.size.height*0.08
                         if height >= 6 {
-                            houseRow(
-                                placing: "4TH",
-                                height: height,
-                                text: sortedDictionary[3].key,
-                                points: sortedDictionary[3].value
-                            )
-                            houseRow(
-                                placing: "5TH",
-                                height: height,
-                                text: sortedDictionary[4].key,
-                                points: sortedDictionary[4].value
-                            )
+                            ForEach(sortedLeaderboard.indices, id: \.value) { i in
+                                if i > 2 {
+                                    houseRow(
+                                        placing: House.getPlacingFrom(int: i+1),
+                                        height: height,
+                                        house: sortedLeaderboard[i]
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -53,70 +46,32 @@ struct LeaderboardView: View {
             .navigationTitle("Leaderboard")
             .navigationBarTitleDisplayMode(.inline)
         }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                if let email = authManager.email, GLOBAL_ADMIN_EMAILS.contains(email) {
-                    Button(role: .destructive) {
-                        showingAlert = true
-                        alertTitle = "Reset GrowCalth points"
-                        alertMessage = "Are you sure you want to reset all GrowCalth points? This action cannot be undone."
-                    } label: {
-                        Label("Reset GrowCalth points", systemImage: "arrow.clockwise.circle")
-                    }
-                    .tint(.red)
-                }
-            }
-        }
-        .alert(alertTitle, isPresented: $showingAlert) {
-            Button("Reset", role: .destructive) {
-                Task {
-                    do {
-                        try await lbManager.resetLeaderboards(forHouse: "black")
-                        await lbManager.retrievePoints()
-                        try await lbManager.resetLeaderboards(forHouse: "blue")
-                        await lbManager.retrievePoints()
-                        try await lbManager.resetLeaderboards(forHouse: "green")
-                        await lbManager.retrievePoints()
-                        try await lbManager.resetLeaderboards(forHouse: "red")
-                        await lbManager.retrievePoints()
-                        try await lbManager.resetLeaderboards(forHouse: "yellow")
-                        await lbManager.retrievePoints()
-                    } catch {
-                        showingAlert = true
-                        alertTitle = "Error"
-                        alertTitle = "An error has occurred while attempting to reset GrowCalth points for the houses. Please try again."
-                    }
-                }
-            }
-        } message: {
-            Text(alertMessage)
-        }
         .refreshable {
             Task {
-                await lbManager.retrievePoints()
+                await lbManager.retrieveLeaderboard()
             }
         }
         .onAppear {
             Task {
-                await lbManager.retrievePoints()
+                await lbManager.retrieveLeaderboard()
                 try await adminManager.checkIfUnderMaintenance()
                 try await adminManager.checkIfAppForcesUpdates()
             }
         }
     }
 
-    private func sortDictionary(for dictionary: [String : Int]) -> Array<(key: String, value: Int)> {
-        return dictionary.sorted { $0.value > $1.value }.sorted { first, second in
-            if first.value == second.value {
-                first.key < second.key
+    private func sortLeaderboard(for leaderboard: [House]) -> [House] {
+        return leaderboard.sorted { $0.points > $1.points }.sorted { first, second in
+            if first.points == second.points {
+                first.name < second.name
             } else {
-                first.key == second.key
+                first.name == second.name
             }
         }
     }
 
     @ViewBuilder
-    func leaderboardPodium(data: Array<(key: String, value: Int)>) -> some View {
+    func leaderboardPodium(data: [House]) -> some View {
         GeometryReader { geometry in
             if geometry.size.width >= 30 {
                 let barWidth = (geometry.size.width-AppState.padding)/3
@@ -133,14 +88,20 @@ struct LeaderboardView: View {
                     }
                     GeometryReader { geometry2 in
                         HStack(alignment: .bottom) {
-                            leaderboardRectanglePodium(house: data[2].key, points: data[2].value)
-                                .frame(width: barWidth, height: geometry2.size.height*0.8)
+                            if data.count >= 3 {
+                                leaderboardRectanglePodium(house: data[2])
+                                    .frame(width: barWidth, height: geometry2.size.height*0.8)
+                            }
 
-                            leaderboardRectanglePodium(house: data[0].key, points: data[0].value)
-                                .frame(width: barWidth, height: geometry2.size.height)
+                            if data.count >= 1 {
+                                leaderboardRectanglePodium(house: data[0])
+                                    .frame(width: barWidth, height: geometry2.size.height)
+                            }
 
-                            leaderboardRectanglePodium(house: data[1].key, points: data[1].value)
-                                .frame(width: barWidth, height: geometry2.size.height*0.9)
+                            if data.count >= 2 {
+                                leaderboardRectanglePodium(house: data[1])
+                                    .frame(width: barWidth, height: geometry2.size.height*0.9)
+                            }
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                     }
@@ -164,20 +125,20 @@ struct LeaderboardView: View {
     }
 
     @ViewBuilder
-    func leaderboardRectanglePodium(house: String, points: Int) -> some View {
+    func leaderboardRectanglePodium(house: House) -> some View {
         GeometryReader { geometry in
             Rectangle()
-                .foregroundStyle(Houses(rawValue: house.capitalized)!.color)
+                .foregroundStyle(house.color)
                 .overlay(alignment: .top) {
                     VStack(spacing: 10) {
-                        Image(house.capitalized)
+                        Image(house.name)
                             .resizable()
                             .scaledToFit()
                             .frame(width: geometry.size.width * 0.85, height: geometry.size.width * 0.85)
                             .mask(Circle())
                             .specularHighlight(for: .circle, motionManager: motionManager)
 
-                        Text("\(points)")
+                        Text("\(house.points)")
                             .foregroundStyle(.white)
                             .font(.system(size: geometry.size.width * 0.2).weight(.black).italic())
                     }
@@ -187,7 +148,7 @@ struct LeaderboardView: View {
     }
 
     @ViewBuilder
-    func houseRow(placing: String, height: CGFloat, text: String, points: Int) -> some View {
+    func houseRow(placing: String, height: CGFloat, house: House) -> some View {
         Capsule()
             .frame(maxHeight: height)
             .foregroundStyle(Color.lbCapsuleBackground)
@@ -219,7 +180,7 @@ struct LeaderboardView: View {
                         .foregroundStyle(
                             LinearGradient(
                                 stops: [
-                                    .init(color: Houses(rawValue: text.capitalized)!.color, location: 0.7),
+                                    .init(color: house.color, location: 0.7),
                                     .init(color: Color.lbHouseColorToFadeTo, location: 1.2)
                                 ],
                                 startPoint: .bottomLeading,
@@ -232,7 +193,7 @@ struct LeaderboardView: View {
                                 .foregroundStyle(
                                     LinearGradient(
                                         stops: [
-                                            .init(color: Houses(rawValue: text.capitalized)!.color, location: 0.7),
+                                            .init(color: house.color, location: 0.7),
                                             .init(color: Color.lbHouseColorToFadeTo, location: 1.2)
                                         ],
                                         startPoint: .bottomLeading,
@@ -242,13 +203,13 @@ struct LeaderboardView: View {
                         }
                         .overlay {
                             HStack {
-                                Image(text.capitalized)
+                                Image(house.name)
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: height-6, height: height-6)
                                     .mask(Circle())
                                 Spacer()
-                                Text("\(points) POINTS")
+                                Text("\(house.points) POINTS")
                                     .font(.title2.weight(.black).italic())
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.1)

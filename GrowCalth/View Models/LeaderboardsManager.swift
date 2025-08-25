@@ -11,7 +11,7 @@ import FirebaseFirestore
 @MainActor
 final class LeaderboardsManager: ObservableObject {
 
-    @Published var leaderboard: [String: Int] = [:] {
+    @Published var leaderboard: [House] = [] {
         didSet {
             Task {
                 await save()
@@ -36,10 +36,13 @@ final class LeaderboardsManager: ObservableObject {
         }
     }
 
-    init() {
+    private let authManager: AuthenticationManager
+
+    init(authManager: AuthenticationManager) {
+        self.authManager = authManager
         Task {
             await load()
-            await retrievePoints()
+            await retrieveLeaderboard()
         }
     }
 
@@ -71,16 +74,16 @@ final class LeaderboardsManager: ObservableObject {
 
         do {
             let retrievedTypeData = try Data(contentsOf: archiveURL)
-            let leaderboardDecoded = try jsonDecoder.decode([String: Int].self, from: retrievedTypeData)
+            let leaderboardDecoded = try jsonDecoder.decode([House].self, from: retrievedTypeData)
             leaderboard = leaderboardDecoded
         } catch {
             print("Failed to load leaderboard: \(error)")
         }
     }
 
-    func retrievePoints() async {
+    func retrieveLeaderboard() async {
         do {
-            let fetchedData = try await self.fetchPoints()
+            let fetchedData = try await self.fetchLeaderboard()
             withAnimation {
                 self.leaderboard = fetchedData
             }
@@ -89,39 +92,31 @@ final class LeaderboardsManager: ObservableObject {
         }
     }
 
-    nonisolated internal func fetchPoints() async throws -> [String: Int] {
-        var result: [String: Int] = [:]
+    nonisolated internal func fetchLeaderboard() async throws -> [House] {
+        guard let schoolCode = await authManager.schoolCode else { return [] }
+
+        var result: [House] = []
         let query = try await Firestore.firestore()
             .collection("schools")
-            .document("sst").collection("leaderboard").getDocuments()
+            .document(schoolCode).collection("leaderboard").getDocuments()
 
         for document in query.documents {
-            switch document.documentID {
-            case "black", "blue", "green", "red", "yellow":
-                if let points = document.data()["points"] as? Int {
-                    result[document.documentID] = points
-                }
-            default:
-                print("Unknown house: \(document.documentID)")
-            }
+            guard let name = document.data()["name"] as? String else { return [] }
+            guard let color = document.data()["color"] as? String else { return [] }
+            guard let points = document.data()["points"] as? Int else { return [] }
+            let icon = document.data()["icon"] as? String ?? ""
+
+            result.append(
+                House(
+                    id: document.documentID,
+                    name: name,
+                    color: Color(hex: color, alpha: 1) ?? .gray,
+                    points: points,
+                    icon: URL(string: icon)
+                )
+            )
         }
 
         return result
-    }
-
-    func resetLeaderboards(forHouse house: String) async throws {
-        guard ["black", "blue", "green", "red", "yellow"].contains(house) else {
-            throw LeaderboardError.invalidHouseName(house)
-        }
-
-        do {
-            try await Firestore.firestore()
-                .collection("schools")
-                .document("sst").collection("leaderboard").document(house).updateData([
-                    "points": 0
-                ])
-        } catch {
-            throw LeaderboardError.firestoreError(error)
-        }
     }
 }
