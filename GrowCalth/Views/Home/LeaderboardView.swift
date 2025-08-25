@@ -119,11 +119,18 @@ struct LeaderboardView: View {
                 .foregroundStyle(house.color)
                 .overlay(alignment: .top) {
                     VStack(spacing: 10) {
-                        AsyncImage(url: house.icon)
-                            .scaledToFit()
+                        if let url = house.icon {
+                            AsyncImage(url: url) { image in
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                            } placeholder: {
+                                ProgressView()
+                            }
                             .frame(width: geometry.size.width * 0.85, height: geometry.size.width * 0.85)
                             .mask(Circle())
                             .specularHighlight(for: .circle, motionManager: motionManager)
+                        }
 
                         Text("\(house.points)")
                             .foregroundStyle(.white)
@@ -190,10 +197,17 @@ struct LeaderboardView: View {
                         }
                         .overlay {
                             HStack {
-                                AsyncImage(url: house.icon)
-                                    .scaledToFit()
+                                if let url = house.icon {
+                                    AsyncImage(url: url) { image in
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                    } placeholder: {
+                                        ProgressView()
+                                    }
                                     .frame(width: height-6, height: height-6)
                                     .mask(Circle())
+                                }
                                 Spacer()
                                 Text("\(house.points) POINTS")
                                     .font(.title2.weight(.black).italic())
