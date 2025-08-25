@@ -153,7 +153,7 @@ final class PointsManager: ObservableObject {
             throw PointsError.invalidVersion(currentVersion)
         }
 
-        guard let schoolCode = authManager.schoolCode else { throw PointsError.missingUserData }
+        let schoolCode = try await authManager.fetchSchoolCode()
 
         try await Firestore.firestore()
             .collection("schools")
@@ -177,10 +177,11 @@ final class PointsManager: ObservableObject {
         approvedBundleIdsUsed: [String]
     ) async throws {
         guard let uid = Auth.auth().currentUser?.uid,
-              let email = authManager.email,
-              let house = authManager.house else {
+              let email = authManager.email else {
             throw PointsError.missingUserData
         }
+
+        let house = try await authManager.fetchUsersHouse()
 
         // Create Sendable LogData struct
         let logData = LogData(
@@ -199,7 +200,7 @@ final class PointsManager: ObservableObject {
     }
 
     private func performFirestoreLog(_ logData: LogData) async throws {
-        guard let schoolCode = authManager.schoolCode else { throw PointsError.missingUserData }
+        let schoolCode = try await authManager.fetchSchoolCode()
         try await Firestore.firestore()
             .collection("schools")
             .document(schoolCode).collection("logs").document().setData(logData.toDictionary())

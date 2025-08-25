@@ -75,6 +75,7 @@ struct HomeView: View {
                 try await adminManager.checkIfUnderMaintenance()
                 try await adminManager.checkIfAppForcesUpdates()
                 try await pointsManager.checkAndAddPoints()
+                await lbManager.retrieveLeaderboard()
             }
 
 //            if authManager.accountType == .alumnus && !alumnusAlertShown {
@@ -94,15 +95,11 @@ struct HomeView: View {
             let housePointsEarnedToday = Int(floor(Double((hkManager.steps ?? 0) / GLOBAL_STEPS_PER_POINT)))
             HStack {
                 HStack(spacing: 0) {
-//                    if authManager.accountType.canAddPoints {
-//                        Text("You have earned ")
-//                        Text("^[\(housePointsEarnedToday) points](inflect: true)")
-//                            .fontWeight(.bold)
-//                            .foregroundStyle(.accent)
-//                        Text(" today.")
-//                    } else {
-                        Text("You are unable to earn GrowCalth points.")
-//                    }
+                    Text("You have earned ")
+                    Text("^[\(housePointsEarnedToday) points](inflect: true)")
+                        .fontWeight(.bold)
+                        .foregroundStyle(.accent)
+                    Text(" today.")
                 }
             }
             .font(.title3.weight(.medium))

@@ -141,7 +141,7 @@ final class AnnouncementManager: ObservableObject, Sendable {
     }
     
     nonisolated internal func fetchEvents() async throws -> [EventItem] {
-        guard let schoolCode = await authManager.schoolCode else { return [] }
+        let schoolCode = try await authManager.fetchSchoolCode()
         let query = try await Firestore.firestore()
             .collection("schools")
             .document(schoolCode)
@@ -177,7 +177,7 @@ final class AnnouncementManager: ObservableObject, Sendable {
     }
     
     nonisolated internal func fetchAnnouncements() async throws -> [Announcement] {
-        guard let schoolCode = await authManager.schoolCode else { return [] }
+        let schoolCode = try await authManager.fetchSchoolCode()
         let query = try await Firestore.firestore()
             .collection("schools")
             .document(schoolCode)

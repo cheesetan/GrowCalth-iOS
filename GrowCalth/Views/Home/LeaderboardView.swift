@@ -19,30 +19,25 @@ struct LeaderboardView: View {
     var body: some View {
         ZStack {
             Color.background.ignoresSafeArea()
-            GeometryReader { geometry in
+            ScrollView {
                 VStack(spacing: 0) {
                     let sortedLeaderboard = sortLeaderboard(for: lbManager.leaderboard)
                     leaderboardPodium(data: sortedLeaderboard)
-                        .frame(height: geometry.size.height*0.65)
                     VStack(spacing: 15) {
-                        let height = geometry.size.height*0.08
-                        if height >= 6 {
-                            ForEach(sortedLeaderboard.indices, id: \.value) { i in
-                                if i > 2 {
-                                    houseRow(
-                                        placing: House.getPlacingFrom(int: i+1),
-                                        height: height,
-                                        house: sortedLeaderboard[i]
-                                    )
-                                }
+                        ForEach(sortedLeaderboard.indices, id: \.value) { i in
+                            if i > 2 {
+                                houseRow(
+                                    placing: House.getPlacingFrom(int: i+1),
+                                    height: 60,
+                                    house: sortedLeaderboard[i]
+                                )
                             }
                         }
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .padding(.top, geometry.size.height * 0.02)
+                .padding(AppState.padding)
             }
-            .padding([.horizontal, .bottom], AppState.padding)
+            .scrollIndicators(.hidden)
             .navigationTitle("Leaderboard")
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -72,54 +67,47 @@ struct LeaderboardView: View {
 
     @ViewBuilder
     func leaderboardPodium(data: [House]) -> some View {
-        GeometryReader { geometry in
-            if geometry.size.width >= 30 {
-                let barWidth = (geometry.size.width-AppState.padding)/3
-                VStack {
-                    HStack {
-                        Spacer()
+        let barWidth = UIScreen.main.bounds.width/4
+        VStack {
+            HStack(alignment: .bottom) {
+                if data.count >= 3 {
+                    leaderboardRectanglePodium(house: data[2])
+                        .frame(width: barWidth, height: 310)
+                }
+
+                if data.count >= 1 {
+                    VStack {
                         Image(systemName: "trophy.fill")
                             .resizable()
                             .scaledToFit()
                             .frame(width: barWidth*0.8, height: barWidth*0.8)
                             .foregroundStyle(.yellow)
                             .shadow(color: .yellow, radius: barWidth)
-                        Spacer()
-                    }
-                    GeometryReader { geometry2 in
-                        HStack(alignment: .bottom) {
-                            if data.count >= 3 {
-                                leaderboardRectanglePodium(house: data[2])
-                                    .frame(width: barWidth, height: geometry2.size.height*0.8)
-                            }
 
-                            if data.count >= 1 {
-                                leaderboardRectanglePodium(house: data[0])
-                                    .frame(width: barWidth, height: geometry2.size.height)
-                            }
-
-                            if data.count >= 2 {
-                                leaderboardRectanglePodium(house: data[1])
-                                    .frame(width: barWidth, height: geometry2.size.height*0.9)
-                            }
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                        leaderboardRectanglePodium(house: data[0])
+                            .frame(width: barWidth, height: 350)
                     }
                 }
-                .overlay {
-                    LinearGradient(
-                        gradient: Gradient(
-                            stops: [
-                                .init(color: .background, location: 0.1),
-                                .init(color: .clear, location: 0.3),
-                                .init(color: .clear, location: 1)
-                            ]
-                        ),
-                        startPoint: .bottom,
-                        endPoint: .top
-                    )
+
+                if data.count >= 2 {
+                    leaderboardRectanglePodium(house: data[1])
+                        .frame(width: barWidth, height: 330)
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .bottom)
+        }
+        .overlay {
+            LinearGradient(
+                gradient: Gradient(
+                    stops: [
+                        .init(color: .background, location: 0.1),
+                        .init(color: .clear, location: 0.3),
+                        .init(color: .clear, location: 1)
+                    ]
+                ),
+                startPoint: .bottom,
+                endPoint: .top
+            )
         }
         .padding(.horizontal)
     }
@@ -131,8 +119,7 @@ struct LeaderboardView: View {
                 .foregroundStyle(house.color)
                 .overlay(alignment: .top) {
                     VStack(spacing: 10) {
-                        Image(house.name)
-                            .resizable()
+                        AsyncImage(url: house.icon)
                             .scaledToFit()
                             .frame(width: geometry.size.width * 0.85, height: geometry.size.width * 0.85)
                             .mask(Circle())
@@ -150,7 +137,7 @@ struct LeaderboardView: View {
     @ViewBuilder
     func houseRow(placing: String, height: CGFloat, house: House) -> some View {
         Capsule()
-            .frame(maxHeight: height)
+            .frame(height: height)
             .foregroundStyle(Color.lbCapsuleBackground)
             .overlay {
                 HStack(spacing: 30) {
@@ -203,8 +190,7 @@ struct LeaderboardView: View {
                         }
                         .overlay {
                             HStack {
-                                Image(house.name)
-                                    .resizable()
+                                AsyncImage(url: house.icon)
                                     .scaledToFit()
                                     .frame(width: height-6, height: height-6)
                                     .mask(Circle())

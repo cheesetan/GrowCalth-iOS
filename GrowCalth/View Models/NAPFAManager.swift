@@ -165,7 +165,7 @@ final class NAPFAManager: ObservableObject {
         ]
         
         do {
-            guard let schoolCode = authManager.schoolCode else { throw NAPFAError.documentNotFound }
+            let schoolCode = try await authManager.fetchSchoolCode()
             try await Firestore.firestore()
                 .collection("schools")
                 .document(schoolCode)
@@ -216,7 +216,7 @@ final class NAPFAManager: ObservableObject {
         }
         
         do {
-            guard let schoolCode = await authManager.schoolCode else { throw NAPFAError.documentNotFound }
+            let schoolCode = try await authManager.fetchSchoolCode()
 
             let document = try await Firestore.firestore()
                 .collection("schools")

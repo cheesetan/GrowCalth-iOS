@@ -43,6 +43,7 @@ final class LeaderboardsManager: ObservableObject {
         Task {
             await load()
             await retrieveLeaderboard()
+            print("hi done")
         }
     }
 
@@ -93,7 +94,7 @@ final class LeaderboardsManager: ObservableObject {
     }
 
     nonisolated internal func fetchLeaderboard() async throws -> [House] {
-        guard let schoolCode = await authManager.schoolCode else { return [] }
+        let schoolCode = try await authManager.fetchSchoolCode()
 
         var result: [House] = []
         let query = try await Firestore.firestore()
@@ -101,9 +102,9 @@ final class LeaderboardsManager: ObservableObject {
             .document(schoolCode).collection("leaderboard").getDocuments()
 
         for document in query.documents {
-            guard let name = document.data()["name"] as? String else { return [] }
-            guard let color = document.data()["color"] as? String else { return [] }
-            guard let points = document.data()["points"] as? Int else { return [] }
+            guard let name = document.data()["name"] as? String else { continue }
+            guard let color = document.data()["color"] as? String else { continue }
+            guard let points = document.data()["points"] as? Int else { continue }
             let icon = document.data()["icon"] as? String ?? ""
 
             result.append(

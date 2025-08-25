@@ -80,7 +80,7 @@ final class AdminManager: ObservableObject, Sendable {
         ]
         
         do {
-            guard let schoolCode = authManager.schoolCode else { throw PostError.failedToPostAnnouncement }
+            let schoolCode = try await authManager.fetchSchoolCode()
             try await Firestore.firestore()
                 .collection("schools")
                 .document(schoolCode)
@@ -107,7 +107,7 @@ final class AdminManager: ObservableObject, Sendable {
         ]
         
         do {
-            guard let schoolCode = authManager.schoolCode else { throw PostError.failedToPostEvent }
+            let schoolCode = try await authManager.fetchSchoolCode()
             try await Firestore.firestore()
                 .collection("schools")
                 .document(schoolCode)
@@ -126,7 +126,7 @@ final class AdminManager: ObservableObject, Sendable {
         ]
         
         do {
-            guard let schoolCode = authManager.schoolCode else { throw PostError.failedToUpdateAnnouncement }
+            let schoolCode = try await authManager.fetchSchoolCode()
             try await Firestore.firestore()
                 .collection("schools")
                 .document(schoolCode)
@@ -153,7 +153,7 @@ final class AdminManager: ObservableObject, Sendable {
         ]
         
         do {
-            guard let schoolCode = authManager.schoolCode else { throw PostError.failedToUpdateEvent }
+            let schoolCode = try await authManager.fetchSchoolCode()
             try await Firestore.firestore()
                 .collection("schools")
                 .document(schoolCode)
@@ -167,7 +167,7 @@ final class AdminManager: ObservableObject, Sendable {
     
     func deleteAnnouncement(announcementUUID: String) async throws {
         do {
-            guard let schoolCode = authManager.schoolCode else { throw PostError.failedToDeleteAnnouncement }
+            let schoolCode = try await authManager.fetchSchoolCode()
             try await Firestore.firestore()
                 .collection("schools")
                 .document(schoolCode)
@@ -181,7 +181,7 @@ final class AdminManager: ObservableObject, Sendable {
     
     func deleteEvent(eventUUID: String) async throws {
         do {
-            guard let schoolCode = authManager.schoolCode else { throw PostError.failedToDeleteEvent }
+            let schoolCode = try await authManager.fetchSchoolCode()
             try await Firestore.firestore()
                 .collection("schools")
                 .document(schoolCode)
