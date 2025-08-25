@@ -11,12 +11,13 @@ struct SelectHouseView: View {
 
     @State private var isLoading = false
 
-    @State private var referralCode = ""
+    @State private var houseSelection = ""
 
     @State private var alertShowing = false
     @State private var alertHeader = ""
     @State private var alertMessage = ""
 
+    @EnvironmentObject private var lbManager: LeaderboardsManager
     @EnvironmentObject private var authManager: AuthenticationManager
 
     var body: some View {
@@ -24,18 +25,19 @@ struct SelectHouseView: View {
             Color.background.ignoresSafeArea()
             VStack(spacing: 15) {
                 VStack(alignment: .leading, spacing: 5) {
-                    Text("Enter Code")
+                    Text("Select your House.")
                         .fontWeight(.black)
                         .font(.title)
 
-                    Text("Enter the referral code given to you by your school to continue.")
+                    Text(authManager.schoolName ?? "Pick a House to continue.")
                         .font(.subheadline)
                         .fontWeight(.medium)
                         .foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                enterCodeButton
+                housePicker
+                continueButton
             }
             .padding(AppState.padding)
         }
@@ -44,61 +46,55 @@ struct SelectHouseView: View {
         } message: {
             Text(alertMessage)
         }
-
+        .onAppear {
+            Task {
+                await lbManager.retrieveLeaderboard()
+            }
+        }
     }
 
-//    var housePicker: some View {
-//        Group {
-//            if #available(iOS 26.0, *) {
-//                Picker("House Selection", selection: $houseSelection) {
-//                    ForEach(Houses.allCases, id: \.hashValue) { house in
-//                        if house != .selectHouse {
-//                            Text(house.rawValue)
-//                                .minimumScaleFactor(0.1)
-//                                .tag(house)
-//                        } else {
-//                            if houseSelection == .selectHouse {
-//                                Text(house.rawValue)
-//                                    .tag(house)
-//                                Divider()
-//                            }
-//                        }
-//                    }
-//                }
-//                .padding(10)
-//                .frame(maxWidth: .infinity)
-//                .glassEffect()
-//            } else {
-//                Picker("House Selection", selection: $houseSelection) {
-//                    ForEach(Houses.allCases, id: \.hashValue) { house in
-//                        if house != .selectHouse {
-//                            Text(house.rawValue)
-//                                .minimumScaleFactor(0.1)
-//                                .tag(house)
-//                        } else {
-//                            if houseSelection == .selectHouse {
-//                                Text(house.rawValue)
-//                                    .tag(house)
-//                                Divider()
-//                            }
-//                        }
-//                    }
-//                }
-//                .padding(10)
-//                .frame(maxWidth: .infinity)
-//                .background(.thickMaterial)
-//                .mask(Capsule())
-//            }
-//        }
-//    }
+    var housePicker: some View {
+        Group {
+            if #available(iOS 26.0, *) {
+                Picker("House Selection", selection: $houseSelection) {
+                    if houseSelection.isEmpty {
+                        Text("Select your House")
+                            .tag("")
+                        Divider()
+                    }
+                    ForEach(lbManager.leaderboard) { house in
+                        Text(house.name)
+                            .tag(house.id)
+                    }
+                }
+                .padding(10)
+                .frame(maxWidth: .infinity)
+                .glassEffect()
+            } else {
+                Picker("House Selection", selection: $houseSelection) {
+                    if houseSelection.isEmpty {
+                        Text("Select your House")
+                            .tag("")
+                        Divider()
+                    }
+                    ForEach(lbManager.leaderboard) { house in
+                        Text(house.name)
+                            .tag(house.id)
+                    }
+                }
+                .padding(10)
+                .frame(maxWidth: .infinity)
+                .background(.thickMaterial)
+                .mask(Capsule())
+            }
+        }
+    }
 
-    var enterCodeButton: some View {
+    var continueButton: some View {
         Group {
             if #available(iOS 26.0, *) {
                 Button {
-                    if referralCode.count >= 8 {
-                        submitCode()
-                    }
+                    continueButtonPressed()
                 } label: {
                     Text("Continue")
                         .padding(8)
@@ -113,12 +109,10 @@ struct SelectHouseView: View {
                 }
                 .buttonBorderShape(.capsule)
                 .buttonStyle(.glassProminent)
-                .disabled(referralCode.count != 8)
+                .disabled(houseSelection.isEmpty)
             } else {
                 Button {
-                    if referralCode.count >= 8 {
-                        submitCode()
-                    }
+                    continueButtonPressed()
                 } label: {
                     Text("Continue")
                         .padding()
@@ -134,22 +128,24 @@ struct SelectHouseView: View {
                         }
                 }
                 .buttonStyle(.plain)
-                .disabled(referralCode.count != 8)
+                .disabled(houseSelection.isEmpty)
             }
         }
     }
 
-    func submitCode() {
-        isLoading = true
-        Task {
-            do {
-                try await authManager.getSchoolCode(fromReferralCode: referralCode)
-            } catch {
-                alertHeader = "Error"
-                alertMessage = error.localizedDescription
-                alertShowing = true
+    func continueButtonPressed() {
+        if !houseSelection.isEmpty {
+            isLoading = true
+            Task {
+                do {
+                    try await authManager.setUserHouse(houseId: houseSelection)
+                } catch {
+                    alertHeader = "Error"
+                    alertMessage = error.localizedDescription
+                    alertShowing = true
+                }
+                isLoading = false
             }
-            isLoading = false
         }
     }
 }

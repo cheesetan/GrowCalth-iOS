@@ -19,6 +19,7 @@ final class AuthenticationManager: ObservableObject {
     @Published var email: String?
     @Published var house: String?
     @Published var schoolCode: String?
+    @Published var schoolName: String?
 
 //    @Published var accountType: AccountType = .unknown
 
@@ -39,6 +40,7 @@ final class AuthenticationManager: ObservableObject {
                 self.email = nil
                 self.house = nil
                 self.schoolCode = nil
+                self.schoolName = nil
             }
             return
         }
@@ -55,6 +57,11 @@ final class AuthenticationManager: ObservableObject {
                 let schoolCode = try await self.fetchSchoolCode()
                 withAnimation {
                     self.schoolCode = schoolCode
+                }
+
+                let schoolName = try await self.fetchSchoolName()
+                withAnimation {
+                    self.schoolName = schoolName
                 }
             } catch {
                 throw error

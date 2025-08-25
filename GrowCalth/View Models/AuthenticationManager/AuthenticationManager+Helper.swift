@@ -40,6 +40,27 @@ extension AuthenticationManager {
         return schoolCode
     }
 
+    nonisolated func fetchSchoolName() async throws -> String {
+        guard let schoolCode = await self.schoolCode else {
+            throw FirestoreError.failedToGetSpecifiedField
+        }
+
+        let document = try await Firestore.firestore()
+            .collection("schools")
+            .document(schoolCode)
+            .getDocument()
+        guard document.exists else {
+            throw FirestoreError.documentDoesNotExist
+        }
+        guard let documentData = document.data() else {
+            throw FirestoreError.documentHasNoData
+        }
+        guard let schoolCode = documentData["schoolName"] as? String else {
+            throw FirestoreError.failedToGetSpecifiedField
+        }
+        return schoolCode
+    }
+
     nonisolated func fetchUsersHouse() async throws -> String {
         guard let uid = Auth.auth().currentUser?.uid else {
             throw AuthenticationError.failedToGetUserUid
@@ -90,6 +111,20 @@ extension AuthenticationManager {
             .document(uid)
             .updateData([
                 "schoolCode": code
+            ])
+        await checkAuthenticationState()
+    }
+
+    nonisolated internal func setUserHouse(houseId: String) async throws {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            throw AuthenticationError.failedToGetUserUid
+        }
+
+        try await Firestore.firestore()
+            .collection("users")
+            .document(uid)
+            .updateData([
+                "house": houseId
             ])
         await checkAuthenticationState()
     }

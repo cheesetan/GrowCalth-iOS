@@ -43,7 +43,6 @@ final class LeaderboardsManager: ObservableObject {
         Task {
             await load()
             await retrieveLeaderboard()
-            print("hi done")
         }
     }
 

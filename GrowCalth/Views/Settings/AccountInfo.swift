@@ -58,6 +58,17 @@ struct AccountInfo: View {
                         .multilineTextAlignment(.trailing)
                     }
 
+                    CustomLabeledContent("School") {
+                        VStack {
+                            if let schoolName = authManager.schoolName {
+                                Text(schoolName)
+                            } else {
+                                Text("?")
+                            }
+                        }
+                        .multilineTextAlignment(.trailing)
+                    }
+
                     CustomLabeledContent("House") {
                         VStack {
                             if let house = authManager.house {
